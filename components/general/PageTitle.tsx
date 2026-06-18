@@ -1,5 +1,17 @@
 import { cn } from '@/lib/utils'
-import { Award, BookOpen, BookText, ChartColumn, ClipboardList, CrownIcon, GraduationCap, Info, PuzzleIcon, SchoolIcon, User } from 'lucide-react'
+import {
+    Award,
+    BookOpen,
+    BookText,
+    ChartColumn,
+    ClipboardList,
+    CrownIcon,
+    GraduationCap,
+    Info,
+    PuzzleIcon,
+    SchoolIcon,
+    User,
+} from 'lucide-react'
 
 export type PageTitleSection =
     | '/problems'
@@ -103,9 +115,13 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
     }
 }
 
+const doDotShowTitle = true
+
 export function PageTitle({ section, authenticated }: PageTitleProps) {
     const title = sectionLabel[section]
     const description = authenticated ? authenticatedDescription[section] : guestDescription[section]
+
+    if (doDotShowTitle) return null
 
     return (
         <div className="flex min-h-22 items-center gap-5 rounded-2xl border border-border bg-card px-6 py-5 text-left shadow-sm">

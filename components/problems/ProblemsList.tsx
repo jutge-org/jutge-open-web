@@ -4,16 +4,39 @@ import { useMemo, useState } from 'react'
 
 import { ProblemTypeIcon, ProblemTypeOption } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 import type { Language } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
+import {
+    ArrowDownAZ,
+    ArrowDownWideNarrow,
+    Calendar,
+    CalendarClock,
+    CheckIcon,
+    Dices,
+    Key,
+    ListFilter,
+    PenLine,
+    Search,
+} from 'lucide-react'
 import Link from 'next/link'
 
-type SortField = 'problem_nm' | 'title'
+type SortField = 'title' | 'author' | 'problem_nm' | 'created_at' | 'updated_at' | 'shuffle'
 
 type ProblemsListProps = {
     problems: ProblemRow[]
@@ -25,11 +48,39 @@ function languageLabel(languageId: string, languages: Record<string, Language>):
     return language ? `${language.own_name} (${languageId})` : languageId
 }
 
+function toSortableTime(value: string | number): number {
+    if (typeof value === 'number') {
+        return value
+    }
+    const parsed = Date.parse(String(value))
+    return Number.isNaN(parsed) ? 0 : parsed
+}
+
+function seededShuffle<T>(items: T[], seed: number): T[] {
+    const result = [...items]
+    let state = seed || 1
+
+    const random = () => {
+        state = (state * 16807) % 2147483647
+        return (state - 1) / 2147483646
+    }
+
+    for (let index = result.length - 1; index > 0; index--) {
+        const swapIndex = Math.floor(random() * (index + 1))
+        ;[result[index], result[swapIndex]] = [result[swapIndex], result[index]]
+    }
+
+    return result
+}
+
 export function ProblemsList({ problems, languages }: ProblemsListProps) {
     const [textQuery, setTextQuery] = useState('')
-    const [languageFilter, setLanguageFilter] = useState('all')
-    const [typeFilter, setTypeFilter] = useState('all')
-    const [sortField, setSortField] = useState<SortField>('problem_nm')
+    const [selectedLanguages, setSelectedLanguages] = useState<Set<string>>(() => new Set())
+    const [selectedTypes, setSelectedTypes] = useState<Set<string>>(() => new Set())
+    const [sortField, setSortField] = useState<SortField>('title')
+    const [shuffleSeed, setShuffleSeed] = useState(0)
+
+    const hasActiveFilters = selectedLanguages.size > 0 || selectedTypes.size > 0
 
     const languageOptions = useMemo(() => {
         const ids = new Set<string>()
@@ -55,11 +106,14 @@ export function ProblemsList({ problems, languages }: ProblemsListProps) {
         const query = textQuery.trim().toLowerCase()
 
         const filtered = problems.filter((problem) => {
-            if (languageFilter !== 'all' && !problem.language_ids.includes(languageFilter)) {
+            if (
+                selectedLanguages.size > 0 &&
+                !problem.language_ids.some((languageId) => selectedLanguages.has(languageId))
+            ) {
                 return false
             }
 
-            if (typeFilter !== 'all' && problem.type !== typeFilter) {
+            if (selectedTypes.size > 0 && (!problem.type || !selectedTypes.has(problem.type))) {
                 return false
             }
 
@@ -67,80 +121,158 @@ export function ProblemsList({ problems, languages }: ProblemsListProps) {
                 return true
             }
 
-            return problem.problem_nm.toLowerCase().includes(query) || problem.title.toLowerCase().includes(query)
+            return (
+                problem.problem_nm.toLowerCase().includes(query) ||
+                problem.title.toLowerCase().includes(query) ||
+                (problem.author?.toLowerCase().includes(query) ?? false)
+            )
         })
 
-        return filtered.sort((a, b) => a[sortField].localeCompare(b[sortField], undefined, { sensitivity: 'base' }))
-    }, [problems, textQuery, languageFilter, typeFilter, sortField])
+        if (sortField === 'shuffle') {
+            return seededShuffle(filtered, shuffleSeed)
+        }
+
+        return filtered.sort((a, b) => {
+            if (sortField === 'created_at' || sortField === 'updated_at') {
+                return toSortableTime(b[sortField]) - toSortableTime(a[sortField])
+            }
+
+            const left = (a[sortField] ?? '').toString()
+            const right = (b[sortField] ?? '').toString()
+            return left.localeCompare(right, undefined, { sensitivity: 'base' })
+        })
+    }, [problems, textQuery, selectedLanguages, selectedTypes, sortField, shuffleSeed])
+
+    function toggleLanguage(languageId: string) {
+        setSelectedLanguages((current) => {
+            const next = new Set(current)
+            if (next.has(languageId)) {
+                next.delete(languageId)
+            } else {
+                next.add(languageId)
+            }
+            return next
+        })
+    }
+
+    function toggleType(type: string) {
+        setSelectedTypes((current) => {
+            const next = new Set(current)
+            if (next.has(type)) {
+                next.delete(type)
+            } else {
+                next.add(type)
+            }
+            return next
+        })
+    }
+
+    function handleSortChange(value: SortField) {
+        setSortField(value)
+        if (value === 'shuffle') {
+            setShuffleSeed((seed) => seed + 1)
+        }
+    }
 
     return (
         <TooltipProvider>
             <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs sm:flex-row sm:flex-wrap sm:items-end">
-                    <div className="flex min-w-0 flex-1 flex-col gap-2 sm:min-w-48">
-                        <Label htmlFor="problems-text-filter">Search</Label>
+                <div className="flex items-center justify-end gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                aria-label="Filter problems"
+                                className={cn(hasActiveFilters && 'border-primary text-primary')}
+                            >
+                                <ListFilter className="size-4" aria-hidden />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="max-h-80 w-56 overflow-y-auto">
+                            <DropdownMenuLabel>Languages</DropdownMenuLabel>
+                            {languageOptions.map((languageId) => (
+                                <DropdownMenuCheckboxItem
+                                    key={languageId}
+                                    checked={selectedLanguages.has(languageId)}
+                                    onCheckedChange={() => toggleLanguage(languageId)}
+                                    onSelect={(event) => event.preventDefault()}
+                                >
+                                    {languageLabel(languageId, languages)}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Types</DropdownMenuLabel>
+                            {typeOptions.map((type) => (
+                                <DropdownMenuCheckboxItem
+                                    key={type}
+                                    checked={selectedTypes.has(type)}
+                                    onCheckedChange={() => toggleType(type)}
+                                    onSelect={(event) => event.preventDefault()}
+                                >
+                                    <ProblemTypeOption type={type} />
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button type="button" variant="outline" size="icon" aria-label="Sort problems">
+                                <ArrowDownWideNarrow className="size-4" aria-hidden />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="min-w-44">
+                            <DropdownMenuRadioGroup
+                                value={sortField === 'shuffle' ? '' : sortField}
+                                onValueChange={(value) => handleSortChange(value as SortField)}
+                            >
+                                <DropdownMenuRadioItem value="title">
+                                    <ArrowDownAZ className="size-4" aria-hidden />
+                                    Name
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="author">
+                                    <PenLine className="size-4" aria-hidden />
+                                    Author
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="problem_nm">
+                                    <Key className="size-4" aria-hidden />
+                                    Key
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="created_at">
+                                    <Calendar className="size-4" aria-hidden />
+                                    Creation time
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="updated_at">
+                                    <CalendarClock className="size-4" aria-hidden />
+                                    Update time
+                                </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onSelect={() => handleSortChange('shuffle')}>
+                                <Dices className="size-4" aria-hidden />
+                                Shuffle
+                                {sortField === 'shuffle' ? <CheckIcon className="ml-auto size-4" aria-hidden /> : null}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <div className="relative w-full max-w-56">
+                        <Search
+                            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+                            aria-hidden
+                        />
                         <Input
                             id="problems-text-filter"
                             type="search"
-                            placeholder="Filter by id or title…"
+                            placeholder="Search..."
                             value={textQuery}
                             onChange={(event) => setTextQuery(event.target.value)}
+                            className="pl-8"
                         />
                     </div>
-
-                    <div className="flex min-w-0 flex-col gap-2 sm:w-52">
-                        <Label htmlFor="problems-language-filter">Language</Label>
-                        <Select value={languageFilter} onValueChange={setLanguageFilter}>
-                            <SelectTrigger id="problems-language-filter" className="w-full">
-                                <SelectValue placeholder="All languages" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All languages</SelectItem>
-                                {languageOptions.map((languageId) => (
-                                    <SelectItem key={languageId} value={languageId}>
-                                        {languageLabel(languageId, languages)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="flex min-w-0 flex-col gap-2 sm:w-44">
-                        <Label htmlFor="problems-type-filter">Type</Label>
-                        <Select value={typeFilter} onValueChange={setTypeFilter}>
-                            <SelectTrigger id="problems-type-filter" className="w-full">
-                                <SelectValue placeholder="All types">
-                                    {typeFilter === 'all' ? 'All types' : <ProblemTypeOption type={typeFilter} />}
-                                </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All types</SelectItem>
-                                {typeOptions.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        <ProblemTypeOption type={type} />
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="flex min-w-0 flex-col gap-2 sm:w-44">
-                        <Label htmlFor="problems-sort">Sort by</Label>
-                        <Select value={sortField} onValueChange={(value) => setSortField(value as SortField)}>
-                            <SelectTrigger id="problems-sort" className="w-full">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="problem_nm">Problem id</SelectItem>
-                                <SelectItem value="title">Title</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
                 </div>
-
-                <p className="text-sm text-muted-foreground">
-                    {filteredProblems.length.toLocaleString()} of {problems.length.toLocaleString()} problems
-                </p>
 
                 <div className="rounded-xl border border-border bg-card shadow-xs">
                     <Table>
@@ -148,7 +280,7 @@ export function ProblemsList({ problems, languages }: ProblemsListProps) {
                             <TableRow>
                                 <TableHead className="w-28">Problem</TableHead>
                                 <TableHead>Title</TableHead>
-                                <TableHead className="w-36">Languages</TableHead>
+                                <TableHead className="w-48">Languages</TableHead>
                                 <TableHead className="w-24">Type</TableHead>
                             </TableRow>
                         </TableHeader>

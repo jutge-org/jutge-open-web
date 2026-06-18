@@ -7,6 +7,9 @@ export type ProblemRow = {
     title: string
     language_ids: string[]
     type: string | null
+    author: string | null
+    created_at: string | number
+    updated_at: string | number
 }
 
 export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
@@ -14,7 +17,15 @@ export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
     const language_ids = variants.map((p) => p.language_id)
     const title = variants.map((p) => p.title).join(' / ') || ap.problem_nm
 
-    return { problem_nm: ap.problem_nm, title, language_ids, type: ap.type }
+    return {
+        problem_nm: ap.problem_nm,
+        title,
+        language_ids,
+        type: ap.type,
+        author: ap.author,
+        created_at: ap.created_at,
+        updated_at: ap.updated_at,
+    }
 }
 
 export const fetchAllAbstractProblems = cache(async (): Promise<ProblemRow[]> => {

@@ -4,7 +4,7 @@ import { SignatureIcon } from 'lucide-react'
 import { DevIcon } from '@/components/administrator/DevIcon'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
-import { ProblemTypeOption } from '@/components/problems/ProblemTypeIcon'
+import { ProblemTypeIcon, ProblemTypeOption } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -49,16 +49,26 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
         <div className="flex flex-col gap-6">
             <Card className="ring-0 border border-border shadow-sm">
                 <CardContent className="w-full flex flex-col gap-0.5">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{problem.title}</h1>
-                        <p className="shrink-0 text-lg tabular-nums text-muted-foreground">{problem.problem_nm}</p>
-                    </div>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                        <h2 className="flex gap-1 items-center text-muted-foreground">
-                            <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                            {problem.abstract_problem.author}
-                        </h2>
-                        <TooltipProvider>
+                    <TooltipProvider>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
+                                {problem.title}
+                            </h1>
+                            <p className="shrink-0 text-lg text-muted-foreground">
+                                {problem.abstract_problem.type ? (
+                                    <ProblemTypeIcon
+                                        type={problem.abstract_problem.type}
+                                        className="size-4 text-muted-foreground mr-2"
+                                    />
+                                ) : null}
+                                {problem.problem_nm}
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <h2 className="flex gap-1 items-center text-muted-foreground">
+                                <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                                {problem.abstract_problem.author}
+                            </h2>
                             <div className="flex flex-wrap gap-1">
                                 {data.languageVariants.map((variant) => {
                                     const isCurrent = variant.problem_id === problem.problem_id
@@ -79,15 +89,13 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
                                                     )}
                                                 </Badge>
                                             </TooltipTrigger>
-                                            <TooltipContent side="bottom">
-                                                {data.languages[variant.language_id]?.eng_name ?? variant.language_id}
-                                            </TooltipContent>
+                                            <TooltipContent side="bottom">{variant.title}</TooltipContent>
                                         </Tooltip>
                                     )
                                 })}
                             </div>
-                        </TooltipProvider>
-                    </div>
+                        </div>
+                    </TooltipProvider>
                 </CardContent>
             </Card>
 
@@ -139,10 +147,7 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
                                                         )}
                                                     </Badge>
                                                 </TooltipTrigger>
-                                                <TooltipContent side="left">
-                                                    {data.languages[variant.language_id]?.eng_name ??
-                                                        variant.language_id}
-                                                </TooltipContent>
+                                                <TooltipContent side="left">{variant.title}</TooltipContent>
                                             </Tooltip>
                                         )
                                     })}

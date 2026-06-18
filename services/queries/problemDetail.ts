@@ -14,6 +14,7 @@ export type DecodedTestcase = {
 export type LanguageVariant = {
     problem_id: string
     language_id: string
+    title: string
 }
 
 export type ProblemDetailData = {
@@ -79,6 +80,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             .map((variant) => ({
                 problem_id: variant.problem_id,
                 language_id: variant.language_id,
+                title: variant.title,
             }))
             .sort((a, b) => a.language_id.localeCompare(b.language_id))
 

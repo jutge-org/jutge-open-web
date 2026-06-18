@@ -1,6 +1,8 @@
-import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 
 import { JutgeApiClient, type AbstractProblem, type Language } from '@/lib/jutge_api_client'
+
+const PROBLEMS_LIST_CACHE_SECONDS = 300
 
 export type ProblemRow = {
     problem_nm: string
@@ -28,7 +30,7 @@ export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
     }
 }
 
-export const fetchAllAbstractProblems = cache(async (): Promise<ProblemRow[]> => {
+async function loadAllAbstractProblems(): Promise<ProblemRow[]> {
     try {
         const client = new JutgeApiClient()
         const abstractProblems = await client.problems.getAllAbstractProblems()
@@ -38,13 +40,23 @@ export const fetchAllAbstractProblems = cache(async (): Promise<ProblemRow[]> =>
     } catch {
         return []
     }
-})
+}
 
-export const fetchLanguages = cache(async (): Promise<Record<string, Language>> => {
+async function loadLanguages(): Promise<Record<string, Language>> {
     try {
         const client = new JutgeApiClient()
         return await client.tables.getLanguages()
     } catch {
         return {}
     }
+}
+
+export const fetchAllAbstractProblems = unstable_cache(
+    loadAllAbstractProblems,
+    ['all-abstract-problems'],
+    { revalidate: PROBLEMS_LIST_CACHE_SECONDS },
+)
+
+export const fetchLanguages = unstable_cache(loadLanguages, ['languages'], {
+    revalidate: PROBLEMS_LIST_CACHE_SECONDS,
 })

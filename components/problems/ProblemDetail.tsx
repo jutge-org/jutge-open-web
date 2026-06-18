@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import { FileArchive, FileText, SignatureIcon } from 'lucide-react'
+import { SignatureIcon } from 'lucide-react'
 
 import { DevIcon } from '@/components/administrator/DevIcon'
+import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
 import { ProblemTypeOption } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
@@ -90,33 +91,7 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
                 </CardContent>
             </Card>
 
-            <Card className="ring-0 border border-border shadow-sm">
-                <CardHeader className="border-b">
-                    <CardTitle>Statement</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-6 pt-6">
-                    <div className="flex flex-wrap gap-4">
-                        <Link
-                            href={`/problems/${pageKey}/pdf`}
-                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-5 py-4 transition-colors hover:bg-muted"
-                        >
-                            <FileText className="size-10 text-red-600 dark:text-red-400" aria-hidden />
-                            <span className="text-sm font-medium text-foreground">PDF</span>
-                        </Link>
-                        <Link
-                            href={`/problems/${pageKey}/zip`}
-                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-5 py-4 transition-colors hover:bg-muted"
-                        >
-                            <FileArchive className="size-10 text-amber-600 dark:text-amber-400" aria-hidden />
-                            <span className="text-sm font-medium text-foreground">ZIP</span>
-                        </Link>
-                    </div>
-                    <div
-                        className="statement-section text-sm text-muted-foreground"
-                        dangerouslySetInnerHTML={{ __html: data.shortHtmlStatement }}
-                    />
-                </CardContent>
-            </Card>
+            <ProblemStatement pageKey={pageKey} shortHtmlStatement={data.shortHtmlStatement} />
 
             {data.publicTestcases.length > 0 ? <PublicTestcases testcases={data.publicTestcases} /> : null}
 

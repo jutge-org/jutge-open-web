@@ -18,6 +18,7 @@
         "@hookform/resolvers": "^5.4.0",
         "@mdi/js": "^7.4.47",
         "@mdi/react": "^1.6.1",
+        "@tailwindcss/typography": "^0.5.20",
         "@tiptap/react": "^3.27.0",
         "@tiptap/starter-kit": "^3.27.0",
         "ag-grid-community": "^33.2.4",

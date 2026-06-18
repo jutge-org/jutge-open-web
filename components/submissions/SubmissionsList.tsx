@@ -149,7 +149,10 @@ export function SubmissionsList({ rows }: SubmissionsListProps) {
 
                     <div className="flex min-w-0 flex-col gap-2 sm:w-36">
                         <Label htmlFor="submissions-sort-direction">Order</Label>
-                        <Select value={sortDirection} onValueChange={(value) => setSortDirection(value as 'asc' | 'desc')}>
+                        <Select
+                            value={sortDirection}
+                            onValueChange={(value) => setSortDirection(value as 'asc' | 'desc')}
+                        >
                             <SelectTrigger id="submissions-sort-direction" className="w-full">
                                 <SelectValue />
                             </SelectTrigger>
@@ -186,19 +189,18 @@ export function SubmissionsList({ rows }: SubmissionsListProps) {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                filteredRows.map((row) => (
-                                    <TableRow key={row.submission_id}>
+                                filteredRows.map((row, index) => (
+                                    <TableRow key={index}>
                                         <TableCell>
-                                            {row.verdictEmoji ? (
-                                                <span aria-hidden>{row.verdictEmoji}</span>
-                                            ) : (
-                                                '—'
-                                            )}
+                                            {row.verdictEmoji ? <span aria-hidden>{row.verdictEmoji}</span> : '—'}
                                         </TableCell>
                                         <TableCell className="font-mono text-xs">
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Link href={row.problemHref} className="hover:text-primary hover:underline">
+                                                    <Link
+                                                        href={row.problemHref}
+                                                        className="hover:text-primary hover:underline"
+                                                    >
                                                         {row.problem_id}
                                                     </Link>
                                                 </TooltipTrigger>
@@ -223,7 +225,10 @@ export function SubmissionsList({ rows }: SubmissionsListProps) {
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell className="text-xs text-muted-foreground">{row.time_in}</TableCell>
-                                        <TableCell className="max-w-xs truncate text-sm" title={row.annotation ?? undefined}>
+                                        <TableCell
+                                            className="max-w-xs truncate text-sm"
+                                            title={row.annotation ?? undefined}
+                                        >
                                             {row.annotation ?? '—'}
                                         </TableCell>
                                     </TableRow>

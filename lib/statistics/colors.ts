@@ -4,7 +4,7 @@ export const VERDICT_COLORS: Record<string, string> = {
     WA: '#d9534f',
     CE: '#EEC900',
     EE: '#808080',
-    FE: '#000000',
+    FE: '#525252',
     IC: '#FFD700',
     PE: '#F5D547',
     SC: '#f0ad4e',

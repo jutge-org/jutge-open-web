@@ -1,0 +1,7 @@
+--ignore-dir=prisma/migrations
+--ignore-dir=.next
+--ignore-dir=env
+--ignore-dir=node_modules
+--ignore-dir=__pycache__
+--ignore-dir=.yarn
+--color

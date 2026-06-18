@@ -86,7 +86,7 @@ export const documentationIndexItems = [
     {
         href: 'https://github.com/jutge-org/',
         label: 'GitHub repos',
-        description: 'Jutge organization repositories',
+        description: 'Jutge.org code repositories',
         external: true,
     },
 ] as const

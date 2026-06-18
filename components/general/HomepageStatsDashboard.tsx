@@ -1,6 +1,6 @@
 import type { HomepageStats } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
-import { ClipboardList, PuzzleIcon, SchoolIcon, Trophy, Users } from 'lucide-react'
+import { PuzzleIcon, SchoolIcon, SendIcon, TrophyIcon, UsersIcon } from 'lucide-react'
 
 type HomepageStatsDashboardProps = {
     stats: HomepageStats
@@ -10,7 +10,7 @@ const statItems = [
     {
         key: 'users' as const,
         label: 'Users',
-        icon: Users,
+        icon: UsersIcon,
         borderAccent: 'border-t-emerald-500',
         iconAccent: 'text-emerald-600 dark:text-emerald-400',
     },
@@ -24,7 +24,7 @@ const statItems = [
     {
         key: 'submissions' as const,
         label: 'Submissions',
-        icon: ClipboardList,
+        icon: SendIcon,
         borderAccent: 'border-t-blue-500',
         iconAccent: 'text-blue-600 dark:text-blue-400',
     },
@@ -38,7 +38,7 @@ const statItems = [
     {
         key: 'contests' as const,
         label: 'Contests',
-        icon: Trophy,
+        icon: TrophyIcon,
         borderAccent: 'border-t-amber-500',
         iconAccent: 'text-amber-600 dark:text-amber-400',
     },

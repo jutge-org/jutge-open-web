@@ -1,40 +1,41 @@
 import { documentationIndexItems } from '@/lib/documentation'
 import { cn } from '@/lib/utils'
 import {
-    BookMarked,
-    BookText,
-    Boxes,
-    Code2,
-    ExternalLink,
-    FileCode2,
-    Gavel,
-    FolderGit2,
-    HelpCircle,
-    Scale,
-    Stethoscope,
-    Wrench,
+    BookMarkedIcon,
+    BookTextIcon,
+    BoxesIcon,
+    Code2Icon,
+    ExternalLinkIcon,
+    FileCode2Icon,
+    GavelIcon,
+    FolderGit2Icon,
+    HelpCircleIcon,
+    StampIcon,
+    StethoscopeIcon,
+    WrenchIcon,
+    ServerCogIcon,
 } from 'lucide-react'
 import Link from 'next/link'
 
-const indexIcons: Record<string, typeof HelpCircle> = {
-    FAQ: HelpCircle,
-    Compilers: Code2,
-    Verdicts: Gavel,
-    'Code metrics': Stethoscope,
-    Toolkit: Wrench,
-    API: Boxes,
-    'Python libs': Boxes,
-    Certificates: Scale,
-    Markdown: FileCode2,
-    References: BookMarked,
-    'GitHub repos': FolderGit2,
+const indexIcons: Record<string, typeof HelpCircleIcon> = {
+    FAQ: HelpCircleIcon,
+    Compilers: Code2Icon,
+    Verdicts: GavelIcon,
+    'Code metrics': StethoscopeIcon,
+    Toolkit: WrenchIcon,
+    API: ServerCogIcon,
+    'Python libs': BoxesIcon,
+    Certificates: StampIcon,
+    Markdown: FileCode2Icon,
+    References: BookMarkedIcon,
+    'GitHub repos': FolderGit2Icon,
 }
 
 export function DocumentationIndex() {
     return (
         <nav aria-label="Documentation topics" className="grid gap-4 sm:grid-cols-2">
             {documentationIndexItems.map((item) => {
-                const Icon = indexIcons[item.label] ?? BookText
+                const Icon = indexIcons[item.label] ?? BookTextIcon
                 const external = 'external' in item && item.external
 
                 const card = (
@@ -45,7 +46,9 @@ export function DocumentationIndex() {
                         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span className="flex items-center gap-1.5 text-lg font-semibold tracking-tight text-foreground">
                                 {item.label}
-                                {external ? <ExternalLink className="size-4 text-muted-foreground" aria-hidden /> : null}
+                                {external ? (
+                                    <ExternalLinkIcon className="size-4 text-muted-foreground" aria-hidden />
+                                ) : null}
                             </span>
                             <span className="text-sm leading-snug text-muted-foreground">{item.description}</span>
                         </span>
@@ -60,13 +63,7 @@ export function DocumentationIndex() {
 
                 if (external) {
                     return (
-                        <a
-                            key={item.href}
-                            href={item.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={className}
-                        >
+                        <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className={className}>
                             {card}
                         </a>
                     )

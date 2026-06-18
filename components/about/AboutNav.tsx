@@ -1,5 +1,7 @@
+'use client'
+
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { aboutNavItems, type AboutTab } from '@/lib/about'
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
 type AboutNavProps = {
@@ -8,41 +10,30 @@ type AboutNavProps = {
 
 export function AboutNav({ activeTab }: AboutNavProps) {
     return (
-        <nav aria-label="About sections" className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
-            <ul className="flex min-w-max gap-0.5 p-1.5">
-                {aboutNavItems.map(({ tab, label, href, external }) => {
-                    const active = tab === activeTab
-                    const className = cn(
-                        'inline-flex rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
-                        active
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                    )
+        <nav aria-label="About sections" className="w-full">
+            <Tabs value={activeTab}>
+                <TabsList className="w-full min-w-max">
+                    {aboutNavItems.map(({ tab, label, href, external }) => {
+                        if (external) {
+                            return (
+                                <TabsTrigger key={tab} value={tab} asChild>
+                                    <a href={href} target="_blank" rel="noreferrer">
+                                        {label}
+                                    </a>
+                                </TabsTrigger>
+                            )
+                        }
 
-                    if (external) {
                         return (
-                            <li key={tab}>
-                                <a
-                                    href={href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={className}
-                                >
+                            <TabsTrigger key={tab} value={tab} asChild>
+                                <Link href={href} aria-current={tab === activeTab ? 'page' : undefined}>
                                     {label}
-                                </a>
-                            </li>
+                                </Link>
+                            </TabsTrigger>
                         )
-                    }
-
-                    return (
-                        <li key={tab}>
-                            <Link href={href} className={className} aria-current={active ? 'page' : undefined}>
-                                {label}
-                            </Link>
-                        </li>
-                    )
-                })}
-            </ul>
+                    })}
+                </TabsList>
+            </Tabs>
         </nav>
     )
 }

@@ -31,9 +31,7 @@ export function VerdictDetail({ verdict }: VerdictDetailProps) {
                         </span>
                     </DetailRow>
                     <DetailRow label="Verdict">{verdict.name}</DetailRow>
-                    <DetailRow label="Acronym">
-                        {verdict.verdict_id} ({verdict.emoji})
-                    </DetailRow>
+                    <DetailRow label="Acronym">{verdict.verdict_id}</DetailRow>
                     <DetailRow label="Meaning">{verdict.description || '—'}</DetailRow>
                 </dl>
             </Prose>

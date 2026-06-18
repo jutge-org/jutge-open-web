@@ -1,52 +1,70 @@
+'use client'
+
+import { AgTableFull } from '@/components/administrator/AgTable'
 import { compilerIdToSlug, getCompilerStatus } from '@/lib/documentation'
 import type { Compiler } from '@/lib/jutge_api_client'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 type CompilersTableProps = {
     compilers: Compiler[]
 }
 
+const colDefs = [
+    {
+        field: 'compiler_id',
+        headerName: 'Compiler',
+        width: 140,
+        sortable: true,
+        filter: true,
+        cellRenderer: (params: { data: Compiler }) => {
+            const status = getCompilerStatus(params.data)
+            return (
+                <Link
+                    href={`/documentation/compilers/${compilerIdToSlug(params.data.compiler_id)}`}
+                    title={params.data.version ?? undefined}
+                    className={cn('font-medium underline-offset-4 hover:underline', status.defunct && 'line-through')}
+                >
+                    {params.data.compiler_id}
+                </Link>
+            )
+        },
+        valueGetter: (params: { data: Compiler }) => params.data.compiler_id,
+    },
+    {
+        field: 'name',
+        flex: 1,
+        sortable: true,
+        filter: true,
+        cellClassRules: {
+            'line-through': (params: { data: Compiler }) => getCompilerStatus(params.data).defunct,
+        },
+    },
+    {
+        field: 'language',
+        width: 120,
+        sortable: true,
+        filter: true,
+    },
+    {
+        field: 'status',
+        headerName: 'Status',
+        width: 140,
+        sortable: true,
+        filter: true,
+        valueGetter: (params: { data: Compiler }) => getCompilerStatus(params.data).label,
+        cellRenderer: (params: { data: Compiler }) => {
+            const status = getCompilerStatus(params.data)
+            return (
+                <span className="inline-flex items-center gap-3">
+                    <span aria-hidden>{status.icon}</span>
+                    {status.label}
+                </span>
+            )
+        },
+    },
+]
+
 export function CompilersTable({ compilers }: CompilersTableProps) {
-    return (
-        <div className="rounded-2xl border border-border bg-card shadow-sm">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Compiler</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Language</TableHead>
-                        <TableHead>Status</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {compilers.map((compiler) => {
-                        const status = getCompilerStatus(compiler)
-                        return (
-                            <TableRow key={compiler.compiler_id}>
-                                <TableCell className={cn(status.defunct && 'line-through')}>
-                                    <Link
-                                        href={`/documentation/compilers/${compilerIdToSlug(compiler.compiler_id)}`}
-                                        title={compiler.version ?? undefined}
-                                        className="font-medium text-foreground underline-offset-4 hover:underline"
-                                    >
-                                        {compiler.compiler_id}
-                                    </Link>
-                                </TableCell>
-                                <TableCell className={cn(status.defunct && 'line-through')}>{compiler.name}</TableCell>
-                                <TableCell>{compiler.language}</TableCell>
-                                <TableCell>
-                                    <span className="inline-flex items-center gap-1.5">
-                                        <span aria-hidden>{status.icon}</span>
-                                        {status.label}
-                                    </span>
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
-                </TableBody>
-            </Table>
-        </div>
-    )
+    return <AgTableFull rowData={compilers} columnDefs={colDefs} />
 }

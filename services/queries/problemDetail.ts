@@ -65,13 +65,15 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         const client = new JutgeApiClient()
         const problem = await client.problems.getProblem(problemId)
 
-        const [shortHtmlStatement, publicTestcases, problemSuppl, abstractProblem, languages] = await Promise.all([
-            client.problems.getShortHtmlStatement(problemId),
-            client.problems.getPublicTestcases(problemId),
-            client.problems.getProblemSuppl(problemId),
-            client.problems.getAbstractProblem(problem.problem_nm),
-            fetchLanguages(),
-        ])
+        const [shortHtmlStatement, sampleTestcases, publicTestcases, problemSuppl, abstractProblem, languages] =
+            await Promise.all([
+                client.problems.getShortHtmlStatement(problemId),
+                client.problems.getSampleTestcases(problemId),
+                client.problems.getPublicTestcases(problemId),
+                client.problems.getProblemSuppl(problemId),
+                client.problems.getAbstractProblem(problem.problem_nm),
+                fetchLanguages(),
+            ])
 
         const languageVariants = Object.values(abstractProblem.problems)
             .map((variant) => ({
@@ -90,7 +92,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         return {
             problem,
             shortHtmlStatement,
-            publicTestcases: publicTestcases.map(decodeTestcase),
+            publicTestcases: [...sampleTestcases, ...publicTestcases].map(decodeTestcase),
             languageVariants,
             officialSolutions,
             userSolutions,

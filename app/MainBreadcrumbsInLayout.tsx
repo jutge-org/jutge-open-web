@@ -12,17 +12,38 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuPortal,
     DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getSiteNavLinks, homeLink, pathsHrefEqual, type SiteNavLink, type SiteNavLinksContext } from '@/lib/siteNavLinks'
+import { administratorIndexItems } from '@/lib/administrator'
+import { instructorIndexItems } from '@/lib/instructor'
+import {
+    getSiteNavLinks,
+    homeLink,
+    pathsHrefEqual,
+    type SiteNavLink,
+    type SiteNavLinksContext,
+} from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
 import { useMainBreadcrumbs } from '@/store/MainBreadcrumbs'
 import {
     Award,
+    AudioLinesIcon,
     BookOpen,
     BookText,
     ActivityIcon,
+    BotIcon,
+    CalendarIcon,
+    ChartPieIcon,
+    FileIcon,
+    FilePenIcon,
+    LayoutDashboardIcon,
+    ListIcon,
+    ScrollTextIcon,
     SendIcon,
     PuzzleIcon,
     CrownIcon,
@@ -31,11 +52,16 @@ import {
     SchoolIcon,
     Info,
     MenuIcon,
+    SearchIcon,
+    TableIcon,
+    TrophyIcon,
+    UserRoundPenIcon,
+    UsersIcon,
     User,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Fragment } from 'react'
+import { Fragment, type ComponentType } from 'react'
 
 type MainBreadcrumbsInLayoutProps = SiteNavLinksContext
 
@@ -78,6 +104,112 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
     }
 }
 
+function MainNavInstructorSubItemIcon({ href }: { href: string }) {
+    switch (href) {
+        case '/instructor/courses':
+            return <TableIcon aria-hidden />
+        case '/instructor/lists':
+            return <ListIcon aria-hidden />
+        case '/instructor/exams':
+            return <FilePenIcon aria-hidden />
+        case '/instructor/documents':
+            return <FileIcon aria-hidden />
+        case '/instructor/problems':
+            return <PuzzleIcon aria-hidden />
+        case '/instructor/search':
+            return <SearchIcon aria-hidden />
+        case '/instructor/jutgeai':
+            return <BotIcon aria-hidden />
+        default:
+            return null
+    }
+}
+
+function MainNavAdministratorSubItemIcon({ href }: { href: string }) {
+    switch (href) {
+        case '/administrator/dashboard':
+            return <LayoutDashboardIcon aria-hidden />
+        case '/administrator/queue':
+            return <ScrollTextIcon aria-hidden />
+        case '/administrator/exams':
+            return <CalendarIcon aria-hidden />
+        case '/administrator/users':
+            return <UsersIcon aria-hidden />
+        case '/administrator/instructors':
+            return <UserRoundPenIcon aria-hidden />
+        case '/administrator/statistics':
+            return <ChartPieIcon aria-hidden />
+        case '/administrator/heatmaps':
+            return <AudioLinesIcon aria-hidden />
+        case '/administrator/ranking':
+            return <TrophyIcon aria-hidden />
+        default:
+            return null
+    }
+}
+
+function navSubItemIsCurrent(pathname: string, href: string, indexHref: string): boolean {
+    if (href === indexHref) return pathname === indexHref
+    return pathname === href || pathname.startsWith(`${href}/`)
+}
+
+type MainNavRoleSubmenuProps = {
+    href: string
+    label: string
+    indexHref: string
+    items: readonly { href: string; label: string }[]
+    pathname: string
+    isCurrentSection: boolean
+    subItemIcon: ComponentType<{ href: string }>
+}
+
+function MainNavRoleSubmenu({
+    href,
+    label,
+    indexHref,
+    items,
+    pathname,
+    isCurrentSection,
+    subItemIcon: SubItemIcon,
+}: MainNavRoleSubmenuProps) {
+    return (
+        <DropdownMenuSub>
+            <DropdownMenuSubTrigger className={cn(isCurrentSection && 'font-semibold text-foreground')}>
+                <MainNavMenuItemIcon href={href} />
+                {label}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+                <DropdownMenuSubContent className="min-w-52 shadow-lg **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base">
+                    <DropdownMenuItem asChild>
+                        <Link
+                            href={indexHref}
+                            className={cn(navSubItemIsCurrent(pathname, indexHref, indexHref) && 'text-foreground')}
+                        >
+                            <MainNavMenuItemIcon href={href} />
+                            Index
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {items.map((item) => (
+                        <DropdownMenuItem asChild key={item.href}>
+                            <Link
+                                href={item.href}
+                                className={cn(
+                                    navSubItemIsCurrent(pathname, item.href, indexHref) &&
+                                        'font-semibold text-foreground',
+                                )}
+                            >
+                                <SubItemIcon href={item.href} />
+                                {item.label}
+                            </Link>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+        </DropdownMenuSub>
+    )
+}
+
 export function MainBreadcrumbsInLayout({ authenticated, instructor, administrator }: MainBreadcrumbsInLayoutProps) {
     const breadcrumbs = useMainBreadcrumbs((s) => s.breadcrumbs)
     const pathname = usePathname()
@@ -91,8 +223,7 @@ export function MainBreadcrumbsInLayout({ authenticated, instructor, administrat
 
     function linkIsCurrentMainSection(linkHref: string): boolean {
         if (menuAnchor) return pathsHrefEqual(menuAnchor.url, linkHref)
-        const link =
-            linkHref === homeLink.href ? homeLink : navLinks.find((l) => l.href === linkHref)
+        const link = linkHref === homeLink.href ? homeLink : navLinks.find((l) => l.href === linkHref)
         return link?.match(pathname) ?? false
     }
 
@@ -116,23 +247,46 @@ export function MainBreadcrumbsInLayout({ authenticated, instructor, administrat
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 align="start"
-                                className="min-w-52 -translate-y-2 translate-x-4 shadow-lg **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base"
+                                className="min-w-52 -translate-y-2 translate-x-4 overflow-visible shadow-lg **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base **:data-[slot=dropdown-menu-sub-trigger]:py-1.5 **:data-[slot=dropdown-menu-sub-trigger]:text-base"
                             >
                                 {mainMenuLinks.map(({ href, label }) => (
                                     <Fragment key={href}>
                                         {href === '/documentation' ? <DropdownMenuSeparator /> : null}
-                                        <DropdownMenuItem asChild>
-                                            <Link
+                                        {href === '/instructor' ? <DropdownMenuSeparator /> : null}
+                                        {href === '/instructor' ? (
+                                            <MainNavRoleSubmenu
                                                 href={href}
-                                                className={cn(
-                                                    linkIsCurrentMainSection(href) && 'font-semibold text-foreground',
-                                                )}
-                                            >
-                                                <MainNavMenuItemIcon href={href} />
-                                                {label}
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        {href === '/problems' ? <DropdownMenuSeparator /> : null}
+                                                label={label}
+                                                indexHref="/instructor"
+                                                items={instructorIndexItems}
+                                                pathname={pathname}
+                                                isCurrentSection={linkIsCurrentMainSection(href)}
+                                                subItemIcon={MainNavInstructorSubItemIcon}
+                                            />
+                                        ) : href === '/administrator' ? (
+                                            <MainNavRoleSubmenu
+                                                href={href}
+                                                label={label}
+                                                indexHref="/administrator"
+                                                items={administratorIndexItems}
+                                                pathname={pathname}
+                                                isCurrentSection={linkIsCurrentMainSection(href)}
+                                                subItemIcon={MainNavAdministratorSubItemIcon}
+                                            />
+                                        ) : (
+                                            <DropdownMenuItem asChild>
+                                                <Link
+                                                    href={href}
+                                                    className={cn(
+                                                        linkIsCurrentMainSection(href) &&
+                                                            'font-semibold text-foreground',
+                                                    )}
+                                                >
+                                                    <MainNavMenuItemIcon href={href} />
+                                                    {label}
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        )}
                                     </Fragment>
                                 ))}
                             </DropdownMenuContent>

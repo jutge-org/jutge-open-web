@@ -2,6 +2,8 @@
 
 import { withInstructorClient } from '@/lib/instructor/with-instructor-client'
 import type {
+    ChatMessage,
+    ChatPrompt,
     Deprecation,
     Document,
     DocumentCreation,
@@ -325,4 +327,30 @@ export async function fetchMiscHexColors() {
 
 export async function fetchInstructorApiUrl() {
     return process.env.JUTGE_API_URL ?? 'https://api.jutge.org/api'
+}
+
+// --- JutgeAI ---
+
+export async function fetchJutgeaiSupportedModels() {
+    return withInstructorClient((c) => c.instructor.jutgeai.supportedModels())
+}
+
+export async function fetchJutgeaiLlmUsage() {
+    return withInstructorClient((c) => c.instructor.jutgeai.getLlmUsage())
+}
+
+export async function jutgeaiChat(data: ChatPrompt) {
+    return withInstructorClient((c) => c.instructor.jutgeai.chat(data))
+}
+
+export async function jutgeaiChatMessages(
+    model: string,
+    messages: ChatMessage[],
+): Promise<{ id: string }> {
+    return jutgeaiChat({
+        model,
+        label: 'chat',
+        messages,
+        addUsage: true,
+    })
 }

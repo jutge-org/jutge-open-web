@@ -24,4 +24,9 @@ export const instructorIndexItems = [
         label: 'Problems',
         description: 'Author, share, and analyze your own problems',
     },
+    {
+        href: '/instructor/jutgeai',
+        label: 'JutgeAI',
+        description: 'Chat with LLMs and review usage, cost, and emissions',
+    },
 ] as const

@@ -35,6 +35,12 @@ export const instructorProblemSubNav = (problem_nm: string): InstructorSubNavIte
     { key: 'dangerzone', label: 'Danger Zone', segment: 'dangerzone' },
 ]
 
+export const instructorJutgeaiSubNav: InstructorSubNavItem[] = [
+    { key: 'chat', label: 'Chat', segment: 'chat' },
+    { key: 'audit', label: 'Audit', segment: 'audit' },
+    { key: 'usage', label: 'Usage', segment: 'usage' },
+]
+
 export function instructorResourceHref(
     section: 'courses' | 'lists' | 'exams' | 'problems',
     resource_nm: string,

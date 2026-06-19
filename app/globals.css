@@ -181,3 +181,13 @@
 .statement-section p {
     margin: 1em 0;
 }
+
+.ag-row.jutgeai-audit-total-row {
+    font-weight: 700;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-top: 2px solid rgba(0, 0, 0, 0.12);
+}
+.dark .ag-row.jutgeai-audit-total-row {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-top: 2px solid rgba(255, 255, 255, 0.12);
+}

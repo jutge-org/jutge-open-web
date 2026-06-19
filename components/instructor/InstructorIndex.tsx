@@ -1,6 +1,6 @@
 import { instructorIndexItems } from '@/lib/instructor'
 import { cn } from '@/lib/utils'
-import { FileIcon, FilePenIcon, ListIcon, PuzzleIcon, TableIcon } from 'lucide-react'
+import { BotIcon, FileIcon, FilePenIcon, ListIcon, PuzzleIcon, TableIcon } from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof TableIcon> = {
@@ -9,6 +9,7 @@ const indexIcons: Record<string, typeof TableIcon> = {
     Exams: FilePenIcon,
     Documents: FileIcon,
     Problems: PuzzleIcon,
+    JutgeAI: BotIcon,
 }
 
 export function InstructorIndex() {

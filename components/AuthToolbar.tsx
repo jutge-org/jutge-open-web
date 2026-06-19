@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
-import { Award, ChartColumn, CrownIcon, GraduationCapIcon, LogIn as SignIn, LogOut as SignOut, User } from 'lucide-react'
+import { ActivityIcon, Award, CrownIcon, GraduationCapIcon, LogIn as SignIn, LogOut as SignOut, User } from 'lucide-react'
 import { toast } from 'sonner'
 
 type AuthToolbarProps = {
@@ -75,9 +75,9 @@ export function AuthToolbar({
                         </>
                     ) : null}
                     <DropdownMenuItem asChild>
-                        <Link href="/statistics">
-                            <ChartColumn aria-hidden />
-                            Statistics
+                        <Link href="/activity">
+                            <ActivityIcon aria-hidden />
+                            Activity
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

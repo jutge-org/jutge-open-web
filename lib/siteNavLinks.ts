@@ -34,10 +34,10 @@ const coursesLink: SiteNavLink = {
     match: (pathname) => pathname === '/courses' || pathname.startsWith('/courses/'),
 }
 
-const statisticsLink: SiteNavLink = {
-    href: '/statistics',
-    label: 'Statistics',
-    match: (pathname) => pathname === '/statistics',
+const activityLink: SiteNavLink = {
+    href: '/activity',
+    label: 'Activity',
+    match: (pathname) => pathname === '/activity',
 }
 
 const awardsLink: SiteNavLink = {
@@ -93,7 +93,7 @@ const authenticatedLinks: readonly SiteNavLink[] = [
     submissionsLink,
     examsLink,
     coursesLink,
-    statisticsLink,
+    activityLink,
     awardsLink,
     profileLink,
     documentationLink,

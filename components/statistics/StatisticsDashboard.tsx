@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Gavel, Send, ThumbsDown, ThumbsUp } from 'lucide-react'
+import { Gavel, Send, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Cell, Legend, Line, LineChart, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from 'recharts'
 
 import { Badge } from '@/components/ui/badge'
@@ -32,38 +32,30 @@ const summaryCards = [
     {
         key: 'acceptedProblems' as const,
         label: 'Accepted problems',
-        href: '/problems',
         icon: ThumbsUp,
         borderAccent: 'border-t-emerald-500',
         iconAccent: 'text-emerald-600 dark:text-emerald-400',
-        footer: 'View problems',
     },
     {
         key: 'rejectedProblems' as const,
         label: 'Rejected problems',
-        href: '/problems',
         icon: ThumbsDown,
         borderAccent: 'border-t-red-500',
         iconAccent: 'text-red-600 dark:text-red-400',
-        footer: 'View problems',
     },
     {
         key: 'submissions' as const,
         label: 'Submissions',
-        href: '/submissions',
         icon: Send,
         borderAccent: 'border-t-orange-500',
         iconAccent: 'text-orange-600 dark:text-orange-400',
-        footer: 'View submissions',
     },
     {
         key: 'level' as const,
         label: 'Judge level',
-        href: '/profile',
         icon: Gavel,
         borderAccent: 'border-t-blue-500',
         iconAccent: 'text-blue-600 dark:text-blue-400',
-        footer: 'View profile',
     },
 ]
 
@@ -132,12 +124,11 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
     return (
         <div className="flex flex-col gap-6">
             <section aria-label="Summary" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {summaryCards.map(({ key, label, href, icon: Icon, borderAccent, iconAccent, footer }) => (
-                    <Link
+                {summaryCards.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
+                    <div
                         key={key}
-                        href={href}
                         className={cn(
-                            'group flex flex-col rounded-2xl border border-border border-t-4 bg-card shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md',
+                            'flex flex-col rounded-2xl border border-border border-t-4 bg-card shadow-sm',
                             borderAccent,
                         )}
                     >
@@ -152,11 +143,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                             </div>
                             <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />
                         </div>
-                        <div className="flex items-center justify-between border-t px-5 py-2.5 text-sm text-muted-foreground group-hover:text-foreground">
-                            <span>{footer}</span>
-                            <ArrowRight className="size-4" aria-hidden />
-                        </div>
-                    </Link>
+                    </div>
                 ))}
             </section>
 

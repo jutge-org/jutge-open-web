@@ -7,17 +7,17 @@ import { fetchStatisticsData } from '@/services/queries/statistics'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = { title: 'Statistics — Jutge.org' }
+export const metadata = { title: 'Activity — Jutge.org' }
 
-export default async function StatisticsPage() {
+export default async function ActivityPage() {
     return renderAuthed(async () => {
         const client = await getCurrentClient()
         const data = await fetchStatisticsData(client)
 
         return (
             <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Statistics', url: '/statistics' }]} />
-                <PageTitle section="/statistics" authenticated />
+                <MainBreadcrumbs breadcrumbs={[{ title: 'Activity', url: '/activity' }]} />
+                <PageTitle section="/activity" authenticated hidden={false} />
                 <StatisticsDashboard data={data} />
             </div>
         )

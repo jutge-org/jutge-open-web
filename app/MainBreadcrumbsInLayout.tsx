@@ -22,7 +22,7 @@ import {
     Award,
     BookOpen,
     BookText,
-    ChartColumn,
+    ActivityIcon,
     ClipboardList,
     PuzzleIcon,
     CrownIcon,
@@ -59,8 +59,8 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
             return <SchoolIcon aria-hidden />
         case '/courses':
             return <BookOpen aria-hidden />
-        case '/statistics':
-            return <ChartColumn aria-hidden />
+        case '/activity':
+            return <ActivityIcon aria-hidden />
         case '/awards':
             return <Award aria-hidden />
         case '/profile':

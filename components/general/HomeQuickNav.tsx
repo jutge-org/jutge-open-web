@@ -4,7 +4,7 @@ import {
     Award,
     BookOpen,
     BookText,
-    ChartColumn,
+    ActivityIcon,
     ClipboardList,
     CrownIcon,
     GraduationCap,
@@ -28,8 +28,8 @@ function NavIcon({ href, className }: { href: string; className?: string }) {
             return <SchoolIcon className={iconClass} aria-hidden />
         case '/courses':
             return <BookOpen className={iconClass} aria-hidden />
-        case '/statistics':
-            return <ChartColumn className={iconClass} aria-hidden />
+        case '/activity':
+            return <ActivityIcon className={iconClass} aria-hidden />
         case '/awards':
             return <Award className={iconClass} aria-hidden />
         case '/profile':
@@ -52,7 +52,7 @@ const cardAccent: Record<string, string> = {
     '/submissions': 'border-l-4 border-l-blue-500 text-blue-600 dark:text-blue-400',
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
     '/courses': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
-    '/statistics': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
+    '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
@@ -64,9 +64,9 @@ const cardAccent: Record<string, string> = {
 const authenticatedLinkDescription: Record<string, string> = {
     '/problems': 'Browse and solve programming problems',
     '/submissions': 'Track your submissions and verdicts',
-    '/exams': 'View and take exams',
+    '/exams': 'View past and upcoming exams',
     '/courses': 'Browse your courses and assignments',
-    '/statistics': 'Charts and stats for your Jutge activity',
+    '/activity': 'Check your activity and progress',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'See your Jutge.org profile',
     '/instructor': 'Manage courses, exams, and teaching tools',

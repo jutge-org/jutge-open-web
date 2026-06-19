@@ -3,7 +3,7 @@ import {
     Award,
     BookOpen,
     BookText,
-    ChartColumn,
+    ActivityIcon,
     ClipboardList,
     CrownIcon,
     GraduationCap,
@@ -18,7 +18,7 @@ export type PageTitleSection =
     | '/submissions'
     | '/exams'
     | '/courses'
-    | '/statistics'
+    | '/activity'
     | '/awards'
     | '/profile'
     | '/instructor'
@@ -31,7 +31,7 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/submissions': 'border-l-4 border-l-blue-500 text-blue-600 dark:text-blue-400',
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
     '/courses': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
-    '/statistics': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
+    '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
@@ -45,7 +45,7 @@ const sectionLabel: Record<PageTitleSection, string> = {
     '/submissions': 'Submissions',
     '/exams': 'Exams',
     '/courses': 'Courses',
-    '/statistics': 'Statistics',
+    '/activity': 'Activity',
     '/awards': 'Awards',
     '/profile': 'Profile',
     '/instructor': 'Instructor',
@@ -59,7 +59,7 @@ const guestDescription: Record<PageTitleSection, string> = {
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View and take exams',
     '/courses': 'Browse public courses. Sign in to enroll in a course.',
-    '/statistics': 'Your activity and progress',
+    '/activity': 'Your activity and progress',
     '/awards': 'Achievements earned',
     '/profile': 'Your account details',
     '/instructor': 'Manage courses, exams, and teaching tools',
@@ -73,7 +73,7 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View and take exams',
     '/courses': 'Browse your courses and assignments',
-    '/statistics': 'Your activity, verdicts, and progress over time',
+    '/activity': 'Your activity, verdicts, and progress over time',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'Your account details',
     '/instructor': 'Manage courses, exams, and teaching tools',
@@ -100,8 +100,8 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
             return <SchoolIcon className={iconClass} aria-hidden />
         case '/courses':
             return <BookOpen className={iconClass} aria-hidden />
-        case '/statistics':
-            return <ChartColumn className={iconClass} aria-hidden />
+        case '/activity':
+            return <ActivityIcon className={iconClass} aria-hidden />
         case '/awards':
             return <Award className={iconClass} aria-hidden />
         case '/profile':

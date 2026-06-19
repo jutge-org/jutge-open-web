@@ -1,45 +1,19 @@
 import Link from 'next/link'
 import { SignatureIcon } from 'lucide-react'
 
-import { DevIcon } from '@/components/administrator/DevIcon'
+import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
-import { ProblemTypeIcon, ProblemTypeOption } from '@/components/problems/ProblemTypeIcon'
+import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { ProblemDetailData } from '@/services/queries/problemDetail'
-import type { ReactNode } from 'react'
 
 type ProblemDetailProps = {
     pageKey: string
     data: ProblemDetailData
-}
-
-function InfoRow({ label, children }: { label: string; children: ReactNode }) {
-    return (
-        <div className="grid gap-1 sm:grid-cols-[8.5rem_1fr] sm:items-center sm:gap-3">
-            <dt className="text-sm font-medium text-foreground sm:text-right">{label}</dt>
-            <dd className="text-sm text-muted-foreground">{children}</dd>
-        </div>
-    )
-}
-
-function ProglangBadges({ proglangs }: { proglangs: string[] }) {
-    return (
-        <div className="flex flex-wrap gap-1">
-            {proglangs.map((proglang) => (
-                <Badge
-                    key={proglang}
-                    className="gap-1.5 border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                >
-                    <DevIcon proglang={proglang} size={14} />
-                    {proglang.replace(/_/g, ' ')}
-                </Badge>
-            ))}
-        </div>
-    )
 }
 
 export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
@@ -103,70 +77,7 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
 
             {data.publicTestcases.length > 0 ? <PublicTestcases testcases={data.publicTestcases} /> : null}
 
-            <Card size="sm" className="ring-0 border border-border shadow-sm">
-                <CardHeader className="border-b pb-2">
-                    <CardTitle>Information</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-2">
-                    <dl className="flex flex-col gap-1.5">
-                        <InfoRow label="Author">
-                            {problem.abstract_problem.author ? (
-                                <span className="inline-flex items-center gap-1">
-                                    {problem.abstract_problem.author}
-                                </span>
-                            ) : (
-                                '—'
-                            )}
-                        </InfoRow>
-                        <InfoRow label="Type">
-                            {problem.abstract_problem.type ? (
-                                <ProblemTypeOption type={problem.abstract_problem.type} />
-                            ) : (
-                                '—'
-                            )}
-                        </InfoRow>
-                        <InfoRow label="Languages">
-                            <TooltipProvider>
-                                <div className="flex flex-wrap gap-1">
-                                    {data.languageVariants.map((variant) => {
-                                        const isCurrent = variant.problem_id === problem.problem_id
-                                        return (
-                                            <Tooltip key={variant.problem_id}>
-                                                <TooltipTrigger asChild>
-                                                    <Badge
-                                                        variant={isCurrent ? 'default' : 'outline'}
-                                                        asChild={!isCurrent}
-                                                        className={cn(!isCurrent && 'hover:bg-muted')}
-                                                    >
-                                                        {isCurrent ? (
-                                                            <span>{variant.language_id}</span>
-                                                        ) : (
-                                                            <Link href={`/problems/${variant.problem_id}`}>
-                                                                {variant.language_id}
-                                                            </Link>
-                                                        )}
-                                                    </Badge>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="left">{variant.title}</TooltipContent>
-                                            </Tooltip>
-                                        )
-                                    })}
-                                </div>
-                            </TooltipProvider>
-                        </InfoRow>
-                        <InfoRow label="Official solutions">
-                            {data.officialSolutions.length > 0 ? (
-                                <ProglangBadges proglangs={data.officialSolutions} />
-                            ) : (
-                                '—'
-                            )}
-                        </InfoRow>
-                        <InfoRow label="User solutions">
-                            {data.userSolutions.length > 0 ? <ProglangBadges proglangs={data.userSolutions} /> : '—'}
-                        </InfoRow>
-                    </dl>
-                </CardContent>
-            </Card>
+            <ProblemInformation data={data} />
         </div>
     )
 }

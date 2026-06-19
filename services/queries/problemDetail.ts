@@ -24,6 +24,7 @@ export type ProblemDetailData = {
     publicTestcases: DecodedTestcase[]
     languageVariants: LanguageVariant[]
     officialSolutions: string[]
+    brokenOfficialSolutions: string[]
     userSolutions: string[]
     languages: Record<string, Language>
 }
@@ -98,6 +99,11 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             .map(([proglang]) => proglang)
             .sort()
 
+        const brokenOfficialSolutions = Object.entries(problemSuppl.official_solution_checks)
+            .filter(([, checked]) => !checked)
+            .map(([proglang]) => proglang)
+            .sort()
+
         const userSolutions = [...problemSuppl.proglangs_with_ac].sort()
 
         return {
@@ -108,6 +114,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             ),
             languageVariants,
             officialSolutions,
+            brokenOfficialSolutions,
             userSolutions,
             languages,
         }

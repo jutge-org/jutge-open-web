@@ -2,7 +2,9 @@ import { AuthToolbar } from '@/components/AuthToolbar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AppToaster } from '@/components/AppToaster'
-import { isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
+import { getCurrentClient, isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
+import type { CoursesNavItem } from '@/lib/courses'
+import { fetchEnrolledCoursesNavItems } from '@/services/queries/courses'
 import type { Metadata } from 'next'
 import './globals.css'
 import { MainBreadcrumbsInLayout } from './MainBreadcrumbsInLayout'
@@ -15,6 +17,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const authenticated = await isAuthenticated()
     const currentUser = authenticated ? await tryGetCurrentUser() : null
+    const enrolledCoursesNavItems: CoursesNavItem[] = authenticated
+        ? await fetchEnrolledCoursesNavItems(await getCurrentClient())
+        : []
     const currentYear = new Date().getFullYear()
 
     return (
@@ -27,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                 authenticated={authenticated}
                                 instructor={currentUser?.instructor ?? false}
                                 administrator={currentUser?.administrator ?? false}
+                                enrolledCoursesNavItems={enrolledCoursesNavItems}
                             />
                             <div className="flex items-center gap-4">
                                 <ThemeToggle />

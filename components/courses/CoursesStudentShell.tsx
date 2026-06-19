@@ -15,7 +15,7 @@ type CoursesStudentShellProps = {
 export function CoursesStudentShell({ activeTab, data, children }: CoursesStudentShellProps) {
     return (
         <div className="flex flex-col gap-6">
-            <MainBreadcrumbs breadcrumbs={[{ title: 'Courses', url: '/courses/enrolled' }]} />
+            <MainBreadcrumbs breadcrumbs={[{ title: 'Courses', url: '/courses' }]} />
             <PageTitle section="/courses" authenticated />
             <CoursesNav
                 activeTab={activeTab}

@@ -21,10 +21,32 @@ export type CoursesData = {
 
 export type CoursesTab = 'enrolled' | 'available' | 'archived'
 
+export const DEFAULT_COURSES_TAB: CoursesTab = 'enrolled'
+
+const coursesTabs: CoursesTab[] = ['enrolled', 'available', 'archived']
+
+export const coursesPageTitles: Record<CoursesTab, string> = {
+    enrolled: 'Enrolled courses',
+    archived: 'Archived courses',
+    available: 'Available courses',
+}
+
+export function coursesTabHref(tab: CoursesTab): string {
+    return tab === DEFAULT_COURSES_TAB ? '/courses' : `/courses?tab=${tab}`
+}
+
+export function parseCoursesTab(value: string | string[] | undefined): CoursesTab {
+    const raw = Array.isArray(value) ? value[0] : value
+    if (raw && coursesTabs.includes(raw as CoursesTab)) {
+        return raw as CoursesTab
+    }
+    return DEFAULT_COURSES_TAB
+}
+
 export const coursesNavItems: { tab: CoursesTab; label: string; href: string }[] = [
-    { tab: 'enrolled', label: 'Enrolled', href: '/courses/enrolled' },
-    { tab: 'archived', label: 'Archived', href: '/courses/archived' },
-    { tab: 'available', label: 'Available', href: '/courses/available' },
+    { tab: 'enrolled', label: 'Enrolled', href: coursesTabHref('enrolled') },
+    { tab: 'archived', label: 'Archived', href: coursesTabHref('archived') },
+    { tab: 'available', label: 'Available', href: coursesTabHref('available') },
 ]
 
 export type GuestCourseRow = {
@@ -48,9 +70,9 @@ export function buildCourseKey(owner: PublicProfile, course_nm: string): string 
     return `${displayText(owner.username)}:${course_nm}`
 }
 
-export function buildCourseRow(course: BriefCourse, status: CourseStatus): CourseRow {
+export function buildCourseRow(course: BriefCourse, status: CourseStatus, courseKey?: string): CourseRow {
     return {
-        course_key: buildCourseKey(course.owner, course.course_nm),
+        course_key: courseKey ?? buildCourseKey(course.owner, course.course_nm),
         title: displayText(course.title) || course.course_nm,
         description: displayText(course.description),
         annotation: displayText(course.annotation),
@@ -78,4 +100,91 @@ export function buildGuestCourseRow(course: PublicCourse): GuestCourseRow {
 
 export function sortGuestCourseRows(rows: GuestCourseRow[]): GuestCourseRow[] {
     return [...rows].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
+}
+
+export type CoursesSortField = 'title' | 'author'
+export type CoursesOfficialFilter = 'all' | 'official' | 'unofficial'
+
+export type SearchableCourseRow = {
+    title: string
+    ownerName: string
+    description: string
+    isOfficial: boolean
+}
+
+function matchesCourseSearch(course: SearchableCourseRow, query: string): boolean {
+    if (!query) {
+        return true
+    }
+
+    const haystack = [course.title, course.ownerName, course.description].join(' ').toLowerCase()
+    return haystack.includes(query)
+}
+
+function matchesCourseOfficialFilter(course: SearchableCourseRow, filter: CoursesOfficialFilter): boolean {
+    switch (filter) {
+        case 'all':
+            return true
+        case 'official':
+            return course.isOfficial
+        case 'unofficial':
+            return !course.isOfficial
+    }
+}
+
+function compareCourseRows(a: SearchableCourseRow, b: SearchableCourseRow, sortField: CoursesSortField): number {
+    switch (sortField) {
+        case 'author':
+            return a.ownerName.localeCompare(b.ownerName, undefined, { sensitivity: 'base' })
+        case 'title':
+            return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+    }
+}
+
+export function filterAndSortCourses<T extends SearchableCourseRow>(
+    courses: T[],
+    searchQuery: string,
+    officialFilter: CoursesOfficialFilter,
+    sortField: CoursesSortField,
+): T[] {
+    const query = searchQuery.trim().toLowerCase()
+    return courses
+        .filter((course) => matchesCourseSearch(course, query) && matchesCourseOfficialFilter(course, officialFilter))
+        .sort((a, b) => compareCourseRows(a, b, sortField))
+}
+
+export type CourseStudentAction = 'enroll' | 'unenroll' | 'archive' | 'unarchive'
+
+export function courseActionSuccessMessage(action: CourseStudentAction, title: string, ownerName: string): string {
+    const course = `“${title}” by ${ownerName}`
+    switch (action) {
+        case 'enroll':
+            return `Enrolled in ${course}`
+        case 'unenroll':
+            return `Unenrolled from ${course}`
+        case 'archive':
+            return `Archived ${course}`
+        case 'unarchive':
+            return `Unarchived ${course}`
+    }
+}
+
+export function courseHref(courseKey: string): string {
+    return `/courses/${courseKey}`
+}
+
+export function normalizeCourseKeyParam(raw: string): string {
+    return decodeURIComponent(raw.trim())
+}
+
+export type CoursesNavItem = {
+    href: string
+    label: string
+}
+
+export function buildCoursesNavItems(rows: CourseRow[]): CoursesNavItem[] {
+    return rows.map((row) => ({
+        href: courseHref(row.course_key),
+        label: row.title,
+    }))
 }

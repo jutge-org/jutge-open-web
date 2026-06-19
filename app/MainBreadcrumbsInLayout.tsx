@@ -63,7 +63,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment, type ComponentType } from 'react'
 
-type MainBreadcrumbsInLayoutProps = SiteNavLinksContext
+type MainBreadcrumbsInLayoutProps = SiteNavLinksContext & {
+    enrolledCoursesNavItems?: readonly { href: string; label: string }[]
+}
 
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
     const documentation = links.find((l) => l.href === '/documentation')
@@ -102,6 +104,10 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
         default:
             return null
     }
+}
+
+function MainNavCoursesSubItemIcon(_props: { href: string }) {
+    return <BookOpen aria-hidden />
 }
 
 function MainNavInstructorSubItemIcon({ href }: { href: string }) {
@@ -210,7 +216,12 @@ function MainNavRoleSubmenu({
     )
 }
 
-export function MainBreadcrumbsInLayout({ authenticated, instructor, administrator }: MainBreadcrumbsInLayoutProps) {
+export function MainBreadcrumbsInLayout({
+    authenticated,
+    instructor,
+    administrator,
+    enrolledCoursesNavItems = [],
+}: MainBreadcrumbsInLayoutProps) {
     const breadcrumbs = useMainBreadcrumbs((s) => s.breadcrumbs)
     const pathname = usePathname()
     const navLinks = getSiteNavLinks({ authenticated, instructor, administrator })
@@ -272,6 +283,16 @@ export function MainBreadcrumbsInLayout({ authenticated, instructor, administrat
                                                 pathname={pathname}
                                                 isCurrentSection={linkIsCurrentMainSection(href)}
                                                 subItemIcon={MainNavAdministratorSubItemIcon}
+                                            />
+                                        ) : href === '/courses' && authenticated ? (
+                                            <MainNavRoleSubmenu
+                                                href={href}
+                                                label={label}
+                                                indexHref="/courses"
+                                                items={enrolledCoursesNavItems}
+                                                pathname={pathname}
+                                                isCurrentSection={linkIsCurrentMainSection(href)}
+                                                subItemIcon={MainNavCoursesSubItemIcon}
                                             />
                                         ) : (
                                             <DropdownMenuItem asChild>

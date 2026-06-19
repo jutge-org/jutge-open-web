@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import {
     ArchiveIcon,
     ArchiveRestoreIcon,
@@ -11,20 +11,32 @@ import {
     Loader2,
     LogOutIcon,
     EllipsisVerticalIcon,
+    SearchIcon,
     ShieldCheck,
     SignatureIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
+import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import type { CourseRow, CoursesTab } from '@/lib/courses'
+import {
+    courseActionSuccessMessage,
+    courseHref,
+    type CourseRow,
+    type CourseStudentAction,
+    type CoursesOfficialFilter,
+    type CoursesSortField,
+    type CoursesTab,
+    filterAndSortCourses,
+} from '@/lib/courses'
 
 const UNENROLL_CONFIRMATION =
     'Please take into account that, after unenrolling from it, your instructor will not be able to see your progress. This could have strong consequences in the event your grade depends on it. You can enroll it again at any time.'
@@ -34,7 +46,7 @@ type CoursesListProps = {
     courses: CourseRow[]
 }
 
-type CourseAction = 'enroll' | 'unenroll' | 'archive' | 'unarchive'
+type CourseAction = CourseStudentAction
 
 function CourseBadges({ course }: { course: CourseRow }) {
     return (
@@ -70,7 +82,9 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
             <CardHeader className="-mt-2">
                 <div className="flex items-start justify-between gap-2">
                     <CardTitle className="w-full flex flex-row items-start">
-                        <div className="line-clamp-2">{course.title}</div>
+                        <Link href={courseHref(course.course_key)} className="line-clamp-2 hover:underline">
+                            {course.title}
+                        </Link>
                         <div className="flex-1" />
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -165,6 +179,9 @@ const emptyStateByTab: Record<CoursesTab, { title: string; description: string; 
 export function CoursesList({ tab, courses }: CoursesListProps) {
     const router = useRouter()
     const [pendingKey, setPendingKey] = useState<string | null>(null)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [officialFilter, setOfficialFilter] = useState<CoursesOfficialFilter>('all')
+    const [sortField, setSortField] = useState<CoursesSortField>('title')
     const [, startTransition] = useTransition()
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
         title: 'Are you sure?',
@@ -176,6 +193,11 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
         acceptLabel: 'Unenroll',
         cancelLabel: 'Cancel',
     })
+
+    const visibleCourses = useMemo(
+        () => filterAndSortCourses(courses, searchQuery, officialFilter, sortField),
+        [courses, officialFilter, searchQuery, sortField],
+    )
 
     async function handleAction(course: CourseRow, action: CourseAction) {
         const title = course.title
@@ -206,7 +228,7 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
             setPendingKey(null)
 
             if (result.ok) {
-                toast.success(successMessage(action))
+                toast.success(courseActionSuccessMessage(action, course.title, course.ownerName))
                 router.refresh()
                 return
             }
@@ -234,16 +256,41 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
 
     return (
         <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {courses.map((course) => (
-                    <StudentCourseCard
-                        key={course.course_key}
-                        course={course}
-                        tab={tab}
-                        pendingKey={pendingKey}
-                        onAction={handleAction}
-                    />
-                ))}
+            <div className="flex flex-col gap-4">
+                <CoursesListToolbar
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    officialFilter={officialFilter}
+                    onOfficialFilterChange={setOfficialFilter}
+                    sortField={sortField}
+                    onSortFieldChange={setSortField}
+                />
+
+                {visibleCourses.length === 0 ? (
+                    <Empty className="border border-dashed border-border bg-muted/20 py-12">
+                        <EmptyHeader>
+                            <EmptyMedia variant="icon">
+                                <SearchIcon aria-hidden />
+                            </EmptyMedia>
+                            <EmptyTitle>No matching courses</EmptyTitle>
+                            <EmptyDescription>
+                                Try a different search term, adjust filters, or clear the search box.
+                            </EmptyDescription>
+                        </EmptyHeader>
+                    </Empty>
+                ) : (
+                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        {visibleCourses.map((course) => (
+                            <StudentCourseCard
+                                key={course.course_key}
+                                course={course}
+                                tab={tab}
+                                pendingKey={pendingKey}
+                                onAction={handleAction}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
             <ConfirmDialogComponent />
             <UnenrollDialogComponent />
@@ -264,15 +311,3 @@ async function runServerAction(courseKey: string, action: CourseAction) {
     }
 }
 
-function successMessage(action: CourseAction): string {
-    switch (action) {
-        case 'enroll':
-            return 'Enrolled successfully'
-        case 'unenroll':
-            return 'Unenrolled successfully'
-        case 'archive':
-            return 'Course archived'
-        case 'unarchive':
-            return 'Course unarchived'
-    }
-}

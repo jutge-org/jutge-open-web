@@ -22,9 +22,9 @@ export default function DashboardView() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                 <HistogramHourWidget />
                 <HistogramDayWidget />
+                <CalendarExamsWidget />
                 <RecentSubmissionsWidget />
                 <ZombiesWidget />
-                <CalendarExamsWidget />
                 <DiskWidget />
                 <DatabasesWidget />
                 <DockerStatusWidget />

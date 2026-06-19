@@ -51,7 +51,7 @@ export default function HistogramHourWidget() {
         const chartConfig = {
             value: {
                 label: 'Submissions',
-                color: 'var(--chart-1)',
+                color: 'var(--chart-2)',
             },
         } satisfies ChartConfig
 

@@ -112,11 +112,7 @@ export function AuthToolbar({
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 onSignedIn={() => {
-                    if (pathname === '/') {
-                        router.refresh()
-                    } else {
-                        router.push('/')
-                    }
+                    window.location.assign(pathname)
                 }}
             />
         </>

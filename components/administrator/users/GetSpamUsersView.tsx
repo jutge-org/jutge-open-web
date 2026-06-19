@@ -64,12 +64,12 @@ export default function GetSpamUsersView() {
     const rows = spammers.map((email) => ({ email }))
     return (
         <>
-            <AgTableFull rowData={rows} columnDefs={colDefs} />
-            <div className="mt-4 flex flex-row-reverse gap-2">
+            <div className="mb-4 flex flex-row-reverse gap-2">
                 <Button onClick={() => void remove()} className="w-36">
                     <Trash2Icon /> Remove
                 </Button>
             </div>
+            <AgTableFull rowData={rows} columnDefs={colDefs} />
             <ConfirmDialogComponent />
         </>
     )

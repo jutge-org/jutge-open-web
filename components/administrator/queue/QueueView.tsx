@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import {
     AudioLinesIcon,
     CatIcon,
-    ChevronUpIcon,
+    ChevronDownIcon,
     CircleDotDashedIcon,
     GhostIcon,
     PauseIcon,
@@ -38,13 +38,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -286,8 +280,7 @@ export default function QueueView() {
 
     return (
         <>
-            <AgTableFull rowData={rows} columnDefs={colDefs} />
-            <div className="mt-4 flex flex-row items-center gap-2">
+            <div className="mb-4 flex flex-row items-center gap-2">
                 <Select onValueChange={setView} defaultValue={defaultView}>
                     <SelectTrigger className="w-56">
                         <SelectValue placeholder="View" />
@@ -354,10 +347,10 @@ export default function QueueView() {
                         <Button className="w-32 justify-start flex flex-row">
                             Actions
                             <div className="flex-grow" />
-                            <ChevronUpIcon />
+                            <ChevronDownIcon />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent className="w-56">
                         <DropdownMenuLabel>Internal errors</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={resubmitIEs}>
@@ -382,6 +375,7 @@ export default function QueueView() {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+            <AgTableFull rowData={rows} columnDefs={colDefs} />
         </>
     )
 }

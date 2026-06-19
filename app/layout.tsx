@@ -40,7 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         </div>
                     </header>
 
-                    <main className="mx-auto w-full max-w-6xl flex-1px-4 pt-2 pb-12 sm:px-6">{children}</main>
+                    <main className="mx-auto w-full max-w-6xl flex-1px-4 pt-4 pb-2 sm:px-6">{children}</main>
 
                     <footer className="mt-auto border-t border-border bg-background">
                         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">

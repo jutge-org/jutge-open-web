@@ -95,12 +95,7 @@ export default function ExamsView() {
 
     return (
         <>
-            {view === 'table' ? (
-                <AgTableFull rowData={exams} columnDefs={colDefs} />
-            ) : (
-                <ExamsTimeline exams={exams} />
-            )}
-            <div className="mt-4 flex flex-row items-center gap-2">
+            <div className="mb-4 flex flex-row items-center gap-2">
                 <div className="flex-grow" />
                 <div className="w-44 text-sm">
                     <DualRangeSlider
@@ -121,6 +116,11 @@ export default function ExamsView() {
                     {view === 'table' ? <ScrollIcon /> : <TableIcon />}
                 </Button>
             </div>
+            {view === 'table' ? (
+                <AgTableFull rowData={exams} columnDefs={colDefs} />
+            ) : (
+                <ExamsTimeline exams={exams} />
+            )}
         </>
     )
 }

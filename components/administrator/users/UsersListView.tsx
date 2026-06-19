@@ -78,8 +78,7 @@ export default function UsersListView() {
 
     return (
         <>
-            <AgTableFull rowData={rows} columnDefs={colDefs} />
-            <div className="mt-4 flex flex-row items-center gap-2">
+            <div className="mb-4 flex flex-row items-center gap-2">
                 <div className="text-sm text-muted-foreground">{message}</div>
                 <div className="grow" />
                 <Input
@@ -90,6 +89,7 @@ export default function UsersListView() {
                     onChange={(e) => void updateSearch(e.target.value)}
                 />
             </div>
+            <AgTableFull rowData={rows} columnDefs={colDefs} />
             <ProfileDialogComponent />
         </>
     )

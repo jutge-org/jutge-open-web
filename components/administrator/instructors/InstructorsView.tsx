@@ -81,8 +81,7 @@ export default function InstructorsView() {
 
     return (
         <>
-            <AgTableFull rowData={rows} columnDefs={colDefs} ref={gridRef} rowSelection={rowSelection} />
-            <div className="mt-4 flex flex-row gap-2">
+            <div className="mb-4 flex flex-row gap-2">
                 <div className="grow" />
                 <Button className="w-32 justify-start" onClick={() => void addAction()}>
                     <CirclePlusIcon /> Add
@@ -91,6 +90,7 @@ export default function InstructorsView() {
                     <CircleMinusIcon /> Remove
                 </Button>
             </div>
+            <AgTableFull rowData={rows} columnDefs={colDefs} ref={gridRef} rowSelection={rowSelection} />
             <AddInstructorDialog />
             <ConfirmDialog />
         </>

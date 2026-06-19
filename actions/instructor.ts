@@ -273,6 +273,18 @@ export async function fetchAllAbstractProblems() {
     return withInstructorClient((c) => c.problems.getAllAbstractProblems())
 }
 
+export async function fetchAbstractProblemSuppl(problem_nm: string) {
+    return withInstructorClient((c) => c.problems.getAbstractProblemSuppl(problem_nm))
+}
+
+export async function instructorSemanticSearch(query: string) {
+    return withInstructorClient((c) => c.problems.semanticSearch({ query, limit: 50 }))
+}
+
+export async function instructorFullTextSearch(query: string) {
+    return withInstructorClient((c) => c.problems.fullTextSearch({ query, limit: 50 }))
+}
+
 export async function fetchAbstractProblems(problem_nms: string) {
     return withInstructorClient((c) => c.problems.getAbstractProblems(problem_nms))
 }

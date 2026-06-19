@@ -25,6 +25,11 @@ export const instructorIndexItems = [
         description: 'Author, share, and analyze your own problems',
     },
     {
+        href: '/instructor/search',
+        label: 'Search',
+        description: 'Semantic and full-text search across problem statements',
+    },
+    {
         href: '/instructor/jutgeai',
         label: 'JutgeAI',
         description: 'Chat with LLMs and review usage, cost, and emissions',

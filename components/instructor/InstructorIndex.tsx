@@ -1,9 +1,10 @@
 import { instructorIndexItems } from '@/lib/instructor'
 import { cn } from '@/lib/utils'
-import { BotIcon, FileIcon, FilePenIcon, ListIcon, PuzzleIcon, TableIcon } from 'lucide-react'
+import { BotIcon, FileIcon, FilePenIcon, ListIcon, PuzzleIcon, SearchIcon, TableIcon } from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof TableIcon> = {
+    Search: SearchIcon,
     Courses: TableIcon,
     Lists: ListIcon,
     Exams: FilePenIcon,
@@ -27,7 +28,7 @@ export function InstructorIndex() {
                 return (
                     <Link key={item.href} href={item.href} className={className}>
                         <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border-l-4 border-l-rose-500 bg-muted/80 text-rose-600 dark:text-rose-400">
-                            <Icon className="size-7" aria-hidden />
+                            <Icon className="size-7 hover:animate-bounce" aria-hidden />
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span className="text-lg font-semibold tracking-tight text-foreground">{item.label}</span>

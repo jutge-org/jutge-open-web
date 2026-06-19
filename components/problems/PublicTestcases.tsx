@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { AArrowDownIcon, AArrowUpIcon, Columns2Icon, PilcrowIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -52,23 +52,52 @@ function formatTestcaseText(text: string, showWhitespace: boolean): ReactNode {
 function TestcaseField({
     label,
     text,
+    imageSrc,
     showWhitespace,
     fontScale,
 }: {
     label: string
-    text: string
+    text?: string
+    imageSrc?: string
     showWhitespace: boolean
     fontScale: number
 }) {
+    const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null)
+
+    useEffect(() => {
+        setImageSize(null)
+    }, [imageSrc])
+
     return (
         <div className="flex min-w-0 flex-col gap-2">
             <p className="text-sm font-bold text-foreground">{label}</p>
-            <pre
-                className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4 font-mono text-sm text-foreground"
-                style={{ fontSize: `calc(0.875rem * ${fontScale})` }}
-            >
-                {formatTestcaseText(text, showWhitespace)}
-            </pre>
+            {imageSrc ? (
+                <div className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={imageSrc}
+                        alt={`${label} testcase`}
+                        className="max-w-full origin-top-left"
+                        style={{ width: `calc(100% * ${fontScale})` }}
+                        onLoad={(event) => {
+                            const img = event.currentTarget
+                            setImageSize({ width: img.naturalWidth, height: img.naturalHeight })
+                        }}
+                    />
+                    {imageSize ? (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                            ({imageSize.width}×{imageSize.height})
+                        </p>
+                    ) : null}
+                </div>
+            ) : (
+                <pre
+                    className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4 font-mono text-sm text-foreground"
+                    style={{ fontSize: `calc(0.875rem * ${fontScale})` }}
+                >
+                    {formatTestcaseText(text ?? '', showWhitespace)}
+                </pre>
+            )}
         </div>
     )
 }
@@ -171,6 +200,7 @@ export function PublicTestcases({ testcases }: PublicTestcasesProps) {
                                 <TestcaseField
                                     label="Output"
                                     text={testcase.output}
+                                    imageSrc={testcase.outputImageSrc}
                                     showWhitespace={showWhitespace}
                                     fontScale={fontScale}
                                 />

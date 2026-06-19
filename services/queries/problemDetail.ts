@@ -9,6 +9,7 @@ export type DecodedTestcase = {
     name: string
     input: string
     output: string
+    outputImageSrc?: string
 }
 
 export type LanguageVariant = {
@@ -27,12 +28,20 @@ export type ProblemDetailData = {
     languages: Record<string, Language>
 }
 
-function decodeTestcase(testcase: Testcase): DecodedTestcase {
-    return {
+function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTestcase {
+    const decoded: DecodedTestcase = {
         name: testcase.name,
         input: Buffer.from(testcase.input_b64, 'base64').toString('utf-8'),
-        output: Buffer.from(testcase.correct_b64, 'base64').toString('utf-8'),
+        output: '',
     }
+
+    if (outputAsImage) {
+        decoded.outputImageSrc = `data:image/png;base64,${testcase.correct_b64}`
+        return decoded
+    }
+
+    decoded.output = Buffer.from(testcase.correct_b64, 'base64').toString('utf-8')
+    return decoded
 }
 
 export async function resolveProblemId(key: string): Promise<string | null> {
@@ -94,7 +103,9 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         return {
             problem,
             shortHtmlStatement,
-            publicTestcases: [...sampleTestcases, ...publicTestcases].map(decodeTestcase),
+            publicTestcases: [...sampleTestcases, ...publicTestcases].map((testcase) =>
+                decodeTestcase(testcase, problem.abstract_problem.type === 'graphic'),
+            ),
             languageVariants,
             officialSolutions,
             userSolutions,

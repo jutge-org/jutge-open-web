@@ -55,16 +55,16 @@ const sectionLabel: Record<PageTitleSection, string> = {
 }
 
 const guestDescription: Record<PageTitleSection, string> = {
-    '/problems': 'Browse programming problems from Jutge.org',
+    '/problems': 'Browse programming problems. Sign in to solve them.',
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View and take exams',
-    '/courses': 'Browse public courses on Jutge.org. Sign in to enroll in a course.',
-    '/statistics': 'Your Jutge.org activity and progress',
-    '/awards': 'Achievements earned on Jutge.org',
-    '/profile': 'Your Jutge.org account details',
+    '/courses': 'Browse public courses. Sign in to enroll in a course.',
+    '/statistics': 'Your activity and progress',
+    '/awards': 'Achievements earned',
+    '/profile': 'Your account details',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
-    '/documentation': 'Learn how to use Jutge.org',
+    '/documentation': 'Learn how to use this site',
     '/about': 'What is this site and who made it?',
 }
 
@@ -75,10 +75,10 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
     '/courses': 'Browse your courses and assignments',
     '/statistics': 'Your activity, verdicts, and progress over time',
     '/awards': 'Badges and achievements you have earned',
-    '/profile': 'Your Jutge.org account details',
+    '/profile': 'Your account details',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
-    '/documentation': 'Learn how to use Jutge.org',
+    '/documentation': 'Learn how to use this site',
     '/about': 'What is this site and who made it?',
 }
 
@@ -119,7 +119,12 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
 
 const doDotShowTitle = true
 
-export function PageTitle({ section, authenticated, description: descriptionOverride, hidden = doDotShowTitle }: PageTitleProps) {
+export function PageTitle({
+    section,
+    authenticated,
+    description: descriptionOverride,
+    hidden = doDotShowTitle,
+}: PageTitleProps) {
     const title = sectionLabel[section]
     const description =
         descriptionOverride ?? (authenticated ? authenticatedDescription[section] : guestDescription[section])

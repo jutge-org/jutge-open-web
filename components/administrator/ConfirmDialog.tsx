@@ -59,11 +59,11 @@ export const useConfirmDialog = (
                         <DialogDescription>{message}</DialogDescription>
                     </DialogHeader>
                     <div className="flex w-full flex-row gap-2 pt-4">
-                        <Button className="w-full" variant="outline" onClick={cancelAction}>
+                        <Button className="flex-1" variant="outline" onClick={cancelAction}>
                             {cancelIcon}
                             {config.cancelLabel || 'Cancel'}
                         </Button>
-                        <Button className="w-full" onClick={acceptAction}>
+                        <Button className="flex-1" onClick={acceptAction}>
                             {acceptIcon}
                             {config.acceptLabel || 'Accept'}
                         </Button>

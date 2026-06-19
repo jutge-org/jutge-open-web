@@ -52,12 +52,18 @@ import {
 import { cn } from '@/lib/utils'
 import dayjs from 'dayjs'
 import {
+    AlertTriangleIcon,
+    BarChart3Icon,
+    BugIcon,
     CalendarIcon,
     ChartPieIcon,
     CheckIcon,
     RotateCcwIcon,
+    SendIcon,
     SettingsIcon,
     TableIcon,
+    ThumbsDownIcon,
+    UsersIcon,
     XIcon,
 } from 'lucide-react'
 import { useParams } from 'next/navigation'
@@ -86,20 +92,7 @@ type SubmissionEntry = ProblemAnonymousSubmission
 // -----------------------------------------------------------------------------
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
-const MONTHS = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-] as const
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
 /** Pie chart: slices below this percentage are grouped into "Others". */
 const MIN_PERCENT_FOR_PIE_LABEL = 5
 
@@ -262,8 +255,7 @@ function deriveChartData(submissions: SubmissionEntry[]) {
     }))
     const maxValue = heatmapData.length ? Math.max(...heatmapData.map((d) => d.value)) : 0
     const heatmapEnd = dayjs().add(1, 'day').startOf('day')
-    const heatmapStart =
-        submissions.length > 0 ? dayjs(submissions[0].time).startOf('day') : dayjs().startOf('day')
+    const heatmapStart = submissions.length > 0 ? dayjs(submissions[0].time).startOf('day') : dayjs().startOf('day')
 
     // Users: unique users with at least one AC = OK, others = KO (derived from submissions only)
     const userStatus = new Map<string, boolean>()
@@ -402,59 +394,115 @@ type DashboardStats = {
     seCount: number
 }
 
-function StatisticsDashboardCard({ stats }: { stats: DashboardStats }) {
-    const totalUsers = stats.totalUsers
-    const avgPerStudent = totalUsers > 0 ? (stats.totalSubmissions / totalUsers).toFixed(1) : '—'
+const summaryStatItems = [
+    {
+        key: 'submissions' as const,
+        label: 'Submissions',
+        icon: SendIcon,
+        borderAccent: 'border-t-blue-500',
+        iconAccent: 'text-blue-600 dark:text-blue-400',
+    },
+    {
+        key: 'users' as const,
+        label: 'Users',
+        icon: UsersIcon,
+        borderAccent: 'border-t-amber-500',
+        iconAccent: 'text-emerald-600 dark:text-emerald-400',
+    },
+    {
+        key: 'avgSubsPerUser' as const,
+        label: 'Avg subs/user',
+        icon: BarChart3Icon,
+        borderAccent: 'border-t-violet-500',
+        iconAccent: 'text-violet-600 dark:text-violet-400',
+    },
+    {
+        key: 'acRate' as const,
+        label: 'AC rate',
+        icon: CheckIcon,
+        borderAccent: 'border-t-emerald-500',
+        iconAccent: 'text-amber-600 dark:text-amber-400',
+    },
+    {
+        key: 'fails' as const,
+        label: 'Fails',
+        icon: ThumbsDownIcon,
+        borderAccent: 'border-t-red-500',
+        iconAccent: 'text-red-600 dark:text-red-400',
+    },
+    {
+        key: 'setterErrors' as const,
+        label: 'Setter errors',
+        icon: BugIcon,
+        borderAccent: 'border-t-orange-500',
+        iconAccent: 'text-orange-600 dark:text-orange-400',
+    },
+]
 
+function formatSummaryStatValue(key: (typeof summaryStatItems)[number]['key'], stats: DashboardStats): string {
+    const totalUsers = stats.totalUsers
+    switch (key) {
+        case 'submissions':
+            return stats.totalSubmissions.toLocaleString()
+        case 'users':
+            return stats.totalUsers.toLocaleString()
+        case 'avgSubsPerUser':
+            return totalUsers > 0 ? (stats.totalSubmissions / totalUsers).toFixed(1) : '—'
+        case 'acRate':
+            return totalUsers > 0 ? `${Math.round(stats.passRatePct)}%` : '0%'
+        case 'fails':
+            return stats.neverPassed.toLocaleString()
+        case 'setterErrors':
+            return stats.seCount.toLocaleString()
+    }
+}
+
+function StatisticsDashboardCard({ stats }: { stats: DashboardStats }) {
     return (
-        <Card className="w-full overflow-hidden">
-            <CardContent className="p-0">
-                <div className="grid grid-cols-2 md:grid-cols-6">
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider ">
-                            Submissions
-                        </span>
-                        <span className="text-4xl font-bold text-gray-500">
-                            {stats.totalSubmissions}
-                        </span>
+        <section
+            aria-label="Problem statistics summary"
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+        >
+            {summaryStatItems.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
+                <div
+                    key={key}
+                    className={cn(
+                        'flex flex-col gap-3 rounded-2xl border border-border border-t-4 bg-card px-5 py-5 shadow-sm',
+                        borderAccent,
+                        key === 'setterErrors' && stats.seCount > 4 && 'border-t-red-500',
+                    )}
+                >
+                    <div className="flex items-center justify-between gap-3">
+                        <Icon
+                            className={cn(
+                                'size-10 shrink-0 opacity-80',
+                                iconAccent,
+                                key === 'setterErrors' && stats.seCount > 4 && 'text-red-600 dark:text-red-400',
+                            )}
+                            aria-hidden
+                        />
+                        <p
+                            className={cn(
+                                'text-3xl font-semibold tracking-tight tabular-nums text-foreground',
+                                key === 'setterErrors' && stats.seCount > 4 && 'text-red-600 dark:text-red-400',
+                            )}
+                        >
+                            {formatSummaryStatValue(key, stats)}
+                        </p>
                     </div>
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider">Users</span>
-                        <span className="text-4xl font-bold text-gray-500">{stats.totalUsers}</span>
-                    </div>
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider">
-                            Avg subs/user
-                        </span>
-                        <span className="text-4xl font-bold text-gray-500">{avgPerStudent}</span>
-                    </div>
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider">
-                            AC rate
-                        </span>
-                        <span className="text-4xl font-bold text-gray-500">
-                            {totalUsers > 0 ? Math.round(stats.passRatePct) : 0}%
-                        </span>
-                    </div>
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider">Fails</span>
-                        <span className="text-4xl font-bold text-gray-500">
-                            {stats.neverPassed}
-                        </span>
-                    </div>
-                    <div className="flex flex-col gap-1 p-4 md:p-5">
-                        <span className="text-xs font-medium uppercase tracking-wider">
-                            <span
-                                className={stats.seCount > 4 ? 'text-red-600 font-bold' : undefined}
-                            >
-                                Setter errors
-                            </span>
-                        </span>
-                        <span className="text-4xl font-bold text-gray-500">{stats.seCount}</span>
-                    </div>
+                    <span
+                        className={cn(
+                            'text-right text-sm font-medium text-muted-foreground',
+                            key === 'setterErrors' &&
+                                stats.seCount > 4 &&
+                                'font-semibold text-red-600 dark:text-red-400',
+                        )}
+                    >
+                        {label}
+                    </span>
                 </div>
-            </CardContent>
-        </Card>
+            ))}
+        </section>
     )
 }
 
@@ -682,17 +730,12 @@ function StatisticsSettingsDialog({
                     </DialogHeader>
                     <div className="flex flex-col gap-4 py-2">
                         <div className="flex flex-col gap-2">
-                            <span className="text-sm font-medium text-muted-foreground">
-                                Problems
-                            </span>
+                            <span className="text-sm font-medium text-muted-foreground">Problems</span>
                             <div className="flex flex-col gap-2 text-sm">
                                 {problems
                                     .sort((a, b) => a.problem_id.localeCompare(b.problem_id))
                                     .map((p) => (
-                                        <span
-                                            key={p.problem_id}
-                                            className="flex items-center gap-4"
-                                        >
+                                        <span key={p.problem_id} className="flex items-center gap-4">
                                             <Switch
                                                 checked={draftSelectedProblemIds.has(p.problem_id)}
                                                 onCheckedChange={(checked) =>
@@ -705,13 +748,8 @@ function StatisticsSettingsDialog({
                                                 }
                                                 aria-label={`Include ${p.problem_id} in statistics`}
                                             />
-                                            <span className="font-medium text-foreground w-20">
-                                                {p.problem_id}
-                                            </span>
-                                            <span
-                                                className="max-w-[200px] truncate sm:max-w-none"
-                                                title={p.title}
-                                            >
+                                            <span className="font-medium text-foreground w-20">{p.problem_id}</span>
+                                            <span className="max-w-[200px] truncate sm:max-w-none" title={p.title}>
                                                 {p.title}
                                             </span>
                                         </span>
@@ -795,25 +833,15 @@ type TimeToFirstPassFunnelProps = {
     medianHours: number | null
 }
 
-function TimeToFirstPassFunnelChart({
-    curve,
-    totalSolvers,
-    neverSolved,
-    medianHours,
-}: TimeToFirstPassFunnelProps) {
+function TimeToFirstPassFunnelChart({ curve, totalSolvers, neverSolved, medianHours }: TimeToFirstPassFunnelProps) {
     const chartConfig = {
         hours: { label: 'Time since first submission', color: 'hsl(var(--muted-foreground))' },
         cumulativePct: { label: 'Cumulative % solved', color: 'hsl(var(--chart-1))' },
     }
-    const formatPct = (value: unknown) =>
-        [`${Number(value).toFixed(1)}%`, 'Solved by this time'] as [string, string]
+    const formatPct = (value: unknown) => [`${Number(value).toFixed(1)}%`, 'Solved by this time'] as [string, string]
     const formatTimeLabel = (label: unknown) => {
         const h = Number(label)
-        return h < 1
-            ? `${Math.round(h * 60)} min`
-            : h < 24
-              ? `${h} h`
-              : `${(h / 24).toFixed(1)} days`
+        return h < 1 ? `${Math.round(h * 60)} min` : h < 24 ? `${h} h` : `${(h / 24).toFixed(1)} days`
     }
     return (
         <>
@@ -828,19 +856,9 @@ function TimeToFirstPassFunnelChart({
                             h < 1 ? `${Math.round(h * 60)}m` : h < 24 ? `${h}h` : `${h / 24}d`
                         }
                     />
-                    <YAxis
-                        domain={[0, 100]}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(v: number) => `${v}%`}
-                    />
+                    <YAxis domain={[0, 100]} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${v}%`} />
                     <ChartTooltip
-                        content={
-                            <ChartTooltipContent
-                                formatter={formatPct}
-                                labelFormatter={formatTimeLabel}
-                            />
-                        }
+                        content={<ChartTooltipContent formatter={formatPct} labelFormatter={formatTimeLabel} />}
                     />
                     <Line
                         type="monotone"
@@ -911,11 +929,7 @@ function AttemptsToSolveChart({
                     </span>
                 </div>
                 <ChartContainer config={chartConfig} className="h-[300px] min-w-0 flex-1">
-                    <BarChart
-                        data={histogram}
-                        margin={{ top: 32, right: 8, bottom: 8, left: 4 }}
-                        barCategoryGap="10%"
-                    >
+                    <BarChart data={histogram} margin={{ top: 32, right: 8, bottom: 8, left: 4 }} barCategoryGap="10%">
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="label"
@@ -972,9 +986,7 @@ function AttemptsToSolveChart({
                     <>
                         <span>Solvers: {totalPassed}</span>
                         {neverPassedCount > 0 && <span>Did not pass: {neverPassedCount}</span>}
-                        {medianAttempts != null && (
-                            <span>Median attempts to solve: {medianAttempts}</span>
-                        )}
+                        {medianAttempts != null && <span>Median attempts to solve: {medianAttempts}</span>}
                     </>
                 )}
                 {totalPassed === 0 && neverPassedCount === 0 && <span>No submissions yet</span>}
@@ -1015,12 +1027,7 @@ function SubmissionVolumeAreaChart({ data, colors }: SubmissionVolumeAreaChartPr
         <ChartContainer config={chartConfig} className="h-[160px] w-full aspect-auto">
             <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                    dataKey="year"
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(y: number) => String(y)}
-                />
+                <XAxis dataKey="year" tickLine={false} axisLine={false} tickFormatter={(y: number) => String(y)} />
                 <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
                 <ChartTooltip
                     content={
@@ -1070,11 +1077,7 @@ type SubmissionsByLanguageChartProps = {
     languageNames: Record<string, string>
 }
 
-function SubmissionsByLanguageChart({
-    data,
-    languageIds,
-    languageNames,
-}: SubmissionsByLanguageChartProps) {
+function SubmissionsByLanguageChart({ data, languageIds, languageNames }: SubmissionsByLanguageChartProps) {
     const chartConfig = useMemo(() => {
         const config: Record<string, { label: string; color: string }> = {
             year: { label: 'Year', color: 'hsl(var(--muted-foreground))' },
@@ -1098,20 +1101,13 @@ function SubmissionsByLanguageChart({
         <ChartContainer config={chartConfig} className="h-[160px] w-full aspect-auto">
             <LineChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                    dataKey="year"
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(y: number) => String(y)}
-                />
+                <XAxis dataKey="year" tickLine={false} axisLine={false} tickFormatter={(y: number) => String(y)} />
                 <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
                 <ChartTooltip
                     content={
                         <ChartTooltipContent
                             labelFormatter={(_, payload) => {
-                                const p = payload?.[0]?.payload as
-                                    | SubmissionsByLanguageOverTimePoint
-                                    | undefined
+                                const p = payload?.[0]?.payload as SubmissionsByLanguageOverTimePoint | undefined
                                 return p ? `Year ${p.year}` : ''
                             }}
                         />
@@ -1158,10 +1154,7 @@ function buildPopularityChartData(buckets: ProblemPopularityBucketEntry[]) {
 }
 
 /** Label of the bucket where this problem's submission count falls (half-open [min, max), last bucket inclusive). */
-function findPopularityBucketLabel(
-    buckets: ProblemPopularityBucketEntry[],
-    totalSubmissions: number,
-): string | null {
+function findPopularityBucketLabel(buckets: ProblemPopularityBucketEntry[], totalSubmissions: number): string | null {
     if (buckets.length === 0) return null
     const sorted = [...buckets].sort((a, b) => a.bucket_min - b.bucket_min)
     for (let i = 0; i < sorted.length; i++) {
@@ -1210,11 +1203,7 @@ function ProblemPopularityChart({ buckets, problemTotalSubmissions }: ProblemPop
     return (
         <>
             <ChartContainer config={chartConfig} className="h-[350px] w-full aspect-auto">
-                <BarChart
-                    data={chartData}
-                    margin={{ top: 28, right: 12, bottom: 56, left: 48 }}
-                    barCategoryGap="12%"
-                >
+                <BarChart data={chartData} margin={{ top: 28, right: 12, bottom: 56, left: 48 }} barCategoryGap="12%">
                     <CartesianGrid vertical={false} strokeDasharray="3 3" />
                     <XAxis
                         dataKey="label"
@@ -1293,9 +1282,7 @@ export function ProblemStatisticsView() {
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
     const [settingsOpen, setSettingsOpen] = useState(false)
-    const [popularityBuckets, setPopularityBuckets] = useState<
-        ProblemPopularityBucketEntry[] | null
-    >(null)
+    const [popularityBuckets, setPopularityBuckets] = useState<ProblemPopularityBucketEntry[] | null>(null)
 
     useEffect(() => {
         async function fetchData() {
@@ -1311,16 +1298,13 @@ export function ProblemStatisticsView() {
             setLanguagesTable(languages)
             setAbstractProblem(abstract)
             setPopularityBuckets(buckets)
-            setSelectedProblemIds(
-                new Set(Object.values(abstract.problems).map((p) => p.problem_id)),
-            )
+            setSelectedProblemIds(new Set(Object.values(abstract.problems).map((p) => p.problem_id)))
         }
         fetchData()
     }, [problem_nm])
 
     const defaultStartDate = useMemo(() => {
-        if (!statistics || statistics.submissions.length === 0)
-            return dayjs().startOf('day').toDate()
+        if (!statistics || statistics.submissions.length === 0) return dayjs().startOf('day').toDate()
         return dayjs(statistics.submissions[0].time).startOf('day').toDate()
     }, [statistics])
     const defaultEndDate = useMemo(() => dayjs().startOf('day').toDate(), [])
@@ -1332,8 +1316,7 @@ export function ProblemStatisticsView() {
     }, [statistics, defaultStartDate, defaultEndDate, startDate])
 
     const filteredSubmissions = useMemo(() => {
-        if (!statistics || startDate === null || endDate === null)
-            return statistics?.submissions ?? []
+        if (!statistics || startDate === null || endDate === null) return statistics?.submissions ?? []
         const start = dayjs(startDate).startOf('day')
         const end = dayjs(endDate).endOf('day')
         return statistics.submissions.filter((s) => {
@@ -1346,8 +1329,7 @@ export function ProblemStatisticsView() {
 
     /** Submissions filtered by date only (all problem_ids). Used for "Submissions by language" card. */
     const submissionsByDateOnly = useMemo(() => {
-        if (!statistics || startDate === null || endDate === null)
-            return statistics?.submissions ?? []
+        if (!statistics || startDate === null || endDate === null) return statistics?.submissions ?? []
         const start = dayjs(startDate).startOf('day')
         const end = dayjs(endDate).endOf('day')
         return statistics.submissions.filter((s) => {
@@ -1435,11 +1417,7 @@ export function ProblemStatisticsView() {
                     <MyPieChart data={derived.usersOkKo} category="statuses" colors={colors} />
                 </StatCard>
                 <StatCard title="Submission statuses">
-                    <MyPieChart
-                        data={derived.submissionsOkKo}
-                        category="statuses"
-                        colors={colors}
-                    />
+                    <MyPieChart data={derived.submissionsOkKo} category="statuses" colors={colors} />
                 </StatCard>
                 <StatCard title="Submissions by verdict">
                     <MyPieChart data={derived.verdicts} category="verdicts" colors={colors} />
@@ -1458,8 +1436,7 @@ export function ProblemStatisticsView() {
                     <CardHeader className="p-4">
                         <CardTitle>Problem popularity</CardTitle>
                         <p className="text-sm text-muted-foreground mt-1">
-                            The more to the right, the more submissions the problem has and more
-                            popular it is.
+                            The more to the right, the more submissions the problem has and more popular it is.
                         </p>
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
@@ -1491,8 +1468,8 @@ export function ProblemStatisticsView() {
                     <CardHeader className="p-4">
                         <CardTitle>Time to solve</CardTitle>
                         <p className="text-sm text-muted-foreground mt-1">
-                            Cumulative % of students who had AC by a given time since their first
-                            submission. Students who never passed are excluded from the curve.
+                            Cumulative % of students who had AC by a given time since their first submission. Students
+                            who never passed are excluded from the curve.
                         </p>
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
@@ -1523,10 +1500,7 @@ export function ProblemStatisticsView() {
                     <CardTitle>Submission over time</CardTitle>
                 </CardHeader>
                 <CardContent className="px-4 pb-4">
-                    <SubmissionVolumeAreaChart
-                        data={derived.submissionVolumeOverTime}
-                        colors={colors}
-                    />
+                    <SubmissionVolumeAreaChart data={derived.submissionVolumeOverTime} colors={colors} />
                 </CardContent>
             </Card>
             {Object.values(abstractProblem.problems).length > 1 && (

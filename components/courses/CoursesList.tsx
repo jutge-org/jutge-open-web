@@ -2,29 +2,39 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { BookOpen, BookPlus, CheckCircle2, Globe, GraduationCap, Loader2, LogOut, ShieldCheck } from 'lucide-react'
+import {
+    ArchiveIcon,
+    ArchiveRestoreIcon,
+    BookOpen,
+    Globe,
+    GraduationCap,
+    Loader2,
+    LogOutIcon,
+    EllipsisVerticalIcon,
+    ShieldCheck,
+    SignatureIcon,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
-import { enrollCourseAction, unenrollCourseAction } from '@/actions/courses'
+import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
+import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { CourseRow, CoursesData } from '@/lib/courses'
-import { cn } from '@/lib/utils'
+import type { CourseRow, CoursesTab } from '@/lib/courses'
+
+const UNENROLL_CONFIRMATION =
+    'Please take into account that, after unenrolling from it, your instructor will not be able to see your progress. This could have strong consequences in the event your grade depends on it. You can enroll it again at any time.'
 
 type CoursesListProps = {
-    data: CoursesData
+    tab: CoursesTab
+    courses: CourseRow[]
 }
 
-type CourseCardProps = {
-    course: CourseRow
-    pendingKey: string | null
-    onEnroll: (courseKey: string) => void
-    onUnenroll: (courseKey: string) => void
-}
+type CourseAction = 'enroll' | 'unenroll' | 'archive' | 'unarchive'
 
 function CourseBadges({ course }: { course: CourseRow }) {
     return (
@@ -45,136 +55,158 @@ function CourseBadges({ course }: { course: CourseRow }) {
     )
 }
 
-function CourseCard({ course, pendingKey, onEnroll, onUnenroll }: CourseCardProps) {
+type StudentCourseCardProps = {
+    course: CourseRow
+    tab: CoursesTab
+    pendingKey: string | null
+    onAction: (course: CourseRow, action: CourseAction) => void
+}
+
+function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseCardProps) {
     const isPending = pendingKey === course.course_key
-    const enrolled = course.status === 'enrolled'
 
     return (
-        <Card
-            className={cn(
-                'h-full transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md',
-                enrolled ? 'border-t-4 border-t-teal-500' : 'border-t-4 border-t-muted-foreground/30',
-            )}
-        >
-            <CardHeader>
-                <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
-                <CardDescription className="font-mono text-xs">{course.course_key}</CardDescription>
+        <Card className="flex h-full flex-col transition-[box-shadow,transform] duration-200 hover:border-primary/25 hover:shadow-md">
+            <CardHeader className="-mt-2">
+                <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="w-full flex flex-row items-start">
+                        <div className="line-clamp-2">{course.title}</div>
+                        <div className="flex-1" />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-4 shrink-0 -mr-2 mt-1"
+                                    disabled={isPending}
+                                    aria-label={`Actions for ${course.title}`}
+                                >
+                                    {isPending ? (
+                                        <Loader2 className="size-4 animate-spin" aria-hidden />
+                                    ) : (
+                                        <EllipsisVerticalIcon className="size-4" aria-hidden />
+                                    )}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {tab === 'available' ? (
+                                    <DropdownMenuItem onClick={() => onAction(course, 'enroll')}>
+                                        <GraduationCap aria-hidden />
+                                        Enroll
+                                    </DropdownMenuItem>
+                                ) : null}
+                                {tab === 'enrolled' ? (
+                                    <>
+                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => onAction(course, 'archive')}>
+                                            <ArchiveIcon aria-hidden />
+                                            Archive
+                                        </DropdownMenuItem>
+                                    </>
+                                ) : null}
+                                {tab === 'archived' ? (
+                                    <>
+                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => onAction(course, 'unarchive')}>
+                                            <ArchiveRestoreIcon aria-hidden />
+                                            Unarchive
+                                        </DropdownMenuItem>
+                                    </>
+                                ) : null}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </CardTitle>
+                </div>
+                <CardDescription className="flex items-center gap-1 text-xs">
+                    <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                    {course.ownerName}
+                </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
                 {course.description ? (
-                    <MarkdownText className="line-clamp-3">{course.description}</MarkdownText>
+                    <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
                 ) : (
                     <p className="text-sm text-muted-foreground italic">No description provided.</p>
                 )}
-                {course.annotation ? (
-                    <p className="rounded-lg bg-muted/60 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
-                        {course.annotation}
-                    </p>
-                ) : null}
-                <CourseBadges course={course} />
+                <div className="mt-auto">
+                    <CourseBadges course={course} />
+                </div>
             </CardContent>
-            <CardFooter>
-                {enrolled ? (
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        disabled={isPending}
-                        onClick={() => onUnenroll(course.course_key)}
-                    >
-                        {isPending ? (
-                            <Loader2 className="animate-spin" aria-hidden />
-                        ) : (
-                            <LogOut aria-hidden />
-                        )}
-                        {isPending ? 'Leaving…' : 'Leave course'}
-                    </Button>
-                ) : (
-                    <Button
-                        type="button"
-                        size="sm"
-                        className="w-full"
-                        disabled={isPending}
-                        onClick={() => onEnroll(course.course_key)}
-                    >
-                        {isPending ? (
-                            <Loader2 className="animate-spin" aria-hidden />
-                        ) : (
-                            <BookPlus aria-hidden />
-                        )}
-                        {isPending ? 'Enrolling…' : 'Enroll'}
-                    </Button>
-                )}
-            </CardFooter>
         </Card>
     )
 }
 
-function CoursesGrid({
-    courses,
-    emptyTitle,
-    emptyDescription,
-    emptyIcon: EmptyIcon,
-    pendingKey,
-    onEnroll,
-    onUnenroll,
-}: {
-    courses: CourseRow[]
-    emptyTitle: string
-    emptyDescription: string
-    emptyIcon: typeof BookOpen
-    pendingKey: string | null
-    onEnroll: (courseKey: string) => void
-    onUnenroll: (courseKey: string) => void
-}) {
-    if (courses.length === 0) {
-        return (
-            <Empty className="border border-dashed border-border bg-muted/20 py-12">
-                <EmptyHeader>
-                    <EmptyMedia variant="icon">
-                        <EmptyIcon aria-hidden />
-                    </EmptyMedia>
-                    <EmptyTitle>{emptyTitle}</EmptyTitle>
-                    <EmptyDescription>{emptyDescription}</EmptyDescription>
-                </EmptyHeader>
-            </Empty>
-        )
-    }
-
-    return (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {courses.map((course) => (
-                <CourseCard
-                    key={course.course_key}
-                    course={course}
-                    pendingKey={pendingKey}
-                    onEnroll={onEnroll}
-                    onUnenroll={onUnenroll}
-                />
-            ))}
-        </div>
-    )
+const emptyStateByTab: Record<CoursesTab, { title: string; description: string; icon: typeof BookOpen }> = {
+    enrolled: {
+        title: 'No enrolled courses',
+        description: 'Browse available courses and enroll into them.',
+        icon: BookOpen,
+    },
+    available: {
+        title: 'No courses available',
+        description: 'There are no avaiable courses you can join right now. Check back later.',
+        icon: GraduationCap,
+    },
+    archived: {
+        title: 'No archived courses',
+        description:
+            'Archived courses will appear here. You can archive enrolled courses from the Enrolled tab. Archived courses will not be visible in the Enrolled tab but you still be enrolled in them.',
+        icon: ArchiveIcon,
+    },
 }
 
-export function CoursesList({ data }: CoursesListProps) {
+export function CoursesList({ tab, courses }: CoursesListProps) {
     const router = useRouter()
     const [pendingKey, setPendingKey] = useState<string | null>(null)
-    const [isPending, startTransition] = useTransition()
-    const defaultTab = data.enrolled.length > 0 ? 'enrolled' : 'available'
+    const [, startTransition] = useTransition()
+    const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
+        title: 'Are you sure?',
+        acceptLabel: 'Confirm',
+        cancelLabel: 'Cancel',
+    })
+    const [runUnenrollDialog, UnenrollDialogComponent] = useConfirmDialog({
+        title: 'Unenroll from course',
+        acceptLabel: 'Unenroll',
+        cancelLabel: 'Cancel',
+    })
 
-    function runCourseAction(courseKey: string, action: 'enroll' | 'unenroll') {
-        setPendingKey(courseKey)
+    async function handleAction(course: CourseRow, action: CourseAction) {
+        const title = course.title
+        let confirmed = false
+
+        switch (action) {
+            case 'enroll':
+                confirmed = await runConfirmDialog(`Are you sure you want to enroll in “${title}”?`)
+                break
+            case 'archive':
+                confirmed = await runConfirmDialog(`Are you sure you want to archive “${title}”?`)
+                break
+            case 'unarchive':
+                confirmed = await runConfirmDialog(`Are you sure you want to unarchive “${title}”?`)
+                break
+            case 'unenroll':
+                confirmed = await runUnenrollDialog(UNENROLL_CONFIRMATION)
+                break
+        }
+
+        if (!confirmed) {
+            return
+        }
+
+        setPendingKey(course.course_key)
         startTransition(async () => {
-            const result =
-                action === 'enroll'
-                    ? await enrollCourseAction(courseKey)
-                    : await unenrollCourseAction(courseKey)
-
+            const result = await runServerAction(course.course_key, action)
             setPendingKey(null)
 
             if (result.ok) {
-                toast.success(action === 'enroll' ? 'Enrolled successfully' : 'Left the course')
+                toast.success(successMessage(action))
                 router.refresh()
                 return
             }
@@ -183,73 +215,64 @@ export function CoursesList({ data }: CoursesListProps) {
         })
     }
 
+    if (courses.length === 0) {
+        const empty = emptyStateByTab[tab]
+        const EmptyIcon = empty.icon
+
+        return (
+            <Empty className="border border-dashed border-border bg-muted/20 py-12">
+                <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                        <EmptyIcon aria-hidden />
+                    </EmptyMedia>
+                    <EmptyTitle>{empty.title}</EmptyTitle>
+                    <EmptyDescription>{empty.description}</EmptyDescription>
+                </EmptyHeader>
+            </Empty>
+        )
+    }
+
     return (
-        <div className="flex flex-col gap-6">
-            <section aria-label="Course summary" className="grid gap-4 sm:grid-cols-2">
-                <div className="flex items-center justify-between gap-4 rounded-2xl border border-border border-t-4 border-t-teal-500 bg-card px-5 py-5 shadow-sm">
-                    <div className="flex min-w-0 flex-col gap-1">
-                        <span className="text-sm font-medium text-muted-foreground">Enrolled</span>
-                        <span className="text-3xl font-semibold tracking-tight tabular-nums text-teal-600 dark:text-teal-400">
-                            {data.enrolled.length.toLocaleString()}
-                        </span>
-                    </div>
-                    <CheckCircle2 className="size-8 shrink-0 text-teal-600/80 dark:text-teal-400/80" aria-hidden />
-                </div>
-                <div className="flex items-center justify-between gap-4 rounded-2xl border border-border border-t-4 border-t-muted-foreground/40 bg-card px-5 py-5 shadow-sm">
-                    <div className="flex min-w-0 flex-col gap-1">
-                        <span className="text-sm font-medium text-muted-foreground">Available</span>
-                        <span className="text-3xl font-semibold tracking-tight tabular-nums">
-                            {data.available.length.toLocaleString()}
-                        </span>
-                    </div>
-                    <GraduationCap className="size-8 shrink-0 text-muted-foreground/70" aria-hidden />
-                </div>
-            </section>
-
-            <Tabs defaultValue={defaultTab} className="gap-4">
-                <TabsList>
-                    <TabsTrigger value="enrolled" disabled={isPending && pendingKey !== null}>
-                        My courses
-                        {data.enrolled.length > 0 ? (
-                            <Badge variant="secondary" className="ml-1.5 px-1.5">
-                                {data.enrolled.length}
-                            </Badge>
-                        ) : null}
-                    </TabsTrigger>
-                    <TabsTrigger value="available" disabled={isPending && pendingKey !== null}>
-                        Available
-                        {data.available.length > 0 ? (
-                            <Badge variant="outline" className="ml-1.5 px-1.5">
-                                {data.available.length}
-                            </Badge>
-                        ) : null}
-                    </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="enrolled">
-                    <CoursesGrid
-                        courses={data.enrolled}
-                        emptyTitle="No enrolled courses"
-                        emptyDescription="Browse available courses and enroll to see them here."
-                        emptyIcon={BookOpen}
+        <>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {courses.map((course) => (
+                    <StudentCourseCard
+                        key={course.course_key}
+                        course={course}
+                        tab={tab}
                         pendingKey={pendingKey}
-                        onEnroll={(key) => runCourseAction(key, 'enroll')}
-                        onUnenroll={(key) => runCourseAction(key, 'unenroll')}
+                        onAction={handleAction}
                     />
-                </TabsContent>
-
-                <TabsContent value="available">
-                    <CoursesGrid
-                        courses={data.available}
-                        emptyTitle="No courses available"
-                        emptyDescription="There are no open courses you can join right now. Check back later."
-                        emptyIcon={GraduationCap}
-                        pendingKey={pendingKey}
-                        onEnroll={(key) => runCourseAction(key, 'enroll')}
-                        onUnenroll={(key) => runCourseAction(key, 'unenroll')}
-                    />
-                </TabsContent>
-            </Tabs>
-        </div>
+                ))}
+            </div>
+            <ConfirmDialogComponent />
+            <UnenrollDialogComponent />
+        </>
     )
+}
+
+async function runServerAction(courseKey: string, action: CourseAction) {
+    switch (action) {
+        case 'enroll':
+            return enrollCourseAction(courseKey)
+        case 'unenroll':
+            return unenrollCourseAction(courseKey)
+        case 'archive':
+            return archiveCourseAction(courseKey)
+        case 'unarchive':
+            return unarchiveCourseAction(courseKey)
+    }
+}
+
+function successMessage(action: CourseAction): string {
+    switch (action) {
+        case 'enroll':
+            return 'Enrolled successfully'
+        case 'unenroll':
+            return 'Unenrolled successfully'
+        case 'archive':
+            return 'Course archived'
+        case 'unarchive':
+            return 'Course unarchived'
+    }
 }

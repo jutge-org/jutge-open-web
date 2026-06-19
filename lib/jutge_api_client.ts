@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-19T06:35:32.352Z
+ * This file has been automatically generated at 2026-06-19T12:53:20.207Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -426,6 +426,7 @@ export type BriefCourse = {
     annotation: string | null
     public: number
     official: number
+    owner: PublicProfile
 }
 
 export type Course = {
@@ -2692,6 +2693,42 @@ class Module_student_courses {
      */
     async unenroll(course_key: string): Promise<void> {
         const [output, ofiles] = await this.root.execute("student.courses.unenroll", course_key)
+        return output
+    }
+
+    /**
+     * Get the keys of all archived courses.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getArchivedKeys(): Promise<string[]> {
+        const [output, ofiles] = await this.root.execute("student.courses.getArchivedKeys", null)
+        return output
+    }
+
+    /**
+     * Archive an enrolled course.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async archive(course_key: string): Promise<void> {
+        const [output, ofiles] = await this.root.execute("student.courses.archive", course_key)
+        return output
+    }
+
+    /**
+     * Unarchive an archived course.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async unArchive(course_key: string): Promise<void> {
+        const [output, ofiles] = await this.root.execute("student.courses.unArchive", course_key)
         return output
     }
 }

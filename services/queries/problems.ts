@@ -14,6 +14,22 @@ export type ProblemRow = {
     updated_at: string | number
 }
 
+export function abstractProblemsToTitleMap(abstractProblems: Record<string, AbstractProblem>): Map<string, string> {
+    const titles = new Map<string, string>()
+
+    for (const ap of Object.values(abstractProblems)) {
+        const variants = Object.values(ap.problems).sort((a, b) => a.language_id.localeCompare(b.language_id))
+
+        for (const variant of variants) {
+            titles.set(variant.problem_id, variant.title)
+        }
+
+        titles.set(ap.problem_nm, variants.map((p) => p.title).join(' / ') || ap.problem_nm)
+    }
+
+    return titles
+}
+
 export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
     const variants = Object.values(ap.problems).sort((a, b) => a.language_id.localeCompare(b.language_id))
     const language_ids = variants.map((p) => p.language_id)

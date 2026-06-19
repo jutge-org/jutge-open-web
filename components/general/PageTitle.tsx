@@ -4,7 +4,7 @@ import {
     BookOpen,
     BookText,
     ActivityIcon,
-    ClipboardList,
+    SendIcon,
     CrownIcon,
     GraduationCap,
     Info,
@@ -95,7 +95,7 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
         case '/problems':
             return <PuzzleIcon className={iconClass} aria-hidden />
         case '/submissions':
-            return <ClipboardList className={iconClass} aria-hidden />
+            return <SendIcon className={iconClass} aria-hidden />
         case '/exams':
             return <SchoolIcon className={iconClass} aria-hidden />
         case '/courses':

@@ -23,7 +23,7 @@ import {
     BookOpen,
     BookText,
     ActivityIcon,
-    ClipboardList,
+    SendIcon,
     PuzzleIcon,
     CrownIcon,
     GraduationCap,
@@ -54,7 +54,7 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
         case '/problems':
             return <PuzzleIcon aria-hidden />
         case '/submissions':
-            return <ClipboardList aria-hidden />
+            return <SendIcon aria-hidden />
         case '/exams':
             return <SchoolIcon aria-hidden />
         case '/courses':

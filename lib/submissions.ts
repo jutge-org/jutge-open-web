@@ -36,7 +36,8 @@ export function buildSubmissionRow(
 ): SubmissionRow {
     const parsed = parseProblemKey(submission.problem_id)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id
-    const problemTitle = problemTitles.get(problem_nm) ?? submission.problem_id
+    const problemTitle =
+        problemTitles.get(submission.problem_id) ?? problemTitles.get(problem_nm) ?? submission.problem_id
     const problemHref =
         parsed.kind === 'problem_id' ? `/problems/${parsed.problem_nm}` : `/problems/${submission.problem_id}`
 

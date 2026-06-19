@@ -5,7 +5,7 @@ import {
     BookOpen,
     BookText,
     ActivityIcon,
-    ClipboardList,
+    SendIcon,
     CrownIcon,
     GraduationCap,
     Info,
@@ -23,7 +23,7 @@ function NavIcon({ href, className }: { href: string; className?: string }) {
         case '/problems':
             return <PuzzleIcon className={iconClass} aria-hidden />
         case '/submissions':
-            return <ClipboardList className={iconClass} aria-hidden />
+            return <SendIcon className={iconClass} aria-hidden />
         case '/exams':
             return <SchoolIcon className={iconClass} aria-hidden />
         case '/courses':
@@ -68,7 +68,7 @@ const authenticatedLinkDescription: Record<string, string> = {
     '/courses': 'Browse your courses and assignments',
     '/activity': 'Check your activity and progress',
     '/awards': 'Badges and achievements you have earned',
-    '/profile': 'See your Jutge.org profile',
+    '/profile': 'See and update your Jutge.org profile',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
     '/documentation': 'Learn how to use Jutge.org',

@@ -1,6 +1,18 @@
 import { getSiteNavLinks, type SiteNavLinksContext } from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
-import { Award, BookOpen, BookText, ChartColumn, ClipboardList, CrownIcon, GraduationCap, Info, PuzzleIcon, SchoolIcon, User } from 'lucide-react'
+import {
+    Award,
+    BookOpen,
+    BookText,
+    ChartColumn,
+    ClipboardList,
+    CrownIcon,
+    GraduationCap,
+    Info,
+    PuzzleIcon,
+    SchoolIcon,
+    User,
+} from 'lucide-react'
 import Link from 'next/link'
 
 type HomeQuickNavProps = SiteNavLinksContext
@@ -64,8 +76,9 @@ const authenticatedLinkDescription: Record<string, string> = {
 }
 
 const guestLinkDescription: Record<string, string> = {
-    '/problems': 'Browse programming problems from Jutge.org',
-    '/documentation': 'Learn how to use Jutge.org',
+    '/problems': 'Browse programming problems',
+    '/courses': 'Browse public courses',
+    '/documentation': 'Documentation for Jutge.org',
     '/about': 'Find more about this site',
 }
 

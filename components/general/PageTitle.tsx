@@ -58,7 +58,7 @@ const guestDescription: Record<PageTitleSection, string> = {
     '/problems': 'Browse programming problems from Jutge.org',
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View and take exams',
-    '/courses': 'Browse courses and assignments',
+    '/courses': 'Browse public courses on Jutge.org. Sign in to enroll in a course.',
     '/statistics': 'Your Jutge.org activity and progress',
     '/awards': 'Achievements earned on Jutge.org',
     '/profile': 'Your Jutge.org account details',
@@ -85,6 +85,8 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
 type PageTitleProps = {
     section: PageTitleSection
     authenticated: boolean
+    description?: string
+    hidden?: boolean
 }
 
 function SectionIcon({ section }: { section: PageTitleSection }) {
@@ -117,11 +119,12 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
 
 const doDotShowTitle = true
 
-export function PageTitle({ section, authenticated }: PageTitleProps) {
+export function PageTitle({ section, authenticated, description: descriptionOverride, hidden = doDotShowTitle }: PageTitleProps) {
     const title = sectionLabel[section]
-    const description = authenticated ? authenticatedDescription[section] : guestDescription[section]
+    const description =
+        descriptionOverride ?? (authenticated ? authenticatedDescription[section] : guestDescription[section])
 
-    if (doDotShowTitle) return null
+    if (hidden) return null
 
     return (
         <div className="flex min-h-22 items-center gap-5 rounded-2xl border border-border bg-card px-6 py-5 text-left shadow-sm">

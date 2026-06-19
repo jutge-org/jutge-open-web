@@ -6,6 +6,7 @@ import { BookOpen, BookPlus, CheckCircle2, Globe, GraduationCap, Loader2, LogOut
 import { toast } from 'sonner'
 
 import { enrollCourseAction, unenrollCourseAction } from '@/actions/courses'
+import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,7 +30,7 @@ function CourseBadges({ course }: { course: CourseRow }) {
     return (
         <div className="flex flex-wrap gap-1.5">
             {course.isOfficial ? (
-                <Badge variant="secondary" className="gap-1">
+                <Badge variant="outline" className="gap-1">
                     <ShieldCheck aria-hidden />
                     Official
                 </Badge>
@@ -61,7 +62,7 @@ function CourseCard({ course, pendingKey, onEnroll, onUnenroll }: CourseCardProp
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
                 {course.description ? (
-                    <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{course.description}</p>
+                    <MarkdownText className="line-clamp-3">{course.description}</MarkdownText>
                 ) : (
                     <p className="text-sm text-muted-foreground italic">No description provided.</p>
                 )}

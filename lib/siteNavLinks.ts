@@ -86,7 +86,7 @@ export function pathsHrefEqual(a: string, b: string): boolean {
     return norm(a) === norm(b)
 }
 
-const links: readonly SiteNavLink[] = [problemsLink, documentationLink, aboutLink]
+const links: readonly SiteNavLink[] = [problemsLink, coursesLink, documentationLink, aboutLink]
 
 const authenticatedLinks: readonly SiteNavLink[] = [
     problemsLink,

@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-03T16:45:34.136Z
+ * This file has been automatically generated at 2026-06-19T06:35:32.352Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -117,6 +117,23 @@ export type AllTables = {
     verdicts: Record<string, Verdict>
     proglangs: Record<string, Proglang>
 }
+
+export type PublicProfile = {
+    email: string
+    name: string
+    username: string | null
+}
+
+export type PublicCourse = {
+    course_nm: string
+    title: string
+    description: string
+    public: number
+    official: number
+    owner: PublicProfile
+}
+
+export type PublicCourses = Record<string, PublicCourse>
 
 export type ProblemSummary = {
     summary_1s: string
@@ -402,12 +419,6 @@ export type CodeMetrics = {
     tiobe_standard: number
 }
 
-export type PublicProfile = {
-    email: string
-    name: string
-    username: string | null
-}
-
 export type BriefCourse = {
     course_nm: string
     title: string | null
@@ -535,6 +546,7 @@ export type Document = {
     document_nm: string
     title: string
     description: string
+    type: string
     created_at: string | string | string | number
     updated_at: string | string | string | number
 }
@@ -1339,6 +1351,7 @@ export class JutgeApiClient {
     readonly auth: Module_auth
     readonly misc: Module_misc
     readonly tables: Module_tables
+    readonly courses: Module_courses
     readonly problems: Module_problems
     readonly student: Module_student
     readonly instructor: Module_instructor
@@ -1351,6 +1364,7 @@ export class JutgeApiClient {
         this.auth = new Module_auth(this)
         this.misc = new Module_misc(this)
         this.tables = new Module_tables(this)
+        this.courses = new Module_courses(this)
         this.problems = new Module_problems(this)
         this.student = new Module_student(this)
         this.instructor = new Module_instructor(this)
@@ -1368,6 +1382,7 @@ export class JutgeApiClient {
         this.clientTTLs.set("tables.getDrivers", 300)
         this.clientTTLs.set("tables.getVerdicts", 300)
         this.clientTTLs.set("tables.getProglangs", 300)
+        this.clientTTLs.set("courses.indexPublic", 300)
         this.clientTTLs.set("problems.getAllAbstractProblems", 3600)
     }
 }
@@ -1768,6 +1783,31 @@ class Module_tables {
      */
     async getProglangs(): Promise<Record<string, Proglang>> {
         const [output, ofiles] = await this.root.execute("tables.getProglangs", null)
+        return output
+    }
+}
+
+/**
+ *
+ * Public course endpoints
+ *
+ */
+class Module_courses {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get all public courses.
+     *
+     * 🔐 Authentication: any
+     * No warnings
+     * Returns all courses marked as public, indexed by course key (`username:course_nm`).
+     */
+    async indexPublic(): Promise<PublicCourses> {
+        const [output, ofiles] = await this.root.execute("courses.indexPublic", null)
         return output
     }
 }
@@ -2911,7 +2951,7 @@ class Module_instructor_documents {
      *
      * 🔐 Authentication: instructor
      * No warnings
-     * The PDF file is not included in the response.
+     * The file content is not included in the response.
      */
     async get(document_nm: string): Promise<Document> {
         const [output, ofiles] = await this.root.execute("instructor.documents.get", document_nm)
@@ -2927,6 +2967,18 @@ class Module_instructor_documents {
      */
     async getPdf(document_nm: string): Promise<Download> {
         const [output, ofiles] = await this.root.execute("instructor.documents.getPdf", document_nm)
+        return ofiles[0]
+    }
+
+    /**
+     * Get ZIP of a document.
+     *
+     * 🔐 Authentication: instructor
+     * No warnings
+     *
+     */
+    async getZip(document_nm: string): Promise<Download> {
+        const [output, ofiles] = await this.root.execute("instructor.documents.getZip", document_nm)
         return ofiles[0]
     }
 

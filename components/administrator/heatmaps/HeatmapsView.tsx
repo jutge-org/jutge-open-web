@@ -10,7 +10,8 @@ export default function HeatmapsView() {
     return (
         <div className="pt-2 flex flex-col gap-4">
             <HeatmapWidget title="Latest month" start={dayjs().subtract(1, 'month')} end={dayjs()} sizeFactor={2} />
-            <HeatmapWidget title="2025" start={dayjs('2025-01-01')} end={dayjs()} />
+            <HeatmapWidget title="2026" start={dayjs('2026-01-01')} end={dayjs()} />
+            <HeatmapWidget title="2025" start={dayjs('2025-01-01')} end={dayjs('2026-01-01')} />
             <HeatmapWidget title="2024" start={dayjs('2024-01-01')} end={dayjs('2025-01-01')} />
             <HeatmapWidget title="2023" start={dayjs('2023-01-01')} end={dayjs('2024-01-01')} />
             <HeatmapWidget title="2022" start={dayjs('2022-01-01')} end={dayjs('2023-01-01')} />

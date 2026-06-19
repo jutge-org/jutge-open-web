@@ -69,18 +69,10 @@ const weekdayShort: Record<string, string> = {
     sunday: 'Sun',
 }
 
-function PanelCard({
-    title,
-    children,
-    className,
-}: {
-    title: string
-    children: ReactNode
-    className?: string
-}) {
+function PanelCard({ title, children, className }: { title: string; children: ReactNode; className?: string }) {
     return (
         <Card className={cn('gap-4 rounded-2xl border border-border shadow-sm', className)}>
-            <CardHeader className="border-b pb-4">
+            <CardHeader className="">
                 <CardTitle className="text-base font-semibold">{title}</CardTitle>
             </CardHeader>
             <CardContent>{children}</CardContent>
@@ -136,9 +128,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                             <div className="flex min-w-0 flex-col gap-1">
                                 <span className="text-sm font-medium text-muted-foreground">{label}</span>
                                 <span className="text-3xl font-semibold tracking-tight tabular-nums">
-                                    {key === 'level'
-                                        ? summary.level
-                                        : summary[key].toLocaleString()}
+                                    {key === 'level' ? summary.level : summary[key].toLocaleString()}
                                 </span>
                             </div>
                             <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />
@@ -210,9 +200,27 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                                 <XAxis dataKey="year" tickLine={false} axisLine={false} />
                                 <YAxis tickLine={false} axisLine={false} width={36} />
                                 <ChartTooltip content={<ChartTooltipContent />} />
-                                <Line type="monotone" dataKey="accepted" stroke="var(--color-chart-2)" strokeWidth={2} dot={false} />
-                                <Line type="monotone" dataKey="rejected" stroke="var(--color-chart-5)" strokeWidth={2} dot={false} />
-                                <Line type="monotone" dataKey="total" stroke="var(--color-chart-1)" strokeWidth={2} dot={false} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="accepted"
+                                    stroke="var(--color-chart-2)"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="rejected"
+                                    stroke="var(--color-chart-5)"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="total"
+                                    stroke="var(--color-chart-1)"
+                                    strokeWidth={2}
+                                    dot={false}
+                                />
                                 <Legend />
                             </LineChart>
                         </ChartContainer>
@@ -317,7 +325,9 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                                                 {row.problemLabel}
                                             </Link>
                                         </TableCell>
-                                        <TableCell className="text-right text-xs text-muted-foreground">{row.ago}</TableCell>
+                                        <TableCell className="text-right text-xs text-muted-foreground">
+                                            {row.ago}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -334,7 +344,13 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                         <ChartContainer config={languageChartConfig} className="mx-auto aspect-square max-h-72 w-full">
                             <PieChart>
                                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                                <Pie data={languageSlices} dataKey="count" nameKey="label" innerRadius="45%" strokeWidth={2}>
+                                <Pie
+                                    data={languageSlices}
+                                    dataKey="count"
+                                    nameKey="label"
+                                    innerRadius="45%"
+                                    strokeWidth={2}
+                                >
                                     {languageSlices.map((slice) => (
                                         <Cell key={slice.key} fill={slice.color} />
                                     ))}
@@ -352,7 +368,13 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                         <ChartContainer config={compilerChartConfig} className="mx-auto aspect-square max-h-72 w-full">
                             <PieChart>
                                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                                <Pie data={compilerSlices} dataKey="count" nameKey="label" innerRadius="45%" strokeWidth={2}>
+                                <Pie
+                                    data={compilerSlices}
+                                    dataKey="count"
+                                    nameKey="label"
+                                    innerRadius="45%"
+                                    strokeWidth={2}
+                                >
                                     {compilerSlices.map((slice) => (
                                         <Cell key={slice.key} fill={slice.color} />
                                     ))}

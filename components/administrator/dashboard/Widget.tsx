@@ -14,11 +14,11 @@ export default function Widget(props: WidgetProps) {
     return (
         <Card>
             {props.title && (
-                <CardHeader className="p-4">
+                <CardHeader className="">
                     <CardTitle className="p-0 flex flex-row gap-2 items-center">
                         {props.icon}
                         {props.title}
-                        <div className="flex-grow" />
+                        <div className="grow" />
                         {props.actions && props.actions}
                     </CardTitle>
                 </CardHeader>

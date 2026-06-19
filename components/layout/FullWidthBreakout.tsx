@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 export function FullWidthBreakout({ children, className }: { children: ReactNode; className?: string }) {
     return (
         <div className={cn('relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen bg-background', className)}>
-            {children}
+            <div className="sm:px-2">{children}</div>
         </div>
     )
 }

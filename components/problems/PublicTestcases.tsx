@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useState, type ReactNode } from 'react'
-import { AArrowDownIcon, AArrowUpIcon, Columns2Icon, PilcrowIcon } from 'lucide-react'
+import { AArrowDownIcon, AArrowUpIcon, Columns2Icon, EyeIcon, EyeOffIcon, Rows2Icon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Toggle } from '@/components/ui/toggle'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { DecodedTestcase } from '@/services/queries/problemDetail'
@@ -70,7 +69,7 @@ function TestcaseField({
 
     return (
         <div className="flex min-w-0 flex-col gap-2">
-            <p className="text-sm font-bold text-foreground">{label}</p>
+            <p className="text-sm font-bold text-foreground ml-1">{label}</p>
             {imageSrc ? (
                 <div className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -117,33 +116,47 @@ export function PublicTestcases({ testcases }: PublicTestcasesProps) {
                             <div className="inline-flex overflow-hidden rounded-lg border border-input">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Toggle
+                                        <Button
+                                            type="button"
                                             variant="outline"
                                             size="sm"
-                                            pressed={showWhitespace}
-                                            onPressedChange={setShowWhitespace}
-                                            aria-label="Show special characters"
+                                            aria-label={
+                                                showWhitespace
+                                                    ? 'Hide whitespace characters'
+                                                    : 'Show whitespace characters'
+                                            }
+                                            onClick={() => setShowWhitespace((value) => !value)}
                                             className="rounded-none border-0 border-r border-input"
                                         >
-                                            <PilcrowIcon />
-                                        </Toggle>
+                                            {showWhitespace ? <EyeOffIcon /> : <EyeIcon />}
+                                        </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top">Show whitespace characters</TooltipContent>
+                                    <TooltipContent side="top">
+                                        {showWhitespace ? 'Hide whitespace characters' : 'Show whitespace characters'}
+                                    </TooltipContent>
                                 </Tooltip>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Toggle
+                                        <Button
+                                            type="button"
                                             variant="outline"
                                             size="sm"
-                                            pressed={sideways}
-                                            onPressedChange={setSideways}
-                                            aria-label="Show input and output side by side"
+                                            aria-label={
+                                                sideways
+                                                    ? 'Stack input and output vertically'
+                                                    : 'Show input and output side by side'
+                                            }
+                                            onClick={() => setSideways((value) => !value)}
                                             className="rounded-none border-0"
                                         >
-                                            <Columns2Icon />
-                                        </Toggle>
+                                            {sideways ? <Rows2Icon /> : <Columns2Icon />}
+                                        </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top">Show input and output side by side</TooltipContent>
+                                    <TooltipContent side="top">
+                                        {sideways
+                                            ? 'Stack input and output vertically'
+                                            : 'Show input and output side by side'}
+                                    </TooltipContent>
                                 </Tooltip>
                             </div>
                             <div className="inline-flex overflow-hidden rounded-lg border border-input">
@@ -187,9 +200,9 @@ export function PublicTestcases({ testcases }: PublicTestcasesProps) {
                         </div>
                     </CardAction>
                 </CardHeader>
-                <CardContent className="flex flex-col divide-y divide-border pt-0">
+                <CardContent className="flex flex-col">
                     {testcases.map((testcase) => (
-                        <div key={testcase.name} className="py-6 first:pt-6 last:pb-0">
+                        <div key={testcase.name} className="pb-4 last:pb-0">
                             <div className={cn('grid gap-4', sideways && 'md:grid-cols-2')}>
                                 <TestcaseField
                                     label="Input"

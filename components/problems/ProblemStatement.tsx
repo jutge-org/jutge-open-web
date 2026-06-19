@@ -80,7 +80,7 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                         </Link>
                     </div>
                     <div
-                        className="statement-section text-muted-foreground"
+                        className="statement-section text-foreground"
                         style={{ '--statement-scale': fontScale } as CSSProperties}
                         dangerouslySetInnerHTML={{ __html: shortHtmlStatement }}
                     />

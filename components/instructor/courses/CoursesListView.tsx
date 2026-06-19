@@ -82,8 +82,7 @@ export function CoursesListView() {
 
     return (
         <>
-            <AgTableFull rowData={rows} columnDefs={colDefs} />
-            <div className="mt-4 flex flex-row gap-2">
+            <div className="mb-4 flex flex-row gap-2">
                 <Switch checked={showArchived} onCheckedChange={showArchivedChange} />
                 <div className="text-sm">Archived courses</div>
                 <div className="flex-grow" />
@@ -93,6 +92,7 @@ export function CoursesListView() {
                     </Button>
                 </Link>
             </div>
+            <AgTableFull rowData={rows} columnDefs={colDefs} />
         </>
     )
 }

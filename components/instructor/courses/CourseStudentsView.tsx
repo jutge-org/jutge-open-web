@@ -301,18 +301,7 @@ function CourseStudentsForm(props: CourseStudentProps) {
 
     return (
         <>
-            <AgTableFull
-                rowData={rows}
-                columnDefs={colDefs}
-                rowDragManaged={true}
-                rowDragMultiRow={true}
-                rowSelection={rowSelection}
-                ref={gridRef}
-                rowHeight={32}
-                onGridReady={onGridReady}
-            />
-
-            <div className="mt-4 flex flex-row-reverse gap-2 items-center">
+            <div className="mb-4 flex flex-row-reverse gap-2 items-center">
                 <Button className="w-28 justify-start" onClick={save} title="Save changes">
                     <SaveIcon className={changes ? 'animate-pulse' : ''} /> Save
                 </Button>
@@ -375,6 +364,17 @@ function CourseStudentsForm(props: CourseStudentProps) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
+            <AgTableFull
+                rowData={rows}
+                columnDefs={colDefs}
+                rowDragManaged={true}
+                rowDragMultiRow={true}
+                rowSelection={rowSelection}
+                ref={gridRef}
+                rowHeight={32}
+                onGridReady={onGridReady}
+            />
 
             <AddEmailsDialog />
             <RemoveEmailsDialog />

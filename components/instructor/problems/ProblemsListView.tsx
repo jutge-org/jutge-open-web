@@ -313,8 +313,7 @@ export function ProblemsListView() {
 
     return (
         <>
-            <AgTableFull rowData={problemRows} columnDefs={colDefs as never} loading={loading} />
-            <div className="mt-4 flex flex-row gap-2">
+            <div className="mb-4 flex flex-row gap-2">
                 <Switch checked={showDeprecated} onCheckedChange={showDeprecatedChange} />
                 <div className="text-sm">Deprecated problems</div>
                 <div className="flex-grow" />
@@ -330,6 +329,7 @@ export function ProblemsListView() {
                     </Button>
                 </Link>
             </div>
+            <AgTableFull rowData={problemRows} columnDefs={colDefs as never} loading={loading} />
         </>
     )
 }

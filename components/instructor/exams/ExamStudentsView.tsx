@@ -209,16 +209,7 @@ export function ExamStudentsView() {
 
     return (
         <>
-            <AgTableFull
-                rowData={rows}
-                columnDefs={colDefs}
-                rowDragManaged={true}
-                rowDragMultiRow={true}
-                rowSelection={rowSelection}
-                ref={gridRef}
-                rowHeight={32}
-            />
-            <div className="mt-4 flex flex-row-reverse gap-2 items-center">
+            <div className="mb-4 flex flex-row-reverse gap-2 items-center">
                 <Button className="w-36 justify-start" onClick={saveHandle} title="Save changes">
                     <SaveIcon className={changes ? 'animate-pulse' : ''} />
                     Save
@@ -253,6 +244,15 @@ export function ExamStudentsView() {
                     <DownloadCloudIcon /> Export to CSV
                 </Button>
             </div>
+            <AgTableFull
+                rowData={rows}
+                columnDefs={colDefs}
+                rowDragManaged={true}
+                rowDragMultiRow={true}
+                rowSelection={rowSelection}
+                ref={gridRef}
+                rowHeight={32}
+            />
             <AddEmailsDialog />
             <RemoveEmailsDialog />
         </>

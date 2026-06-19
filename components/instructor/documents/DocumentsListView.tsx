@@ -97,14 +97,14 @@ export function DocumentsListView() {
 
     return (
         <>
-            <AgTableFull rowData={documents} columnDefs={colDefs} />
-            <div className="mt-4 flex flex-row-reverse gap-2">
+            <div className="mb-4 flex flex-row-reverse gap-2">
                 <Link href="/instructor/documents/new">
                     <Button>
                         <SquarePlusIcon /> New document
                     </Button>
                 </Link>
             </div>
+            <AgTableFull rowData={documents} columnDefs={colDefs} />
         </>
     )
 }

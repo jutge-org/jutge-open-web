@@ -147,17 +147,7 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
 
     return (
         <>
-            <div className="h-[calc(100vh-200px)] w-full">
-                <AgTableFull
-                    rowData={items}
-                    columnDefs={colDefs}
-                    rowDragManaged={true}
-                    rowDragMultiRow={true}
-                    rowSelection={rowSelection}
-                    ref={gridRef}
-                />
-            </div>
-            <div className="mt-4 flex flex-row-reverse gap-2">
+            <div className="mb-4 flex flex-row-reverse gap-2">
                 <Button className="w-28 justify-start" onClick={saveAction}>
                     <SaveIcon className={changes ? 'animate-pulse' : ''} />
                     Save
@@ -168,6 +158,16 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
                 <Button className="w-28 justify-start" onClick={() => setIsAddDialogOpen(true)}>
                     <PlusCircleIcon /> Add
                 </Button>
+            </div>
+            <div className="h-[calc(100vh-200px)] w-full">
+                <AgTableFull
+                    rowData={items}
+                    columnDefs={colDefs}
+                    rowDragManaged={true}
+                    rowDragMultiRow={true}
+                    rowSelection={rowSelection}
+                    ref={gridRef}
+                />
             </div>
             <DialogToAddLists
                 isOpen={isAddDialogOpen}

@@ -296,15 +296,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
 
     return (
         <>
-            <AgTableFull
-                rowData={rows}
-                columnDefs={colDefs}
-                rowDragManaged={true}
-                rowDragMultiRow={true}
-                ref={gridRef}
-                rowSelection={rowSelection}
-            />
-            <div className="mt-4 flex flex-row gap-2">
+            <div className="mb-4 flex flex-row gap-2">
                 <Button
                     className="w-40 justify-start"
                     onClick={print}
@@ -359,6 +351,14 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                     Save
                 </Button>
             </div>
+            <AgTableFull
+                rowData={rows}
+                columnDefs={colDefs}
+                rowDragManaged={true}
+                rowDragMultiRow={true}
+                ref={gridRef}
+                rowSelection={rowSelection}
+            />
             <ProblemDialog
                 key={dialogKey}
                 setKey={setDialogKey}

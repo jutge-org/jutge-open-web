@@ -1,5 +1,11 @@
 import { cache } from 'react'
 
+import {
+    buildSubmissionCodeMetricsData,
+    parseCodeMetricsResponse,
+    shouldShowCodeMetrics,
+    type SubmissionCodeMetricsData,
+} from '@/lib/codeMetrics'
 import { parseProblemKey } from '@/lib/problems'
 import {
     buildProblemSubmissionRow,
@@ -68,6 +74,7 @@ export type SubmissionDetailData = {
     codeExtension: string | null
     codeFilename: string | null
     analysis: SubmissionAnalysis[]
+    codeMetrics: SubmissionCodeMetricsData | null
 }
 
 export type SubmissionCodeData = {
@@ -149,8 +156,29 @@ export const fetchSubmissionCode = cache(
     },
 )
 
+async function fetchSubmissionCodeMetrics(
+    client: JutgeApiClient,
+    submission: Submission,
+): Promise<SubmissionCodeMetricsData | null> {
+    const raw = await client.student.submissions
+        .getCodeMetrics({ problem_id: submission.problem_id, submission_id: submission.submission_id })
+        .catch(() => null)
+
+    const { metrics, solmetrics } = parseCodeMetricsResponse(raw)
+    if (!metrics) {
+        return null
+    }
+
+    return buildSubmissionCodeMetricsData(metrics, solmetrics)
+}
+
 export const fetchSubmissionDetail = cache(
-    async (client: JutgeApiClient, key: string, submission_id: string): Promise<SubmissionDetailData | null> => {
+    async (
+        client: JutgeApiClient,
+        key: string,
+        submission_id: string,
+        options?: { isAdministrator?: boolean; isExamOrContest?: boolean },
+    ): Promise<SubmissionDetailData | null> => {
         const resolvedProblemId = await resolveProblemId(key)
         if (!resolvedProblemId) {
             return null
@@ -193,6 +221,16 @@ export const fetchSubmissionDetail = cache(
 
         const extension = compilerMeta?.extension ?? 'txt'
 
+        const codeMetrics =
+            shouldShowCodeMetrics({
+                submission,
+                verdict,
+                isAdministrator: options?.isAdministrator ?? false,
+                isExamOrContest: options?.isExamOrContest ?? false,
+            })
+                ? await fetchSubmissionCodeMetrics(client, submission)
+                : null
+
         return {
             submission,
             problemTitle,
@@ -205,6 +243,7 @@ export const fetchSubmissionDetail = cache(
             codeExtension: codeB64 ? extension : null,
             codeFilename: codeB64 ? `${submission_id}.${extension}` : null,
             analysis,
+            codeMetrics,
         }
     },
 )

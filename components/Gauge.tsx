@@ -122,7 +122,7 @@ export function Gauge({
 
     const ticks = tickValues.map((tickValue) => {
         const fraction = valueToFraction(tickValue, minimum, maximum)
-        const point = topSemicirclePoint(cx, cy, radius + 6, fraction)
+        const point = topSemicirclePoint(cx, cy, radius - strokeWidth / 2, fraction)
         const outer = topSemicirclePoint(cx, cy, radius + 14, fraction)
         const labelPoint = topSemicirclePoint(cx, cy, radius + 24, fraction)
 

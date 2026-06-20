@@ -48,14 +48,22 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
     const codeHref = `${submissionHref}/code`
 
-    return renderAuthed(async () => {
+    return renderAuthed(async (user) => {
         const client = await getCurrentClient()
-        const [status, profile, submissionDetail, problemSubmissions] = await Promise.all([
+        const [status, profile, isExamOrContest, problemSubmissions] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
-            fetchSubmissionDetail(client, key, submission_id),
+            client.student.exam.get().then(
+                () => true,
+                () => false,
+            ),
             client.student.submissions.getForAbstractProblems(problem_nm),
         ])
+
+        const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
+            isAdministrator: user.administrator,
+            isExamOrContest,
+        })
 
         if (!submissionDetail) {
             notFound()

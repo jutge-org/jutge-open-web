@@ -2,6 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-rea
 import Link from 'next/link'
 
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
+import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -158,6 +159,8 @@ export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionD
                         />
                     </>
                 ) : null}
+
+                {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}
 
                 {data.analysis.length > 0 ? (
                     <Card className="ring-0 border border-border shadow-sm">

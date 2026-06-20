@@ -20,15 +20,7 @@ type SubmissionDetailViewProps = {
     navigation?: SubmissionNavLinks | null
 }
 
-function SubmissionNavButton({
-    href,
-    label,
-    children,
-}: {
-    href: string | null
-    label: string
-    children: ReactNode
-}) {
+function SubmissionNavButton({ href, label, children }: { href: string | null; label: string; children: ReactNode }) {
     if (href) {
         return (
             <Tooltip>
@@ -76,10 +68,7 @@ export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionD
                     <CardHeader className="border-b border-border">
                         <CardTitle className="flex flex-wrap items-center gap-2 text-lg font-semibold">
                             {data.verdictEmoji ? (
-                                <span
-                                    aria-hidden
-                                    className={cn('text-2xl', isPending && 'animate-pulse')}
-                                >
+                                <span aria-hidden className={cn('text-2xl', isPending && 'animate-pulse')}>
                                     {data.verdictEmoji}
                                 </span>
                             ) : null}
@@ -149,19 +138,6 @@ export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionD
                     </CardContent>
                 </Card>
 
-                {data.code && data.codeFilename ? (
-                    <>
-                        <SubmissionSourceCodeCard
-                            code={data.code}
-                            codeExtension={data.codeExtension}
-                            codeFilename={data.codeFilename}
-                            codeHref={codeHref}
-                        />
-                    </>
-                ) : null}
-
-                {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}
-
                 {data.analysis.length > 0 ? (
                     <Card className="ring-0 border border-border shadow-sm">
                         <CardHeader className="border-b border-border">
@@ -188,6 +164,19 @@ export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionD
                             </Table>
                         </CardContent>
                     </Card>
+                ) : null}
+
+                {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}
+
+                {data.code && data.codeFilename ? (
+                    <>
+                        <SubmissionSourceCodeCard
+                            code={data.code}
+                            codeExtension={data.codeExtension}
+                            codeFilename={data.codeFilename}
+                            codeHref={codeHref}
+                        />
+                    </>
                 ) : null}
             </div>
         </TooltipProvider>

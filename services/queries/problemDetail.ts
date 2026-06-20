@@ -3,6 +3,7 @@ import { cache } from 'react'
 import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import {
     JutgeApiClient,
+    type AbstractProblem,
     type AbstractStatus,
     type Compiler,
     type Language,
@@ -54,7 +55,16 @@ function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTest
     return decoded
 }
 
-export async function resolveProblemId(key: string): Promise<string | null> {
+export const fetchAbstractProblem = cache(async (problem_nm: string): Promise<AbstractProblem | null> => {
+    try {
+        const client = new JutgeApiClient()
+        return await client.problems.getAbstractProblem(problem_nm)
+    } catch {
+        return null
+    }
+})
+
+export const resolveProblemId = cache(async (key: string): Promise<string | null> => {
     const parsed = parseProblemKey(key)
 
     if (parsed.kind === 'problem_id') {
@@ -62,23 +72,22 @@ export async function resolveProblemId(key: string): Promise<string | null> {
     }
 
     if (parsed.kind === 'problem_nm') {
-        try {
-            const client = new JutgeApiClient()
-            const abstractProblem = await client.problems.getAbstractProblem(parsed.problem_nm)
-            const variants = Object.values(abstractProblem.problems)
-            if (variants.length === 0) {
-                return null
-            }
-
-            const originalLanguageId = variants[0].original_language_id
-            return `${parsed.problem_nm}_${originalLanguageId}`
-        } catch {
+        const abstractProblem = await fetchAbstractProblem(parsed.problem_nm)
+        if (!abstractProblem) {
             return null
         }
+
+        const variants = Object.values(abstractProblem.problems)
+        if (variants.length === 0) {
+            return null
+        }
+
+        const originalLanguageId = variants[0].original_language_id
+        return `${parsed.problem_nm}_${originalLanguageId}`
     }
 
     return null
-}
+})
 
 export const fetchProblemStatus = cache(
     async (client: JutgeApiClient, problem_nm: string): Promise<AbstractStatus | null> => {
@@ -101,10 +110,14 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
                 client.problems.getSampleTestcases(problemId),
                 client.problems.getPublicTestcases(problemId),
                 client.problems.getProblemSuppl(problemId),
-                client.problems.getAbstractProblem(problem.problem_nm),
+                fetchAbstractProblem(problem.problem_nm),
                 fetchLanguages(),
                 fetchCompilers(),
             ])
+
+        if (!abstractProblem) {
+            return null
+        }
 
         const allowedCompilerIds = parseProblemCompilerIds(problem.abstract_problem.compilers)
         const compilers =

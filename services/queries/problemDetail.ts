@@ -1,7 +1,13 @@
 import { cache } from 'react'
 
 import { parseProblemKey } from '@/lib/problems'
-import { JutgeApiClient, type Language, type Problem, type Testcase } from '@/lib/jutge_api_client'
+import {
+    JutgeApiClient,
+    type AbstractStatus,
+    type Language,
+    type Problem,
+    type Testcase,
+} from '@/lib/jutge_api_client'
 
 import { fetchLanguages } from './problems'
 
@@ -70,6 +76,16 @@ export async function resolveProblemId(key: string): Promise<string | null> {
 
     return null
 }
+
+export const fetchProblemStatus = cache(
+    async (client: JutgeApiClient, problem_nm: string): Promise<AbstractStatus | null> => {
+        try {
+            return await client.student.statuses.getForAbstractProblem(problem_nm)
+        } catch {
+            return null
+        }
+    },
+)
 
 export const fetchProblemDetail = cache(async (problemId: string): Promise<ProblemDetailData | null> => {
     try {

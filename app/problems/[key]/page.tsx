@@ -1,6 +1,7 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
-import { fetchProblemDetail, resolveProblemId } from '@/services/queries/problemDetail'
+import { getCurrentClient, isAuthenticated } from '@/lib/auth'
+import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -35,6 +36,11 @@ export default async function ProblemPage({ params }: PageProps) {
         notFound()
     }
 
+    const authenticated = await isAuthenticated()
+    const status = authenticated
+        ? await fetchProblemStatus(await getCurrentClient(), data.problem.problem_nm)
+        : undefined
+
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs
@@ -44,7 +50,7 @@ export default async function ProblemPage({ params }: PageProps) {
                     { title: data.problem.title, url: `/problems/${key}` },
                 ]}
             />
-            <ProblemDetail pageKey={key} data={data} />
+            <ProblemDetail pageKey={key} data={data} status={status} />
         </div>
     )
 }

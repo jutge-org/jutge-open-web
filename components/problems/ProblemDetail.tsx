@@ -3,21 +3,26 @@ import { SignatureIcon } from 'lucide-react'
 
 import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
+import { ProblemStatus } from '@/components/problems/ProblemStatus'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import type { AbstractStatus } from '@/lib/jutge_api_client'
 import type { ProblemDetailData } from '@/services/queries/problemDetail'
 
 type ProblemDetailProps = {
     pageKey: string
     data: ProblemDetailData
+    /** Present for authenticated users (may be null if the status request failed). */
+    status?: AbstractStatus | null
 }
 
-export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
+export function ProblemDetail({ pageKey, data, status }: ProblemDetailProps) {
     const { problem } = data
+    const showStatus = status !== undefined
 
     return (
         <div className="flex flex-col gap-6">
@@ -71,6 +76,21 @@ export function ProblemDetail({ pageKey, data }: ProblemDetailProps) {
                         </div>
                     </TooltipProvider>
                 </CardContent>
+                {showStatus ? (
+                    <ProblemStatus
+                        status={
+                            status ?? {
+                                problem_nm: problem.problem_nm,
+                                status: '',
+                                nb_submissions: 0,
+                                nb_pending_submissions: 0,
+                                nb_accepted_submissions: 0,
+                                nb_rejected_submissions: 0,
+                                nb_scored_submissions: 0,
+                            }
+                        }
+                    />
+                ) : null}
             </Card>
 
             <ProblemStatement pageKey={pageKey} shortHtmlStatement={data.shortHtmlStatement} />

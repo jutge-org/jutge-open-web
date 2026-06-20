@@ -1,10 +1,18 @@
 import { cache } from 'react'
 
 import { parseProblemKey } from '@/lib/problems'
-import { buildProblemSubmissionRow, buildSubmissionRow, type ProblemSubmissionRow, type SubmissionRow } from '@/lib/submissions'
-import type { JutgeApiClient } from '@/lib/jutge_api_client'
+import {
+    buildProblemSubmissionRow,
+    buildSubmissionRow,
+    formatSubmissionTime,
+    submissionVerdict,
+    type ProblemSubmissionRow,
+    type SubmissionRow,
+} from '@/lib/submissions'
+import type { JutgeApiClient, Submission, SubmissionAnalysis } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
+import { resolveProblemId } from './problemDetail'
 
 function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
     const nms = new Set<string>()
@@ -45,5 +53,113 @@ export const fetchProblemSubmissionsData = cache(
         ])
 
         return submissions.map((submission) => buildProblemSubmissionRow(submission, tables, languageTitles))
+    },
+)
+
+export type SubmissionDetailData = {
+    submission: Submission
+    problemTitle: string
+    verdict: string
+    verdictFullName: string
+    verdictEmoji?: string
+    compilerFullName: string
+    time_in: string
+    code: string | null
+    analysis: SubmissionAnalysis[]
+}
+
+function submissionProblemNm(submission: Submission): string | null {
+    const parsed = parseProblemKey(submission.problem_id)
+    if (parsed.kind === 'problem_id' || parsed.kind === 'problem_nm') {
+        return parsed.problem_nm
+    }
+    return null
+}
+
+function submissionMatchesProblemKey(submission: Submission, key: string, resolvedProblemId: string): boolean {
+    if (submission.problem_id === resolvedProblemId || submission.problem_id === key) {
+        return true
+    }
+
+    const keyParsed = parseProblemKey(key)
+    const keyProblemNm =
+        keyParsed.kind === 'problem_id' || keyParsed.kind === 'problem_nm' ? keyParsed.problem_nm : null
+    const submissionNm = submissionProblemNm(submission)
+
+    return keyProblemNm !== null && submissionNm === keyProblemNm
+}
+
+async function resolveSubmission(
+    client: JutgeApiClient,
+    key: string,
+    resolvedProblemId: string,
+    submission_id: string,
+): Promise<Submission | null> {
+    try {
+        return await client.student.submissions.get({ problem_id: resolvedProblemId, submission_id })
+    } catch {
+        const parsed = parseProblemKey(resolvedProblemId)
+        if (parsed.kind !== 'problem_id' && parsed.kind !== 'problem_nm') {
+            return null
+        }
+
+        const submissions = await client.student.submissions.getForAbstractProblems(parsed.problem_nm)
+        return submissions.find((submission) => submission.submission_id === submission_id) ?? null
+    }
+}
+
+export const fetchSubmissionDetail = cache(
+    async (client: JutgeApiClient, key: string, submission_id: string): Promise<SubmissionDetailData | null> => {
+        const resolvedProblemId = await resolveProblemId(key)
+        if (!resolvedProblemId) {
+            return null
+        }
+
+        const submission = await resolveSubmission(client, key, resolvedProblemId, submission_id)
+        if (!submission || !submissionMatchesProblemKey(submission, key, resolvedProblemId)) {
+            return null
+        }
+
+        const [tables, codeB64, analysis] = await Promise.all([
+            client.tables.get(),
+            submission.state === 'done'
+                ? client.student.submissions
+                      .getCodeAsB64({ problem_id: submission.problem_id, submission_id })
+                      .catch(() => null)
+                : Promise.resolve(null),
+            submission.state === 'done'
+                ? client.student.submissions
+                      .getAnalysis({ problem_id: submission.problem_id, submission_id })
+                      .catch(() => [] as SubmissionAnalysis[])
+                : Promise.resolve([] as SubmissionAnalysis[]),
+        ])
+
+        const parsed = parseProblemKey(submission.problem_id)
+        const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id
+        let problemTitle = submission.problem_id
+
+        try {
+            const abstractProblems = await client.problems.getAbstractProblems(problem_nm)
+            const titles = abstractProblemsToTitleMap(abstractProblems)
+            problemTitle = titles.get(submission.problem_id) ?? titles.get(problem_nm) ?? submission.problem_id
+        } catch {
+            // Title falls back to the problem id.
+        }
+
+        const verdict = submissionVerdict(submission)
+        const verdictMeta = tables.verdicts[verdict]
+        const compilerMeta = tables.compilers[submission.compiler_id]
+
+        return {
+            submission,
+            problemTitle,
+            verdict,
+            verdictFullName: verdictMeta?.name ?? verdict,
+            verdictEmoji: verdictMeta?.emoji,
+            compilerFullName: compilerMeta?.name ?? submission.compiler_id,
+            time_in: formatSubmissionTime(submission.time_in),
+            code: codeB64 ? Buffer.from(codeB64, 'base64').toString('utf-8') : null,
+            analysis,
+        }
     },
 )

@@ -14,8 +14,13 @@ export function submissionVerdict(submission: Submission): string {
     return submission.veredict ?? (submission.state === 'done' ? '—' : 'Pending')
 }
 
+export function buildSubmissionHref(problem_id: string, submission_id: string): string {
+    return `/problems/${problem_id}/submissions/${submission_id}`
+}
+
 export type SubmissionRow = {
     submission_id: string
+    submissionHref: string
     problem_id: string
     problemTitle: string
     problemHref: string
@@ -53,6 +58,7 @@ export function buildSubmissionRow(
 
     return {
         submission_id: submission.submission_id,
+        submissionHref: buildSubmissionHref(submission.problem_id, submission.submission_id),
         problem_id: submission.problem_id,
         problemTitle,
         problemHref,

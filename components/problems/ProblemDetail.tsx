@@ -13,14 +13,30 @@ import { cn } from '@/lib/utils'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import type { ProblemDetailData } from '@/services/queries/problemDetail'
 
+import type { ReactNode } from 'react'
+
 type ProblemDetailProps = {
     pageKey: string
     data: ProblemDetailData
     /** Present for authenticated users (may be null if the status request failed). */
     status?: AbstractStatus | null
+    defaultCompilerId?: string | null
+    showStatement?: boolean
+    showTestcases?: boolean
+    showInformation?: boolean
+    children?: ReactNode
 }
 
-export function ProblemDetail({ pageKey, data, status }: ProblemDetailProps) {
+export function ProblemDetail({
+    pageKey,
+    data,
+    status,
+    defaultCompilerId,
+    showStatement = true,
+    showTestcases = true,
+    showInformation = true,
+    children,
+}: ProblemDetailProps) {
     const { problem } = data
     const showStatus = status !== undefined
 
@@ -89,15 +105,22 @@ export function ProblemDetail({ pageKey, data, status }: ProblemDetailProps) {
                                 nb_scored_submissions: 0,
                             }
                         }
+                        problemId={problem.problem_id}
+                        compilers={data.compilers}
+                        defaultCompilerId={defaultCompilerId}
                     />
                 ) : null}
             </Card>
 
-            <ProblemStatement pageKey={pageKey} shortHtmlStatement={data.shortHtmlStatement} />
+            {children}
 
-            {data.publicTestcases.length > 0 ? <PublicTestcases testcases={data.publicTestcases} /> : null}
+            {showStatement ? <ProblemStatement pageKey={pageKey} shortHtmlStatement={data.shortHtmlStatement} /> : null}
 
-            <ProblemInformation data={data} />
+            {showTestcases && data.publicTestcases.length > 0 ? (
+                <PublicTestcases testcases={data.publicTestcases} />
+            ) : null}
+
+            {showInformation ? <ProblemInformation data={data} /> : null}
         </div>
     )
 }

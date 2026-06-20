@@ -29,6 +29,12 @@ export type SubmissionRow = {
     annotation: string | null
 }
 
+export type ProblemSubmissionRow = SubmissionRow & {
+    language_id: string
+    languageTitle: string
+    languageHref: string
+}
+
 export function buildSubmissionRow(
     submission: Submission,
     tables: AllTables,
@@ -58,5 +64,22 @@ export function buildSubmissionRow(
         time_in: formatSubmissionTime(submission.time_in),
         time_inMs: parseSubmissionTime(submission.time_in).getTime(),
         annotation: submission.annotation,
+    }
+}
+
+export function buildProblemSubmissionRow(
+    submission: Submission,
+    tables: AllTables,
+    languageTitles: Map<string, string>,
+): ProblemSubmissionRow {
+    const row = buildSubmissionRow(submission, tables, languageTitles)
+    const parsed = parseProblemKey(submission.problem_id)
+    const language_id = parsed.kind === 'problem_id' ? parsed.language_id : submission.problem_id
+
+    return {
+        ...row,
+        language_id,
+        languageTitle: languageTitles.get(submission.problem_id) ?? language_id,
+        languageHref: `/problems/${submission.problem_id}`,
     }
 }

@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { parseProblemKey } from '@/lib/problems'
-import { buildSubmissionRow, type SubmissionRow } from '@/lib/submissions'
+import { buildProblemSubmissionRow, buildSubmissionRow, type ProblemSubmissionRow, type SubmissionRow } from '@/lib/submissions'
 import type { JutgeApiClient } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
@@ -36,3 +36,14 @@ export const fetchSubmissionsData = cache(async (client: JutgeApiClient): Promis
 
     return submissions.map((submission) => buildSubmissionRow(submission, tables, problemTitles))
 })
+
+export const fetchProblemSubmissionsData = cache(
+    async (client: JutgeApiClient, problem_nm: string, languageTitles: Map<string, string>): Promise<ProblemSubmissionRow[]> => {
+        const [submissions, tables] = await Promise.all([
+            client.student.submissions.getForAbstractProblems(problem_nm),
+            client.tables.get(),
+        ])
+
+        return submissions.map((submission) => buildProblemSubmissionRow(submission, tables, languageTitles))
+    },
+)

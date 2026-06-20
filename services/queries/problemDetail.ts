@@ -1,15 +1,17 @@
 import { cache } from 'react'
 
-import { parseProblemKey } from '@/lib/problems'
+import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import {
     JutgeApiClient,
     type AbstractStatus,
+    type Compiler,
     type Language,
     type Problem,
     type Testcase,
 } from '@/lib/jutge_api_client'
 
 import { fetchLanguages } from './problems'
+import { fetchCompilers } from './tables'
 
 export type DecodedTestcase = {
     name: string
@@ -33,6 +35,7 @@ export type ProblemDetailData = {
     brokenOfficialSolutions: string[]
     userSolutions: string[]
     languages: Record<string, Language>
+    compilers: Compiler[]
 }
 
 function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTestcase {
@@ -92,7 +95,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         const client = new JutgeApiClient()
         const problem = await client.problems.getProblem(problemId)
 
-        const [shortHtmlStatement, sampleTestcases, publicTestcases, problemSuppl, abstractProblem, languages] =
+        const [shortHtmlStatement, sampleTestcases, publicTestcases, problemSuppl, abstractProblem, languages, allCompilers] =
             await Promise.all([
                 client.problems.getShortHtmlStatement(problemId),
                 client.problems.getSampleTestcases(problemId),
@@ -100,7 +103,14 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
                 client.problems.getProblemSuppl(problemId),
                 client.problems.getAbstractProblem(problem.problem_nm),
                 fetchLanguages(),
+                fetchCompilers(),
             ])
+
+        const allowedCompilerIds = parseProblemCompilerIds(problem.abstract_problem.compilers)
+        const compilers =
+            allowedCompilerIds.length > 0
+                ? allCompilers.filter((compiler) => allowedCompilerIds.includes(compiler.compiler_id))
+                : allCompilers
 
         const languageVariants = Object.values(abstractProblem.problems)
             .map((variant) => ({
@@ -133,6 +143,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             brokenOfficialSolutions,
             userSolutions,
             languages,
+            compilers,
         }
     } catch {
         return null

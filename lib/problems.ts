@@ -6,6 +6,30 @@ export type ParsedProblemKey =
     | { kind: 'problem_nm'; problem_nm: string }
     | { kind: 'invalid' }
 
+export function parseProblemCompilerIds(compilers: string | null): string[] {
+    if (!compilers) return []
+    return compilers.trim().split(/\s+/).filter(Boolean)
+}
+
+export function splitProblemId(problemId: string): { main: string; suffix: string | null } {
+    const underscoreIndex = problemId.indexOf('_')
+    if (underscoreIndex === -1) {
+        return { main: problemId, suffix: null }
+    }
+
+    return {
+        main: problemId.slice(0, underscoreIndex),
+        suffix: problemId.slice(underscoreIndex + 1),
+    }
+}
+
+export function pickPreferredId(availableIds: string[], preferredId: string | null | undefined): string {
+    if (preferredId && availableIds.includes(preferredId)) {
+        return preferredId
+    }
+    return availableIds[0] ?? ''
+}
+
 export function parseProblemKey(key: string): ParsedProblemKey {
     const idMatch = key.match(PROBLEM_ID_RE)
     if (idMatch) {

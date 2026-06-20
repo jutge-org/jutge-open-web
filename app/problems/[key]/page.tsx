@@ -37,9 +37,18 @@ export default async function ProblemPage({ params }: PageProps) {
     }
 
     const authenticated = await isAuthenticated()
-    const status = authenticated
-        ? await fetchProblemStatus(await getCurrentClient(), data.problem.problem_nm)
-        : undefined
+    let status: Awaited<ReturnType<typeof fetchProblemStatus>> | undefined
+    let defaultCompilerId: string | null | undefined
+
+    if (authenticated) {
+        const client = await getCurrentClient()
+        const [statusResult, profile] = await Promise.all([
+            fetchProblemStatus(client, data.problem.problem_nm),
+            client.student.profile.get(),
+        ])
+        status = statusResult
+        defaultCompilerId = profile.compiler_id
+    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -50,7 +59,7 @@ export default async function ProblemPage({ params }: PageProps) {
                     { title: data.problem.title, url: `/problems/${key}` },
                 ]}
             />
-            <ProblemDetail pageKey={key} data={data} status={status} />
+            <ProblemDetail pageKey={key} data={data} status={status} defaultCompilerId={defaultCompilerId} />
         </div>
     )
 }

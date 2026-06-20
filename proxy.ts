@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 const SUBMISSION_CODE_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/code$/
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
 
     if (!SUBMISSION_CODE_PATH.test(pathname)) {

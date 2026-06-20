@@ -1,15 +1,58 @@
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
+import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import type { SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 import type { SubmissionDetailData } from '@/services/queries/submissions'
 import type { ReactNode } from 'react'
 
 type SubmissionDetailViewProps = {
     data: SubmissionDetailData
+    codeHref: string
+    navigation?: SubmissionNavLinks | null
+}
+
+function SubmissionNavButton({
+    href,
+    label,
+    children,
+}: {
+    href: string | null
+    label: string
+    children: ReactNode
+}) {
+    if (href) {
+        return (
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon-sm" asChild>
+                        <Link href={href} aria-label={label}>
+                            {children}
+                        </Link>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">{label}</TooltipContent>
+            </Tooltip>
+        )
+    }
+
+    return (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant="outline" size="icon-sm" disabled aria-label={label}>
+                    {children}
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">{label}</TooltipContent>
+        </Tooltip>
+    )
 }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
@@ -21,7 +64,7 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
     )
 }
 
-export function SubmissionDetailView({ data }: SubmissionDetailViewProps) {
+export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionDetailViewProps) {
     const { submission } = data
     const isPending = submission.state !== 'done'
 
@@ -41,6 +84,21 @@ export function SubmissionDetailView({ data }: SubmissionDetailViewProps) {
                             ) : null}
                             <span>{data.submission.submission_id}</span>
                         </CardTitle>
+                        {navigation ? (
+                            <CardAction>
+                                <ButtonGroup>
+                                    <SubmissionNavButton href={navigation.previousHref} label="Previous submission">
+                                        <ChevronLeftIcon />
+                                    </SubmissionNavButton>
+                                    <SubmissionNavButton href={navigation.nextHref} label="Next submission">
+                                        <ChevronRightIcon />
+                                    </SubmissionNavButton>
+                                    <SubmissionNavButton href={navigation.lastHref} label="Last submission">
+                                        <ChevronsRightIcon />
+                                    </SubmissionNavButton>
+                                </ButtonGroup>
+                            </CardAction>
+                        ) : null}
                     </CardHeader>
                     <CardContent className="px-6 py-2">
                         <dl>
@@ -90,17 +148,15 @@ export function SubmissionDetailView({ data }: SubmissionDetailViewProps) {
                     </CardContent>
                 </Card>
 
-                {data.code ? (
-                    <Card className="ring-0 border border-border shadow-sm">
-                        <CardHeader className="border-b border-border">
-                            <CardTitle className="text-lg font-semibold">Source code</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <pre className="max-h-128 overflow-auto p-4 text-sm leading-relaxed whitespace-pre-wrap">
-                                {data.code}
-                            </pre>
-                        </CardContent>
-                    </Card>
+                {data.code && data.codeFilename ? (
+                    <>
+                        <SubmissionSourceCodeCard
+                            code={data.code}
+                            codeExtension={data.codeExtension}
+                            codeFilename={data.codeFilename}
+                            codeHref={codeHref}
+                        />
+                    </>
                 ) : null}
 
                 {data.analysis.length > 0 ? (

@@ -18,6 +18,34 @@ export function buildSubmissionHref(problem_id: string, submission_id: string): 
     return `/problems/${problem_id}/submissions/${submission_id}`
 }
 
+export type SubmissionNavLinks = {
+    previousHref: string | null
+    nextHref: string | null
+    lastHref: string | null
+}
+
+export function buildSubmissionNavLinks(
+    submissions: Submission[],
+    currentSubmissionId: string,
+    pageKey: string,
+): SubmissionNavLinks | null {
+    const sorted = [...submissions].sort(
+        (a, b) => parseSubmissionTime(b.time_in).getTime() - parseSubmissionTime(a.time_in).getTime(),
+    )
+    const index = sorted.findIndex((submission) => submission.submission_id === currentSubmissionId)
+    if (index === -1) {
+        return null
+    }
+
+    const href = (submissionId: string) => `/problems/${pageKey}/submissions/${submissionId}`
+
+    return {
+        previousHref: index < sorted.length - 1 ? href(sorted[index + 1].submission_id) : null,
+        nextHref: index > 0 ? href(sorted[index - 1].submission_id) : null,
+        lastHref: index > 0 ? href(sorted[0].submission_id) : null,
+    }
+}
+
 export type SubmissionRow = {
     submission_id: string
     submissionHref: string

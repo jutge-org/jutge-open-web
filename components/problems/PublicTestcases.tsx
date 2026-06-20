@@ -6,12 +6,15 @@ import { AArrowDownIcon, AArrowUpIcon, Columns2Icon, EyeIcon, EyeOffIcon, Rows2I
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
+import {
+    FONT_SCALE_STEP,
+    MAX_FONT_SCALE,
+    MIN_FONT_SCALE,
+    TESTCASES_FONT_SCALE_KEY,
+} from '@/lib/fontScale'
 import { cn } from '@/lib/utils'
 import type { DecodedTestcase } from '@/services/queries/problemDetail'
-
-const MIN_SCALE = 0.85
-const MAX_SCALE = 1.5
-const SCALE_STEP = 0.1
 
 type PublicTestcasesProps = {
     testcases: DecodedTestcase[]
@@ -104,7 +107,7 @@ function TestcaseField({
 export function PublicTestcases({ testcases }: PublicTestcasesProps) {
     const [showWhitespace, setShowWhitespace] = useState(false)
     const [sideways, setSideways] = useState(true)
-    const [fontScale, setFontScale] = useState(1)
+    const [fontScale, setFontScale] = useFontScalePreference(TESTCASES_FONT_SCALE_KEY)
 
     return (
         <TooltipProvider>
@@ -167,9 +170,11 @@ export function PublicTestcases({ testcases }: PublicTestcasesProps) {
                                             variant="outline"
                                             size="icon-sm"
                                             aria-label="Decrease test case font size"
-                                            disabled={fontScale <= MIN_SCALE}
+                                            disabled={fontScale <= MIN_FONT_SCALE}
                                             onClick={() =>
-                                                setFontScale((scale) => Math.max(MIN_SCALE, scale - SCALE_STEP))
+                                                setFontScale((scale) =>
+                                                    Math.max(MIN_FONT_SCALE, scale - FONT_SCALE_STEP),
+                                                )
                                             }
                                             className="rounded-none border-0 border-r border-input"
                                         >
@@ -185,9 +190,11 @@ export function PublicTestcases({ testcases }: PublicTestcasesProps) {
                                             variant="outline"
                                             size="icon-sm"
                                             aria-label="Increase test case font size"
-                                            disabled={fontScale >= MAX_SCALE}
+                                            disabled={fontScale >= MAX_FONT_SCALE}
                                             onClick={() =>
-                                                setFontScale((scale) => Math.min(MAX_SCALE, scale + SCALE_STEP))
+                                                setFontScale((scale) =>
+                                                    Math.min(MAX_FONT_SCALE, scale + FONT_SCALE_STEP),
+                                                )
                                             }
                                             className="rounded-none border-0"
                                         >

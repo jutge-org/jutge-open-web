@@ -129,7 +129,10 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 sortable: true,
                 filter: true,
                 cellRenderer: (params: { data: SubmissionRow }) => (
-                    <Link href={params.data.submissionHref} className="text-sm hover:text-primary hover:underline">
+                    <Link
+                        href={params.data.submissionHref}
+                        className="text-sm hover:text-primary hover:underline"
+                    >
                         {params.data.submission_id}
                     </Link>
                 ),

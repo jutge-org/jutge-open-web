@@ -4,6 +4,7 @@ import { SubmissionDetailView } from '@/components/submissions/SubmissionDetailV
 import { getCurrentClient } from '@/lib/auth'
 import { parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
+import { buildSubmissionNavLinks } from '@/lib/submissions'
 import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
 import { fetchSubmissionDetail } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
@@ -45,13 +46,15 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
     const parsed = parseProblemKey(problemId)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
+    const codeHref = `${submissionHref}/code`
 
     return renderAuthed(async () => {
         const client = await getCurrentClient()
-        const [status, profile, submissionDetail] = await Promise.all([
+        const [status, profile, submissionDetail, problemSubmissions] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
             fetchSubmissionDetail(client, key, submission_id),
+            client.student.submissions.getForAbstractProblems(problem_nm),
         ])
 
         if (!submissionDetail) {
@@ -78,7 +81,11 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <SubmissionDetailView data={submissionDetail} />
+                    <SubmissionDetailView
+                        data={submissionDetail}
+                        codeHref={codeHref}
+                        navigation={buildSubmissionNavLinks(problemSubmissions, submission_id, key)}
+                    />
                 </ProblemDetail>
             </div>
         )

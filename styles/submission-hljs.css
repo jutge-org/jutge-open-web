@@ -1,0 +1,197 @@
+.submission-source-code pre code.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0;
+    background: transparent;
+}
+
+.submission-source-code[data-hljs-theme] pre {
+    padding: 0;
+}
+
+.submission-source-code[data-hljs-theme] pre code.hljs {
+    padding: 1em;
+    background: unset;
+}
+
+.submission-source-code[data-theme='light'] .hljs {
+    color: #24292e;
+}
+
+.submission-source-code[data-theme='light'] .hljs-doctag,
+.submission-source-code[data-theme='light'] .hljs-keyword,
+.submission-source-code[data-theme='light'] .hljs-meta .hljs-keyword,
+.submission-source-code[data-theme='light'] .hljs-template-tag,
+.submission-source-code[data-theme='light'] .hljs-template-variable,
+.submission-source-code[data-theme='light'] .hljs-type,
+.submission-source-code[data-theme='light'] .hljs-variable.language_ {
+    color: #d73a49;
+}
+
+.submission-source-code[data-theme='light'] .hljs-title,
+.submission-source-code[data-theme='light'] .hljs-title.class_,
+.submission-source-code[data-theme='light'] .hljs-title.class_.inherited__,
+.submission-source-code[data-theme='light'] .hljs-title.function_ {
+    color: #6f42c1;
+}
+
+.submission-source-code[data-theme='light'] .hljs-attr,
+.submission-source-code[data-theme='light'] .hljs-attribute,
+.submission-source-code[data-theme='light'] .hljs-literal,
+.submission-source-code[data-theme='light'] .hljs-meta,
+.submission-source-code[data-theme='light'] .hljs-number,
+.submission-source-code[data-theme='light'] .hljs-operator,
+.submission-source-code[data-theme='light'] .hljs-variable,
+.submission-source-code[data-theme='light'] .hljs-selector-attr,
+.submission-source-code[data-theme='light'] .hljs-selector-class,
+.submission-source-code[data-theme='light'] .hljs-selector-id {
+    color: #005cc5;
+}
+
+.submission-source-code[data-theme='light'] .hljs-regexp,
+.submission-source-code[data-theme='light'] .hljs-string,
+.submission-source-code[data-theme='light'] .hljs-meta .hljs-string {
+    color: #032f62;
+}
+
+.submission-source-code[data-theme='light'] .hljs-built_in,
+.submission-source-code[data-theme='light'] .hljs-symbol {
+    color: #e36209;
+}
+
+.submission-source-code[data-theme='light'] .hljs-comment,
+.submission-source-code[data-theme='light'] .hljs-code,
+.submission-source-code[data-theme='light'] .hljs-formula {
+    color: #6a737d;
+}
+
+.submission-source-code[data-theme='light'] .hljs-name,
+.submission-source-code[data-theme='light'] .hljs-quote,
+.submission-source-code[data-theme='light'] .hljs-selector-tag,
+.submission-source-code[data-theme='light'] .hljs-selector-pseudo {
+    color: #22863a;
+}
+
+.submission-source-code[data-theme='light'] .hljs-subst {
+    color: #24292e;
+}
+
+.submission-source-code[data-theme='light'] .hljs-section {
+    color: #005cc5;
+    font-weight: bold;
+}
+
+.submission-source-code[data-theme='light'] .hljs-bullet {
+    color: #735c0f;
+}
+
+.submission-source-code[data-theme='light'] .hljs-emphasis {
+    color: #24292e;
+    font-style: italic;
+}
+
+.submission-source-code[data-theme='light'] .hljs-strong {
+    color: #24292e;
+    font-weight: bold;
+}
+
+.submission-source-code[data-theme='light'] .hljs-addition {
+    color: #22863a;
+    background-color: #f0fff4;
+}
+
+.submission-source-code[data-theme='light'] .hljs-deletion {
+    color: #b31d28;
+    background-color: #ffeef0;
+}
+
+.submission-source-code[data-theme='dark'] .hljs {
+    color: #c9d1d9;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-doctag,
+.submission-source-code[data-theme='dark'] .hljs-keyword,
+.submission-source-code[data-theme='dark'] .hljs-meta .hljs-keyword,
+.submission-source-code[data-theme='dark'] .hljs-template-tag,
+.submission-source-code[data-theme='dark'] .hljs-template-variable,
+.submission-source-code[data-theme='dark'] .hljs-type,
+.submission-source-code[data-theme='dark'] .hljs-variable.language_ {
+    color: #ff7b72;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-title,
+.submission-source-code[data-theme='dark'] .hljs-title.class_,
+.submission-source-code[data-theme='dark'] .hljs-title.class_.inherited__,
+.submission-source-code[data-theme='dark'] .hljs-title.function_ {
+    color: #d2a8ff;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-attr,
+.submission-source-code[data-theme='dark'] .hljs-attribute,
+.submission-source-code[data-theme='dark'] .hljs-literal,
+.submission-source-code[data-theme='dark'] .hljs-meta,
+.submission-source-code[data-theme='dark'] .hljs-number,
+.submission-source-code[data-theme='dark'] .hljs-operator,
+.submission-source-code[data-theme='dark'] .hljs-variable,
+.submission-source-code[data-theme='dark'] .hljs-selector-attr,
+.submission-source-code[data-theme='dark'] .hljs-selector-class,
+.submission-source-code[data-theme='dark'] .hljs-selector-id {
+    color: #79c0ff;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-regexp,
+.submission-source-code[data-theme='dark'] .hljs-string,
+.submission-source-code[data-theme='dark'] .hljs-meta .hljs-string {
+    color: #a5d6ff;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-built_in,
+.submission-source-code[data-theme='dark'] .hljs-symbol {
+    color: #ffa657;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-comment,
+.submission-source-code[data-theme='dark'] .hljs-code,
+.submission-source-code[data-theme='dark'] .hljs-formula {
+    color: #8b949e;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-name,
+.submission-source-code[data-theme='dark'] .hljs-quote,
+.submission-source-code[data-theme='dark'] .hljs-selector-tag,
+.submission-source-code[data-theme='dark'] .hljs-selector-pseudo {
+    color: #7ee787;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-subst {
+    color: #c9d1d9;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-section {
+    color: #1f6feb;
+    font-weight: bold;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-bullet {
+    color: #f2cc60;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-emphasis {
+    color: #c9d1d9;
+    font-style: italic;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-strong {
+    color: #c9d1d9;
+    font-weight: bold;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-addition {
+    color: #aff5b4;
+    background-color: #033a16;
+}
+
+.submission-source-code[data-theme='dark'] .hljs-deletion {
+    color: #ffdcd7;
+    background-color: #67060c;
+}

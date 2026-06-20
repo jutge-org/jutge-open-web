@@ -1,16 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import { AArrowDownIcon, AArrowUpIcon, FileArchive, FileText } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-
-const MIN_SCALE = 0.85
-const MAX_SCALE = 1.5
-const SCALE_STEP = 0.1
+import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
+import {
+    FONT_SCALE_STEP,
+    MAX_FONT_SCALE,
+    MIN_FONT_SCALE,
+    STATEMENT_FONT_SCALE_KEY,
+} from '@/lib/fontScale'
 
 type ProblemStatementProps = {
     pageKey: string
@@ -18,7 +21,7 @@ type ProblemStatementProps = {
 }
 
 export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStatementProps) {
-    const [fontScale, setFontScale] = useState(1)
+    const [fontScale, setFontScale] = useFontScalePreference(STATEMENT_FONT_SCALE_KEY)
 
     return (
         <TooltipProvider>
@@ -34,8 +37,10 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                                         variant="outline"
                                         size="icon-sm"
                                         aria-label="Decrease statement font size"
-                                        disabled={fontScale <= MIN_SCALE}
-                                        onClick={() => setFontScale((scale) => Math.max(MIN_SCALE, scale - SCALE_STEP))}
+                                        disabled={fontScale <= MIN_FONT_SCALE}
+                                        onClick={() =>
+                                            setFontScale((scale) => Math.max(MIN_FONT_SCALE, scale - FONT_SCALE_STEP))
+                                        }
                                         className="rounded-none border-0 border-r border-input"
                                     >
                                         <AArrowDownIcon />
@@ -50,8 +55,10 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                                         variant="outline"
                                         size="icon-sm"
                                         aria-label="Increase statement font size"
-                                        disabled={fontScale >= MAX_SCALE}
-                                        onClick={() => setFontScale((scale) => Math.min(MAX_SCALE, scale + SCALE_STEP))}
+                                        disabled={fontScale >= MAX_FONT_SCALE}
+                                        onClick={() =>
+                                            setFontScale((scale) => Math.min(MAX_FONT_SCALE, scale + FONT_SCALE_STEP))
+                                        }
                                         className="rounded-none border-0"
                                     >
                                         <AArrowUpIcon />

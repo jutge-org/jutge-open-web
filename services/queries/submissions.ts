@@ -65,7 +65,14 @@ export type SubmissionDetailData = {
     compilerFullName: string
     time_in: string
     code: string | null
+    codeExtension: string | null
+    codeFilename: string | null
     analysis: SubmissionAnalysis[]
+}
+
+export type SubmissionCodeData = {
+    code: string
+    codeExtension: string
 }
 
 function submissionProblemNm(submission: Submission): string | null {
@@ -107,6 +114,40 @@ async function resolveSubmission(
         return submissions.find((submission) => submission.submission_id === submission_id) ?? null
     }
 }
+
+export const fetchSubmissionCode = cache(
+    async (client: JutgeApiClient, key: string, submission_id: string): Promise<SubmissionCodeData | null> => {
+        const resolvedProblemId = await resolveProblemId(key)
+        if (!resolvedProblemId) {
+            return null
+        }
+
+        const submission = await resolveSubmission(client, key, resolvedProblemId, submission_id)
+        if (!submission || !submissionMatchesProblemKey(submission, key, resolvedProblemId)) {
+            return null
+        }
+
+        if (submission.state !== 'done') {
+            return null
+        }
+
+        const [tables, codeB64] = await Promise.all([
+            client.tables.get(),
+            client.student.submissions
+                .getCodeAsB64({ problem_id: submission.problem_id, submission_id })
+                .catch(() => null),
+        ])
+
+        if (!codeB64) {
+            return null
+        }
+
+        return {
+            code: Buffer.from(codeB64, 'base64').toString('utf-8'),
+            codeExtension: tables.compilers[submission.compiler_id]?.extension ?? 'txt',
+        }
+    },
+)
 
 export const fetchSubmissionDetail = cache(
     async (client: JutgeApiClient, key: string, submission_id: string): Promise<SubmissionDetailData | null> => {
@@ -150,6 +191,8 @@ export const fetchSubmissionDetail = cache(
         const verdictMeta = tables.verdicts[verdict]
         const compilerMeta = tables.compilers[submission.compiler_id]
 
+        const extension = compilerMeta?.extension ?? 'txt'
+
         return {
             submission,
             problemTitle,
@@ -159,6 +202,8 @@ export const fetchSubmissionDetail = cache(
             compilerFullName: compilerMeta?.name ?? submission.compiler_id,
             time_in: formatSubmissionTime(submission.time_in),
             code: codeB64 ? Buffer.from(codeB64, 'base64').toString('utf-8') : null,
+            codeExtension: codeB64 ? extension : null,
+            codeFilename: codeB64 ? `${submission_id}.${extension}` : null,
             analysis,
         }
     },

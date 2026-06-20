@@ -16,12 +16,7 @@ type HighlightedSourceCodeProps = {
     highlightTheme: HljsThemeSelection
 }
 
-export function HighlightedSourceCode({
-    code,
-    codeExtension,
-    fontScale,
-    highlightTheme,
-}: HighlightedSourceCodeProps) {
+export function HighlightedSourceCode({ code, codeExtension, fontScale, highlightTheme }: HighlightedSourceCodeProps) {
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -43,7 +38,7 @@ export function HighlightedSourceCode({
             suppressHydrationWarning
         >
             <pre
-                className="max-h-128 overflow-auto p-4 font-mono leading-relaxed whitespace-pre"
+                className="max-h-72 overflow-auto p-4 font-mono leading-relaxed whitespace-pre"
                 style={{ fontSize: `calc(0.875rem * ${fontScale})` }}
             >
                 <code className="hljs" dangerouslySetInnerHTML={{ __html: highlightedCode }} />

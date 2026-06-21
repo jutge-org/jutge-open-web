@@ -189,3 +189,34 @@ export function buildCoursesNavItems(rows: CourseRow[]): CoursesNavItem[] {
         label: row.title,
     }))
 }
+
+const COURSE_LIST_ACCORDION_STORAGE_PREFIX = 'course-list-accordion:'
+
+export function courseListAccordionStorageKey(courseKey: string): string {
+    return `${COURSE_LIST_ACCORDION_STORAGE_PREFIX}${courseKey}`
+}
+
+export function parseCourseListAccordionOpenItems(
+    stored: string | null,
+    validListNames: string[],
+    defaultOpen: string[],
+): string[] {
+    if (!stored) {
+        return defaultOpen
+    }
+
+    try {
+        const parsed: unknown = JSON.parse(stored)
+        if (!Array.isArray(parsed)) {
+            return defaultOpen
+        }
+
+        const validSet = new Set(validListNames)
+        const filtered = parsed.filter(
+            (item): item is string => typeof item === 'string' && validSet.has(item),
+        )
+        return filtered.length > 0 ? filtered : defaultOpen
+    } catch {
+        return defaultOpen
+    }
+}

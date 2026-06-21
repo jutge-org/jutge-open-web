@@ -7,6 +7,8 @@ import { getCurrentClient } from '@/lib/auth'
 import { buildCourseRow, courseHref } from '@/lib/courses'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
+import { fetchCourseListsData } from '@/services/queries/lists'
+import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,6 +47,13 @@ export default async function CoursePage({ params }: PageProps) {
         const row = buildCourseRow(course, status, courseKey)
         const href = courseHref(courseKey)
 
+        const [problems, languages, statuses] = await Promise.all([
+            fetchAllAbstractProblems(),
+            fetchLanguages(),
+            fetchStudentProblemStatuses(client),
+        ])
+        const lists = await fetchCourseListsData(client, course.lists, problems)
+
         return (
             <div className="flex flex-col gap-6">
                 <MainBreadcrumbs
@@ -53,7 +62,14 @@ export default async function CoursePage({ params }: PageProps) {
                         { title: row.title, url: href },
                     ]}
                 />
-                <CourseDetail courseKey={courseKey} course={course} status={status} />
+                <CourseDetail
+                    courseKey={courseKey}
+                    course={course}
+                    status={status}
+                    lists={lists}
+                    languages={languages}
+                    statuses={statuses}
+                />
             </div>
         )
     })

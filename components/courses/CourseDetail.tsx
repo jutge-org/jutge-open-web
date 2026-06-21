@@ -1,29 +1,24 @@
-import { ArchiveIcon, Globe, GraduationCap, ShieldCheck, SignatureIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon } from 'lucide-react'
 
 import { CourseDetailActions } from '@/components/courses/CourseDetailActions'
+import { CourseLists } from '@/components/courses/CourseLists'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { buildCourseRow, type CourseStatus } from '@/lib/courses'
-import type { Course } from '@/lib/jutge_api_client'
+import type { AbstractStatus, Course, Language } from '@/lib/jutge_api_client'
+import type { CourseListData } from '@/services/queries/lists'
 
 type CourseDetailProps = {
     courseKey: string
     course: Course
     status: CourseStatus
+    lists: CourseListData[]
+    languages: Record<string, Language>
+    statuses?: Record<string, AbstractStatus>
 }
 
-function InfoRow({ label, children }: { label: string; children: ReactNode }) {
-    return (
-        <div className="grid gap-1 sm:grid-cols-[8.5rem_1fr] sm:items-start sm:gap-3">
-            <dt className="text-sm font-medium text-foreground sm:text-right">{label}</dt>
-            <dd className="text-sm text-muted-foreground">{children}</dd>
-        </div>
-    )
-}
-
-export function CourseDetail({ courseKey, course, status }: CourseDetailProps) {
+export function CourseDetail({ courseKey, course, status, lists, languages, statuses }: CourseDetailProps) {
     const row = buildCourseRow(course, status)
 
     return (
@@ -39,75 +34,52 @@ export function CourseDetail({ courseKey, course, status }: CourseDetailProps) {
                             status={status}
                         />
                     </div>
-                    <p className="flex items-center gap-1 text-muted-foreground">
-                        <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                        {row.ownerName}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                        {row.isOfficial ? (
-                            <Badge variant="outline" className="gap-1">
-                                <ShieldCheck aria-hidden />
-                                Official
-                            </Badge>
-                        ) : null}
-                        {row.isPublic ? (
-                            <Badge variant="outline" className="gap-1">
-                                <Globe aria-hidden />
-                                Public
-                            </Badge>
-                        ) : null}
-                        {status === 'enrolled' ? (
-                            <Badge variant="outline" className="gap-1">
-                                <GraduationCap aria-hidden />
-                                Enrolled
-                            </Badge>
-                        ) : null}
-                        {status === 'archived' ? (
-                            <Badge variant="outline" className="gap-1">
-                                <ArchiveIcon aria-hidden />
-                                Archived
-                            </Badge>
-                        ) : null}
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="flex min-w-0 items-center gap-1 text-muted-foreground">
+                            <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                            {row.ownerName}
+                        </p>
+                        <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                            {row.isOfficial ? (
+                                <Badge variant="outline" className="gap-1">
+                                    <ShieldCheck aria-hidden />
+                                    Official
+                                </Badge>
+                            ) : null}
+                            {row.isPublic ? (
+                                <Badge variant="outline" className="gap-1">
+                                    <Globe aria-hidden />
+                                    Public
+                                </Badge>
+                            ) : null}
+                            {status === 'enrolled' ? (
+                                <Badge variant="outline" className="gap-1">
+                                    <BookOpenCheckIcon aria-hidden />
+                                    Enrolled
+                                </Badge>
+                            ) : null}
+                            {status === 'archived' ? (
+                                <Badge variant="outline" className="gap-1">
+                                    <ArchiveIcon aria-hidden />
+                                    Archived
+                                </Badge>
+                            ) : null}
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
-
-            <Card className="border border-border shadow-sm ring-0">
-                <CardHeader className="border-b pb-2">
-                    <CardTitle>Description</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-4">
                     {row.description ? (
-                        <MarkdownText>{row.description}</MarkdownText>
-                    ) : (
-                        <p className="text-sm text-muted-foreground italic">No description provided.</p>
-                    )}
+                        <div className="pt-2">
+                            <MarkdownText>{row.description}</MarkdownText>
+                        </div>
+                    ) : null}
                 </CardContent>
             </Card>
 
-            <Card size="sm" className="border border-border shadow-sm ring-0">
-                <CardHeader className="border-b pb-2">
-                    <CardTitle>Information</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-2">
-                    <dl className="flex flex-col gap-1.5">
-                        <InfoRow label="Owner">{row.ownerName}</InfoRow>
-                        <InfoRow label="Course key">{courseKey}</InfoRow>
-                        <InfoRow label="Annotation">{row.annotation ? row.annotation : '—'}</InfoRow>
-                        <InfoRow label="Problem lists">
-                            {course.lists.length > 0 ? (
-                                <ul className="space-y-1">
-                                    {course.lists.map((listKey) => (
-                                        <li key={listKey}>{listKey}</li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                '—'
-                            )}
-                        </InfoRow>
-                    </dl>
-                </CardContent>
-            </Card>
+            <CourseLists
+                courseKey={courseKey}
+                lists={lists}
+                languages={languages}
+                statuses={statuses}
+            />
         </div>
     )
 }

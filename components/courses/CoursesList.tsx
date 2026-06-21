@@ -5,7 +5,7 @@ import { useMemo, useState, useTransition } from 'react'
 import {
     ArchiveIcon,
     ArchiveRestoreIcon,
-    BookOpen,
+    BookOpenCheckIcon,
     Globe,
     GraduationCap,
     Loader2,
@@ -149,9 +149,7 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
             <CardContent className="flex flex-1 flex-col gap-3">
                 {course.description ? (
                     <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
-                ) : (
-                    <p className="text-sm text-muted-foreground italic">No description provided.</p>
-                )}
+                ) : null}
                 <div className="mt-auto">
                     <CourseBadges course={course} />
                 </div>
@@ -160,11 +158,11 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
     )
 }
 
-const emptyStateByTab: Record<CoursesTab, { title: string; description: string; icon: typeof BookOpen }> = {
+const emptyStateByTab: Record<CoursesTab, { title: string; description: string; icon: typeof BookOpenCheckIcon }> = {
     enrolled: {
         title: 'No enrolled courses',
         description: 'Browse available courses and enroll into them.',
-        icon: BookOpen,
+        icon: BookOpenCheckIcon,
     },
     available: {
         title: 'No courses available',

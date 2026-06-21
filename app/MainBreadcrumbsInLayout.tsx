@@ -34,6 +34,7 @@ import {
     Award,
     AudioLinesIcon,
     BookOpen,
+    BookOpenCheckIcon,
     BookText,
     ActivityIcon,
     BotIcon,
@@ -107,7 +108,7 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
 }
 
 function MainNavCoursesSubItemIcon(_props: { href: string }) {
-    return <BookOpen aria-hidden />
+    return <BookOpenCheckIcon aria-hidden />
 }
 
 function MainNavInstructorSubItemIcon({ href }: { href: string }) {

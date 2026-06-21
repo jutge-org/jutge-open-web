@@ -1,0 +1,139 @@
+'use client'
+
+import { useMemo } from 'react'
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
+
+import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
+import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
+import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
+import { cn } from '@/lib/utils'
+
+type CourseListsProps = {
+    courseKey: string
+    lists: CourseListData[]
+    languages: Record<string, Language>
+    statuses?: Record<string, AbstractStatus>
+}
+
+type ListProblemCounts = {
+    total: number
+    ok: number
+    scored: number
+    ko: number
+}
+
+function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow, { kind: 'problem' }> {
+    return row.kind === 'problem'
+}
+
+function computeListProblemCounts(
+    items: CourseListItemRow[],
+    statuses?: Record<string, AbstractStatus>,
+): ListProblemCounts {
+    const problems = items.filter(isProblemRow)
+    let ok = 0
+    let scored = 0
+    let ko = 0
+
+    if (statuses) {
+        for (const problem of problems) {
+            const status = statuses[problem.problem_nm]?.status
+            if (status === 'accepted') {
+                ok++
+            } else if (status === 'scored') {
+                scored++
+            } else if (status === 'rejected') {
+                ko++
+            }
+        }
+    }
+
+    return { total: problems.length, ok, scored, ko }
+}
+
+function ListProblemCountBadges({ counts, className }: { counts: ListProblemCounts; className?: string }) {
+    return (
+        <div className={cn('flex items-center gap-1.5', className)}>
+            {counts.ok > 0 ? (
+                <Badge className="bg-emerald-600 text-white hover:bg-emerald-600">{counts.ok}</Badge>
+            ) : null}
+            {counts.scored > 0 ? (
+                <Badge className="bg-orange-400 text-white hover:bg-orange-400">{counts.scored}</Badge>
+            ) : null}
+            {counts.ko > 0 ? <Badge className="bg-red-500 text-white hover:bg-red-500">{counts.ko}</Badge> : null}
+            {counts.total > 0 ? <Badge className="ml-2">{counts.total}</Badge> : null}
+        </div>
+    )
+}
+
+export function CourseLists({ courseKey, lists, languages, statuses }: CourseListsProps) {
+    const listNames = useMemo(() => lists.map((list) => list.list_nm), [lists])
+    const [openItems, setOpenItems] = useCourseListAccordionPreference(courseKey, listNames)
+
+    const countsByList = useMemo(
+        () => new Map(lists.map((list) => [list.list_nm, computeListProblemCounts(list.items, statuses)])),
+        [lists, statuses],
+    )
+
+    function toggleList(listNm: string) {
+        setOpenItems((current) =>
+            current.includes(listNm) ? current.filter((item) => item !== listNm) : [...current, listNm],
+        )
+    }
+
+    if (lists.length === 0) {
+        return null
+    }
+
+    return (
+        <div className="flex flex-col gap-4">
+            {lists.map((list) => {
+                const counts = countsByList.get(list.list_nm) ?? { total: 0, ok: 0, scored: 0, ko: 0 }
+                const isOpen = openItems.includes(list.list_nm)
+
+                return (
+                    <Card
+                        key={list.list_nm}
+                        className={cn('gap-0 pt-2 ring-0 border border-border shadow-sm', isOpen ? 'pb-0' : 'pb-2')}
+                    >
+                        <CardHeader className={cn('px-4 py-2', isOpen && 'border-b border-border')}>
+                            <button
+                                type="button"
+                                onClick={() => toggleList(list.list_nm)}
+                                className="flex w-full items-center gap-2 text-left"
+                                aria-expanded={isOpen}
+                            >
+                                <CardTitle className="text-lg font-semibold">{list.title}</CardTitle>
+                                <div className="flex-1" />
+                                <ListProblemCountBadges counts={counts} className="pr-2" />
+                                {isOpen ? (
+                                    <ChevronUpIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                ) : (
+                                    <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                )}
+                            </button>
+                        </CardHeader>
+                        {isOpen ? (
+                            <CardContent className="p-0">
+                                {list.items.length === 0 ? (
+                                    <p className="px-4 py-3 text-sm text-muted-foreground italic">
+                                        This list has no items.
+                                    </p>
+                                ) : (
+                                    <CourseListItemsTable
+                                        items={list.items}
+                                        languages={languages}
+                                        statuses={statuses}
+                                    />
+                                )}
+                            </CardContent>
+                        ) : null}
+                    </Card>
+                )
+            })}
+        </div>
+    )
+}

@@ -10,12 +10,33 @@ export function formatSubmissionTime(time_in: Submission['time_in']): string {
     return parseSubmissionTime(time_in).toLocaleString()
 }
 
+export const PENDING_SUBMISSION_REFRESH_INTERVAL_MS = 5000
+export const PENDING_SUBMISSION_REFRESH_MAX_COUNT = 10
+
 export function submissionVerdict(submission: Submission): string {
     return submission.veredict ?? (submission.state === 'done' ? '—' : 'Pending')
 }
 
 export function buildSubmissionHref(problem_id: string, submission_id: string): string {
     return `/problems/${problem_id}/submissions/${submission_id}`
+}
+
+export const PRIVATE_TESTCASE_NAME = '[privates]'
+
+export function isLinkableTestcase(testcase: string): boolean {
+    return testcase !== PRIVATE_TESTCASE_NAME
+}
+
+export function buildSubmissionTestcaseHref(
+    problemKey: string,
+    submission_id: string,
+    testcase: string,
+): string | null {
+    if (!isLinkableTestcase(testcase)) {
+        return null
+    }
+
+    return `${buildSubmissionHref(problemKey, submission_id)}/diffs/${testcase}`
 }
 
 export type SubmissionNavLinks = {

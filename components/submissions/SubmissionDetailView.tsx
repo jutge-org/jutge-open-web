@@ -9,7 +9,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { SubmissionNavLinks } from '@/lib/submissions'
+import { buildSubmissionTestcaseHref, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 import type { SubmissionDetailData } from '@/services/queries/submissions'
 import type { ReactNode } from 'react'
@@ -17,6 +17,7 @@ import type { ReactNode } from 'react'
 type SubmissionDetailViewProps = {
     data: SubmissionDetailData
     codeHref: string
+    problemKey: string
     navigation?: SubmissionNavLinks | null
 }
 
@@ -57,7 +58,7 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
     )
 }
 
-export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionDetailViewProps) {
+export function SubmissionDetailView({ data, codeHref, problemKey, navigation }: SubmissionDetailViewProps) {
     const { submission } = data
     const isPending = submission.state !== 'done'
 
@@ -153,13 +154,32 @@ export function SubmissionDetailView({ data, codeHref, navigation }: SubmissionD
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data.analysis.map((row) => (
+                                    {data.analysis.map((row) => {
+                                        const testcaseHref = buildSubmissionTestcaseHref(
+                                            problemKey,
+                                            submission.submission_id,
+                                            row.testcase,
+                                        )
+
+                                        return (
                                         <TableRow key={row.testcase}>
-                                            <TableCell>{row.testcase}</TableCell>
+                                            <TableCell>
+                                                {testcaseHref ? (
+                                                    <Link
+                                                        href={testcaseHref}
+                                                        className="text-primary hover:underline"
+                                                    >
+                                                        {row.testcase}
+                                                    </Link>
+                                                ) : (
+                                                    row.testcase
+                                                )}
+                                            </TableCell>
                                             <TableCell>{row.execution}</TableCell>
                                             <TableCell>{row.verdict}</TableCell>
                                         </TableRow>
-                                    ))}
+                                        )
+                                    })}
                                 </TableBody>
                             </Table>
                         </CardContent>

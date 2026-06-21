@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     FONT_SCALE_STEP,
     MAX_FONT_SCALE,
@@ -87,7 +87,8 @@ export function SubmissionSourceCodeCard({
     }
 
     return (
-        <Card className="ring-0 border border-border shadow-sm">
+        <TooltipProvider>
+            <Card className="ring-0 border border-border shadow-sm">
             <CardHeader className="border-b border-border">
                 <CardTitle className="text-lg font-semibold">Source code</CardTitle>
                 <CardAction>
@@ -245,6 +246,7 @@ export function SubmissionSourceCodeCard({
                     highlightTheme={activeTheme}
                 />
             </CardContent>
-        </Card>
+            </Card>
+        </TooltipProvider>
     )
 }

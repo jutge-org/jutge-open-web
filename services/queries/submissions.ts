@@ -15,7 +15,7 @@ import {
     type ProblemSubmissionRow,
     type SubmissionRow,
 } from '@/lib/submissions'
-import type { JutgeApiClient, Submission, SubmissionAnalysis } from '@/lib/jutge_api_client'
+import type { JutgeApiClient, Submission, SubmissionAnalysis, TestcaseAnalysis } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
 import { resolveProblemId } from './problemDetail'
@@ -80,6 +80,26 @@ export type SubmissionDetailData = {
 export type SubmissionCodeData = {
     code: string
     codeExtension: string
+}
+
+export type SubmissionTestcaseAnalysisData = {
+    testcase: string
+    execution: string
+    verdict: string
+    input: string
+    output: string
+    expected: string
+}
+
+function decodeTestcaseAnalysis(analysis: TestcaseAnalysis): SubmissionTestcaseAnalysisData {
+    return {
+        testcase: analysis.testcase,
+        execution: analysis.execution,
+        verdict: analysis.verdict,
+        input: Buffer.from(analysis.input_b64, 'base64').toString('utf-8'),
+        output: Buffer.from(analysis.output_b64, 'base64').toString('utf-8'),
+        expected: Buffer.from(analysis.expected_b64, 'base64').toString('utf-8'),
+    }
 }
 
 function submissionProblemNm(submission: Submission): string | null {
@@ -244,6 +264,40 @@ export const fetchSubmissionDetail = cache(
             codeFilename: codeB64 ? `${submission_id}.${extension}` : null,
             analysis,
             codeMetrics,
+        }
+    },
+)
+
+export const fetchSubmissionTestcaseAnalysis = cache(
+    async (
+        client: JutgeApiClient,
+        key: string,
+        submission_id: string,
+        testcase: string,
+    ): Promise<SubmissionTestcaseAnalysisData | null> => {
+        const resolvedProblemId = await resolveProblemId(key)
+        if (!resolvedProblemId) {
+            return null
+        }
+
+        const submission = await resolveSubmission(client, key, resolvedProblemId, submission_id)
+        if (!submission || !submissionMatchesProblemKey(submission, key, resolvedProblemId)) {
+            return null
+        }
+
+        if (submission.state !== 'done') {
+            return null
+        }
+
+        try {
+            const analysis = await client.student.submissions.getTestcaseAnalysis({
+                problem_id: submission.problem_id,
+                submission_id,
+                testcase,
+            })
+            return decodeTestcaseAnalysis(analysis)
+        } catch {
+            return null
         }
     },
 )

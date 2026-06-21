@@ -9,12 +9,14 @@ import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { ProblemSubmissionRow, SubmissionRow } from '@/lib/submissions'
+import {
+    PENDING_SUBMISSION_REFRESH_INTERVAL_MS,
+    PENDING_SUBMISSION_REFRESH_MAX_COUNT,
+    type ProblemSubmissionRow,
+    type SubmissionRow,
+} from '@/lib/submissions'
 
 dayjs.extend(relativeTime)
-
-const PENDING_REFRESH_INTERVAL_MS = 5000
-const PENDING_REFRESH_MAX_COUNT = 10
 
 type SubmissionsListProps =
     | {
@@ -52,10 +54,13 @@ export function SubmissionsList(props: SubmissionsListProps) {
 
             setRows(nextRows)
 
-            if (refreshCount >= PENDING_REFRESH_MAX_COUNT || !nextRows.some((row) => row.verdict === 'Pending')) {
+            if (
+                refreshCount >= PENDING_SUBMISSION_REFRESH_MAX_COUNT ||
+                !nextRows.some((row) => row.verdict === 'Pending')
+            ) {
                 window.clearInterval(intervalId)
             }
-        }, PENDING_REFRESH_INTERVAL_MS)
+        }, PENDING_SUBMISSION_REFRESH_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
     }, [hasPending, problemNm])

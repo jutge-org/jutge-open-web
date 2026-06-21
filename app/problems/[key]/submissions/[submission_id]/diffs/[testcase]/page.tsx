@@ -1,39 +1,38 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
-import { SubmissionDetailView } from '@/components/submissions/SubmissionDetailView'
-import { SubmissionPendingRefresh } from '@/components/submissions/SubmissionPendingRefresh'
+import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
+import { SubmissionTestcaseAnalysisCard } from '@/components/submissions/SubmissionTestcaseAnalysisCard'
 import { getCurrentClient } from '@/lib/auth'
 import { parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
-import { buildSubmissionNavLinks } from '@/lib/submissions'
 import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchSubmissionDetail } from '@/services/queries/submissions'
+import { fetchSubmissionDetail, fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 type PageProps = {
-    params: Promise<{ key: string; submission_id: string }>
+    params: Promise<{ key: string; submission_id: string; testcase: string }>
 }
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, submission_id } = await params
+    const { key, submission_id, testcase } = await params
     const problemId = await resolveProblemId(key)
     if (!problemId) {
-        return { title: 'Submission — Jutge.org' }
+        return { title: 'Test case analysis — Jutge.org' }
     }
 
     const data = await fetchProblemDetail(problemId)
     if (!data) {
-        return { title: 'Submission — Jutge.org' }
+        return { title: 'Test case analysis — Jutge.org' }
     }
 
-    return { title: `${submission_id} — ${data.problem.title} — Jutge.org` }
+    return { title: `${testcase} — ${submission_id} — ${data.problem.title} — Jutge.org` }
 }
 
-export default async function ProblemSubmissionDetailPage({ params }: PageProps) {
-    const { key, submission_id } = await params
+export default async function ProblemSubmissionTestcaseAnalysisPage({ params }: PageProps) {
+    const { key, submission_id, testcase } = await params
     const problemId = await resolveProblemId(key)
     if (!problemId) {
         notFound()
@@ -48,17 +47,18 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
     const codeHref = `${submissionHref}/code`
+    const diffHref = `${submissionHref}/diffs/${testcase}/diff`
 
     return renderAuthed(async (user) => {
         const client = await getCurrentClient()
-        const [status, profile, isExamOrContest, problemSubmissions] = await Promise.all([
+        const [status, profile, isExamOrContest, testcaseAnalysis] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
             client.student.exam.get().then(
                 () => true,
                 () => false,
             ),
-            client.student.submissions.getForAbstractProblems(problem_nm),
+            fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase),
         ])
 
         const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
@@ -66,7 +66,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
             isExamOrContest,
         })
 
-        if (!submissionDetail) {
+        if (!testcaseAnalysis || !submissionDetail) {
             notFound()
         }
 
@@ -79,6 +79,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                         { title: data.problem.title, url: `/problems/${key}` },
                         { title: 'Submissions', url: `/problems/${key}/submissions` },
                         { title: submission_id, url: submissionHref },
+                        { title: testcase, url: `${submissionHref}/diffs/${testcase}` },
                     ]}
                 />
                 <ProblemDetail
@@ -90,13 +91,17 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <SubmissionPendingRefresh isPending={submissionDetail.verdict === 'Pending'} />
-                    <SubmissionDetailView
-                        data={submissionDetail}
-                        codeHref={codeHref}
-                        problemKey={key}
-                        navigation={buildSubmissionNavLinks(problemSubmissions, submission_id, key)}
-                    />
+                    <div className="flex flex-col gap-6">
+                        <SubmissionTestcaseAnalysisCard data={testcaseAnalysis} diffHref={diffHref} />
+                        {submissionDetail.code && submissionDetail.codeFilename ? (
+                            <SubmissionSourceCodeCard
+                                code={submissionDetail.code}
+                                codeExtension={submissionDetail.codeExtension}
+                                codeFilename={submissionDetail.codeFilename}
+                                codeHref={codeHref}
+                            />
+                        ) : null}
+                    </div>
                 </ProblemDetail>
             </div>
         )

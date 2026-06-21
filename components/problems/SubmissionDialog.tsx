@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getCompilerStatus } from '@/lib/documentation'
 import { pickPreferredId } from '@/lib/problems'
+import { buildSubmissionHref } from '@/lib/submissions'
 import type { Compiler } from '@/lib/jutge_api_client'
 import { Separator } from '@base-ui/react/separator'
 
@@ -95,7 +96,7 @@ export function SubmissionDialog({
 
             toast.success(`Submission ${result.submission_id} queued.`)
             handleOpenChange(false)
-            router.push(`/problems/${problemId}/submissions`)
+            router.push(buildSubmissionHref(problemId, result.submission_id))
         })
     }
 

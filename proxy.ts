@@ -2,11 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const SUBMISSION_CODE_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/code$/
+const SUBMISSION_TESTCASE_DIFF_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff$/
 
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    if (!SUBMISSION_CODE_PATH.test(pathname)) {
+    const isSubmissionCodePath = SUBMISSION_CODE_PATH.test(pathname)
+    const isSubmissionTestcaseDiffPath = SUBMISSION_TESTCASE_DIFF_PATH.test(pathname)
+
+    if (!isSubmissionCodePath && !isSubmissionTestcaseDiffPath) {
         return NextResponse.next()
     }
 
@@ -21,5 +25,8 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/problems/:key/submissions/:submission_id/code'],
+    matcher: [
+        '/problems/:key/submissions/:submission_id/code',
+        '/problems/:key/submissions/:submission_id/diffs/:testcase/diff',
+    ],
 }

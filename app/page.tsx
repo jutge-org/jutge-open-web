@@ -1,6 +1,7 @@
 import { HomeLoginCard } from '@/components/HomeLoginCard'
 import { HomepageStatsDashboard } from '@/components/general/HomepageStatsDashboard'
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
+import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
 import { fetchHomepageStats } from '@/services/queries/misc'
@@ -14,6 +15,7 @@ export default async function Home() {
 
     return (
         <div className="flex flex-col gap-10">
+            <HomeYearsRibbon />
             <MainBreadcrumbs breadcrumbs={[{ title: 'Jutge.org', url: '/' }]} />
             <div className="flex flex-col items-center space-y-4 pt-8 text-center">
                 <h1 className="text-5xl font-thin tracking-wide text-balance sm:text-6xl dark:inline-block dark:bg-linear-to-r dark:from-cyan-300 dark:via-sky-400 dark:to-blue-500 dark:bg-clip-text dark:pb-1 dark:leading-[1.2] dark:text-transparent">

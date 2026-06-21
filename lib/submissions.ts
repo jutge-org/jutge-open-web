@@ -49,6 +49,7 @@ export function buildSubmissionNavLinks(
     submissions: Submission[],
     currentSubmissionId: string,
     pageKey: string,
+    subpath = '',
 ): SubmissionNavLinks | null {
     const sorted = [...submissions].sort(
         (a, b) => parseSubmissionTime(b.time_in).getTime() - parseSubmissionTime(a.time_in).getTime(),
@@ -58,7 +59,7 @@ export function buildSubmissionNavLinks(
         return null
     }
 
-    const href = (submissionId: string) => `/problems/${pageKey}/submissions/${submissionId}`
+    const href = (submissionId: string) => `/problems/${pageKey}/submissions/${submissionId}${subpath}`
 
     return {
         previousHref: index < sorted.length - 1 ? href(sorted[index + 1].submission_id) : null,

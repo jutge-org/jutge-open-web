@@ -1,12 +1,11 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
-import Link from 'next/link'
 
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
+import { SubmissionNavButton } from '@/components/submissions/SubmissionNavButton'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
-import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -22,34 +21,6 @@ type SubmissionDetailViewProps = {
     codeHref: string
     problemKey: string
     navigation?: SubmissionNavLinks | null
-}
-
-function SubmissionNavButton({ href, label, children }: { href: string | null; label: string; children: ReactNode }) {
-    if (href) {
-        return (
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon-sm" asChild>
-                        <Link href={href} aria-label={label}>
-                            {children}
-                        </Link>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">{label}</TooltipContent>
-            </Tooltip>
-        )
-    }
-
-    return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <Button variant="outline" size="icon-sm" disabled aria-label={label}>
-                    {children}
-                </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">{label}</TooltipContent>
-        </Tooltip>
-    )
 }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {

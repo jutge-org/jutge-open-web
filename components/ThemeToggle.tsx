@@ -1,11 +1,16 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
-export function ThemeToggle() {
+import { Button } from '@/components/ui/button'
+
+type ThemeToggleProps = {
+    size?: 'icon' | 'icon-sm'
+}
+
+export function ThemeToggle({ size = 'icon' }: ThemeToggleProps) {
     const { resolvedTheme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -16,7 +21,11 @@ export function ThemeToggle() {
     if (!mounted) {
         return (
             <span
-                className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-transparent"
+                className={
+                    size === 'icon-sm'
+                        ? 'inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent'
+                        : 'inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-transparent'
+                }
                 aria-hidden
             />
         )
@@ -28,7 +37,7 @@ export function ThemeToggle() {
         <Button
             type="button"
             variant="outline"
-            size="icon"
+            size={size}
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
             aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
         >

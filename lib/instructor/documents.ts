@@ -1,9 +1,6 @@
 import { FileArchiveIcon, FileTextIcon, type LucideIcon } from 'lucide-react'
 import type { Document } from '@/lib/jutge_api_client'
-import {
-    fetchInstructorDocumentPdf,
-    fetchInstructorDocumentZip,
-} from '@/actions/instructor'
+import { fetchInstructorDocumentPdf, fetchInstructorDocumentZip } from '@/actions/instructor'
 
 export function isDocumentZip(document: Pick<Document, 'type'>): boolean {
     return document.type.toLowerCase().includes('zip')

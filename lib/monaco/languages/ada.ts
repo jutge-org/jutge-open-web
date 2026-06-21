@@ -178,7 +178,7 @@ export function definition(): languages.IMonarchLanguage {
                     },
                 ],
                 // Whitespace
-                {include: '@whitespace'},
+                { include: '@whitespace' },
 
                 [/[()[\]]/, '@brackets'],
 
@@ -221,5 +221,5 @@ export function definition(): languages.IMonarchLanguage {
                 [/"/, 'string', '@pop'],
             ],
         },
-    };
+    }
 }

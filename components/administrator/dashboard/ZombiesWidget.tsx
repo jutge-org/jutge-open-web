@@ -25,12 +25,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Zombies } from '@/lib/jutge_api_client'
 import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import Widget from '@/components/administrator/dashboard/Widget'
 
@@ -138,27 +133,16 @@ export default function ZombiesWidget() {
                 <TableBody>
                     <TableRow>
                         <TableCell>Internal errors</TableCell>
-                        <TableCell className="text-end">
-                            {data ? data.ies : <SimpleSpinner />}
-                        </TableCell>
+                        <TableCell className="text-end">{data ? data.ies : <SimpleSpinner />}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Pendings</TableCell>
-                        <TableCell className="text-end">
-                            {data ? data.pendings : <SimpleSpinner />}
-                        </TableCell>
+                        <TableCell className="text-end">{data ? data.pendings : <SimpleSpinner />}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
         </div>
     )
 
-    return (
-        <Widget
-            icon=<GhostIcon size={18} />
-            title="Zombi submissions"
-            content={content}
-            actions={actions}
-        />
-    )
+    return <Widget icon=<GhostIcon size={18} /> title="Zombi submissions" content={content} actions={actions} />
 }

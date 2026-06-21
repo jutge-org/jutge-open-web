@@ -160,10 +160,7 @@ export function SubmissionCodeEditor({
             }
 
             themePreviewIdRef.current += 1
-            const themeId = resolveMonacoEditorTheme(
-                editorThemeRef.current,
-                mounted ? resolvedTheme : undefined,
-            )
+            const themeId = resolveMonacoEditorTheme(editorThemeRef.current, mounted ? resolvedTheme : undefined)
             void applyMonacoTheme(themeId)
         },
         [applyMonacoTheme, mounted, resolvedTheme],

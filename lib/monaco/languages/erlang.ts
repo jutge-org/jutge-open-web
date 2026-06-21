@@ -102,7 +102,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/'/, 'string', '@pop'],
             ],
         },
-    };
+    }
 }
 
 export function configuration(): languages.LanguageConfiguration {
@@ -117,12 +117,12 @@ export function configuration(): languages.LanguageConfiguration {
             ['<<', '>>'],
         ],
         autoClosingPairs: [
-            {open: '{', close: '}', notIn: ['string', 'comment']},
-            {open: '[', close: ']', notIn: ['string', 'comment']},
-            {open: '(', close: ')', notIn: ['string', 'comment']},
-            {open: '<<', close: '>>', notIn: ['string', 'comment']},
-            {open: "'", close: "'", notIn: ['string', 'comment']},
-            {open: '"', close: '"'},
+            { open: '{', close: '}', notIn: ['string', 'comment'] },
+            { open: '[', close: ']', notIn: ['string', 'comment'] },
+            { open: '(', close: ')', notIn: ['string', 'comment'] },
+            { open: '<<', close: '>>', notIn: ['string', 'comment'] },
+            { open: "'", close: "'", notIn: ['string', 'comment'] },
+            { open: '"', close: '"' },
         ],
         folding: {
             markers: {
@@ -130,5 +130,5 @@ export function configuration(): languages.LanguageConfiguration {
                 end: /^\s*%%endregion\b/,
             },
         },
-    };
+    }
 }

@@ -21,11 +21,7 @@ export default async function InstructorListPropertiesPage({ params }: Props) {
                 { title: list_nm, url: `${baseHref}/properties` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorListSubNav(list_nm)}
-                baseHref={baseHref}
-                activeSegment="properties"
-            />
+            <InstructorSubNav items={instructorListSubNav(list_nm)} baseHref={baseHref} activeSegment="properties" />
             <ListPropertiesView />
         </InstructorPageShell>
     )

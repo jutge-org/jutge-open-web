@@ -104,16 +104,23 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         const client = new JutgeApiClient()
         const problem = await client.problems.getProblem(problemId)
 
-        const [shortHtmlStatement, sampleTestcases, publicTestcases, problemSuppl, abstractProblem, languages, allCompilers] =
-            await Promise.all([
-                client.problems.getShortHtmlStatement(problemId),
-                client.problems.getSampleTestcases(problemId),
-                client.problems.getPublicTestcases(problemId),
-                client.problems.getProblemSuppl(problemId),
-                fetchAbstractProblem(problem.problem_nm),
-                fetchLanguages(),
-                fetchCompilers(),
-            ])
+        const [
+            shortHtmlStatement,
+            sampleTestcases,
+            publicTestcases,
+            problemSuppl,
+            abstractProblem,
+            languages,
+            allCompilers,
+        ] = await Promise.all([
+            client.problems.getShortHtmlStatement(problemId),
+            client.problems.getSampleTestcases(problemId),
+            client.problems.getPublicTestcases(problemId),
+            client.problems.getProblemSuppl(problemId),
+            fetchAbstractProblem(problem.problem_nm),
+            fetchLanguages(),
+            fetchCompilers(),
+        ])
 
         if (!abstractProblem) {
             return null

@@ -12,13 +12,7 @@ import type { InstructorExam, InstructorExamStudent } from '@/lib/jutge_api_clie
 import type { ICellRendererParams, RowSelectionOptions } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import FileSaver from 'file-saver'
-import {
-    CircleMinusIcon,
-    ClipboardCopyIcon,
-    DownloadCloudIcon,
-    PlusCircleIcon,
-    SaveIcon,
-} from 'lucide-react'
+import { CircleMinusIcon, ClipboardCopyIcon, DownloadCloudIcon, PlusCircleIcon, SaveIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -50,8 +44,7 @@ export function ExamStudentsView() {
             field: 'taken_exam',
             headerName: 'Taken',
             width: 90,
-            cellRenderer: (p: { data: InstructorExamStudent }) =>
-                p.data.taken_exam ? 'Yes' : 'No',
+            cellRenderer: (p: { data: InstructorExamStudent }) => (p.data.taken_exam ? 'Yes' : 'No'),
         },
         {
             field: 'finished',
@@ -214,11 +207,7 @@ export function ExamStudentsView() {
                     <SaveIcon className={changes ? 'animate-pulse' : ''} />
                     Save
                 </Button>
-                <Button
-                    className="w-36 justify-start"
-                    onClick={removeHandle}
-                    title="Remove students"
-                >
+                <Button className="w-36 justify-start" onClick={removeHandle} title="Remove students">
                     <CircleMinusIcon /> Remove
                 </Button>
                 <Button className="w-36 justify-start" onClick={addHandle} title="Add students">
@@ -235,12 +224,7 @@ export function ExamStudentsView() {
                 >
                     <ClipboardCopyIcon /> Copy emails
                 </Button>
-                <Button
-                    className="w-36 justify-start"
-                    onClick={exportHandle}
-                    title="Export to CSV"
-                    variant={'outline'}
-                >
+                <Button className="w-36 justify-start" onClick={exportHandle} title="Export to CSV" variant={'outline'}>
                     <DownloadCloudIcon /> Export to CSV
                 </Button>
             </div>

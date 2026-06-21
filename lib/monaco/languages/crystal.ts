@@ -37,19 +37,19 @@ export function configuration(): languages.LanguageConfiguration {
         ],
 
         autoClosingPairs: [
-            {open: '{', close: '}'},
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '"', close: '"'},
-            {open: "'", close: "'"},
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '"', close: '"' },
+            { open: "'", close: "'" },
         ],
 
         surroundingPairs: [
-            {open: '{', close: '}'},
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '"', close: '"'},
-            {open: "'", close: "'"},
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '"', close: '"' },
+            { open: "'", close: "'" },
         ],
 
         indentationRules: {
@@ -63,7 +63,7 @@ export function configuration(): languages.LanguageConfiguration {
                 /^\s*((begin|class|module|struct|union|annotation|lib|(private|protected)\s+(def|macro)|def|macro|else|elsif|ensure|if|rescue|unless|until|when|while|case)|([^#]*\sdo\b)|([^#]*=\s*(case|if|unless|while|until|begin)))$/,
             decreaseIndentPattern: /^\s*([}\]]([,)]?\s*(#|$)|\.[a-zA-Z_]\w*\b)|(end|rescue|ensure|else|elsif|when)\b)/,
         },
-    };
+    }
 }
 
 export function definition(): languages.IMonarchLanguage {
@@ -236,5 +236,5 @@ export function definition(): languages.IMonarchLanguage {
                 [/./, 'string'],
             ],
         },
-    };
+    }
 }

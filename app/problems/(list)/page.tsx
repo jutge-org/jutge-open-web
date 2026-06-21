@@ -4,11 +4,7 @@ import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemsList } from '@/components/problems/ProblemsList'
 import { getCurrentClient, isAuthenticated } from '@/lib/auth'
-import {
-    fetchAllAbstractProblems,
-    fetchLanguages,
-    fetchStudentProblemStatuses,
-} from '@/services/queries/problems'
+import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
 
 export const dynamic = 'force-dynamic'
 

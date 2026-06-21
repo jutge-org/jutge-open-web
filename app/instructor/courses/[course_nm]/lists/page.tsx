@@ -24,11 +24,7 @@ export default async function InstructorCourseListsPage({ params }: Props) {
                 { title: course_nm, url: `${baseHref}/lists` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorCourseSubNav(course_nm)}
-                baseHref={baseHref}
-                activeSegment="lists"
-            />
+            <InstructorSubNav items={instructorCourseSubNav(course_nm)} baseHref={baseHref} activeSegment="lists" />
             <CourseListsView profile={profile} />
         </InstructorPageShell>
     )

@@ -54,16 +54,12 @@ export default function DatabasesWidget() {
                     {data.map((db) => (
                         <TableRow key={db.name}>
                             <TableCell>{db.name}</TableCell>
-                            <TableCell className="text-end">
-                                {byteSize(db.size).toString()}
-                            </TableCell>
+                            <TableCell className="text-end">{byteSize(db.size).toString()}</TableCell>
                             {db.name !== 'jutge' ? (
                                 <TableCell
                                     className={cn(
                                         'text-end',
-                                        dayjs().diff(dayjs(db.mtime), 'day') >= 1
-                                            ? 'text-red-500'
-                                            : '',
+                                        dayjs().diff(dayjs(db.mtime), 'day') >= 1 ? 'text-red-500' : '',
                                     )}
                                 >
                                     {dayjs.duration(dayjs(db.mtime).diff(dayjs())).humanize()}

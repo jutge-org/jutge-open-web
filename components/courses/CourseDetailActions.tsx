@@ -2,14 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import {
-    ArchiveIcon,
-    ArchiveRestoreIcon,
-    GraduationCap,
-    Loader2,
-    LogOutIcon,
-    EllipsisVerticalIcon,
-} from 'lucide-react'
+import { ArchiveIcon, ArchiveRestoreIcon, GraduationCap, Loader2, LogOutIcon, EllipsisVerticalIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
@@ -152,4 +145,3 @@ async function runServerAction(courseKey: string, action: CourseAction) {
             return unarchiveCourseAction(courseKey)
     }
 }
-

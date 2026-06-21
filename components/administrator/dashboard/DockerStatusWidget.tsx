@@ -55,9 +55,7 @@ export default function DockerStatusWidget() {
                         <TableCell className="text-end">{item.monit.memory}</TableCell>
                         <TableCell className="text-end">{item.monit.cpu}</TableCell>
                         */}
-                            <TableCell className="text-end">
-                                {item.State === 'running' ? '✓' : item.State}
-                            </TableCell>
+                            <TableCell className="text-end">{item.State === 'running' ? '✓' : item.State}</TableCell>
                             <TableCell className="text-end">
                                 {(item.Size as string).split(' ')[2].replace(')', '')}
                             </TableCell>

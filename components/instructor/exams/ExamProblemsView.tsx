@@ -12,14 +12,7 @@ import { AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useTextareaDialog } from '@/components/instructor/TextareaDialog'
 import { Button } from '@/components/ui/button'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import {
     Dialog,
     DialogContent,
@@ -31,22 +24,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { usePageChanges } from '@/hooks/use-page-changes'
 import { getProblemTitle } from '@/lib/instructor/problems'
 import { showError } from '@/lib/instructor/utils'
-import type {
-    AbstractProblem,
-    InstructorExam,
-    InstructorExamProblem,
-    Profile,
-} from '@/lib/jutge_api_client'
+import type { AbstractProblem, InstructorExam, InstructorExamProblem, Profile } from '@/lib/jutge_api_client'
 import { cn, includesForSearch } from '@/lib/utils'
 import type { RowSelectionOptions } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
@@ -80,14 +62,8 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     const { exam_nm } = useParams<{ exam_nm: string }>()
 
     const [exam, setExam] = useState<InstructorExam | null>(null)
-    const [allAbstractProblems, setAllAbstractProblems] = useState<Record<
-        string,
-        AbstractProblem
-    > | null>(null)
-    const [usedAbstractProblems, setUsedAbstractProblems] = useState<Record<
-        string,
-        AbstractProblem
-    > | null>(null)
+    const [allAbstractProblems, setAllAbstractProblems] = useState<Record<string, AbstractProblem> | null>(null)
+    const [usedAbstractProblems, setUsedAbstractProblems] = useState<Record<string, AbstractProblem> | null>(null)
     const [rows, setRows] = useState<InstructorExamProblem[]>([])
     const [colDefs, setColDefs] = useState<unknown[]>([])
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -328,11 +304,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                 <Button className="w-28 justify-start" onClick={edit} title="Edit selected problem">
                     <EditIcon /> Edit
                 </Button>
-                <Button
-                    className="w-28 justify-start"
-                    onClick={remove}
-                    title="Remove all selected problems"
-                >
+                <Button className="w-28 justify-start" onClick={remove} title="Remove all selected problems">
                     <CircleMinusIcon /> Remove
                 </Button>
                 <Button
@@ -342,11 +314,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                 >
                     <PaintbrushIcon /> Decorate
                 </Button>
-                <Button
-                    className="w-28 justify-start"
-                    onClick={save}
-                    title="Save problems of the exam"
-                >
+                <Button className="w-28 justify-start" onClick={save} title="Save problems of the exam">
                     <SaveIcon className={changes ? 'animate-pulse' : ''} />
                     Save
                 </Button>
@@ -387,23 +355,13 @@ type ProblemDialogProps = {
 }
 
 function ProblemDialog(props: ProblemDialogProps) {
-    const [problem_nm, setProblemNm] = useState<string | null>(
-        props.problem === null ? null : props.problem.problem_nm,
-    )
-    const [caption, setCaption] = useState<string | null>(
-        props.problem === null ? null : props.problem.caption,
-    )
-    const [weight, setWeight] = useState<number | null>(
-        props.problem === null ? null : props.problem.weight,
-    )
+    const [problem_nm, setProblemNm] = useState<string | null>(props.problem === null ? null : props.problem.problem_nm)
+    const [caption, setCaption] = useState<string | null>(props.problem === null ? null : props.problem.caption)
+    const [weight, setWeight] = useState<number | null>(props.problem === null ? null : props.problem.weight)
     const [weightString, setWeightString] = useState<string>(
-        props.problem === null || props.problem.weight === null
-            ? ''
-            : props.problem.weight.toString(),
+        props.problem === null || props.problem.weight === null ? '' : props.problem.weight.toString(),
     )
-    const [icon, setIcon] = useState<string | null>(
-        props.problem === null ? null : props.problem.icon,
-    )
+    const [icon, setIcon] = useState<string | null>(props.problem === null ? null : props.problem.icon)
 
     function acceptAction() {
         if (problem_nm === null) {
@@ -440,9 +398,7 @@ function ProblemDialog(props: ProblemDialogProps) {
         <Dialog open={props.isOpen} onOpenChange={props.setIsOpen}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>
-                        {props.problem ? 'Edit problem of exam' : 'Add problem to exam'}
-                    </DialogTitle>
+                    <DialogTitle>{props.problem ? 'Edit problem of exam' : 'Add problem to exam'}</DialogTitle>
 
                     <div className="flex flex-row gap-2 pt-2">
                         <div className="font-bold text-sm pt-2 w-20">Problem</div>
@@ -456,10 +412,7 @@ function ProblemDialog(props: ProblemDialogProps) {
 
                     <div className="flex flex-row gap-2 pt-2">
                         <div className="font-bold text-sm pt-2 w-20">Caption</div>
-                        <Input
-                            value={caption || ''}
-                            onChange={(e) => setCaption(e.target.value.trim())}
-                        />
+                        <Input value={caption || ''} onChange={(e) => setCaption(e.target.value.trim())} />
                     </div>
 
                     <div className="flex flex-row gap-2 pt-2">
@@ -549,10 +502,7 @@ function ExamIcons(props: ExamIconsProps) {
                                 {icons[theme].map((svg) => (
                                     <div
                                         key={svg}
-                                        className={cn(
-                                            svg === props.value ? 'border rounded-lg' : '',
-                                            'w-8 h-8 p-1',
-                                        )}
+                                        className={cn(svg === props.value ? 'border rounded-lg' : '', 'w-8 h-8 p-1')}
                                     >
                                         <Image
                                             src={`https://jutge.org/img/examicons/${svg}.svg`}
@@ -604,10 +554,7 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
     const allItems: Item[] = Object.entries(props.allAbstractProblems)
         .map(([problem_nm, problem]) => ({
             key: problem_nm,
-            value:
-                problem_nm +
-                ' · ' +
-                getProblemTitle(props.profile, problem_nm, props.allAbstractProblems),
+            value: problem_nm + ' · ' + getProblemTitle(props.profile, problem_nm, props.allAbstractProblems),
             titles:
                 problem_nm +
                 ' ' +
@@ -662,20 +609,18 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
                                             <Check
                                                 className={cn(
                                                     'mr-2 h-4 w-4',
-                                                    inputValue === item.value
-                                                        ? 'opacity-100'
-                                                        : 'opacity-0',
+                                                    inputValue === item.value ? 'opacity-100' : 'opacity-0',
                                                 )}
                                             />
                                             <div className="flex flex-col">
                                                 <div className="font-bold">{item.key}</div>
-                                                {Object.entries(
-                                                    props.allAbstractProblems[item.key].problems,
-                                                ).map(([problem_id, problem]) => (
-                                                    <div key={problem_id} className="text-sm">
-                                                        {problem.title}
-                                                    </div>
-                                                ))}
+                                                {Object.entries(props.allAbstractProblems[item.key].problems).map(
+                                                    ([problem_id, problem]) => (
+                                                        <div key={problem_id} className="text-sm">
+                                                            {problem.title}
+                                                        </div>
+                                                    ),
+                                                )}
                                             </div>
                                         </CommandItem>
                                     ))}

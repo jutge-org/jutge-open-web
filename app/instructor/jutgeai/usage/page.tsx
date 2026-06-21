@@ -15,11 +15,7 @@ export default function InstructorJutgeAIUsagePage() {
                 { title: 'JutgeAI', url: `${baseHref}/chat` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorJutgeaiSubNav}
-                baseHref={baseHref}
-                activeSegment="usage"
-            />
+            <InstructorSubNav items={instructorJutgeaiSubNav} baseHref={baseHref} activeSegment="usage" />
             <JutgeAIUsageView />
         </InstructorPageShell>
     )

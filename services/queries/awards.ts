@@ -14,9 +14,7 @@ import type { JutgeApiClient } from '@/lib/jutge_api_client'
 export const fetchAwardsData = cache(async (client: JutgeApiClient): Promise<AwardRow[]> => {
     const awardsMap = await client.student.awards.getAll()
 
-    return sortAwardRows(
-        Object.entries(awardsMap).map(([award_id, award]) => buildAwardRow(award_id, award)),
-    )
+    return sortAwardRows(Object.entries(awardsMap).map(([award_id, award]) => buildAwardRow(award_id, award)))
 })
 
 export const fetchAwardsByType = cache(async (client: JutgeApiClient): Promise<AwardTypeSummary[]> => {

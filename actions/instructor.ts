@@ -355,10 +355,7 @@ export async function jutgeaiChat(data: ChatPrompt) {
     return withInstructorClient((c) => c.instructor.jutgeai.chat(data))
 }
 
-export async function jutgeaiChatMessages(
-    model: string,
-    messages: ChatMessage[],
-): Promise<{ id: string }> {
+export async function jutgeaiChatMessages(model: string, messages: ChatMessage[]): Promise<{ id: string }> {
     return jutgeaiChat({
         model,
         label: 'chat',

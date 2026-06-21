@@ -69,9 +69,7 @@ export function ProblemUpdateTerminalView() {
         <div className="mb-8">
             {loading && (
                 <div className="mb-8 rounded-lg border p-4 text-center text-sm">
-                    <div className="animate-pulse">
-                        Please wait while the problem is being updated.
-                    </div>
+                    <div className="animate-pulse">Please wait while the problem is being updated.</div>
                 </div>
             )}
             {!loading && success && (

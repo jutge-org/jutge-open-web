@@ -47,8 +47,8 @@ export default function DocumentationMarkdownPage() {
                     source={`It's very easy to make some words **bold** and other words *italic* with Markdown. You can even [link to Google!](http://google.com)`}
                     rendered={
                         <p>
-                            It&apos;s very easy to make some words <strong>bold</strong> and other words{' '}
-                            <em>italic</em> with Markdown. You can even{' '}
+                            It&apos;s very easy to make some words <strong>bold</strong> and other words <em>italic</em>{' '}
+                            with Markdown. You can even{' '}
                             <a href="http://google.com" className="underline">
                                 link to Google!
                             </a>

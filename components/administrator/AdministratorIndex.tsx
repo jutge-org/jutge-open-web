@@ -1,15 +1,6 @@
 import { administratorIndexItems } from '@/lib/administrator'
 import { cn } from '@/lib/utils'
-import {
-    AudioLines,
-    Calendar,
-    ChartPie,
-    LayoutDashboard,
-    ScrollText,
-    Trophy,
-    UserRoundPen,
-    Users,
-} from 'lucide-react'
+import { AudioLines, Calendar, ChartPie, LayoutDashboard, ScrollText, Trophy, UserRoundPen, Users } from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof LayoutDashboard> = {

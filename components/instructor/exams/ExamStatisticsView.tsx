@@ -9,12 +9,7 @@ import {
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Warning } from '@/components/instructor/Warning'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart'
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -67,12 +62,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
         fetchData()
     }, [exam_nm])
 
-    if (
-        exam === null ||
-        statistics === null ||
-        abstractProblems === null ||
-        colors === null
-    ) {
+    if (exam === null || statistics === null || abstractProblems === null || colors === null) {
         return <SimpleSpinner />
     }
 
@@ -85,13 +75,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             {exam.problems.map((problem) => (
                 <div key={problem.problem_nm}>
                     <MyCard
-                        title={
-                            <ProblemTitle
-                                profile={profile}
-                                problem={problem}
-                                abstractProblems={abstractProblems}
-                            />
-                        }
+                        title={<ProblemTitle profile={profile} problem={problem} abstractProblems={abstractProblems} />}
                     >
                         <MyPieChart
                             data={statistics.submissions[problem.problem_nm]}
@@ -103,12 +87,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             ))}
             <div className="sm:col-span-2">
                 <MyCard title="Summary">
-                    <MySummaryChart
-                        data={statistics.submissions}
-                        cathegory="verdicts"
-                        colors={colors}
-                        exam={exam}
-                    />
+                    <MySummaryChart data={statistics.submissions} cathegory="verdicts" colors={colors} exam={exam} />
                 </MyCard>
             </div>
         </div>
@@ -119,13 +98,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             {exam.problems.map((problem) => (
                 <div key={problem.problem_nm}>
                     <MyCard
-                        title={
-                            <ProblemTitle
-                                profile={profile}
-                                problem={problem}
-                                abstractProblems={abstractProblems}
-                            />
-                        }
+                        title={<ProblemTitle profile={profile} problem={problem} abstractProblems={abstractProblems} />}
                     >
                         <MyPieChart
                             data={statistics.statuses[problem.problem_nm]}
@@ -137,12 +110,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             ))}
             <div className="sm:col-span-2">
                 <MyCard title="Summary">
-                    <MySummaryChart
-                        data={statistics.statuses}
-                        cathegory="statuses"
-                        colors={colors}
-                        exam={exam}
-                    />
+                    <MySummaryChart data={statistics.statuses} cathegory="statuses" colors={colors} exam={exam} />
                 </MyCard>
             </div>
         </div>
@@ -159,13 +127,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             {exam.problems.map((problem) => (
                 <div key={problem.problem_nm}>
                     <MyCard
-                        title={
-                            <ProblemTitle
-                                profile={profile}
-                                problem={problem}
-                                abstractProblems={abstractProblems}
-                            />
-                        }
+                        title={<ProblemTitle profile={profile} problem={problem} abstractProblems={abstractProblems} />}
                     >
                         <MyPieChart
                             data={statistics.compilers[problem.problem_nm]}
@@ -177,12 +139,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             ))}
             <div className="sm:col-span-2">
                 <MyCard title="Summary">
-                    <MySummaryChart
-                        data={statistics.compilers}
-                        cathegory="compilers"
-                        colors={colors}
-                        exam={exam}
-                    />
+                    <MySummaryChart data={statistics.compilers} cathegory="compilers" colors={colors} exam={exam} />
                 </MyCard>
             </div>
         </div>
@@ -193,13 +150,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             {exam.problems.map((problem) => (
                 <div key={problem.problem_nm}>
                     <MyCard
-                        title={
-                            <ProblemTitle
-                                profile={profile}
-                                problem={problem}
-                                abstractProblems={abstractProblems}
-                            />
-                        }
+                        title={<ProblemTitle profile={profile} problem={problem} abstractProblems={abstractProblems} />}
                     >
                         <MyPieChart
                             data={statistics.proglangs[problem.problem_nm]}
@@ -211,12 +162,7 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             ))}
             <div className="sm:col-span-2">
                 <MyCard title="Summary">
-                    <MySummaryChart
-                        data={statistics.proglangs}
-                        cathegory="proglangs"
-                        colors={colors}
-                        exam={exam}
-                    />
+                    <MySummaryChart data={statistics.proglangs} cathegory="proglangs" colors={colors} exam={exam} />
                 </MyCard>
             </div>
         </div>
@@ -275,12 +221,7 @@ function MySummaryChart(props: MySummaryChartProps) {
                 <XAxis type="number" hide />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
                 {Object.keys(chartConfig).map((key, index) => (
-                    <Bar
-                        key={index}
-                        dataKey={key}
-                        fill={color(key, props.cathegory, props.colors)}
-                        stackId="a"
-                    >
+                    <Bar key={index} dataKey={key} fill={color(key, props.cathegory, props.colors)} stackId="a">
                         <LabelList
                             formatter={() => key}
                             dataKey={key}
@@ -332,9 +273,7 @@ function MyTimelineChart(props: MyTimelineChartProps) {
                     tickLine={false}
                     tickMargin={0}
                     axisLine={false}
-                    tickFormatter={(value) =>
-                        dayjs.duration(Number(value), 'minutes').format('HH:mm')
-                    }
+                    tickFormatter={(value) => dayjs.duration(Number(value), 'minutes').format('HH:mm')}
                 />
                 <YAxis tickLine={false} tickMargin={0} axisLine={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
@@ -504,17 +443,11 @@ function ProblemTitle(props: ProblemTitleProps) {
             )}
             <div className="flex flex-col gap-1">
                 <div className="flex flex-row">
-                    {props.problem.caption && (
-                        <div className="">{props.problem.caption}&nbsp;·&nbsp;</div>
-                    )}
+                    {props.problem.caption && <div className="">{props.problem.caption}&nbsp;·&nbsp;</div>}
                     {props.problem.problem_nm}
                 </div>
                 <div className="font-normal text-sm text-gray-500 line-clamp-1">
-                    {getProblemTitle(
-                        props.profile,
-                        props.problem.problem_nm,
-                        props.abstractProblems,
-                    )}
+                    {getProblemTitle(props.profile, props.problem.problem_nm, props.abstractProblems)}
                 </div>
             </div>
         </div>

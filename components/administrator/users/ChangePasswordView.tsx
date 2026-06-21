@@ -49,14 +49,18 @@ export default function ChangePasswordView() {
             <div className="w-full p-4 sm:w-[500px]">
                 <h1 className="text-xl font-semibold">Change password</h1>
                 <p className="pb-4 text-sm text-muted-foreground">
-                    This will set a given password for a given user. If the message is not empty, the user will
-                    receive an email with that message (but not necessarily with the new password).
+                    This will set a given password for a given user. If the message is not empty, the user will receive
+                    an email with that message (but not necessarily with the new password).
                 </p>
                 <form onSubmit={(e) => void onSubmit(e)} className="space-y-3">
                     <FieldGroup>
                         <Field>
                             <FieldLabel>Email</FieldLabel>
-                            <Input value={email} placeholder="user@domain.com" onChange={(e) => setEmail(e.target.value)} />
+                            <Input
+                                value={email}
+                                placeholder="user@domain.com"
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </Field>
                         <Field>
                             <FieldLabel>Password</FieldLabel>

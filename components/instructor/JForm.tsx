@@ -23,14 +23,7 @@ import { DateTimePicker } from '@/components/instructor/DateTime'
 import { MultiSelect } from '@/components/instructor/MultiSelect'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -819,16 +812,9 @@ function JSelectComponent(props: JSelectComponentProps) {
         <div className="">
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-full justify-between"
-                    >
+                    <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
                         {props.field.value !== null
-                            ? props.field.options.find(
-                                  (framework) => framework.value === props.field.value,
-                              )?.label
+                            ? props.field.options.find((framework) => framework.value === props.field.value)?.label
                             : ''}
                         <ChevronsUpDown className="opacity-50" />
                     </Button>
@@ -846,9 +832,7 @@ function JSelectComponent(props: JSelectComponentProps) {
                                             value={option.value}
                                             onSelect={(currentValue) => {
                                                 props.field.setValue(
-                                                    currentValue === props.field.value
-                                                        ? ''
-                                                        : currentValue,
+                                                    currentValue === props.field.value ? '' : currentValue,
                                                 )
                                                 setOpen(false)
                                             }}
@@ -856,18 +840,10 @@ function JSelectComponent(props: JSelectComponentProps) {
                                             <Check
                                                 className={cn(
                                                     'p-0',
-                                                    props.field.value === option.value
-                                                        ? 'opacity-100'
-                                                        : 'opacity-0',
+                                                    props.field.value === option.value ? 'opacity-100' : 'opacity-0',
                                                 )}
                                             />
-                                            <div
-                                                className={
-                                                    props.field.value === option.value
-                                                        ? 'font-bold'
-                                                        : ''
-                                                }
-                                            >
+                                            <div className={props.field.value === option.value ? 'font-bold' : ''}>
                                                 {option.label}
                                             </div>
                                         </CommandItem>
@@ -1032,11 +1008,7 @@ function JFieldComponent(props: JFieldComponentProps) {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div className="flex sm:flex-row-reverse gap-1">
-                                    <span
-                                        className={
-                                            props.error ? 'text-red-700 dark:red-text-400' : ''
-                                        }
-                                    >
+                                    <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>
                                         {props.label}
                                     </span>
                                     <InfoIcon size={12} className="-translate-y-0" />
@@ -1048,18 +1020,12 @@ function JFieldComponent(props: JFieldComponentProps) {
                         </Tooltip>
                     </TooltipProvider>
                 ) : (
-                    <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>
-                        {props.label}
-                    </span>
+                    <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>{props.label}</span>
                 )}
             </Label>
             <div className="w-full">
                 <div>{props.content}</div>
-                {props.error && (
-                    <div className="text-red-700 dark:red-text-400 text-xs ml-2 mt-1">
-                        {props.error}
-                    </div>
-                )}
+                {props.error && <div className="text-red-700 dark:red-text-400 text-xs ml-2 mt-1">{props.error}</div>}
             </div>
         </div>
     )

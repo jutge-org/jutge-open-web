@@ -83,7 +83,10 @@ export function definition(): languages.IMonarchLanguage {
             root: [
                 { include: '@whitespace' },
                 [/[{}()\[\]]/, '@brackets'],
-                [/[a-zA-Z_]\w*/, { cases: { '@typeKeywords': 'type', '@keywords': 'keyword', '@default': 'identifier' } }],
+                [
+                    /[a-zA-Z_]\w*/,
+                    { cases: { '@typeKeywords': 'type', '@keywords': 'keyword', '@default': 'identifier' } },
+                ],
                 [/\d*\.\d+([eE][-+]?\d+)?/, 'number.float'],
                 [/\$[0-9A-Fa-f]+/, 'number.hex'],
                 [/\d+/, 'number'],

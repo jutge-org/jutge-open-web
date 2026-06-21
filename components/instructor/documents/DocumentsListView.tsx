@@ -8,11 +8,7 @@ import { fetchInstructorDocumentsIndex } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { useIsMobile } from '@/hooks/use-mobile'
-import {
-    documentFileExtension,
-    getDocumentFile,
-    getDocumentFileIcon,
-} from '@/lib/instructor/documents'
+import { documentFileExtension, getDocumentFile, getDocumentFileIcon } from '@/lib/instructor/documents'
 import type { Document } from '@/lib/jutge_api_client'
 import { offerDownloadFile } from '@/lib/instructor/utils'
 import type { ICellRendererParams } from 'ag-grid-community'
@@ -36,16 +32,14 @@ export function DocumentsListView() {
         {
             field: 'created_at',
             width: 120,
-            cellRenderer: (p: ICellRendererParams<Document>) =>
-                dayjs(p.data!.created_at).format('YYYY-MM-DD'),
+            cellRenderer: (p: ICellRendererParams<Document>) => dayjs(p.data!.created_at).format('YYYY-MM-DD'),
             headerName: 'Created',
         },
         {
             field: 'updated_at',
             width: 120,
             sort: 'desc',
-            cellRenderer: (p: ICellRendererParams<Document>) =>
-                dayjs(p.data!.updated_at).format('YYYY-MM-DD'),
+            cellRenderer: (p: ICellRendererParams<Document>) => dayjs(p.data!.updated_at).format('YYYY-MM-DD'),
             headerName: 'Updated',
         },
         {
@@ -72,10 +66,7 @@ export function DocumentsListView() {
     ])
 
     useEffect(() => {
-        if (isMobile)
-            setColDefs((colDefs) =>
-                colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'file'),
-            )
+        if (isMobile) setColDefs((colDefs) => colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'file'))
     }, [isMobile])
 
     useEffect(() => {

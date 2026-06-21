@@ -21,8 +21,8 @@ export function ProblemsNewView() {
             content: (
                 <div className="mb-8 space-y-2 rounded-lg border p-4 text-sm">
                     <p>
-                        Create a new problem by uploading a ZIP archive with its content. Please
-                        read the documentation in the{' '}
+                        Create a new problem by uploading a ZIP archive with its content. Please read the documentation
+                        in the{' '}
                         <a href="https://github.com/jutge-org/jutge-toolkit" target="_blank">
                             Jutge Toolkit
                         </a>{' '}
@@ -48,10 +48,7 @@ export function ProblemsNewView() {
                 .string()
                 .min(8)
                 .max(100)
-                .refine(
-                    (value) => /^[a-zA-Z0-9]+$/.test(value),
-                    'String should contain only alphanumeric characters',
-                ),
+                .refine((value) => /^[a-zA-Z0-9]+$/.test(value), 'String should contain only alphanumeric characters'),
         },
         sep: { type: 'separator' },
         add: {

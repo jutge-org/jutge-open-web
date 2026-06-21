@@ -21,11 +21,7 @@ export default async function InstructorExamRankingPage({ params }: Props) {
                 { title: exam_nm, url: `${baseHref}/ranking` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorExamSubNav(exam_nm)}
-                baseHref={baseHref}
-                activeSegment="ranking"
-            />
+            <InstructorSubNav items={instructorExamSubNav(exam_nm)} baseHref={baseHref} activeSegment="ranking" />
             <ExamRankingView />
         </InstructorPageShell>
     )

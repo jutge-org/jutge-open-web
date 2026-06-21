@@ -21,7 +21,10 @@ export async function MarkdownDoc({ filename }: MarkdownDocProps) {
                     a: ({ href, children }) => {
                         if (href?.startsWith('/')) {
                             return (
-                                <Link href={href} className="font-medium text-foreground underline underline-offset-4 hover:text-primary">
+                                <Link
+                                    href={href}
+                                    className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                                >
                                     {children}
                                 </Link>
                             )

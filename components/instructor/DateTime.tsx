@@ -247,8 +247,7 @@ function Calendar({
         const startDate = new Date(today.getFullYear() - yearRange, 0, 1)
         if (props.month) {
             return (
-                props.month.getMonth() === startDate.getMonth() &&
-                props.month.getFullYear() === startDate.getFullYear()
+                props.month.getMonth() === startDate.getMonth() && props.month.getFullYear() === startDate.getFullYear()
             )
         }
         return false
@@ -257,10 +256,7 @@ function Calendar({
         const today = new Date()
         const endDate = new Date(today.getFullYear() + yearRange, 11, 31)
         if (props.month) {
-            return (
-                props.month.getMonth() === endDate.getMonth() &&
-                props.month.getFullYear() === endDate.getFullYear()
-            )
+            return props.month.getMonth() === endDate.getMonth() && props.month.getFullYear() === endDate.getFullYear()
         }
         return false
     }
@@ -328,10 +324,7 @@ function Calendar({
                                 </SelectTrigger>
                                 <SelectContent>
                                     {MONTHS.map((month) => (
-                                        <SelectItem
-                                            key={month.value}
-                                            value={month.value.toString()}
-                                        >
+                                        <SelectItem key={month.value} value={month.value.toString()}>
                                             {month.label}
                                         </SelectItem>
                                     ))}
@@ -392,23 +385,13 @@ const TimePeriodSelect = React.forwardRef<HTMLButtonElement, PeriodSelectorProps
             if (date) {
                 const tempDate = new Date(date)
                 const hours = display12HourValue(date.getHours())
-                onDateChange?.(
-                    setDateByType(
-                        tempDate,
-                        hours.toString(),
-                        '12hours',
-                        period === 'AM' ? 'PM' : 'AM',
-                    ),
-                )
+                onDateChange?.(setDateByType(tempDate, hours.toString(), '12hours', period === 'AM' ? 'PM' : 'AM'))
             }
         }
 
         return (
             <div className="flex h-10 items-center">
-                <Select
-                    defaultValue={period}
-                    onValueChange={(value: Period) => handleValueChange(value)}
-                >
+                <Select defaultValue={period} onValueChange={(value: Period) => handleValueChange(value)}>
                     <SelectTrigger
                         ref={ref}
                         className="w-[65px] focus:bg-accent focus:text-accent-foreground"
@@ -484,8 +467,7 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, TimePickerInputProps>
              * The second entered digit will break the condition and the value will be set to 10-12.
              */
             if (picker === '12hours') {
-                if (flag && calculatedValue.slice(1, 2) === '1' && prevIntKey === '0')
-                    return `0${key}`
+                if (flag && calculatedValue.slice(1, 2) === '1' && prevIntKey === '0') return `0${key}`
             }
 
             return !flag ? `0${key}` : calculatedValue.slice(1, 2) + key
@@ -565,9 +547,7 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
         const hourRef = React.useRef<HTMLInputElement>(null)
         const secondRef = React.useRef<HTMLInputElement>(null)
         const periodRef = React.useRef<HTMLButtonElement>(null)
-        const [period, setPeriod] = React.useState<Period>(
-            date && date.getHours() >= 12 ? 'PM' : 'AM',
-        )
+        const [period, setPeriod] = React.useState<Period>(date && date.getHours() >= 12 ? 'PM' : 'AM')
 
         useImperativeHandle(
             ref,
@@ -714,11 +694,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                 return
             }
             if (!defaultPopupValue) {
-                newDay.setHours(
-                    month?.getHours() ?? 0,
-                    month?.getMinutes() ?? 0,
-                    month?.getSeconds() ?? 0,
-                )
+                newDay.setHours(month?.getHours() ?? 0, month?.getMinutes() ?? 0, month?.getSeconds() ?? 0)
                 onMonthChange?.(newDay)
                 setMonth(newDay)
                 return
@@ -728,11 +704,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
             const newDateFull = add(defaultPopupValue, {
                 days: Math.ceil(diffInDays),
             })
-            newDateFull.setHours(
-                month?.getHours() ?? 0,
-                month?.getMinutes() ?? 0,
-                month?.getSeconds() ?? 0,
-            )
+            newDateFull.setHours(month?.getHours() ?? 0, month?.getMinutes() ?? 0, month?.getSeconds() ?? 0)
             onMonthChange?.(newDateFull)
             setMonth(newDateFull)
         }
@@ -756,12 +728,8 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
         )
 
         const initHourFormat = {
-            hour24:
-                displayFormat?.hour24 ??
-                `PPP HH:mm${!granularity || granularity === 'second' ? ':ss' : ''}`,
-            hour12:
-                displayFormat?.hour12 ??
-                `PP hh:mm${!granularity || granularity === 'second' ? ':ss' : ''} b`,
+            hour24: displayFormat?.hour24 ?? `PPP HH:mm${!granularity || granularity === 'second' ? ':ss' : ''}`,
+            hour12: displayFormat?.hour12 ?? `PP hh:mm${!granularity || granularity === 'second' ? ':ss' : ''} b`,
         }
 
         let loc = enUS
@@ -789,13 +757,9 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {displayDate ? (
-                            format(
-                                displayDate,
-                                hourCycle === 24 ? initHourFormat.hour24 : initHourFormat.hour12,
-                                {
-                                    locale: loc,
-                                },
-                            )
+                            format(displayDate, hourCycle === 24 ? initHourFormat.hour24 : initHourFormat.hour12, {
+                                locale: loc,
+                            })
                         ) : (
                             <span>{placeholder}</span>
                         )}

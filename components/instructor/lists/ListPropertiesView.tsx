@@ -44,14 +44,7 @@ export function ListPropertiesView() {
 
     if (list === null) return <SimpleSpinner size={64} className="pt-24" />
 
-    return (
-        <ListPropertiesForm
-            fetchData={fetchData}
-            list={list}
-            archived={archived}
-            setArchived={setArchived}
-        />
-    )
+    return <ListPropertiesForm fetchData={fetchData} list={list} archived={archived} setArchived={setArchived} />
 }
 
 type ListPropertiesFormProps = {

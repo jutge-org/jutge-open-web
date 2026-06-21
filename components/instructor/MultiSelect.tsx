@@ -8,14 +8,7 @@ import * as React from 'react'
 import { cn, commandFilter } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 
@@ -29,10 +22,8 @@ const multiSelectVariants = cva(
         variants: {
             variant: {
                 default: 'border-foreground/10 text-foreground bg-card hover:bg-card/80',
-                secondary:
-                    'border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                destructive:
-                    'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
+                secondary: 'border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80',
+                destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
                 inverted: 'inverted',
             },
         },
@@ -46,9 +37,7 @@ const multiSelectVariants = cva(
  * Props for MultiSelect component
  */
 interface MultiSelectProps
-    extends
-        React.ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof multiSelectVariants> {
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof multiSelectVariants> {
     /**
      * An array of option objects to be displayed in the multi-select component.
      * Each option object has a label, value, and an optional icon.
@@ -201,9 +190,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                                                 )}
                                                 style={{ animationDuration: `${animation}s` }}
                                             >
-                                                {IconComponent && (
-                                                    <IconComponent className="h-4 w-4 mr-2" />
-                                                )}
+                                                {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
                                                 {option?.label}
                                                 <XIcon
                                                     className="ml-2 h-4 w-4 cursor-pointer"
@@ -243,38 +230,25 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                                             handleClear()
                                         }}
                                     />
-                                    <Separator
-                                        orientation="vertical"
-                                        className="flex min-h-6 h-full"
-                                    />
+                                    <Separator orientation="vertical" className="flex min-h-6 h-full" />
                                     <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
                                 </div>
                             </div>
                         ) : (
                             <div className="flex items-center justify-between w-full mx-auto">
-                                <span className="text-sm text-muted-foreground mx-3">
-                                    {placeholder}
-                                </span>
+                                <span className="text-sm text-muted-foreground mx-3">{placeholder}</span>
                                 <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
                             </div>
                         )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent
-                    className="w-auto p-0"
-                    align="start"
-                    onEscapeKeyDown={() => setIsPopoverOpen(false)}
-                >
+                <PopoverContent className="w-auto p-0" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
                     <Command filter={commandFilter}>
                         <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup>
-                                <CommandItem
-                                    key="all"
-                                    onSelect={toggleAll}
-                                    className="cursor-pointer"
-                                >
+                                <CommandItem key="all" onSelect={toggleAll} className="cursor-pointer">
                                     <div
                                         className={cn(
                                             'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',

@@ -4,8 +4,7 @@ import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 
 const SUBMISSION_CODE_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/code(\/view)?$/
-const SUBMISSION_TESTCASE_DIFF_EDITOR_PATH =
-    /^\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff(\/view)?$/
+const SUBMISSION_TESTCASE_DIFF_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff(\/view)?$/
 
 type RootShellProps = {
     children: ReactNode

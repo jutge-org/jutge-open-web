@@ -1,11 +1,7 @@
 import type { AbstractProblem, Profile } from '@/lib/jutge_api_client'
 import type { Dict } from '@/lib/instructor/utils'
 
-export function getProblemTitle(
-    user: Profile,
-    problem_nm: string,
-    abstractProblems: Dict<AbstractProblem>,
-): string {
+export function getProblemTitle(user: Profile, problem_nm: string, abstractProblems: Dict<AbstractProblem>): string {
     try {
         const abstractProblem = abstractProblems[problem_nm]
         const prefLanguageId = user.language_id

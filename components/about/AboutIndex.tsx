@@ -27,7 +27,9 @@ export function AboutIndex() {
                         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span className="flex items-center gap-1.5 text-lg font-semibold tracking-tight text-foreground">
                                 {item.label}
-                                {external ? <ExternalLink className="size-4 text-muted-foreground" aria-hidden /> : null}
+                                {external ? (
+                                    <ExternalLink className="size-4 text-muted-foreground" aria-hidden />
+                                ) : null}
                             </span>
                             <span className="text-sm leading-snug text-muted-foreground">{item.description}</span>
                         </span>

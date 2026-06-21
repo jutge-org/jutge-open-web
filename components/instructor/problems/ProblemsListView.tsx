@@ -10,12 +10,7 @@ import { AgTableFull } from '@/components/administrator/AgTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { mapmap } from '@/lib/instructor/utils'
 import type { AbstractProblem, ProblemAlerts, SharingSettings } from '@/lib/jutge_api_client'
@@ -64,9 +59,7 @@ export function ProblemsListView() {
 
     useEffect(() => {
         if (isMobile)
-            setColDefs((colDefs) =>
-                colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at'),
-            )
+            setColDefs((colDefs) => colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at'))
     }, [isMobile])
 
     useEffect(() => {
@@ -99,16 +92,11 @@ export function ProblemsListView() {
                         created_at: abstractProblem.created_at,
                         updated_at: abstractProblem.updated_at,
                         deprecated: abstractProblem.deprecation !== null,
-                        languages: mapmap(
-                            abstractProblem.problems,
-                            (_problem_id, problem) => problem.language_id,
-                        ),
+                        languages: mapmap(abstractProblem.problems, (_problem_id, problem) => problem.language_id),
                         passcode: sharing?.passcode === null,
                         shared_testcases: sharing?.shared_testcases ?? false,
                         shared_solutions: sharing?.shared_solutions ?? false,
-                        checked: Object.values(abstractProblem.problems).every(
-                            (problem) => problem.checked !== 0,
-                        ),
+                        checked: Object.values(abstractProblem.problems).every((problem) => problem.checked !== 0),
                         se_count: alerts?.se_count ?? 0,
                         ie_count: alerts?.ie_count ?? 0,
                         abstractProblems,
@@ -136,9 +124,7 @@ export function ProblemsListView() {
             field: 'problem_nm',
             headerName: 'Id',
             cellRenderer: (p: ICellRendererParams<ProblemRow>) => (
-                <Link href={`/instructor/problems/${p.data!.problem_nm}/properties`}>
-                    {p.data!.problem_nm}
-                </Link>
+                <Link href={`/instructor/problems/${p.data!.problem_nm}/properties`}>{p.data!.problem_nm}</Link>
             ),
             width: 100,
             filter: true,
@@ -150,16 +136,14 @@ export function ProblemsListView() {
             headerName: 'Created',
             width: 140,
             filter: true,
-            valueGetter: (p: ICellRendererParams<ProblemRow>) =>
-                dayjs(p.data!.created_at).format('YYYY-MM-DD'),
+            valueGetter: (p: ICellRendererParams<ProblemRow>) => dayjs(p.data!.created_at).format('YYYY-MM-DD'),
         },
         {
             field: 'updated_at',
             headerName: 'Updated',
             width: 140,
             filter: true,
-            valueGetter: (p: ICellRendererParams<ProblemRow>) =>
-                dayjs(p.data!.updated_at).format('YYYY-MM-DD'),
+            valueGetter: (p: ICellRendererParams<ProblemRow>) => dayjs(p.data!.updated_at).format('YYYY-MM-DD'),
             sort: 'desc',
         },
         {
@@ -208,30 +192,28 @@ export function ProblemsListView() {
             cellRenderer: (p: ICellRendererParams<ProblemRow>) =>
                 p.data!.languages.map((language: string) => (
                     <div key={language}>
-                        {p.data!.abstractProblems[p.data!.problem_nm]?.problems[
-                            `${p.data!.problem_nm}_${language}`
-                        ].summary ? (
+                        {p.data!.abstractProblems[p.data!.problem_nm]?.problems[`${p.data!.problem_nm}_${language}`]
+                            .summary ? (
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Badge variant="secondary" className="mr-1 px-2">
-                                            {language}{' '}
-                                            <BotMessageSquareIcon size={12} className="ml-1" />
+                                            {language} <BotMessageSquareIcon size={12} className="ml-1" />
                                         </Badge>
                                     </TooltipTrigger>
                                     <TooltipContent className="flex w-64 flex-col gap-2">
                                         <p className="font-semibold">
                                             {
-                                                p.data!.abstractProblems[p.data!.problem_nm]
-                                                    .problems[`${p.data!.problem_nm}_${language}`]
-                                                    ?.summary?.summary_1s
+                                                p.data!.abstractProblems[p.data!.problem_nm].problems[
+                                                    `${p.data!.problem_nm}_${language}`
+                                                ]?.summary?.summary_1s
                                             }
                                         </p>
                                         <p>
                                             {
-                                                p.data!.abstractProblems[p.data!.problem_nm]
-                                                    .problems[`${p.data!.problem_nm}_${language}`]
-                                                    ?.summary?.summary_1p
+                                                p.data!.abstractProblems[p.data!.problem_nm].problems[
+                                                    `${p.data!.problem_nm}_${language}`
+                                                ]?.summary?.summary_1p
                                             }
                                         </p>
                                         <p>
@@ -242,9 +224,9 @@ export function ProblemsListView() {
                                         <p className="flex gap-1">
                                             <BotIcon size={14} className="" />
                                             {
-                                                p.data!.abstractProblems[p.data!.problem_nm]
-                                                    .problems[`${p.data!.problem_nm}_${language}`]
-                                                    ?.summary?.model
+                                                p.data!.abstractProblems[p.data!.problem_nm].problems[
+                                                    `${p.data!.problem_nm}_${language}`
+                                                ]?.summary?.model
                                             }
                                         </p>
                                         <hr />
@@ -255,10 +237,7 @@ export function ProblemsListView() {
                                         </p>
                                         <p className="flex gap-1">
                                             <BotIcon size={14} className="" />
-                                            {
-                                                p.data!.abstractProblems[p.data!.problem_nm]
-                                                    .solution_tags?.model
-                                            }
+                                            {p.data!.abstractProblems[p.data!.problem_nm].solution_tags?.model}
                                         </p>
                                     </TooltipContent>
                                 </Tooltip>

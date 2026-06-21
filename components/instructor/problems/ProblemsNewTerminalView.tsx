@@ -68,9 +68,7 @@ export function ProblemsNewTerminalView() {
         <div className="mb-8">
             {loading && (
                 <div className="mb-8 rounded-lg border p-4 text-center text-sm">
-                    <div className="animate-pulse">
-                        Please wait while the problem is being created.
-                    </div>
+                    <div className="animate-pulse">Please wait while the problem is being created.</div>
                 </div>
             )}
             {!loading && problem_nm && (

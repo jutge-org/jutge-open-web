@@ -54,8 +54,7 @@ export default function ExamsView() {
             headerName: 'Scheduled time',
             width: 180,
             sort: 'asc',
-            cellRenderer: (params: any) =>
-                dayjs(params.data.exp_time_start).format('YYYY-MM-DD HH:mm'),
+            cellRenderer: (params: any) => dayjs(params.data.exp_time_start).format('YYYY-MM-DD HH:mm'),
             valueGetter: (params: any) => params.data.exp_time_start,
         },
         {
@@ -82,8 +81,7 @@ export default function ExamsView() {
         {
             field: 'duration',
             width: 120,
-            cellRenderer: (params: any) =>
-                dayjs.duration(params.data.running_time, 'minutes').humanize(),
+            cellRenderer: (params: any) => dayjs.duration(params.data.running_time, 'minutes').humanize(),
             valueGetter: (params: any) => params.data.running_time,
         },
         {
@@ -116,11 +114,7 @@ export default function ExamsView() {
                     {view === 'table' ? <ScrollIcon /> : <TableIcon />}
                 </Button>
             </div>
-            {view === 'table' ? (
-                <AgTableFull rowData={exams} columnDefs={colDefs} />
-            ) : (
-                <ExamsTimeline exams={exams} />
-            )}
+            {view === 'table' ? <AgTableFull rowData={exams} columnDefs={colDefs} /> : <ExamsTimeline exams={exams} />}
         </>
     )
 }
@@ -151,21 +145,13 @@ function ExamsTimeline({ exams }: { exams: UpcomingExams }) {
                 <TimelineItem key={i}>
                     <TimelineHeader>
                         <TimelineTime
-                            variant={
-                                dayjs(collapsedExam[0].exp_time_start).isBefore(now)
-                                    ? 'secondary'
-                                    : 'default'
-                            }
+                            variant={dayjs(collapsedExam[0].exp_time_start).isBefore(now) ? 'secondary' : 'default'}
                         >
                             <div className="flex flex-col items-center font-normal">
                                 <div className="text-sm">
-                                    {dayjs(collapsedExam[0].exp_time_start).format(
-                                        'YYYY-MM-DD HH:mm',
-                                    )}
+                                    {dayjs(collapsedExam[0].exp_time_start).format('YYYY-MM-DD HH:mm')}
                                 </div>
-                                <div className="text-sm">
-                                    {dayjs(collapsedExam[0].exp_time_start).fromNow()}
-                                </div>
+                                <div className="text-sm">{dayjs(collapsedExam[0].exp_time_start).fromNow()}</div>
                             </div>
                         </TimelineTime>
                         <TimelineTitle>{collapsedExam[0].name}</TimelineTitle>

@@ -138,9 +138,7 @@ function CourseTutorsForm(props: CourseTutorsProps) {
         }
         setRows((oldRows) => [...oldRows, ...newRows])
         setChanges(true)
-        toast.success(
-            `Added ${newRows.length} tutors.  Remember to click the Save button to commit the changes!`,
-        )
+        toast.success(`Added ${newRows.length} tutors.  Remember to click the Save button to commit the changes!`)
     }
 
     async function remove() {
@@ -237,11 +235,7 @@ function CourseTutorsForm(props: CourseTutorsProps) {
                     <SaveIcon className={changes ? 'animate-pulse' : ''} />
                     Save
                 </Button>
-                <Button
-                    className="w-28 justify-start"
-                    onClick={invite}
-                    title="Send invite to pending tutors"
-                >
+                <Button className="w-28 justify-start" onClick={invite} title="Send invite to pending tutors">
                     <SendHorizonalIcon /> Invite
                 </Button>
                 <Button className="w-28 justify-start" onClick={remove} title="Remove tutors">
@@ -261,12 +255,7 @@ function CourseTutorsForm(props: CourseTutorsProps) {
                 >
                     <ClipboardCopyIcon /> Copy emails
                 </Button>
-                <Button
-                    className="w-36 justify-start"
-                    onClick={exportCsv}
-                    title="Export to CSV"
-                    variant={'outline'}
-                >
+                <Button className="w-36 justify-start" onClick={exportCsv} title="Export to CSV" variant={'outline'}>
                     <DownloadCloudIcon /> Export to CSV
                 </Button>
             </div>

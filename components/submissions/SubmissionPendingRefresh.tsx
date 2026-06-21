@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
-import {
-    PENDING_SUBMISSION_REFRESH_INTERVAL_MS,
-    PENDING_SUBMISSION_REFRESH_MAX_COUNT,
-} from '@/lib/submissions'
+import { PENDING_SUBMISSION_REFRESH_INTERVAL_MS, PENDING_SUBMISSION_REFRESH_MAX_COUNT } from '@/lib/submissions'
 
 type SubmissionPendingRefreshProps = {
     isPending: boolean

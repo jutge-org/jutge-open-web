@@ -42,14 +42,7 @@ export function CoursePropertiesView() {
 
     if (course === null) return <SimpleSpinner size={64} className="pt-24" />
 
-    return (
-        <EditCourseForm
-            fetchData={fetchData}
-            course={course}
-            archived={archived}
-            setArchived={setArchived}
-        />
-    )
+    return <EditCourseForm fetchData={fetchData} course={course} archived={archived} setArchived={setArchived} />
 }
 
 type CourseFormProps = {
@@ -71,14 +64,8 @@ function EditCourseForm(props: CourseFormProps) {
     const [title, setTitle] = useDynamic(props.course.title, [props.course])
     const [description, setDescription] = useDynamic(props.course.description, [props.course])
     const [annotation, setAnnotation] = useDynamic(props.course.annotation, [props.course])
-    const [created_at] = useDynamic(
-        dayjs(props.course.created_at).format('YYYY-MM-DD HH:mm:ss'),
-        [props.course],
-    )
-    const [updated_at] = useDynamic(
-        dayjs(props.course.updated_at).format('YYYY-MM-DD HH:mm:ss'),
-        [props.course],
-    )
+    const [created_at] = useDynamic(dayjs(props.course.created_at).format('YYYY-MM-DD HH:mm:ss'), [props.course])
+    const [updated_at] = useDynamic(dayjs(props.course.updated_at).format('YYYY-MM-DD HH:mm:ss'), [props.course])
 
     const fields: JFormFields = {
         title: {

@@ -56,8 +56,7 @@ export function ExamsListView() {
             width: 200,
             filter: true,
             headerName: 'Expected start',
-            cellRenderer: (p: { data: InstructorBriefExam }) =>
-                dayjs(p.data.exp_time_start).format('YYYY-MM-DD HH:mm'),
+            cellRenderer: (p: { data: InstructorBriefExam }) => dayjs(p.data.exp_time_start).format('YYYY-MM-DD HH:mm'),
         },
     ])
 
@@ -69,9 +68,7 @@ export function ExamsListView() {
         async function fetchExams() {
             const archived = await fetchInstructorExamsArchived()
             const dict = await fetchInstructorExamsIndex()
-            const array = Object.values(dict).sort((a, b) =>
-                dayjs(b.exp_time_start).diff(dayjs(a.exp_time_start)),
-            )
+            const array = Object.values(dict).sort((a, b) => dayjs(b.exp_time_start).diff(dayjs(a.exp_time_start)))
             setRows(array.filter((exam) => !archived.includes(exam.exam_nm)))
             setExams(array)
             setArchived(archived)

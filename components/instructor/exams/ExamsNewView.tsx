@@ -70,11 +70,7 @@ export function ExamsNewView() {
         foo: {
             type: 'free',
             label: '',
-            content: (
-                <div className="text-sm mt-4">
-                    More properties will be available after creating the exam.
-                </div>
-            ),
+            content: <div className="text-sm mt-4">More properties will be available after creating the exam.</div>,
         },
         sep: { type: 'separator' },
         update: {

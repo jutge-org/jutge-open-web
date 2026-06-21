@@ -93,9 +93,7 @@ export function CourseDetail({ courseKey, course, status }: CourseDetailProps) {
                     <dl className="flex flex-col gap-1.5">
                         <InfoRow label="Owner">{row.ownerName}</InfoRow>
                         <InfoRow label="Course key">{courseKey}</InfoRow>
-                        <InfoRow label="Annotation">
-                            {row.annotation ? row.annotation : '—'}
-                        </InfoRow>
+                        <InfoRow label="Annotation">{row.annotation ? row.annotation : '—'}</InfoRow>
                         <InfoRow label="Problem lists">
                             {course.lists.length > 0 ? (
                                 <ul className="space-y-1">

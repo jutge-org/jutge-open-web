@@ -228,7 +228,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/[A-Z][\w$]*/, 'type.identifier'], // to show class names nicely
 
                 // whitespace
-                {include: '@whitespace'},
+                { include: '@whitespace' },
 
                 // delimiters and operators
                 [/[{}()[\]]/, '@brackets'],
@@ -297,7 +297,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/`/, 'string', '@pop'],
             ],
         },
-    };
+    }
 }
 
 export function configuration(): languages.LanguageConfiguration {
@@ -314,21 +314,21 @@ export function configuration(): languages.LanguageConfiguration {
         ],
 
         autoClosingPairs: [
-            {open: '{', close: '}'},
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '`', close: '`', notIn: ['string']},
-            {open: '"', close: '"', notIn: ['string']},
-            {open: "'", close: "'", notIn: ['string', 'comment']},
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '`', close: '`', notIn: ['string'] },
+            { open: '"', close: '"', notIn: ['string'] },
+            { open: "'", close: "'", notIn: ['string', 'comment'] },
         ],
 
         surroundingPairs: [
-            {open: '{', close: '}'},
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '`', close: '`'},
-            {open: '"', close: '"'},
-            {open: "'", close: "'"},
+            { open: '{', close: '}' },
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '`', close: '`' },
+            { open: '"', close: '"' },
+            { open: "'", close: "'" },
         ],
-    };
+    }
 }

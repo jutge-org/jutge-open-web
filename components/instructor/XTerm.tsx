@@ -18,12 +18,7 @@ Sorry.
 
 'use client'
 
-import {
-    type ITerminalAddon,
-    type ITerminalInitOnlyOptions,
-    type ITerminalOptions,
-    Terminal,
-} from '@xterm/xterm'
+import { type ITerminalAddon, type ITerminalInitOnlyOptions, type ITerminalOptions, Terminal } from '@xterm/xterm'
 import '@xterm/xterm/css/xterm.css'
 import { type ComponentPropsWithoutRef, useEffect, useRef, useState } from 'react'
 
@@ -123,8 +118,7 @@ export function useXTerm({ options, addons, listeners }: UseXTermProps = {}) {
     }
 }
 
-export interface XTermProps
-    extends Omit<ComponentPropsWithoutRef<'div'>, 'onResize' | 'onScroll'>, UseXTermProps {}
+export interface XTermProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onResize' | 'onScroll'>, UseXTermProps {}
 
 export function XTerm({ className = '', options, addons, listeners, ...props }: XTermProps) {
     const { ref } = useXTerm({

@@ -65,9 +65,7 @@ export default function AlertWidget() {
     }
 
     if (data.recent_load_averages.latest_01_minutes > 1.5) {
-        alerts.push(
-            `Server load average is ${data.recent_load_averages.latest_01_minutes} (latest min).`,
-        )
+        alerts.push(`Server load average is ${data.recent_load_averages.latest_01_minutes} (latest min).`)
     }
 
     if (alerts.length === 0) return null

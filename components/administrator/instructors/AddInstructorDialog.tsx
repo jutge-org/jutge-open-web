@@ -59,14 +59,18 @@ export const useAddInstructorDialog = (): [() => Promise<AddInstructorDialogResu
                     <DialogHeader>
                         <DialogTitle>Add instructor</DialogTitle>
                         <DialogDescription>
-                            This will give instructor privileges to a user identified by its email. To do so, you
-                            need provide a username for him/her (e.g. JohnRuth).
+                            This will give instructor privileges to a user identified by its email. To do so, you need
+                            provide a username for him/her (e.g. JohnRuth).
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-row gap-4">
                             <Label className="mt-2 w-28 text-right text-sm">Email</Label>
-                            <Input value={email} placeholder="User's email" onChange={(e) => setEmail(e.target.value)} />
+                            <Input
+                                value={email}
+                                placeholder="User's email"
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </div>
                         <div className="flex flex-row gap-4">
                             <Label className="mt-2 w-28 text-right text-sm">Username</Label>

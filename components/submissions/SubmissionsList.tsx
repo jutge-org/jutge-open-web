@@ -74,10 +74,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 filter: false,
                 cellRenderer: (params: { data: SubmissionRow }) =>
                     params.data.verdictEmoji ? (
-                        <span
-                            aria-hidden
-                            className={params.data.verdict === 'Pending' ? 'animate-pulse' : undefined}
-                        >
+                        <span aria-hidden className={params.data.verdict === 'Pending' ? 'animate-pulse' : undefined}>
                             {params.data.verdictEmoji}
                         </span>
                     ) : (
@@ -134,10 +131,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 sortable: true,
                 filter: true,
                 cellRenderer: (params: { data: SubmissionRow }) => (
-                    <Link
-                        href={params.data.submissionHref}
-                        className="text-sm hover:text-primary hover:underline"
-                    >
+                    <Link href={params.data.submissionHref} className="text-sm hover:text-primary hover:underline">
                         {params.data.submission_id}
                     </Link>
                 ),

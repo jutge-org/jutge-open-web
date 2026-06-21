@@ -41,8 +41,7 @@ function useAgTheme(wrapperBorder = true, themeParams?: Record<string, string>) 
 
 const BOTTOM_PADDING_PX = 60
 
-const AG_TABLE_CLASS =
-    'w-full [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-muted-foreground/50'
+const AG_TABLE_CLASS = 'w-full [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-muted-foreground/50'
 
 function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) {
     const [height, setHeight] = useState<number>()

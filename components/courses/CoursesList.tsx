@@ -313,4 +313,3 @@ async function runServerAction(courseKey: string, action: CourseAction) {
             return unarchiveCourseAction(courseKey)
     }
 }
-

@@ -23,10 +23,10 @@ export default function AboutHonorCodePage() {
                     user account and not let anyone else use your username and/or password; and not access or attempt to
                     access any other user&apos;s account, or misrepresent or attempt to misrepresent your identity while
                     using the site;be held responsible for your postings, submissions and publications inside this site;
-                    be polite with others who can read the information you submitted to this site. This Honor Code is not
-                    intended to prohibit discussion of course material. While users must submit work that is their own,
-                    you should feel free to discuss lectures or other course material with others either in-person or
-                    online.
+                    be polite with others who can read the information you submitted to this site. This Honor Code is
+                    not intended to prohibit discussion of course material. While users must submit work that is their
+                    own, you should feel free to discuss lectures or other course material with others either in-person
+                    or online.
                 </p>
             </Prose>
         </AboutPageShell>

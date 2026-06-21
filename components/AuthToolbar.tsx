@@ -15,7 +15,15 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
-import { ActivityIcon, Award, CrownIcon, GraduationCapIcon, LogIn as SignIn, LogOut as SignOut, User } from 'lucide-react'
+import {
+    ActivityIcon,
+    Award,
+    CrownIcon,
+    GraduationCapIcon,
+    LogIn as SignIn,
+    LogOut as SignOut,
+    User,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 type AuthToolbarProps = {
@@ -25,12 +33,7 @@ type AuthToolbarProps = {
     userName?: string
 }
 
-export function AuthToolbar({
-    authenticated,
-    instructor = false,
-    administrator = false,
-    userName,
-}: AuthToolbarProps) {
+export function AuthToolbar({ authenticated, instructor = false, administrator = false, userName }: AuthToolbarProps) {
     const router = useRouter()
     const pathname = usePathname()
     const [dialogOpen, setDialogOpen] = useState(false)

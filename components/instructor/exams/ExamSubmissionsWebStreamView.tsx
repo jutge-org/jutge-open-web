@@ -46,9 +46,7 @@ export function ExamSubmissionsWebStreamView({ webstream_id }: ExamSubmissionsWe
         <div className="mb-8">
             {loading && (
                 <div className="border rounded-lg p-4 mb-8 text-sm text-center">
-                    <div className="animate-pulse">
-                        Please wait while your download is being prepared.
-                    </div>
+                    <div className="animate-pulse">Please wait while your download is being prepared.</div>
                 </div>
             )}
             {!loading && packId && (

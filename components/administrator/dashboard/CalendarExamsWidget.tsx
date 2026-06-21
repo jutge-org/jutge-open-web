@@ -80,15 +80,9 @@ export default function CalendarExamsWidget() {
                                 <div
                                     className={cn(
                                         'border-r border-b rounded-sm text-sm',
-                                        table[i][j].date.isSame(today, 'day')
-                                            ? 'border border-primary'
-                                            : '',
-                                        table[i][j].date.isBefore(today, 'day')
-                                            ? 'text-gray-400'
-                                            : '',
-                                        table[i][j].date.isoWeekday() >= 6
-                                            ? 'no-border-red-100'
-                                            : '',
+                                        table[i][j].date.isSame(today, 'day') ? 'border border-primary' : '',
+                                        table[i][j].date.isBefore(today, 'day') ? 'text-gray-400' : '',
+                                        table[i][j].date.isoWeekday() >= 6 ? 'no-border-red-100' : '',
                                         table[i][j].exams + table[i][j].contests > 0
                                             ? 'hover:bg-gray-100 cursor-pointer'
                                             : '',
@@ -98,14 +92,10 @@ export default function CalendarExamsWidget() {
                                         <div
                                             className={cn(
                                                 'px-1 line-clamp-1',
-                                                table[i][j].date.isSame(today, 'day')
-                                                    ? 'text-primary'
-                                                    : '',
+                                                table[i][j].date.isSame(today, 'day') ? 'text-primary' : '',
                                             )}
                                         >
-                                            {table[i][j].date.format(
-                                                table[i][j].date.date() === 1 ? 'D MMM' : 'D',
-                                            )}
+                                            {table[i][j].date.format(table[i][j].date.date() === 1 ? 'D MMM' : 'D')}
                                         </div>
                                         {table[i][j].exams + table[i][j].contests > 0 && (
                                             <div
@@ -125,9 +115,7 @@ export default function CalendarExamsWidget() {
                                 </div>
                             </PopoverTrigger>
                             {table[i][j].info && (
-                                <PopoverContent className="w-96 shadow-xl">
-                                    {table[i][j].info}
-                                </PopoverContent>
+                                <PopoverContent className="w-96 shadow-xl">{table[i][j].info}</PopoverContent>
                             )}
                         </Popover>
                     ))}
@@ -136,9 +124,7 @@ export default function CalendarExamsWidget() {
         </div>
     )
 
-    return (
-        <Widget icon=<CalendarRangeIcon size={18} /> title="Exams and contests" content={content} />
-    )
+    return <Widget icon=<CalendarRangeIcon size={18} /> title="Exams and contests" content={content} />
 }
 
 function count(exams: UpcomingExams, period: 'day' | 'week' | 'month'): string {
@@ -181,23 +167,13 @@ function init_table(exams: UpcomingExams | null): Entry[][] {
         for (let d = 0; d < 7; d++) {
             const filteredExams = exams
                 ? exams
-                      .filter(
-                          (exam) =>
-                              dayjs(exam.exp_time_start).isSame(day, 'day') && exam.contest == 0,
-                      )
-                      .sort(
-                          (a, b) => dayjs(a.exp_time_start).unix() - dayjs(b.exp_time_start).unix(),
-                      )
+                      .filter((exam) => dayjs(exam.exp_time_start).isSame(day, 'day') && exam.contest == 0)
+                      .sort((a, b) => dayjs(a.exp_time_start).unix() - dayjs(b.exp_time_start).unix())
                 : []
             const filteredContests = exams
                 ? exams
-                      .filter(
-                          (exam) =>
-                              dayjs(exam.exp_time_start).isSame(day, 'day') && exam.contest > 0,
-                      )
-                      .sort(
-                          (a, b) => dayjs(a.exp_time_start).unix() - dayjs(b.exp_time_start).unix(),
-                      )
+                      .filter((exam) => dayjs(exam.exp_time_start).isSame(day, 'day') && exam.contest > 0)
+                      .sort((a, b) => dayjs(a.exp_time_start).unix() - dayjs(b.exp_time_start).unix())
                 : []
             table[w][d] = {
                 date: day,
@@ -212,8 +188,8 @@ function init_table(exams: UpcomingExams | null): Entry[][] {
                                     <span className="">{exam.title}</span>
                                     <br />
                                     <span className="text-xs text-gray-500 line-clamp-1">
-                                        {dayjs(exam.exp_time_start).format('DD/MM/YYYY HH:mm')} {''}
-                                        ({exam.students}) {exam.name}
+                                        {dayjs(exam.exp_time_start).format('DD/MM/YYYY HH:mm')} {''}({exam.students}){' '}
+                                        {exam.name}
                                         {exam.contest ? ' [Contest]' : ' [Exam]'}
                                     </span>
                                 </div>

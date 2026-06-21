@@ -55,13 +55,9 @@ export default function PM2StatusWidget() {
                         <TableCell className="text-end">{item.monit.memory}</TableCell>
                         <TableCell className="text-end">{item.monit.cpu}</TableCell>
                         */}
+                            <TableCell className="text-end">{item.pm2_env.status === 'online' ? '✓' : '✗'}</TableCell>
                             <TableCell className="text-end">
-                                {item.pm2_env.status === 'online' ? '✓' : '✗'}
-                            </TableCell>
-                            <TableCell className="text-end">
-                                {dayjs
-                                    .duration(dayjs(item.pm2_env.pm_uptime).diff(dayjs()))
-                                    .humanize()}
+                                {dayjs.duration(dayjs(item.pm2_env.pm_uptime).diff(dayjs())).humanize()}
                             </TableCell>
                         </TableRow>
                     ))}

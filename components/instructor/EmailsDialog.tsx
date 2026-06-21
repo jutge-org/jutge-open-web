@@ -55,12 +55,8 @@ export const useEmailsDialog = (
                 .split('\n')
                 .map((line) => line.trim())
                 .filter((line) => line.length > 0)
-            const validEmails = Array.from(
-                new Set(lines.filter((line) => validator.isEmail(line))),
-            ).sort()
-            const wrongEmails = Array.from(
-                new Set(lines.filter((line) => !validator.isEmail(line))),
-            ).sort()
+            const validEmails = Array.from(new Set(lines.filter((line) => validator.isEmail(line)))).sort()
+            const wrongEmails = Array.from(new Set(lines.filter((line) => !validator.isEmail(line)))).sort()
             const result = {
                 validEmails,
                 wrongEmails,

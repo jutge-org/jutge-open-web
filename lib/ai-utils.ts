@@ -96,11 +96,7 @@ export type LlmEstimation = {
     brainHours: number
 }
 
-export async function llmEstimates(
-    inputTokens: number,
-    outputTokens: number,
-    model: string,
-): Promise<LlmEstimation> {
+export async function llmEstimates(inputTokens: number, outputTokens: number, model: string): Promise<LlmEstimation> {
     const priceEurTax = eurosWithTax(await dolarsToEuros(calculateCost(inputTokens, outputTokens, model)))
 
     const wattsPerToken = 0.000833

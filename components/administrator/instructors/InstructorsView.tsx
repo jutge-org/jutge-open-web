@@ -1,10 +1,6 @@
 'use client'
 
-import {
-    adminAddInstructor,
-    adminRemoveInstructor,
-    fetchAdminInstructors,
-} from '@/actions/administrator'
+import { adminAddInstructor, adminRemoveInstructor, fetchAdminInstructors } from '@/actions/administrator'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { useAddInstructorDialog } from '@/components/administrator/instructors/AddInstructorDialog'
@@ -41,7 +37,10 @@ export default function InstructorsView() {
         ])
     }, [isMobile])
 
-    const rowSelection = useMemo<RowSelectionOptions<InstructorEntry>>(() => ({ mode: 'multiRow', headerCheckbox: false }), [])
+    const rowSelection = useMemo<RowSelectionOptions<InstructorEntry>>(
+        () => ({ mode: 'multiRow', headerCheckbox: false }),
+        [],
+    )
 
     useEffect(() => {
         void fetchAdminInstructors().then(setRows)

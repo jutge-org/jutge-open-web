@@ -21,11 +21,7 @@ export default async function InstructorProblemSharingPage({ params }: Props) {
                 { title: problem_nm, url: `${baseHref}/properties` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorProblemSubNav(problem_nm)}
-                baseHref={baseHref}
-                activeSegment="sharing"
-            />
+            <InstructorSubNav items={instructorProblemSubNav(problem_nm)} baseHref={baseHref} activeSegment="sharing" />
             <ProblemSharingView />
         </InstructorPageShell>
     )

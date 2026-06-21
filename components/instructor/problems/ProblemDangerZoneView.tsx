@@ -92,25 +92,23 @@ function RemoveProblemForm({
                 <div className="mb-8 space-y-2 rounded-lg border p-4 text-sm">
                     <AlertTriangleIcon />
                     <p>
-                        Problems can only be removed if they have fewer than{' '}
-                        {REMOVE_MAX_SUBMISSIONS} submissions. This problem has{' '}
-                        <strong>{totalSubmissions}</strong> submission
+                        Problems can only be removed if they have fewer than {REMOVE_MAX_SUBMISSIONS} submissions. This
+                        problem has <strong>{totalSubmissions}</strong> submission
                         {totalSubmissions !== 1 ? 's' : ''}.
                     </p>
                     <p>
-                        Removing a problem is irreversible. Problems cannot be restored after
-                        removal. The problem will be deleted from the system and all associated data
-                        (e.g. submissions, lists, courses, exams, etc.) will be lost forever.
+                        Removing a problem is irreversible. Problems cannot be restored after removal. The problem will
+                        be deleted from the system and all associated data (e.g. submissions, lists, courses, exams,
+                        etc.) will be lost forever.
                     </p>
                     {!canRemove ? (
                         <p>
-                            Removal not allowed. Consider deprecating the problem instead. If you
-                            really want to remove this problem, please contact the administrators.
+                            Removal not allowed. Consider deprecating the problem instead. If you really want to remove
+                            this problem, please contact the administrators.
                         </p>
                     ) : (
                         <p className="text-destructive">
-                            Check the checkbox and type the problem name ({problem_nm}) to confirm
-                            removal.
+                            Check the checkbox and type the problem name ({problem_nm}) to confirm removal.
                         </p>
                     )}
                 </div>
@@ -166,8 +164,7 @@ export function ProblemDangerZoneView() {
         fetchData()
     }, [problem_nm])
 
-    if (abstractProblem === null || submissions === null)
-        return <SimpleSpinner size={64} className="pt-24" />
+    if (abstractProblem === null || submissions === null) return <SimpleSpinner size={64} className="pt-24" />
 
     const totalSubmissions = submissions
     const canRemove = totalSubmissions < REMOVE_MAX_SUBMISSIONS

@@ -72,13 +72,7 @@ export function Heatmap(props: HeatmapProps) {
         if (isFirstMonth || day.date() == 1) {
             week += 0.5
             const label = (
-                <text
-                    key={random()}
-                    x={week * (width + 4)}
-                    y={top - 10}
-                    fill="currentColor"
-                    fontSize="12"
-                >
+                <text key={random()} x={week * (width + 4)} y={top - 10} fill="currentColor" fontSize="12">
                     {months[day.month()]}
                 </text>
             )
@@ -87,13 +81,7 @@ export function Heatmap(props: HeatmapProps) {
         }
         if (isFirstYear || (day.date() == 1 && day.month() == 0)) {
             const label = (
-                <text
-                    key={random()}
-                    x={week * (width + 4)}
-                    y={top - 24}
-                    fill="currentColor"
-                    fontSize="12"
-                >
+                <text key={random()} x={week * (width + 4)} y={top - 24} fill="currentColor" fontSize="12">
                     {day.year()}
                 </text>
             )

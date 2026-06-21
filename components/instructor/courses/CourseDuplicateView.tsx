@@ -40,8 +40,8 @@ function CourseDuplicateForm({ course }: { course: InstructorCourse }) {
             content: (
                 <div className="text-sm mb-4">
                     <p>
-                        In order to duplicate this course into a new course, please provide a new
-                        course identifier and a new title.
+                        In order to duplicate this course into a new course, please provide a new course identifier and
+                        a new title.
                     </p>
                 </div>
             ),

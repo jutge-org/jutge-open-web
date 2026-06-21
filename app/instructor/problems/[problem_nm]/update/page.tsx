@@ -21,11 +21,7 @@ export default async function InstructorProblemUpdatePage({ params }: Props) {
                 { title: problem_nm, url: `${baseHref}/properties` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorProblemSubNav(problem_nm)}
-                baseHref={baseHref}
-                activeSegment="update"
-            />
+            <InstructorSubNav items={instructorProblemSubNav(problem_nm)} baseHref={baseHref} activeSegment="update" />
             <ProblemUpdateView />
         </InstructorPageShell>
     )

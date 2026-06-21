@@ -1,12 +1,7 @@
 'use server'
 
 import { getCurrentClient } from '@/lib/auth'
-import {
-    archiveCourse,
-    enrollInCourse,
-    unarchiveCourse,
-    unenrollFromCourse,
-} from '@/services/mutations/courses'
+import { archiveCourse, enrollInCourse, unarchiveCourse, unenrollFromCourse } from '@/services/mutations/courses'
 
 type CourseActionResult = { ok: true } | { ok: false; error: string }
 

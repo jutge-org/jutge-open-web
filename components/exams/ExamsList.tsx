@@ -49,10 +49,14 @@ export function ExamsList({ rows }: ExamsListProps) {
                                             ) : (
                                                 <span className="font-medium">{row.title}</span>
                                             )}
-                                            <p className="mt-0.5 font-mono text-xs text-muted-foreground">{row.exam_key}</p>
+                                            <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                                                {row.exam_key}
+                                            </p>
                                         </TableCell>
                                         <TableCell className="text-sm">{row.place || '—'}</TableCell>
-                                        <TableCell className="text-xs text-muted-foreground">{row.exp_time_start}</TableCell>
+                                        <TableCell className="text-xs text-muted-foreground">
+                                            {row.exp_time_start}
+                                        </TableCell>
                                         <TableCell className="text-sm">{row.running_time}</TableCell>
                                         <TableCell>
                                             <Badge variant={row.contest ? 'secondary' : 'outline'}>

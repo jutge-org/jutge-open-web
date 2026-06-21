@@ -15,11 +15,7 @@ export function AboutPictures() {
                     >
                         <a href={picture.src} target="_blank" rel="noreferrer" className="block">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={picture.src}
-                                alt={picture.alt}
-                                className="aspect-[4/3] w-full object-cover"
-                            />
+                            <img src={picture.src} alt={picture.alt} className="aspect-[4/3] w-full object-cover" />
                         </a>
                         <figcaption className="space-y-1 px-4 py-3">
                             <h3 className="text-sm font-semibold text-foreground">{picture.title}</h3>

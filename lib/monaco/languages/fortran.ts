@@ -460,7 +460,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/!.*$/, 'comment'],
 
                 // whitespace
-                {include: '@whitespace'},
+                { include: '@whitespace' },
 
                 // delimiters and operators
                 [/[{}()[\]]/, '@brackets'],
@@ -506,7 +506,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/"/, 'string', '@pop'],
             ],
         },
-    };
+    }
 }
 
 export function configuration(): languages.LanguageConfiguration {
@@ -522,19 +522,19 @@ export function configuration(): languages.LanguageConfiguration {
         ],
 
         autoClosingPairs: [
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '`', close: '`', notIn: ['string', 'comment']},
-            {open: "'", close: "'", notIn: ['string', 'comment']},
-            {open: '"', close: '"', notIn: ['string']},
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '`', close: '`', notIn: ['string', 'comment'] },
+            { open: "'", close: "'", notIn: ['string', 'comment'] },
+            { open: '"', close: '"', notIn: ['string'] },
         ],
 
         surroundingPairs: [
-            {open: '[', close: ']'},
-            {open: '(', close: ')'},
-            {open: '`', close: '`'},
-            {open: "'", close: "'"},
-            {open: '"', close: '"'},
+            { open: '[', close: ']' },
+            { open: '(', close: ')' },
+            { open: '`', close: '`' },
+            { open: "'", close: "'" },
+            { open: '"', close: '"' },
         ],
 
         indentationRules: {
@@ -544,5 +544,5 @@ export function configuration(): languages.LanguageConfiguration {
                 /(^((?!end).)*(do\s|if(\s|\().*then|function\s|subroutine\s|program\s|module\s|block\s*|associate(\s|\()|forall|case)|else)/,
             unIndentedLinePattern: null,
         },
-    };
+    }
 }

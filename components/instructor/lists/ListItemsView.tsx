@@ -1,20 +1,10 @@
 'use client'
 
-import {
-    fetchAllAbstractProblems,
-    fetchInstructorList,
-    instructorListUpdate,
-} from '@/actions/instructor'
+import { fetchAllAbstractProblems, fetchInstructorList, instructorListUpdate } from '@/actions/instructor'
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Button } from '@/components/ui/button'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePageChanges } from '@/hooks/use-page-changes'
@@ -53,11 +43,7 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
             cellRenderer: (p: { data: Item }) =>
                 p.data.problem_nm ? (
                     <div className="flex flex-row">
-                        <a
-                            className="w-24"
-                            target="_blank"
-                            href={`https://jutge.org/problems/${p.data.problem_nm}`}
-                        >
+                        <a className="w-24" target="_blank" href={`https://jutge.org/problems/${p.data.problem_nm}`}>
                             {p.data.problem_nm}↗
                         </a>
                         {p.data.title}
@@ -247,9 +233,7 @@ function DialogToAddProblems({
 
     function addProblemsCallback() {
         const grid = gridRef.current!.api
-        const selectedProblems = grid
-            .getSelectedNodes()
-            .map((node) => node.data?.problem_nm) as string[]
+        const selectedProblems = grid.getSelectedNodes().map((node) => node.data?.problem_nm) as string[]
         setIsOpen(false)
         onProblemsAccept(selectedProblems)
     }

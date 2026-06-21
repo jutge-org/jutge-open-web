@@ -46,21 +46,15 @@ export default function RecentLoadAveragesWidget() {
             <TableBody>
                 <TableRow>
                     <TableCell>Latest min</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_01_minutes : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_01_minutes : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest 5 mins</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_05_minutes : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_05_minutes : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest 15 mins</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_15_minutes : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_15_minutes : <SimpleSpinner />}</TableCell>
                 </TableRow>
             </TableBody>
         </Table>

@@ -45,33 +45,23 @@ export default function RecentConnectedUsersWidget() {
             <TableBody>
                 <TableRow>
                     <TableCell>Latest hour</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_hour : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_hour : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest day</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_day : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_day : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest week</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_week : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_week : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest month</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_month : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_month : <SimpleSpinner />}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Latest year</TableCell>
-                    <TableCell className="text-end">
-                        {data ? data.latest_year : <SimpleSpinner />}
-                    </TableCell>
+                    <TableCell className="text-end">{data ? data.latest_year : <SimpleSpinner />}</TableCell>
                 </TableRow>
             </TableBody>
         </Table>

@@ -44,9 +44,7 @@ export default function HistogramHourWidget() {
 
     let content = <Loading />
     if (data !== null) {
-        const info = data.latest_hour
-            .map((value, index) => ({ minute: index, value: value }))
-            .reverse()
+        const info = data.latest_hour.map((value, index) => ({ minute: index, value: value })).reverse()
 
         const chartConfig = {
             value: {
@@ -75,11 +73,5 @@ export default function HistogramHourWidget() {
         )
     }
 
-    return (
-        <Widget
-            icon=<ChartAreaIcon size={18} />
-            title="Submissions latest hour"
-            content={content}
-        />
-    )
+    return <Widget icon=<ChartAreaIcon size={18} /> title="Submissions latest hour" content={content} />
 }

@@ -48,17 +48,17 @@ export function CoursesListToolbar({
                             </TooltipTrigger>
                             <TooltipContent side="top">Filter courses</TooltipContent>
                         </Tooltip>
-                    <DropdownMenuContent align="end" className="w-44">
-                        <DropdownMenuLabel>Official</DropdownMenuLabel>
-                        <DropdownMenuRadioGroup
-                            value={officialFilter}
-                            onValueChange={(value) => onOfficialFilterChange(value as CoursesOfficialFilter)}
-                        >
-                            <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="official">Official</DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="unofficial">Non-official</DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
+                        <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuLabel>Official</DropdownMenuLabel>
+                            <DropdownMenuRadioGroup
+                                value={officialFilter}
+                                onValueChange={(value) => onOfficialFilterChange(value as CoursesOfficialFilter)}
+                            >
+                                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="official">Official</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="unofficial">Non-official</DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu>
                         <Tooltip>
@@ -71,16 +71,16 @@ export function CoursesListToolbar({
                             </TooltipTrigger>
                             <TooltipContent side="top">Sort courses</TooltipContent>
                         </Tooltip>
-                    <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                        <DropdownMenuRadioGroup
-                            value={sortField}
-                            onValueChange={(value) => onSortFieldChange(value as CoursesSortField)}
-                        >
-                            <DropdownMenuRadioItem value="title">Title</DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="author">Author</DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
+                        <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                            <DropdownMenuRadioGroup
+                                value={sortField}
+                                onValueChange={(value) => onSortFieldChange(value as CoursesSortField)}
+                            >
+                                <DropdownMenuRadioItem value="title">Title</DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="author">Author</DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
                     </DropdownMenu>
                 </ButtonGroup>
                 <div className="relative w-64">

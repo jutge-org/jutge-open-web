@@ -5,12 +5,7 @@ import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { Warning } from '@/components/instructor/Warning'
 import type { InstructorExam, InstructorExamSubmissionsOptions } from '@/lib/jutge_api_client'
-import {
-    CloudDownloadIcon,
-    Columns2Icon,
-    RectangleHorizontalIcon,
-    RectangleVerticalIcon,
-} from 'lucide-react'
+import { CloudDownloadIcon, Columns2Icon, RectangleHorizontalIcon, RectangleVerticalIcon } from 'lucide-react'
 import { redirect, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -41,9 +36,7 @@ interface ExamFormProps {
 }
 
 function EditExamForm(props: ExamFormProps) {
-    const [selectedProblems, setSelectedProblems] = useState(
-        props.exam.problems.map((p) => p.problem_nm),
-    )
+    const [selectedProblems, setSelectedProblems] = useState(props.exam.problems.map((p) => p.problem_nm))
     const [includeSource, setIncludeSource] = useState(true)
     const [includePDF, setIncludePDF] = useState(true)
     const [includeMetadata, setIncludeMetadata] = useState(true)

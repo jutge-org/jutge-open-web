@@ -68,11 +68,9 @@ async function loadLanguages(): Promise<Record<string, Language>> {
     }
 }
 
-export const fetchAllAbstractProblems = unstable_cache(
-    loadAllAbstractProblems,
-    ['all-abstract-problems'],
-    { revalidate: PROBLEMS_LIST_CACHE_SECONDS },
-)
+export const fetchAllAbstractProblems = unstable_cache(loadAllAbstractProblems, ['all-abstract-problems'], {
+    revalidate: PROBLEMS_LIST_CACHE_SECONDS,
+})
 
 export const fetchLanguages = unstable_cache(loadLanguages, ['languages'], {
     revalidate: PROBLEMS_LIST_CACHE_SECONDS,

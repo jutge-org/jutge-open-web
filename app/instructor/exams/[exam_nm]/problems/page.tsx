@@ -24,11 +24,7 @@ export default async function InstructorExamProblemsPage({ params }: Props) {
                 { title: exam_nm, url: `${baseHref}/problems` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorExamSubNav(exam_nm)}
-                baseHref={baseHref}
-                activeSegment="problems"
-            />
+            <InstructorSubNav items={instructorExamSubNav(exam_nm)} baseHref={baseHref} activeSegment="problems" />
             <ExamProblemsView profile={profile} />
         </InstructorPageShell>
     )

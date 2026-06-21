@@ -15,11 +15,7 @@ export default function InstructorJutgeAIAuditPage() {
                 { title: 'JutgeAI', url: `${baseHref}/chat` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorJutgeaiSubNav}
-                baseHref={baseHref}
-                activeSegment="audit"
-            />
+            <InstructorSubNav items={instructorJutgeaiSubNav} baseHref={baseHref} activeSegment="audit" />
             <JutgeAIAuditView />
         </InstructorPageShell>
     )

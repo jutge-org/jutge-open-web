@@ -168,7 +168,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/[A-Z][\w$]*/, 'type.identifier'], // to show class names nicely
 
                 // whitespace
-                {include: '@whitespace'},
+                { include: '@whitespace' },
 
                 // delimiters and operators
                 [/[{}()[\]]/, '@brackets'],
@@ -225,7 +225,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/"/, 'string', '@pop'],
             ],
         },
-    };
+    }
 }
 
 export function configuration(): languages.LanguageConfiguration {

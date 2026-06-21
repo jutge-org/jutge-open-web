@@ -37,20 +37,40 @@ const HtmlEditor = ({ value, onChange }: { value: string; onChange: (value: stri
 function HtmlEditorToolbar({ editor }: { editor: Editor }) {
     return (
         <div className="flex flex-row items-center gap-1 rounded-br-md rounded-bl-md border border-input bg-transparent p-1">
-            <Toggle size="sm" pressed={editor.isActive('bold')} onPressedChange={() => editor.chain().focus().toggleBold().run()}>
+            <Toggle
+                size="sm"
+                pressed={editor.isActive('bold')}
+                onPressedChange={() => editor.chain().focus().toggleBold().run()}
+            >
                 <Bold className="h-4 w-4" />
             </Toggle>
-            <Toggle size="sm" pressed={editor.isActive('italic')} onPressedChange={() => editor.chain().focus().toggleItalic().run()}>
+            <Toggle
+                size="sm"
+                pressed={editor.isActive('italic')}
+                onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+            >
                 <Italic className="h-4 w-4" />
             </Toggle>
-            <Toggle size="sm" pressed={editor.isActive('strike')} onPressedChange={() => editor.chain().focus().toggleStrike().run()}>
+            <Toggle
+                size="sm"
+                pressed={editor.isActive('strike')}
+                onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+            >
                 <Strikethrough className="h-4 w-4" />
             </Toggle>
             <Separator orientation="vertical" className="h-8 w-px" />
-            <Toggle size="sm" pressed={editor.isActive('bulletList')} onPressedChange={() => editor.chain().focus().toggleBulletList().run()}>
+            <Toggle
+                size="sm"
+                pressed={editor.isActive('bulletList')}
+                onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+            >
                 <List className="h-4 w-4" />
             </Toggle>
-            <Toggle size="sm" pressed={editor.isActive('orderedList')} onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}>
+            <Toggle
+                size="sm"
+                pressed={editor.isActive('orderedList')}
+                onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+            >
                 <ListOrdered className="h-4 w-4" />
             </Toggle>
         </div>

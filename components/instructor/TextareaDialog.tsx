@@ -56,11 +56,7 @@ export const useTextareaDialog = (
                         <DialogTitle>{config.title}</DialogTitle>
                         <DialogDescription>{config.description}</DialogDescription>
                     </DialogHeader>
-                    <Textarea
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        className="h-32"
-                    />
+                    <Textarea value={value} onChange={(e) => setValue(e.target.value)} className="h-32" />
                     <Button onClick={acceptAction}>
                         {config.buttonIcon} {config.buttonLabel}
                     </Button>

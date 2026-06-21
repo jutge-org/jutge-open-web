@@ -21,11 +21,7 @@ export default async function InstructorExamSubmissionsWebStreamPage({ params }:
                 { title: exam_nm, url: `${baseHref}/submissions` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorExamSubNav(exam_nm)}
-                baseHref={baseHref}
-                activeSegment="submissions"
-            />
+            <InstructorSubNav items={instructorExamSubNav(exam_nm)} baseHref={baseHref} activeSegment="submissions" />
             <ExamSubmissionsWebStreamView webstream_id={webstream_id} />
         </InstructorPageShell>
     )

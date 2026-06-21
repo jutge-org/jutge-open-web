@@ -40,8 +40,8 @@ function ListDuplicateForm({ list }: { list: InstructorList }) {
             content: (
                 <div className="text-sm mb-4">
                     <p>
-                        In order to duplicate this list into a new list, please provide a new list
-                        identifier and a new title.
+                        In order to duplicate this list into a new list, please provide a new list identifier and a new
+                        title.
                     </p>
                 </div>
             ),

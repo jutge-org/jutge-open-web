@@ -4,9 +4,7 @@ import { AccessDeniedGate } from '@/components/AccessDeniedGate'
 import { LoginGate } from '@/components/LoginGate'
 import { tryGetCurrentUser, type SessionUser } from '@/lib/auth'
 
-export async function renderAuthed(
-    render: (user: SessionUser) => ReactNode | Promise<ReactNode>,
-): Promise<ReactNode> {
+export async function renderAuthed(render: (user: SessionUser) => ReactNode | Promise<ReactNode>): Promise<ReactNode> {
     const user = await tryGetCurrentUser()
     if (!user) return <LoginGate />
     return render(user)

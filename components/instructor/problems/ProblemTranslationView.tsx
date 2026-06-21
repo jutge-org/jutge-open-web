@@ -14,13 +14,7 @@ import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import StatementDialog from '@/components/instructor/StatementDialog'
 import { mapmap, offerDownloadFile } from '@/lib/instructor/utils'
 import type { BriefAbstractProblem, Problem, ProblemSuppl } from '@/lib/jutge_api_client'
-import {
-    BotIcon,
-    FileCodeIcon,
-    FileTerminalIcon,
-    FileTextIcon,
-    FileTypeIcon,
-} from 'lucide-react'
+import { BotIcon, FileCodeIcon, FileTerminalIcon, FileTextIcon, FileTypeIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { all } from 'radash'
 import ReactMarkdown from 'react-markdown'
@@ -201,10 +195,7 @@ function EditProblemForm({ info }: ProblemFormProps) {
             label: 'View',
             content: (
                 <div className="rounded-lg border p-2 text-sm">
-                    <a
-                        href={`https://jutge.org/problems/${info.problem.problem_id}`}
-                        target="_blank"
-                    >
+                    <a href={`https://jutge.org/problems/${info.problem.problem_id}`} target="_blank">
                         {info.problem.problem_id}
                     </a>
                 </div>
@@ -266,10 +257,7 @@ function formatChecks(checks: Record<string, boolean>) {
     return (
         <div className="mt-1 flex flex-row gap-2">
             {mapmap(checks, (proglang, ok) => (
-                <Badge
-                    key={proglang}
-                    className={`px-2 py-1 font-normal ${ok ? 'bg-green-800' : 'bg-red-800'}`}
-                >
+                <Badge key={proglang} className={`px-2 py-1 font-normal ${ok ? 'bg-green-800' : 'bg-red-800'}`}>
                     {proglang}
                 </Badge>
             ))}

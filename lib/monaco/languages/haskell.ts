@@ -48,7 +48,7 @@ export function definition(): languages.IMonarchLanguage {
 
         tokenizer: {
             root: [
-                {include: '@whitespace'},
+                { include: '@whitespace' },
 
                 [/->/, 'operators'],
 
@@ -89,7 +89,7 @@ export function definition(): languages.IMonarchLanguage {
                 [/--.*$/, 'comment'],
             ],
         },
-    };
+    }
 }
 
 export function configuration(): languages.LanguageConfiguration {
@@ -98,5 +98,5 @@ export function configuration(): languages.LanguageConfiguration {
             lineComment: '--',
             blockComment: ['{-', '-}'],
         },
-    };
+    }
 }

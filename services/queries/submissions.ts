@@ -52,7 +52,11 @@ export const fetchSubmissionsData = cache(async (client: JutgeApiClient): Promis
 })
 
 export const fetchProblemSubmissionsData = cache(
-    async (client: JutgeApiClient, problem_nm: string, languageTitles: Map<string, string>): Promise<ProblemSubmissionRow[]> => {
+    async (
+        client: JutgeApiClient,
+        problem_nm: string,
+        languageTitles: Map<string, string>,
+    ): Promise<ProblemSubmissionRow[]> => {
         const [submissions, tables] = await Promise.all([
             client.student.submissions.getForAbstractProblems(problem_nm),
             client.tables.get(),
@@ -246,15 +250,14 @@ export const fetchSubmissionDetail = cache(
 
         const extension = compilerMeta?.extension ?? 'txt'
 
-        const codeMetrics =
-            shouldShowCodeMetrics({
-                submission,
-                verdict,
-                isAdministrator: options?.isAdministrator ?? false,
-                isExamOrContest: options?.isExamOrContest ?? false,
-            })
-                ? await fetchSubmissionCodeMetrics(client, submission)
-                : null
+        const codeMetrics = shouldShowCodeMetrics({
+            submission,
+            verdict,
+            isAdministrator: options?.isAdministrator ?? false,
+            isExamOrContest: options?.isExamOrContest ?? false,
+        })
+            ? await fetchSubmissionCodeMetrics(client, submission)
+            : null
 
         return {
             submission,

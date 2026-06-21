@@ -1,9 +1,6 @@
 'use client'
 
-import {
-    fetchInstructorCoursesArchived,
-    fetchInstructorCoursesIndex,
-} from '@/actions/instructor'
+import { fetchInstructorCoursesArchived, fetchInstructorCoursesIndex } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -27,9 +24,7 @@ export function CoursesListView() {
             field: 'course_nm',
             headerName: 'Id',
             cellRenderer: (p: { data: InstructorBriefCourse }) => (
-                <Link href={`/instructor/courses/${p.data.course_nm}/properties`}>
-                    {p.data.course_nm}
-                </Link>
+                <Link href={`/instructor/courses/${p.data.course_nm}/properties`}>{p.data.course_nm}</Link>
             ),
             flex: 1,
             filter: true,
@@ -40,16 +35,14 @@ export function CoursesListView() {
             headerName: 'Created',
             width: 140,
             filter: true,
-            valueGetter: (p: { data: InstructorBriefCourse }) =>
-                dayjs(p.data.created_at).format('YYYY-MM-DD'),
+            valueGetter: (p: { data: InstructorBriefCourse }) => dayjs(p.data.created_at).format('YYYY-MM-DD'),
         },
         {
             field: 'updated_at',
             headerName: 'Updated',
             width: 140,
             filter: true,
-            valueGetter: (p: { data: InstructorBriefCourse }) =>
-                dayjs(p.data.updated_at).format('YYYY-MM-DD'),
+            valueGetter: (p: { data: InstructorBriefCourse }) => dayjs(p.data.updated_at).format('YYYY-MM-DD'),
             sort: 'desc',
         },
     ])

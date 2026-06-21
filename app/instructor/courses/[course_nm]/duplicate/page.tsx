@@ -21,11 +21,7 @@ export default async function InstructorCourseDuplicatePage({ params }: Props) {
                 { title: course_nm, url: `${baseHref}/duplicate` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorCourseSubNav(course_nm)}
-                baseHref={baseHref}
-                activeSegment="duplicate"
-            />
+            <InstructorSubNav items={instructorCourseSubNav(course_nm)} baseHref={baseHref} activeSegment="duplicate" />
             <CourseDuplicateView />
         </InstructorPageShell>
     )

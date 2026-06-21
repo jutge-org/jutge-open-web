@@ -12,12 +12,7 @@ import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useEmailsDialog } from '@/components/instructor/EmailsDialog'
 import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { usePageChanges } from '@/hooks/use-page-changes'
 import { offerDownloadFile, showError, type Dict } from '@/lib/instructor/utils'
 import type { CourseMembers, InstructorCourse, StudentProfile } from '@/lib/jutge_api_client'
@@ -146,9 +141,7 @@ function CourseStudentsForm(props: CourseStudentProps) {
         }
         setRows((oldRows) => [...oldRows, ...newRows])
         setChanges(true)
-        toast.success(
-            `Added ${newRows.length} students. Remember to click the Save button to commit the changes!`,
-        )
+        toast.success(`Added ${newRows.length} students. Remember to click the Save button to commit the changes!`)
     }
 
     async function remove() {
@@ -227,12 +220,7 @@ function CourseStudentsForm(props: CourseStudentProps) {
                 const contents = e.target!.result
                 const data = await xls2array(contents as ArrayBuffer)
                 const emails = data
-                    .map(
-                        (row) =>
-                            row['Email'] ||
-                            row['Adreça electrònica'] ||
-                            row['Dirección electrónica'],
-                    )
+                    .map((row) => row['Email'] || row['Adreça electrònica'] || row['Dirección electrónica'])
                     .sort() as string[]
                 await add(emails)
             }
@@ -305,11 +293,7 @@ function CourseStudentsForm(props: CourseStudentProps) {
                 <Button className="w-28 justify-start" onClick={save} title="Save changes">
                     <SaveIcon className={changes ? 'animate-pulse' : ''} /> Save
                 </Button>
-                <Button
-                    className="w-28 justify-start"
-                    onClick={invite}
-                    title="Send invite to pending students"
-                >
+                <Button className="w-28 justify-start" onClick={invite} title="Send invite to pending students">
                     <SendHorizonalIcon /> Invite
                 </Button>
                 <Button className="w-28 justify-start" onClick={remove} title="Remove students">
@@ -331,36 +315,21 @@ function CourseStudentsForm(props: CourseStudentProps) {
                     <ClipboardCopyIcon /> Copy emails
                 </Button>
 
-                <Button
-                    className="w-32 justify-start"
-                    onClick={exportCsv}
-                    title="Export to CSV"
-                    variant={'outline'}
-                >
+                <Button className="w-32 justify-start" onClick={exportCsv} title="Export to CSV" variant={'outline'}>
                     <DownloadCloudIcon /> Export
                 </Button>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button
-                            className="w-32 justify-start"
-                            variant={'outline'}
-                            title="Import from CSV"
-                        >
+                        <Button className="w-32 justify-start" variant={'outline'} title="Import from CSV">
                             <UploadCloudIcon />
                             Import
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        <DropdownMenuItem onClick={importFromRaco}>
-                            Import CSV from Racó
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={importFromAtenea}>
-                            Import CSV from Atenea
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={importFromPrisma}>
-                            Import XLS from Prisma
-                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={importFromRaco}>Import CSV from Racó</DropdownMenuItem>
+                        <DropdownMenuItem onClick={importFromAtenea}>Import CSV from Atenea</DropdownMenuItem>
+                        <DropdownMenuItem onClick={importFromPrisma}>Import XLS from Prisma</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

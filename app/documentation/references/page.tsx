@@ -29,7 +29,10 @@ const referenceGroups = [
     {
         title: 'C',
         links: [
-            { label: 'C Reference from cppreference (March 2018)', href: 'https://jutge.org/doc/cppreference/en/c.html' },
+            {
+                label: 'C Reference from cppreference (March 2018)',
+                href: 'https://jutge.org/doc/cppreference/en/c.html',
+            },
             { label: 'C Reference Card', href: 'https://jutge.org/doc/c-refcard.pdf' },
         ],
     },
@@ -55,7 +58,9 @@ export default function DocumentationReferencesPage() {
                 <ul className="divide-y divide-border">
                     {referenceGroups.map((group) => (
                         <li key={group.title}>
-                            <div className="bg-muted/40 px-6 py-3 text-sm font-semibold text-foreground">{group.title}</div>
+                            <div className="bg-muted/40 px-6 py-3 text-sm font-semibold text-foreground">
+                                {group.title}
+                            </div>
                             <ul className="divide-y divide-border">
                                 {group.links.map((link) => (
                                     <li key={link.href}>

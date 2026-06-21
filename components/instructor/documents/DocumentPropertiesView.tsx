@@ -6,11 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import {
-    fetchInstructorDocument,
-    instructorDocumentRemove,
-    instructorDocumentUpdate,
-} from '@/actions/instructor'
+import { fetchInstructorDocument, instructorDocumentRemove, instructorDocumentUpdate } from '@/actions/instructor'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
@@ -64,14 +60,12 @@ function EditDocumentForm(props: DocumentFormProps) {
 
     const [document_nm, setDocument_nm] = useDynamic(props.document.document_nm, [props.document])
     const [title, setTitle] = useDynamic(props.document.title, [props.document])
-    const [created_at, setCreated_at] = useDynamic(
-        dayjs(props.document.created_at).format('YYYY-MM-DD HH:mm:ss'),
-        [props.document],
-    )
-    const [updated_at, setUpdated_at] = useDynamic(
-        dayjs(props.document.updated_at).format('YYYY-MM-DD HH:mm:ss'),
-        [props.document],
-    )
+    const [created_at, setCreated_at] = useDynamic(dayjs(props.document.created_at).format('YYYY-MM-DD HH:mm:ss'), [
+        props.document,
+    ])
+    const [updated_at, setUpdated_at] = useDynamic(dayjs(props.document.updated_at).format('YYYY-MM-DD HH:mm:ss'), [
+        props.document,
+    ])
     const [description, setDescription] = useDynamic(props.document.description, [props.document])
     const [file, setFile] = useDynamic(null as File | null, [props.document])
 
@@ -141,10 +135,7 @@ function EditDocumentForm(props: DocumentFormProps) {
     async function download() {
         try {
             const download = await getDocumentFile(props.document)
-            offerDownloadFile(
-                download,
-                props.document.document_nm + documentFileExtension(props.document),
-            )
+            offerDownloadFile(download, props.document.document_nm + documentFileExtension(props.document))
         } catch (error) {
             return showError(error)
         }

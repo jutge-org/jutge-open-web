@@ -74,9 +74,7 @@ export function ProblemPropertiesView() {
                             {mapmap(abstractProblem.problems, (problem_id, problem) => (
                                 <TableRow key={problem_id}>
                                     <TableCell>
-                                        <Link
-                                            href={`/instructor/problems/${problem_nm}/${problem_id}`}
-                                        >
+                                        <Link href={`/instructor/problems/${problem_nm}/${problem_id}`}>
                                             {problem_id}
                                         </Link>
                                     </TableCell>
@@ -84,10 +82,7 @@ export function ProblemPropertiesView() {
                                     <TableCell>
                                         {problem.checked === 0 ? (
                                             <span title="Check failed">
-                                                <BugIcon
-                                                    size={14}
-                                                    className="animate-pulse text-red-800"
-                                                />
+                                                <BugIcon size={14} className="animate-pulse text-red-800" />
                                             </span>
                                         ) : null}
                                     </TableCell>

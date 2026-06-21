@@ -1,16 +1,13 @@
 import { Prose } from '@/components/documentation/Prose'
 import type { ReactNode } from 'react'
-import {
-    developerCredits,
-    maintenanceCredits,
-    problemSetters,
-    problemTranslators,
-} from '@/lib/about'
+import { developerCredits, maintenanceCredits, problemSetters, problemTranslators } from '@/lib/about'
 
 function CreditSection({ title, children }: { title: string; children: ReactNode }) {
     return (
         <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-            <h2 className="border-b border-border bg-muted/40 px-6 py-3 text-sm font-semibold text-foreground">{title}</h2>
+            <h2 className="border-b border-border bg-muted/40 px-6 py-3 text-sm font-semibold text-foreground">
+                {title}
+            </h2>
             {children}
         </section>
     )

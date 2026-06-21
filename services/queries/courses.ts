@@ -18,10 +18,7 @@ import { JutgeApiClient, type Course } from '@/lib/jutge_api_client'
 
 const PUBLIC_COURSES_CACHE_SECONDS = 300
 
-async function resolveEnrolledCourseKey(
-    client: JutgeApiClient,
-    courseKeyParam: string,
-): Promise<string | null> {
+async function resolveEnrolledCourseKey(client: JutgeApiClient, courseKeyParam: string): Promise<string | null> {
     const normalized = normalizeCourseKeyParam(courseKeyParam)
     const enrolledMap = await client.student.courses.indexEnrolled()
 
@@ -43,10 +40,7 @@ async function resolveEnrolledCourseKey(
     return null
 }
 
-async function resolveAvailableCourseKey(
-    client: JutgeApiClient,
-    courseKeyParam: string,
-): Promise<string | null> {
+async function resolveAvailableCourseKey(client: JutgeApiClient, courseKeyParam: string): Promise<string | null> {
     const normalized = normalizeCourseKeyParam(courseKeyParam)
     const availableMap = await client.student.courses.indexAvailable()
 
@@ -91,20 +85,16 @@ export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<Co
     const enrolled = sortCourseRows(enrolledRows)
     const archived = sortCourseRows(archivedRows)
     const available = sortCourseRows(
-        Object.entries(availableMap).map(([apiKey, course]) =>
-            buildCourseRow(course, 'available', apiKey),
-        ),
+        Object.entries(availableMap).map(([apiKey, course]) => buildCourseRow(course, 'available', apiKey)),
     )
 
     return { enrolled, available, archived }
 })
 
-export const fetchEnrolledCoursesNavItems = cache(
-    async (client: JutgeApiClient): Promise<CoursesNavItem[]> => {
-        const data = await fetchCoursesData(client)
-        return buildCoursesNavItems(data.enrolled)
-    },
-)
+export const fetchEnrolledCoursesNavItems = cache(async (client: JutgeApiClient): Promise<CoursesNavItem[]> => {
+    const data = await fetchCoursesData(client)
+    return buildCoursesNavItems(data.enrolled)
+})
 
 export type FetchedCourse = {
     courseKey: string

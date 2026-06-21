@@ -189,9 +189,7 @@ export function buildRecentSubmissions(
         const parsed = parseProblemKey(submission.problem_id)
         const problemLabel = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id
         const problemHref =
-            parsed.kind === 'problem_id'
-                ? `/problems/${parsed.problem_nm}`
-                : `/problems/${submission.problem_id}`
+            parsed.kind === 'problem_id' ? `/problems/${parsed.problem_nm}` : `/problems/${submission.problem_id}`
         const verdict = submission.veredict ?? (submission.state === 'done' ? '—' : 'Pending')
         const verdictMeta = tables?.verdicts[verdict]
 
@@ -230,9 +228,7 @@ export function buildAcceptedProblemsSeries(submissions: Submission[]): TimeSeri
         byYear.set(year, cumulative)
     }
 
-    return [...byYear.entries()]
-        .sort(([a], [b]) => a - b)
-        .map(([year, value]) => ({ year, value }))
+    return [...byYear.entries()].sort(([a], [b]) => a - b).map(([year, value]) => ({ year, value }))
 }
 
 export function buildSubmissionSeries(submissions: Submission[]): SubmissionSeriesPoint[] {

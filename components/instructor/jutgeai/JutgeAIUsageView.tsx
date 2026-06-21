@@ -16,8 +16,7 @@ export function JutgeAIUsageView() {
             headerName: 'Created',
             width: 180,
             filter: true,
-            valueGetter: (p: { data: LlmUsageEntry }) =>
-                dayjs(p.data.created_at).format('YYYY-MM-DD HH:mm:ss'),
+            valueGetter: (p: { data: LlmUsageEntry }) => dayjs(p.data.created_at).format('YYYY-MM-DD HH:mm:ss'),
         },
         { field: 'model', flex: 2, filter: true },
         {

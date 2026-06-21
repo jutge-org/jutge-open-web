@@ -60,9 +60,7 @@ export function ExamPropertiesView() {
         setAvatarPacks(data.avatarPacks)
 
         if (data.exam.course.course_nm === 'All') {
-            toast.error(
-                `Warning: Exam ${exam_nm} is not associated with a course. You may not start it!`,
-            )
+            toast.error(`Warning: Exam ${exam_nm} is not associated with a course. You may not start it!`)
         }
     }, [exam_nm])
 
@@ -115,18 +113,13 @@ function EditExamForm(props: ExamFormProps) {
     const [code, setCode] = useDynamic(props.exam.code || '', [props.exam])
     const [title, setTitle] = useDynamic(props.exam.title, [props.exam])
     const [place, setPlace] = useDynamic(props.exam.place, [props.exam])
-    const [expectedStart, setExpectedStart] = useDynamic(props.exam.exp_time_start as string, [
-        props.exam,
-    ])
+    const [expectedStart, setExpectedStart] = useDynamic(props.exam.exp_time_start as string, [props.exam])
     const [runningTime, setRunningTime] = useDynamic(props.exam.running_time, [props.exam])
     const [description, setDescription] = useDynamic(props.exam.description, [props.exam])
     const [instructions, setInstructions] = useDynamic(props.exam.instructions, [props.exam])
     const [contest, setContest] = useDynamic(props.exam.contest != 0, [props.exam])
     const [anonymous, setAnonymous] = useDynamic(props.exam.anonymous != 0, [props.exam])
-    const [visibleSubmissions, setVisibleSubmissions] = useDynamic(
-        props.exam.visible_submissions != 0,
-        [props.exam],
-    )
+    const [visibleSubmissions, setVisibleSubmissions] = useDynamic(props.exam.visible_submissions != 0, [props.exam])
     const [avatarPack, setAvatarPack] = useDynamic(props.exam.avatars || '', [props.exam])
     const [documents, setDocuments] = useDynamic(
         props.exam.documents.map((d) => d.document_nm),
@@ -136,17 +129,10 @@ function EditExamForm(props: ExamFormProps) {
         props.exam.compilers.map((c) => c.compiler_id),
         [props.exam],
     )
-    const [created_at] = useDynamic(dayjs(props.exam.created_at).format('YYYY-MM-DD HH:mm:ss'), [
-        props.exam,
-    ])
-    const [updated_at] = useDynamic(dayjs(props.exam.updated_at).format('YYYY-MM-DD HH:mm:ss'), [
-        props.exam,
-    ])
+    const [created_at] = useDynamic(dayjs(props.exam.created_at).format('YYYY-MM-DD HH:mm:ss'), [props.exam])
+    const [updated_at] = useDynamic(dayjs(props.exam.updated_at).format('YYYY-MM-DD HH:mm:ss'), [props.exam])
 
-    function optionCompare(
-        a: { label: string; value: string },
-        b: { label: string; value: string },
-    ) {
+    function optionCompare(a: { label: string; value: string }, b: { label: string; value: string }) {
         return a.label.localeCompare(b.label)
     }
 
@@ -201,8 +187,8 @@ function EditExamForm(props: ExamFormProps) {
             placeHolder: 'Exam description',
             help: (
                 <div>
-                    The exam description will be available to all participants in the exam/contest,
-                    including in its anouncement.
+                    The exam description will be available to all participants in the exam/contest, including in its
+                    anouncement.
                 </div>
             ),
         },
@@ -214,8 +200,8 @@ function EditExamForm(props: ExamFormProps) {
             placeHolder: 'Exam instructions',
             help: (
                 <div>
-                    The exam instructions will be available to all participants in the exam/contest
-                    once they log in the exam and the exam has started.
+                    The exam instructions will be available to all participants in the exam/contest once they log in the
+                    exam and the exam has started.
                 </div>
             ),
         },
@@ -295,9 +281,8 @@ function EditExamForm(props: ExamFormProps) {
             setValue: setVisibleSubmissions,
             help: (
                 <div>
-                    If enabled, submissions <i>and</i> problems sent to an exam/contest will be
-                    visible from the regular Jutge.org site. You probably don&apos;t want to have
-                    visible submissions until the end of the exam.
+                    If enabled, submissions <i>and</i> problems sent to an exam/contest will be visible from the regular
+                    Jutge.org site. You probably don&apos;t want to have visible submissions until the end of the exam.
                 </div>
             ),
         },

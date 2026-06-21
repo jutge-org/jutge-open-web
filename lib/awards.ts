@@ -26,13 +26,12 @@ export type AwardTypeSummary = {
 export function buildAwardRow(award_id: string, award: BriefAward): AwardRow {
     const time = parseSubmissionTime(award.time)
 
-
     return {
         award_id,
         title: award.title,
         info: award.info,
         type: award.type,
-        iconUrl: "https://jutge.org/awards/" + award.icon + ".png",
+        iconUrl: 'https://jutge.org/awards/' + award.icon + '.png',
         timeMs: time.getTime(),
         timeLabel: time.toLocaleString(),
         youtube: award.youtube,

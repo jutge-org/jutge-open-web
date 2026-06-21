@@ -5,7 +5,19 @@ export function definition(): languages.IMonarchLanguage {
         defaultToken: '',
         tokenPostfix: '.makefile',
 
-        keywords: ['include', 'export', 'unexport', 'define', 'endef', 'ifeq', 'ifneq', 'ifdef', 'ifndef', 'else', 'endif'],
+        keywords: [
+            'include',
+            'export',
+            'unexport',
+            'define',
+            'endef',
+            'ifeq',
+            'ifneq',
+            'ifdef',
+            'ifndef',
+            'else',
+            'endif',
+        ],
 
         tokenizer: {
             root: [

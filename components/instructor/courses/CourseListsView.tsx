@@ -20,12 +20,7 @@ import {
 } from '@/components/ui/dialog'
 import { usePageChanges } from '@/hooks/use-page-changes'
 import { getProblemTitle } from '@/lib/instructor/problems'
-import type {
-    InstructorBriefList,
-    InstructorCourse,
-    InstructorListItem,
-    Profile,
-} from '@/lib/jutge_api_client'
+import type { InstructorBriefList, InstructorCourse, InstructorListItem, Profile } from '@/lib/jutge_api_client'
 import type { RowSelectionOptions } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { ArrowUpRightIcon, CircleMinusIcon, PlusCircleIcon, SaveIcon, XIcon } from 'lucide-react'
@@ -231,9 +226,7 @@ function DialogToAddLists({
                 <DialogDescription className="hidden">Add lists to course</DialogDescription>
                 <DialogHeader>
                     <DialogTitle>Add lists to course</DialogTitle>
-                    <DialogDescription>
-                        Select the lists you want to add to the course:
-                    </DialogDescription>
+                    <DialogDescription>Select the lists you want to add to the course:</DialogDescription>
                     <div className="h-96 w-full pb-4">
                         <AgTable
                             rowData={rows}

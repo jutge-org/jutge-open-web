@@ -25,11 +25,38 @@ import {
 type MonacoThemeMenuProps = {
     value: MonacoThemeSelection
     onValueChange: (theme: MonacoThemeSelection) => void
+    onThemePreview?: (theme: MonacoThemeSelection) => void
+    onOpenChange?: (open: boolean) => void
     size?: 'icon' | 'icon-sm'
     groupedSlot?: ReactNode
 }
 
-export function MonacoThemeMenu({ value, onValueChange, size = 'icon', groupedSlot }: MonacoThemeMenuProps) {
+type ThemeMenuItemProps = {
+    theme: MonacoThemeSelection
+    onThemePreview?: (theme: MonacoThemeSelection) => void
+    children: ReactNode
+}
+
+function ThemeMenuItem({ theme, onThemePreview, children }: ThemeMenuItemProps) {
+    function handlePreview() {
+        onThemePreview?.(theme)
+    }
+
+    return (
+        <DropdownMenuRadioItem value={theme} onPointerEnter={handlePreview} onFocus={handlePreview}>
+            {children}
+        </DropdownMenuRadioItem>
+    )
+}
+
+export function MonacoThemeMenu({
+    value,
+    onValueChange,
+    onThemePreview,
+    onOpenChange,
+    size = 'icon',
+    groupedSlot,
+}: MonacoThemeMenuProps) {
     const trigger = (
         <DropdownMenuTrigger asChild>
             <Button type="button" variant="outline" size={size} aria-label="Change editor theme">
@@ -39,7 +66,7 @@ export function MonacoThemeMenu({ value, onValueChange, size = 'icon', groupedSl
     )
 
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={onOpenChange}>
             {groupedSlot ? (
                 <ButtonGroup>
                     {trigger}
@@ -56,16 +83,18 @@ export function MonacoThemeMenu({ value, onValueChange, size = 'icon', groupedSl
                             value={value}
                             onValueChange={(nextValue) => onValueChange(nextValue as MonacoThemeSelection)}
                         >
-                            <DropdownMenuRadioItem value={DEFAULT_MONACO_THEME}>Auto</DropdownMenuRadioItem>
+                            <ThemeMenuItem theme={DEFAULT_MONACO_THEME} onThemePreview={onThemePreview}>
+                                Auto
+                            </ThemeMenuItem>
                             {MONACO_BUILTIN_THEMES.map((theme) => (
-                                <DropdownMenuRadioItem key={theme} value={theme}>
+                                <ThemeMenuItem key={theme} theme={theme} onThemePreview={onThemePreview}>
                                     {formatMonacoThemeLabel(theme)}
-                                </DropdownMenuRadioItem>
+                                </ThemeMenuItem>
                             ))}
                             {MONACO_CUSTOM_THEMES.map((theme) => (
-                                <DropdownMenuRadioItem key={theme} value={theme}>
+                                <ThemeMenuItem key={theme} theme={theme} onThemePreview={onThemePreview}>
                                     {formatMonacoThemeLabel(theme)}
-                                </DropdownMenuRadioItem>
+                                </ThemeMenuItem>
                             ))}
                         </DropdownMenuRadioGroup>
                     </div>

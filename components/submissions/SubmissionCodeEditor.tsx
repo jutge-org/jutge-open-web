@@ -34,7 +34,7 @@ import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, SOURCE_CODE_FONT_SCALE
 import { monacoLanguageForExtension } from '@/lib/highlightCode'
 import { registerCustomMonacoLanguages } from '@/lib/monaco/registerCustomLanguages'
 import { ensureMonacoThemeRegistered } from '@/lib/monaco/registerThemes'
-import { resolveMonacoEditorTheme } from '@/lib/monaco/themes'
+import { resolveMonacoEditorTheme, type MonacoThemeSelection } from '@/lib/monaco/themes'
 import type { SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 
@@ -102,6 +102,10 @@ export function SubmissionCodeEditor({
     const [showMinimap, setShowMinimap] = useState(false)
     const [mounted, setMounted] = useState(false)
     const monacoRef = useRef<Monaco | null>(null)
+    const editorThemeRef = useRef(editorTheme)
+    const themePreviewIdRef = useRef(0)
+
+    editorThemeRef.current = editorTheme
 
     useEffect(() => {
         setMounted(true)
@@ -111,15 +115,59 @@ export function SubmissionCodeEditor({
     const activeMonacoTheme = resolveMonacoEditorTheme(editorTheme, mounted ? resolvedTheme : undefined)
     const fontSize = Math.round(BASE_FONT_SIZE * fontScale)
 
-    const applyEditorTheme = useCallback(async () => {
-        const monaco = monacoRef.current
-        if (!monaco || !mounted) {
-            return
-        }
+    const applyMonacoTheme = useCallback(
+        async (themeId: string) => {
+            const monaco = monacoRef.current
+            if (!monaco || !mounted) {
+                return
+            }
 
-        await ensureMonacoThemeRegistered(monaco, activeMonacoTheme)
-        monaco.editor.setTheme(activeMonacoTheme)
-    }, [activeMonacoTheme, mounted])
+            await ensureMonacoThemeRegistered(monaco, themeId)
+            monaco.editor.setTheme(themeId)
+        },
+        [mounted],
+    )
+
+    const applyEditorTheme = useCallback(async () => {
+        await applyMonacoTheme(activeMonacoTheme)
+    }, [activeMonacoTheme, applyMonacoTheme])
+
+    const previewEditorTheme = useCallback(
+        async (selection: MonacoThemeSelection) => {
+            const previewId = ++themePreviewIdRef.current
+            const themeId = resolveMonacoEditorTheme(selection, mounted ? resolvedTheme : undefined)
+
+            await applyMonacoTheme(themeId)
+            if (previewId !== themePreviewIdRef.current) {
+                return
+            }
+        },
+        [applyMonacoTheme, mounted, resolvedTheme],
+    )
+
+    const handleEditorThemeChange = useCallback(
+        (theme: MonacoThemeSelection) => {
+            editorThemeRef.current = theme
+            setEditorTheme(theme)
+        },
+        [setEditorTheme],
+    )
+
+    const handleThemeMenuOpenChange = useCallback(
+        (open: boolean) => {
+            if (open) {
+                return
+            }
+
+            themePreviewIdRef.current += 1
+            const themeId = resolveMonacoEditorTheme(
+                editorThemeRef.current,
+                mounted ? resolvedTheme : undefined,
+            )
+            void applyMonacoTheme(themeId)
+        },
+        [applyMonacoTheme, mounted, resolvedTheme],
+    )
 
     useEffect(() => {
         void applyEditorTheme()
@@ -249,7 +297,9 @@ export function SubmissionCodeEditor({
                         </ButtonGroup>
                         <MonacoThemeMenu
                             value={editorTheme}
-                            onValueChange={setEditorTheme}
+                            onValueChange={handleEditorThemeChange}
+                            onThemePreview={(theme) => void previewEditorTheme(theme)}
+                            onOpenChange={handleThemeMenuOpenChange}
                             size="icon-sm"
                             groupedSlot={<ThemeToggle size="icon-sm" />}
                         />

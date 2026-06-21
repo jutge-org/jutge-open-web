@@ -70,7 +70,17 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
                 <CardTitle className="text-lg font-semibold">Analysis</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <AgTableAutoHeight rowData={analysis} columnDefs={colDefs} rowHeight={36} wrapperBorder={false} />
+                <AgTableAutoHeight
+                    rowData={analysis}
+                    columnDefs={colDefs}
+                    rowHeight={36}
+                    wrapperBorder={false}
+                    themeParams={{
+                        backgroundColor: 'var(--card)',
+                        oddRowBackgroundColor: 'var(--card)',
+                        chromeBackgroundColor: 'var(--card)',
+                    }}
+                />
             </CardContent>
         </Card>
     )

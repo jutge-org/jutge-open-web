@@ -9,6 +9,7 @@ ModuleRegistry.registerModules([AllCommunityModule])
 
 type GridProps = {
     wrapperBorder?: boolean
+    themeParams?: Record<string, string>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rowData?: any[]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,13 +29,14 @@ const myThemeDark = themeQuartz.withPart(colorSchemeDark).withParams({
     backgroundColor: '#0b0a0b',
 })
 
-function useAgTheme(wrapperBorder = true) {
+function useAgTheme(wrapperBorder = true, themeParams?: Record<string, string>) {
     const { resolvedTheme } = useTheme()
     const baseTheme = resolvedTheme === 'dark' ? myThemeDark : myThemeLight
-    if (wrapperBorder) {
-        return baseTheme
+    const params = {
+        ...(wrapperBorder ? {} : { wrapperBorder: false }),
+        ...themeParams,
     }
-    return baseTheme.withParams({ wrapperBorder: false })
+    return Object.keys(params).length > 0 ? baseTheme.withParams(params) : baseTheme
 }
 
 const BOTTOM_PADDING_PX = 60
@@ -78,8 +80,8 @@ function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) 
     return height
 }
 
-export function AgTableFull({ wrapperBorder = true, ...props }: GridProps) {
-    const theme = useAgTheme(wrapperBorder)
+export function AgTableFull({ wrapperBorder = true, themeParams, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder, themeParams)
     const containerRef = useRef<HTMLDivElement>(null)
     const height = useViewportTableHeight(containerRef)
 
@@ -97,8 +99,8 @@ export function AgTableFull({ wrapperBorder = true, ...props }: GridProps) {
     )
 }
 
-export function AgTable({ wrapperBorder = true, ...props }: GridProps) {
-    const theme = useAgTheme(wrapperBorder)
+export function AgTable({ wrapperBorder = true, themeParams, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder, themeParams)
 
     return (
         <div className={`${AG_TABLE_CLASS} h-full`}>
@@ -114,8 +116,8 @@ export function AgTable({ wrapperBorder = true, ...props }: GridProps) {
     )
 }
 
-export function AgTableAutoHeight({ wrapperBorder = true, ...props }: GridProps) {
-    const theme = useAgTheme(wrapperBorder)
+export function AgTableAutoHeight({ wrapperBorder = true, themeParams, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder, themeParams)
 
     return (
         <div className={AG_TABLE_CLASS}>

@@ -76,7 +76,7 @@ const authenticatedLinkDescription: Record<string, string> = {
 }
 
 const guestLinkDescription: Record<string, string> = {
-    '/problems': 'Browse programming problems',
+    '/problems': 'Browse public programming problems',
     '/courses': 'Browse public courses',
     '/documentation': 'Documentation for Jutge.org',
     '/about': 'Find more about this site',

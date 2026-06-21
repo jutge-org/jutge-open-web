@@ -2,14 +2,14 @@ import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-rea
 import Link from 'next/link'
 
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
+import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { buildSubmissionTestcaseHref, type SubmissionNavLinks } from '@/lib/submissions'
+import { type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 import type { SubmissionDetailData } from '@/services/queries/submissions'
 import type { ReactNode } from 'react'
@@ -140,50 +140,11 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                 </Card>
 
                 {data.analysis.length > 0 ? (
-                    <Card className="ring-0 border border-border shadow-sm">
-                        <CardHeader className="border-b border-border">
-                            <CardTitle className="text-lg font-semibold">Analysis</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Test case</TableHead>
-                                        <TableHead>Execution</TableHead>
-                                        <TableHead>Verdict</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {data.analysis.map((row) => {
-                                        const testcaseHref = buildSubmissionTestcaseHref(
-                                            problemKey,
-                                            submission.submission_id,
-                                            row.testcase,
-                                        )
-
-                                        return (
-                                        <TableRow key={row.testcase}>
-                                            <TableCell>
-                                                {testcaseHref ? (
-                                                    <Link
-                                                        href={testcaseHref}
-                                                        className="text-primary hover:underline"
-                                                    >
-                                                        {row.testcase}
-                                                    </Link>
-                                                ) : (
-                                                    row.testcase
-                                                )}
-                                            </TableCell>
-                                            <TableCell>{row.execution}</TableCell>
-                                            <TableCell>{row.verdict}</TableCell>
-                                        </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                    <SubmissionAnalysisCard
+                        analysis={data.analysis}
+                        problemKey={problemKey}
+                        submissionId={submission.submission_id}
+                    />
                 ) : null}
 
                 {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}

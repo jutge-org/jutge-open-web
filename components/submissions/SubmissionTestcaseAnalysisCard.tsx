@@ -205,16 +205,24 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4 px-6 py-4">
-                    <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                        <div className="flex gap-2">
-                            <dt className="font-medium text-foreground">Execution:</dt>
-                            <dd className="font-mono text-muted-foreground">{data.execution}</dd>
-                        </div>
-                        <div className="flex gap-2">
-                            <dt className="font-medium text-foreground">Verdict:</dt>
-                            <dd className="font-mono text-muted-foreground">{data.verdict}</dd>
-                        </div>
-                    </dl>
+                    <div className="rounded-lg border border-border bg-muted/50 p-4">
+                        <dl className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                                <dt className="font-medium text-foreground">Execution:</dt>
+                                <dd className="inline-flex items-center gap-2 font-bold text-foreground">
+                                    <span aria-hidden>{data.execution === 'OK' ? '✅' : '❌'}</span>
+                                    {data.execution}
+                                </dd>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <dt className="font-medium text-foreground">Verdict:</dt>
+                                <dd className="inline-flex items-center gap-2 font-bold text-foreground">
+                                    {data.verdictEmoji ? <span aria-hidden>{data.verdictEmoji}</span> : null}
+                                    {data.verdict}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
                     <TestcaseField
                         label="Input"
                         text={data.input}

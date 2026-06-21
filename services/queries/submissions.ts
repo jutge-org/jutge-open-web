@@ -62,6 +62,10 @@ export const fetchProblemSubmissionsData = cache(
     },
 )
 
+export type SubmissionAnalysisRow = SubmissionAnalysis & {
+    verdictEmoji?: string
+}
+
 export type SubmissionDetailData = {
     submission: Submission
     problemTitle: string
@@ -73,7 +77,7 @@ export type SubmissionDetailData = {
     code: string | null
     codeExtension: string | null
     codeFilename: string | null
-    analysis: SubmissionAnalysis[]
+    analysis: SubmissionAnalysisRow[]
     codeMetrics: SubmissionCodeMetricsData | null
 }
 
@@ -86,6 +90,7 @@ export type SubmissionTestcaseAnalysisData = {
     testcase: string
     execution: string
     verdict: string
+    verdictEmoji?: string
     input: string
     output: string
     expected: string
@@ -262,7 +267,10 @@ export const fetchSubmissionDetail = cache(
             code: codeB64 ? Buffer.from(codeB64, 'base64').toString('utf-8') : null,
             codeExtension: codeB64 ? extension : null,
             codeFilename: codeB64 ? `${submission_id}.${extension}` : null,
-            analysis,
+            analysis: analysis.map((row) => ({
+                ...row,
+                verdictEmoji: tables.verdicts[row.verdict]?.emoji,
+            })),
             codeMetrics,
         }
     },
@@ -290,12 +298,19 @@ export const fetchSubmissionTestcaseAnalysis = cache(
         }
 
         try {
-            const analysis = await client.student.submissions.getTestcaseAnalysis({
-                problem_id: submission.problem_id,
-                submission_id,
-                testcase,
-            })
-            return decodeTestcaseAnalysis(analysis)
+            const [analysis, tables] = await Promise.all([
+                client.student.submissions.getTestcaseAnalysis({
+                    problem_id: submission.problem_id,
+                    submission_id,
+                    testcase,
+                }),
+                client.tables.get(),
+            ])
+            const decoded = decodeTestcaseAnalysis(analysis)
+            return {
+                ...decoded,
+                verdictEmoji: tables.verdicts[decoded.verdict]?.emoji,
+            }
         } catch {
             return null
         }

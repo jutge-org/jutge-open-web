@@ -197,9 +197,10 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 flex: 1,
                 sortable: true,
                 filter: true,
-                cellRenderer: (params: { data: SubmissionRow }) => (
-                    <span className="text-muted-foreground">{params.data.annotation ?? '—'}</span>
-                ),
+                cellRenderer: (params: { data: SubmissionRow }) =>
+                    params.data.annotation ? (
+                        <span className="text-muted-foreground">{params.data.annotation}</span>
+                    ) : null,
                 valueGetter: (params: { data: SubmissionRow }) => params.data.annotation ?? '',
             },
         ],

@@ -34,6 +34,9 @@ function useAgTheme() {
 
 const BOTTOM_PADDING_PX = 60
 
+const AG_TABLE_CLASS =
+    'w-full [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-muted-foreground/50'
+
 function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) {
     const [height, setHeight] = useState<number>()
 
@@ -76,7 +79,7 @@ export function AgTableFull(props: GridProps) {
     const height = useViewportTableHeight(containerRef)
 
     return (
-        <div ref={containerRef} className="w-full" style={height !== undefined ? { height } : undefined}>
+        <div ref={containerRef} className={AG_TABLE_CLASS} style={height !== undefined ? { height } : undefined}>
             <AgGridReact
                 {...props}
                 theme={theme}
@@ -93,14 +96,16 @@ export function AgTable(props: GridProps) {
     const theme = useAgTheme()
 
     return (
-        <AgGridReact
-            {...props}
-            theme={theme}
-            animateRows={false}
-            suppressColumnMoveAnimation={true}
-            enableCellTextSelection={true}
-            ensureDomOrder={true}
-        />
+        <div className={`${AG_TABLE_CLASS} h-full`}>
+            <AgGridReact
+                {...props}
+                theme={theme}
+                animateRows={false}
+                suppressColumnMoveAnimation={true}
+                enableCellTextSelection={true}
+                ensureDomOrder={true}
+            />
+        </div>
     )
 }
 
@@ -108,7 +113,7 @@ export function AgTableAutoHeight(props: GridProps) {
     const theme = useAgTheme()
 
     return (
-        <div className="w-full">
+        <div className={AG_TABLE_CLASS}>
             <AgGridReact
                 {...props}
                 theme={theme}

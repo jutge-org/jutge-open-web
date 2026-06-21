@@ -18,7 +18,7 @@ import Link from 'next/link'
 type HomeQuickNavProps = SiteNavLinksContext
 
 function NavIcon({ href, className }: { href: string; className?: string }) {
-    const iconClass = cn('shrink-0', 'hover:animate-pulse', className ?? 'size-10')
+    const iconClass = cn('shrink-0', 'group-hover:animate-pulse', className ?? 'size-10')
     switch (href) {
         case '/problems':
             return <PuzzleIcon className={iconClass} aria-hidden />
@@ -51,7 +51,7 @@ const cardAccent: Record<string, string> = {
     '/problems': 'border-l-4 border-l-emerald-500 text-emerald-600 dark:text-emerald-400',
     '/submissions': 'border-l-4 border-l-blue-500 text-blue-600 dark:text-blue-400',
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
-    '/courses': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
+    '/courses': 'border-l-4 border-l-cyan-500 text-cyan-600 dark:text-cyan-400',
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
@@ -93,8 +93,8 @@ export function HomeQuickNav(props: HomeQuickNavProps) {
                     key={href}
                     href={href}
                     className={cn(
-                        'group flex min-h-22 items-center gap-5 rounded-2xl border border-border bg-card px-6 py-5 text-left shadow-sm transition-[box-shadow,transform] duration-200 ease-out',
-                        'hover:-translate-y-0.5 hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
+                        'group flex min-h-22 items-center gap-5 rounded-2xl border border-border bg-card px-6 py-5 text-left shadow-sm transition-[box-shadow,border-color,background-color] duration-200 ease-out',
+                        'hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                     )}
                 >

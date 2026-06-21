@@ -1,3 +1,47 @@
+import { includesForSearch } from '@/lib/utils'
+import type { ProblemRow } from '@/services/queries/problems'
+
+export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'type'
+
+export type ProblemsColumnVisibility = Record<ProblemsColumnField, boolean>
+
+export const DEFAULT_PROBLEMS_COLUMN_VISIBILITY: ProblemsColumnVisibility = {
+    status: true,
+    problem_nm: true,
+    title: true,
+    author: true,
+    language_ids: true,
+    type: true,
+}
+
+export const PROBLEMS_COLUMN_LABELS: Record<ProblemsColumnField, string> = {
+    status: 'Status',
+    problem_nm: 'Problem',
+    title: 'Title',
+    author: 'Author',
+    language_ids: 'Languages',
+    type: 'Type',
+}
+
+function buildProblemSearchHaystack(problem: ProblemRow): string {
+    return [
+        problem.problem_nm,
+        problem.title,
+        problem.author ?? '',
+        problem.type ?? '',
+        ...problem.language_ids,
+    ].join(' ')
+}
+
+export function filterProblems(problems: ProblemRow[], searchQuery: string): ProblemRow[] {
+    const query = searchQuery.trim()
+    if (!query) {
+        return problems
+    }
+
+    return problems.filter((problem) => includesForSearch(buildProblemSearchHaystack(problem), query))
+}
+
 export const PROBLEM_ID_RE = /^([A-Z]\d{5})_([a-z]{2})$/
 export const PROBLEM_NM_RE = /^[A-Z]\d{5}$/
 

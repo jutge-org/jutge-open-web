@@ -59,17 +59,17 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                     <div
                         key={key}
                         className={cn(
-                            'flex flex-col gap-3 rounded-2xl border border-border border-t-4 bg-card px-5 py-5 shadow-sm',
+                            'group flex flex-col gap-3 rounded-2xl border border-border border-t-4 bg-card px-5 py-5 shadow-sm',
                             borderAccent,
                         )}
                     >
-                        <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-medium text-muted-foreground">{label}</span>
-                            <Icon className={cn('size-5 shrink-0 opacity-80', iconAccent)} aria-hidden />
-                        </div>
-                        <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+                        <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground group-hover:animate-pulse">
                             {formatStat(stats[key])}
                         </p>
+                        <div className="flex items-center gap-2">
+                            <Icon className={cn('size-5 shrink-0 opacity-80', iconAccent)} aria-hidden />
+                            <span className={cn('text-sm font-medium', iconAccent)}>{label}</span>
+                        </div>
                     </div>
                 ))}
             </div>

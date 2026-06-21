@@ -30,7 +30,7 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/problems': 'border-l-4 border-l-emerald-500 text-emerald-600 dark:text-emerald-400',
     '/submissions': 'border-l-4 border-l-blue-500 text-blue-600 dark:text-blue-400',
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
-    '/courses': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
+    '/courses': 'border-l-4 border-l-cyan-500 text-cyan-600 dark:text-cyan-400',
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
@@ -55,10 +55,10 @@ const sectionLabel: Record<PageTitleSection, string> = {
 }
 
 const guestDescription: Record<PageTitleSection, string> = {
-    '/problems': 'Browse programming problems. Sign in to solve them.',
+    '/problems': 'Browse public programming problems. Sign in to solve them and find more.',
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View and take exams',
-    '/courses': 'Browse public courses. Sign in to enroll in a course.',
+    '/courses': 'Browse public courses. Sign in to enroll in a course and find more.',
     '/activity': 'Your activity and progress',
     '/awards': 'Achievements earned',
     '/profile': 'Your account details',

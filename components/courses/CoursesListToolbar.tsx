@@ -11,6 +11,7 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { CoursesOfficialFilter, CoursesSortField } from '@/lib/courses'
@@ -23,6 +24,8 @@ type CoursesListToolbarProps = {
     onOfficialFilterChange: (value: CoursesOfficialFilter) => void
     sortField: CoursesSortField
     onSortFieldChange: (value: CoursesSortField) => void
+    visibleCount?: number
+    totalCount?: number
 }
 
 export function CoursesListToolbar({
@@ -32,10 +35,19 @@ export function CoursesListToolbar({
     onOfficialFilterChange,
     sortField,
     onSortFieldChange,
+    visibleCount,
+    totalCount,
 }: CoursesListToolbarProps) {
+    const showCountBadge = visibleCount !== undefined && totalCount !== undefined
+
     return (
         <TooltipProvider>
-            <div className="flex flex-row justify-end gap-2">
+            <div className="flex flex-row items-center justify-end gap-2">
+                {showCountBadge ? (
+                    <Badge variant="outline" className="tabular-nums">
+                        {visibleCount === totalCount ? visibleCount : `${visibleCount}/${totalCount}`}
+                    </Badge>
+                ) : null}
                 <ButtonGroup>
                     <DropdownMenu>
                         <Tooltip>

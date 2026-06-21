@@ -92,6 +92,8 @@ export function GuestCoursesList({ courses }: GuestCoursesListProps) {
                 onOfficialFilterChange={setOfficialFilter}
                 sortField={sortField}
                 onSortFieldChange={setSortField}
+                visibleCount={visibleCourses.length}
+                totalCount={courses.length}
             />
 
             {visibleCourses.length === 0 ? (

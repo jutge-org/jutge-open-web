@@ -1,15 +1,23 @@
 'use client'
 
-import { useMemo } from 'react'
-import { GaugeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { GaugeIcon, SearchIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
+import { ProblemsListToolbar } from '@/components/problems/ProblemsListToolbar'
 import { Badge } from '@/components/ui/badge'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+    DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
+    filterProblems,
+    type ProblemsColumnField,
+    type ProblemsColumnVisibility,
+} from '@/lib/problems'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
-import Link from 'next/link'
 
 type ProblemsListProps = {
     problems: ProblemRow[]
@@ -80,6 +88,17 @@ function ProblemStatusIcon({ data }: { data: AbstractStatus }) {
 }
 
 export function ProblemsList({ problems, languages, statuses }: ProblemsListProps) {
+    const [searchQuery, setSearchQuery] = useState('')
+    const [columnVisibility, setColumnVisibility] = useState<ProblemsColumnVisibility>(
+        DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
+    )
+
+    const visibleProblems = useMemo(() => filterProblems(problems, searchQuery), [problems, searchQuery])
+
+    function handleColumnVisibilityChange(field: ProblemsColumnField, visible: boolean) {
+        setColumnVisibility((current) => ({ ...current, [field]: visible }))
+    }
+
     const colDefs = useMemo(
         () => [
             ...(statuses
@@ -90,6 +109,7 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                           width: 100,
                           sortable: true,
                           filter: true,
+                          hide: !columnVisibility.status,
                           cellRenderer: (params: { data: ProblemRow }) => {
                               const data = statuses[params.data.problem_nm]
                               if (
@@ -111,6 +131,7 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                 width: 112,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.problem_nm,
                 cellRenderer: (params: { data: ProblemRow }) => (
                     <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
                         {params.data.problem_nm}
@@ -123,13 +144,25 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                 flex: 1,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.title,
+            },
+            {
+                field: 'author',
+                headerName: 'Author',
+                width: 170,
+                sortable: true,
+                filter: true,
+                hide: !columnVisibility.author,
+                valueGetter: (params: { data: ProblemRow }) => params.data.author ?? '',
+                cellRenderer: (params: { data: ProblemRow }) => params.data.author ?? '—',
             },
             {
                 field: 'language_ids',
                 headerName: 'Languages',
-                width: 192,
+                width: 200,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.language_ids,
                 cellRenderer: (params: { data: ProblemRow }) => (
                     <div className="flex flex-wrap gap-1">
                         {params.data.language_ids.map((languageId) => (
@@ -151,9 +184,10 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
             {
                 field: 'type',
                 headerName: 'Type',
-                width: 96,
+                width: 90,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.type,
                 cellRenderer: (params: { data: ProblemRow }) =>
                     params.data.type ? (
                         <ProblemTypeIcon type={params.data.type} className="text-muted-foreground translate-y-1" />
@@ -163,12 +197,36 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                 valueGetter: (params: { data: ProblemRow }) => params.data.type ?? '',
             },
         ],
-        [languages, statuses],
+        [columnVisibility, languages, statuses],
     )
 
     return (
-        <TooltipProvider>
-            <AgTableFull rowData={problems} columnDefs={colDefs} />
-        </TooltipProvider>
+        <div className="flex flex-col gap-4">
+            <ProblemsListToolbar
+                searchQuery={searchQuery}
+                onSearchQueryChange={setSearchQuery}
+                columnVisibility={columnVisibility}
+                onColumnVisibilityChange={handleColumnVisibilityChange}
+                showStatusColumn={statuses !== undefined}
+                visibleCount={visibleProblems.length}
+                totalCount={problems.length}
+            />
+
+            {visibleProblems.length === 0 ? (
+                <Empty className="border border-dashed border-border bg-muted/20 py-12">
+                    <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                            <SearchIcon aria-hidden />
+                        </EmptyMedia>
+                        <EmptyTitle>No matching problems</EmptyTitle>
+                        <EmptyDescription>Try a different search term or clear the search box.</EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
+            ) : (
+                <TooltipProvider>
+                    <AgTableFull rowData={visibleProblems} columnDefs={colDefs} />
+                </TooltipProvider>
+            )}
+        </div>
     )
 }

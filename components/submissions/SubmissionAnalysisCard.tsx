@@ -20,7 +20,7 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
             {
                 field: 'testcase',
                 headerName: 'Test case',
-                width: 160,
+                width: 200,
                 sortable: true,
                 cellRenderer: (params: { data: SubmissionAnalysisRow }) => {
                     const href = buildSubmissionTestcaseHref(problemKey, submissionId, params.data.testcase)
@@ -37,7 +37,7 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
             {
                 field: 'execution',
                 headerName: 'Execution',
-                flex: 1,
+                width: 120,
                 sortable: true,
                 cellRenderer: (params: { data: SubmissionAnalysisRow }) => (
                     <span className="inline-flex items-center gap-2">
@@ -50,13 +50,11 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
             {
                 field: 'verdict',
                 headerName: 'Verdict',
-                width: 120,
+                flex: 1,
                 sortable: true,
                 cellRenderer: (params: { data: SubmissionAnalysisRow }) => (
                     <span className="inline-flex items-center gap-2">
-                        {params.data.verdictEmoji ? (
-                            <span aria-hidden>{params.data.verdictEmoji}</span>
-                        ) : null}
+                        {params.data.verdictEmoji ? <span aria-hidden>{params.data.verdictEmoji}</span> : null}
                         {params.data.verdict}
                     </span>
                 ),
@@ -67,12 +65,12 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
     )
 
     return (
-        <Card className="ring-0 border border-border shadow-sm">
-            <CardHeader className="border-b border-border">
+        <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
+            <CardHeader className="border-b border-border px-4 py-2">
                 <CardTitle className="text-lg font-semibold">Analysis</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <AgTableAutoHeight rowData={analysis} columnDefs={colDefs} rowHeight={32} />
+                <AgTableAutoHeight rowData={analysis} columnDefs={colDefs} rowHeight={36} wrapperBorder={false} />
             </CardContent>
         </Card>
     )

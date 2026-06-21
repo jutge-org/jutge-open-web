@@ -8,6 +8,7 @@ import { useLayoutEffect, useRef, useState, type RefObject } from 'react'
 ModuleRegistry.registerModules([AllCommunityModule])
 
 type GridProps = {
+    wrapperBorder?: boolean
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rowData?: any[]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,9 +28,13 @@ const myThemeDark = themeQuartz.withPart(colorSchemeDark).withParams({
     backgroundColor: '#0b0a0b',
 })
 
-function useAgTheme() {
+function useAgTheme(wrapperBorder = true) {
     const { resolvedTheme } = useTheme()
-    return resolvedTheme === 'dark' ? myThemeDark : myThemeLight
+    const baseTheme = resolvedTheme === 'dark' ? myThemeDark : myThemeLight
+    if (wrapperBorder) {
+        return baseTheme
+    }
+    return baseTheme.withParams({ wrapperBorder: false })
 }
 
 const BOTTOM_PADDING_PX = 60
@@ -73,8 +78,8 @@ function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) 
     return height
 }
 
-export function AgTableFull(props: GridProps) {
-    const theme = useAgTheme()
+export function AgTableFull({ wrapperBorder = true, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder)
     const containerRef = useRef<HTMLDivElement>(null)
     const height = useViewportTableHeight(containerRef)
 
@@ -92,8 +97,8 @@ export function AgTableFull(props: GridProps) {
     )
 }
 
-export function AgTable(props: GridProps) {
-    const theme = useAgTheme()
+export function AgTable({ wrapperBorder = true, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder)
 
     return (
         <div className={`${AG_TABLE_CLASS} h-full`}>
@@ -109,8 +114,8 @@ export function AgTable(props: GridProps) {
     )
 }
 
-export function AgTableAutoHeight(props: GridProps) {
-    const theme = useAgTheme()
+export function AgTableAutoHeight({ wrapperBorder = true, ...props }: GridProps) {
+    const theme = useAgTheme(wrapperBorder)
 
     return (
         <div className={AG_TABLE_CLASS}>

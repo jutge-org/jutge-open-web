@@ -1,16 +1,14 @@
 'use client'
 
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import dynamic from 'next/dynamic'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
-const MonacoDiffEditor = dynamic(
-    () => import('@monaco-editor/react').then((module) => module.DiffEditor),
-    {
-        ssr: false,
-        loading: () => null,
-    },
-)
+const MonacoDiffEditor = dynamic(() => import('@monaco-editor/react').then((module) => module.DiffEditor), {
+    ssr: false,
+    loading: () => null,
+})
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
     ssr: false,
@@ -34,10 +32,19 @@ type SubmissionTestcaseDiffEditorProps = {
     expected: string
 }
 
+function DiffSectionTitle() {
+    return (
+        <div className="grid shrink-0 grid-cols-2 px-4 py-2">
+            <h2 className="text-sm font-semibold text-foreground">Output</h2>
+            <h2 className="text-right text-sm font-semibold text-foreground pr-10">Expected</h2>
+        </div>
+    )
+}
+
 function SectionTitle({ children }: { children: string }) {
     return (
-        <div className="shrink-0 border-b border-border bg-muted/30 px-4 py-2">
-            <h2 className="text-sm font-semibold text-foreground">{children}</h2>
+        <div className="shrink-0 px-4 py-2">
+            <h2 className="text-center text-sm font-semibold text-foreground">{children}</h2>
         </div>
     )
 }
@@ -53,10 +60,10 @@ export function SubmissionTestcaseDiffEditor({ input, output, expected }: Submis
     const theme = mounted && resolvedTheme === 'dark' ? 'vs-dark' : 'vs'
 
     return (
-        <div className="flex h-full flex-col">
-            <section className="flex h-[75%] min-h-0 flex-col">
-                <SectionTitle>Output vs Expected</SectionTitle>
-                <div className="min-h-0 flex-1">
+        <ResizablePanelGroup orientation="vertical" className="h-full">
+            <ResizablePanel defaultSize={75} minSize={25} className="flex min-h-0 flex-col">
+                <DiffSectionTitle />
+                <div className="min-h-0 flex-1 pb-2">
                     <MonacoDiffEditor
                         height="100%"
                         language="plaintext"
@@ -71,8 +78,9 @@ export function SubmissionTestcaseDiffEditor({ input, output, expected }: Submis
                         }}
                     />
                 </div>
-            </section>
-            <section className="flex h-[25%] min-h-0 flex-col border-t border-border">
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={25} minSize={15} className="flex min-h-0 flex-col">
                 <SectionTitle>Input</SectionTitle>
                 <div className="min-h-0 flex-1">
                     <MonacoEditor
@@ -83,7 +91,7 @@ export function SubmissionTestcaseDiffEditor({ input, output, expected }: Submis
                         options={monacoOptions}
                     />
                 </div>
-            </section>
-        </div>
+            </ResizablePanel>
+        </ResizablePanelGroup>
     )
 }

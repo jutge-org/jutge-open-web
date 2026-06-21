@@ -16,12 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
-import {
-    FONT_SCALE_STEP,
-    MAX_FONT_SCALE,
-    MIN_FONT_SCALE,
-    TESTCASES_FONT_SCALE_KEY,
-} from '@/lib/fontScale'
+import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, TESTCASES_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { cn } from '@/lib/utils'
 import type { SubmissionTestcaseAnalysisData } from '@/services/queries/submissions'
 
@@ -177,13 +172,15 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                                                     Math.min(MAX_FONT_SCALE, scale + FONT_SCALE_STEP),
                                                 )
                                             }
-                                            className="rounded-none border-0 border-r border-input"
+                                            className="rounded-none border-0"
                                         >
                                             <AArrowUpIcon />
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="top">Increase font size</TooltipContent>
                                 </Tooltip>
+                            </div>
+                            <div className="inline-flex overflow-hidden rounded-lg border border-input">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button
@@ -198,7 +195,7 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                                             </Link>
                                         </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top">Show diff in full screen</TooltipContent>
+                                    <TooltipContent side="top">Compare diffs in full screen</TooltipContent>
                                 </Tooltip>
                             </div>
                         </div>

@@ -82,7 +82,10 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
             <CardHeader className="-mt-2">
                 <div className="flex items-start justify-between gap-2">
                     <CardTitle className="w-full flex flex-row items-start">
-                        <Link href={courseHref(course.course_key)} className="line-clamp-2 hover:underline">
+                        <Link
+                            href={courseHref(course.course_key)}
+                            className="line-clamp-2 hover:underline hover:underline-offset-4 hover:decoration-muted-foreground/50"
+                        >
                             {course.title}
                         </Link>
                         <div className="flex-1" />

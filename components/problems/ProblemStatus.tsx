@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ListIcon, SendIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
+import { GaugeIcon, ListIcon, SendIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
 
 import { SubmissionDialog } from '@/components/problems/SubmissionDialog'
 import { Button } from '@/components/ui/button'
@@ -23,9 +23,21 @@ const statRows = [
 
 export function ProblemStatus({ status, problemId, compilers, defaultCompilerId }: ProblemStatusProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
-    const accepted = status.status === 'accepted'
-    const showIcon = status.status === 'accepted' || status.status === 'rejected'
-    const Icon = accepted ? ThumbsUpIcon : ThumbsDownIcon
+    const { status: statusValue } = status
+    const accepted = statusValue === 'accepted'
+    const scored = statusValue === 'scored'
+    const showIcon = accepted || statusValue === 'rejected' || scored
+
+    let Icon = ThumbsDownIcon
+    let iconClassName = 'text-red-600 dark:text-red-400'
+
+    if (accepted) {
+        Icon = ThumbsUpIcon
+        iconClassName = 'text-emerald-600 dark:text-emerald-400'
+    } else if (scored) {
+        Icon = GaugeIcon
+        iconClassName = 'text-orange-600 dark:text-orange-400'
+    }
     const visibleStats = statRows.filter(({ key }) => status[key] !== 0)
 
     return (
@@ -34,10 +46,7 @@ export function ProblemStatus({ status, problemId, compilers, defaultCompilerId 
                 <div className="flex items-center gap-8 px-6 pt-6 pb-2">
                     <div className="flex flex-1 items-center gap-8">
                         {showIcon ? (
-                            <Icon
-                                className={`size-16 shrink-0 stroke-[1.5] ${accepted ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}
-                                aria-hidden
-                            />
+                            <Icon className={`size-16 shrink-0 stroke-[1.5] ${iconClassName}`} aria-hidden />
                         ) : null}
                         {visibleStats.length > 0 ? (
                             <dl className="grid grid-cols-[max-content_max-content] gap-x-4 gap-y-1 text-sm">

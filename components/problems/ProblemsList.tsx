@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
+import { GaugeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
@@ -53,16 +53,23 @@ function ProblemStatusTooltipContent({ data }: { data: AbstractStatus }) {
 }
 
 function ProblemStatusIcon({ data }: { data: AbstractStatus }) {
-    const accepted = data.status === 'accepted'
-    const Icon = accepted ? ThumbsUpIcon : ThumbsDownIcon
+    const { status } = data
+    let Icon = ThumbsDownIcon
+    let iconClassName = 'text-red-600 dark:text-red-400'
+
+    if (status === 'accepted') {
+        Icon = ThumbsUpIcon
+        iconClassName = 'text-emerald-600 dark:text-emerald-400'
+    } else if (status === 'scored') {
+        Icon = GaugeIcon
+        iconClassName = 'text-orange-600 dark:text-orange-400'
+    }
 
     return (
         <Tooltip>
             <TooltipTrigger asChild>
                 <span className="inline-flex cursor-default items-center">
-                    <Icon
-                        className={`size-4 shrink-0 translate-y-1 ${accepted ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}
-                    />
+                    <Icon className={`size-4 shrink-0 translate-y-1 ${iconClassName}`} />
                 </span>
             </TooltipTrigger>
             <TooltipContent side="right" className="flex flex-col items-start px-3 py-2">
@@ -85,7 +92,11 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                           filter: true,
                           cellRenderer: (params: { data: ProblemRow }) => {
                               const data = statuses[params.data.problem_nm]
-                              if (data?.status === 'accepted' || data?.status === 'rejected') {
+                              if (
+                                  data?.status === 'accepted' ||
+                                  data?.status === 'rejected' ||
+                                  data?.status === 'scored'
+                              ) {
                                   return <ProblemStatusIcon data={data} />
                               }
                               return ''

@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
 import { monacoLanguageForExtension } from '@/lib/highlightCode'
+import { registerCustomMonacoLanguages } from '@/lib/monaco/registerCustomLanguages'
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
     ssr: false,
@@ -30,6 +31,7 @@ export function SubmissionCodeEditor({ code, codeExtension }: SubmissionCodeEdit
     return (
         <MonacoEditor
             height="100%"
+            beforeMount={registerCustomMonacoLanguages}
             defaultLanguage={language}
             defaultValue={code}
             theme={theme}

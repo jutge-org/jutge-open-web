@@ -29,6 +29,7 @@ import {
     SOURCE_CODE_FONT_SCALE_KEY,
 } from '@/lib/fontScale'
 import { DEFAULT_HLJS_THEME, formatHljsThemeLabel, HLJS_THEMES, type HljsThemeSelection } from '@/lib/hljsThemes'
+import { includesForSearch } from '@/lib/utils'
 
 type SubmissionSourceCodeCardProps = {
     code: string
@@ -51,14 +52,14 @@ export function SubmissionSourceCodeCard({
     const activeTheme = previewTheme ?? highlightTheme
 
     const filteredThemes = useMemo(() => {
-        const query = themeSearch.trim().toLowerCase()
+        const query = themeSearch.trim()
         if (!query) {
             return HLJS_THEMES
         }
 
         return HLJS_THEMES.filter((theme) => {
-            const label = formatHljsThemeLabel(theme).toLowerCase()
-            return theme.toLowerCase().includes(query) || label.includes(query)
+            const label = formatHljsThemeLabel(theme)
+            return includesForSearch(theme, query) || includesForSearch(label, query)
         })
     }, [themeSearch])
 

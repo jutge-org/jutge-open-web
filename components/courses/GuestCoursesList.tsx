@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Globe, GraduationCap, SearchIcon, ShieldCheck, SignatureIcon } from 'lucide-react'
+import { GraduationCap, SearchIcon, ShieldCheck, SignatureIcon } from 'lucide-react'
 
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
@@ -26,12 +26,6 @@ function GuestCourseBadges({ course }: { course: GuestCourseRow }) {
                 <Badge variant="outline" className="gap-1">
                     <ShieldCheck aria-hidden />
                     Official
-                </Badge>
-            ) : null}
-            {course.isPublic ? (
-                <Badge variant="outline" className="gap-1">
-                    <Globe aria-hidden />
-                    Public
                 </Badge>
             ) : null}
         </div>

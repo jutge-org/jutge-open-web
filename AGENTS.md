@@ -7,6 +7,7 @@
 - Never modify the `lib/jutge_api_client.ts` file.
 - Do not use mono font for ids.
 - problem ids and submission ids are URL friendly, do not encode them.
+- All icon buttons should have a tooltip.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

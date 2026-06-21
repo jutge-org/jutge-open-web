@@ -1,4 +1,5 @@
 import type { BriefCourse, PublicCourse, PublicProfile } from '@/lib/jutge_api_client'
+import { includesForSearch } from '@/lib/utils'
 
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
 
@@ -117,8 +118,8 @@ function matchesCourseSearch(course: SearchableCourseRow, query: string): boolea
         return true
     }
 
-    const haystack = [course.title, course.ownerName, course.description].join(' ').toLowerCase()
-    return haystack.includes(query)
+    const haystack = [course.title, course.ownerName, course.description].join(' ')
+    return includesForSearch(haystack, query)
 }
 
 function matchesCourseOfficialFilter(course: SearchableCourseRow, filter: CoursesOfficialFilter): boolean {
@@ -147,7 +148,7 @@ export function filterAndSortCourses<T extends SearchableCourseRow>(
     officialFilter: CoursesOfficialFilter,
     sortField: CoursesSortField,
 ): T[] {
-    const query = searchQuery.trim().toLowerCase()
+    const query = searchQuery.trim()
     return courses
         .filter((course) => matchesCourseSearch(course, query) && matchesCourseOfficialFilter(course, officialFilter))
         .sort((a, b) => compareCourseRows(a, b, sortField))

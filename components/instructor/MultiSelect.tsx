@@ -5,7 +5,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronDown, WandSparkles, XIcon } from 'lucide-react'
 import * as React from 'react'
-import { cn } from '@/lib/utils'
+import { cn, commandFilter } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -265,7 +265,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                     align="start"
                     onEscapeKeyDown={() => setIsPopoverOpen(false)}
                 >
-                    <Command>
+                    <Command filter={commandFilter}>
                         <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>

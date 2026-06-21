@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 import { SignInDialog } from '@/components/SignInDialog'
 import { cn } from '@/lib/utils'
@@ -42,11 +42,7 @@ export function HomeLoginCard() {
                 </div>
             </div>
 
-            <SignInDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                onSignedIn={() => router.refresh()}
-            />
+            <SignInDialog open={dialogOpen} onOpenChange={setDialogOpen} onSignedIn={() => router.refresh()} />
         </>
     )
 }

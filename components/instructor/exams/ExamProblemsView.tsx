@@ -47,7 +47,7 @@ import type {
     InstructorExamProblem,
     Profile,
 } from '@/lib/jutge_api_client'
-import { cn } from '@/lib/utils'
+import { cn, includesForSearch } from '@/lib/utils'
 import type { RowSelectionOptions } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { saveAs } from 'file-saver'
@@ -609,20 +609,18 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
                 ' · ' +
                 getProblemTitle(props.profile, problem_nm, props.allAbstractProblems),
             titles:
-                problem_nm.toLowerCase() +
+                problem_nm +
                 ' ' +
                 Object.values(problem.problems)
                     .map((p) => p.title)
-                    .join(' ')
-                    .toLowerCase(),
+                    .join(' '),
         }))
         .sort((a, b) => a.value.localeCompare(b.value))
 
     function findItems(search: string) {
         if (search.length < 2) return []
-        const sLower = search.toLowerCase()
         return allItems.filter(
-            (item) => item.value.includes(search) || item.titles.includes(sLower),
+            (item) => includesForSearch(item.value, search) || includesForSearch(item.titles, search),
         )
     }
 
@@ -633,7 +631,7 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
                     <Input className="w-full text-left" value={inputValue} />
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 shadow-xl">
-                    <Command>
+                    <Command shouldFilter={false}>
                         <CommandInput
                             placeholder="Search problem..."
                             value={search}

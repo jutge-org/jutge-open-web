@@ -18,7 +18,7 @@ import { Dispatch, JSX, SetStateAction, useState } from 'react'
 import Dropzone, { DropzoneState } from 'shadcn-dropzone'
 import { toast } from 'sonner'
 import { ZodSchema } from 'zod'
-import { cn } from '@/lib/utils'
+import { cn, commandFilter } from '@/lib/utils'
 import { DateTimePicker } from '@/components/instructor/DateTime'
 import { MultiSelect } from '@/components/instructor/MultiSelect'
 import { Badge } from '@/components/ui/badge'
@@ -834,7 +834,7 @@ function JSelectComponent(props: JSelectComponentProps) {
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 shadow-xl">
-                    <Command>
+                    <Command filter={commandFilter}>
                         <CommandInput placeholder="Search" className="h-9" />
                         <CommandList>
                             <ScrollArea className="h-48">

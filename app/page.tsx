@@ -20,7 +20,9 @@ export default async function Home() {
                     Jutge.org
                 </h1>
                 <p className="max-w-2xl text-xl text-pretty text-muted-foreground italic sm:text-2xl">
-                    {authenticated ? `Welcome back, ${user?.name ?? 'user'}` : 'Sign in with your Jutge.org account'}
+                    {authenticated
+                        ? `Welcome back, ${user?.name ?? 'user'}`
+                        : 'The Virtual Learning Environment for Computer Programming'}
                 </p>
             </div>
 

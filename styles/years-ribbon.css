@@ -8,7 +8,11 @@
     top: 2.75rem;
     right: 0;
     z-index: 40;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    background: none;
     font-size: 13px;
     text-decoration: none;
     text-indent: -999999px;

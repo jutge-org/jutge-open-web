@@ -1,11 +1,50 @@
+'use client'
+
+import confetti from 'canvas-confetti'
+
 import '@/styles/years-ribbon.css'
+
+const audioClip = new Audio('/sounds/352655__foolboymedia__piano-notification-5a.mp3')
+
+function launchConfetti() {
+    const origin = { x: 0.5, y: 0.08 }
+
+    audioClip.play()
+
+    confetti({
+        particleCount: 80,
+        spread: 800,
+        startVelocity: 35,
+        origin,
+        colors: ['#5dd9ff', '#00bfff', '#0080ff', '#0045bc', '#ffffff'],
+    })
+
+    confetti({
+        particleCount: 20,
+        spread: 1200,
+        startVelocity: 50,
+        origin,
+        colors: ['#5dd9ff', '#00bfff', '#0080ff', '#0045bc', '#ffffff'],
+    })
+
+    confetti({
+        particleCount: 100,
+        spread: 6000,
+        startVelocity: 25,
+        origin,
+        scalar: 0.9,
+        colors: ['#5dd9ff', '#00bfff', '#0080ff', '#0045bc', '#ffffff'],
+    })
+}
 
 export function HomeYearsRibbon() {
     return (
-        <span
+        <button
+            type="button"
             className="years-ribbon"
             data-ribbon="20 Years"
-            aria-hidden
+            aria-label="Celebrate 20 years of Jutge"
+            onClick={launchConfetti}
         />
     )
 }

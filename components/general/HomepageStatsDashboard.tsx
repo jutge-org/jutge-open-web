@@ -2,6 +2,8 @@ import type { HomepageStats } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
 import { PuzzleIcon, SchoolIcon, SendIcon, TrophyIcon, UsersIcon } from 'lucide-react'
 
+import { HomepageStatsRefreshButton } from '@/components/general/HomepageStatsRefreshButton'
+
 type HomepageStatsDashboardProps = {
     stats: HomepageStats
 }
@@ -51,9 +53,12 @@ function formatStat(value: number): string {
 export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
     return (
         <section aria-label="Platform statistics" className="flex flex-col gap-4">
-            <h2 className="text-center text-sm font-medium tracking-wide text-muted-foreground uppercase">
-                Platform at a glance
-            </h2>
+            <div className="flex items-center justify-center gap-1">
+                <h2 className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+                    Platform at a glance
+                </h2>
+                <HomepageStatsRefreshButton />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 {statItems.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
                     <div

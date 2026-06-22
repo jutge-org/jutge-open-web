@@ -4,12 +4,19 @@ import confetti from 'canvas-confetti'
 
 import '@/styles/years-ribbon.css'
 
-const audioClip = new Audio('/sounds/352655__foolboymedia__piano-notification-5a.mp3')
+const AUDIO_SRC = '/sounds/352655__foolboymedia__piano-notification-5a.mp3'
+
+let audioClip: HTMLAudioElement | undefined
+
+function playRibbonSound() {
+    audioClip ??= new Audio(AUDIO_SRC)
+    void audioClip.play()
+}
 
 function launchConfetti() {
     const origin = { x: 0.5, y: 0.08 }
 
-    audioClip.play()
+    playRibbonSound()
 
     confetti({
         particleCount: 80,

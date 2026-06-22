@@ -69,11 +69,15 @@ export default async function ProblemSubmissionCodeViewPage({ params }: PageProp
         const doneSubmissions = problemSubmissions.filter((submission) => submission.state === 'done')
         const navigation = buildSubmissionNavLinks(doneSubmissions, submission_id, key, '/code')
 
+        const submissionHref = `/problems/${key}/submissions/${submission_id}`
+        const codeHref = `${submissionHref}/code`
+
         return (
             <SubmissionCodeEditor
                 code={submissionDetail.code}
                 codeExtension={submissionDetail.codeExtension}
                 codeFilename={submissionDetail.codeFilename}
+                codeHref={codeHref}
                 title={title}
                 submissionId={submission_id}
                 verdict={submissionDetail.verdict}

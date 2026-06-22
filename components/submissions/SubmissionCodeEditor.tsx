@@ -73,6 +73,7 @@ type SubmissionCodeEditorProps = {
     code: string
     codeExtension: string | null
     codeFilename: string
+    codeHref: string
     title: string
     submissionId: string
     verdict: string
@@ -86,6 +87,7 @@ export function SubmissionCodeEditor({
     code,
     codeExtension,
     codeFilename,
+    codeHref,
     title,
     submissionId,
     verdict,
@@ -201,8 +203,16 @@ export function SubmissionCodeEditor({
     }
 
     function downloadCode() {
-        const blob = new Blob([code], { type: 'text/plain;charset=utf-8' })
-        saveAs(blob, codeFilename)
+        void fetch(codeHref)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Download failed')
+                }
+
+                return response.blob()
+            })
+            .then((blob) => saveAs(blob, codeFilename))
+            .catch(() => toast.error('Failed to download'))
     }
 
     return (

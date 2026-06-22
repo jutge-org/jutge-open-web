@@ -22,9 +22,10 @@ export async function GET(_request: Request, context: RouteContext) {
             return new NextResponse(null, { status: 404 })
         }
 
-        return new NextResponse(codeData.code, {
+        return new NextResponse(new Uint8Array(codeData.body), {
             headers: {
-                'Content-Type': 'text/plain; charset=utf-8',
+                'Content-Type': codeData.contentType,
+                'Content-Disposition': `attachment; filename="${codeData.filename}"`,
             },
         })
     } catch {

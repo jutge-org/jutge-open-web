@@ -78,8 +78,16 @@ export function SubmissionSourceCodeCard({
     }
 
     function downloadCode() {
-        const blob = new Blob([code], { type: 'text/plain;charset=utf-8' })
-        saveAs(blob, codeFilename)
+        void fetch(codeHref)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Download failed')
+                }
+
+                return response.blob()
+            })
+            .then((blob) => saveAs(blob, codeFilename))
+            .catch(() => toast.error('Failed to download'))
     }
 
     return (

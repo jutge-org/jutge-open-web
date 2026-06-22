@@ -7,6 +7,7 @@ import {
     shouldShowCodeMetrics,
     type SubmissionCodeMetricsData,
 } from '@/lib/codeMetrics'
+import { decodeSubmissionCodeBase64, MAKE_PRO2_COMPILER_ID } from '@/lib/makePro2SourceCode'
 import { parseProblemKey } from '@/lib/problems'
 import {
     buildLastSubmissionsByProblemNm,
@@ -100,8 +101,9 @@ export type SubmissionDetailData = {
 }
 
 export type SubmissionCodeData = {
-    code: string
-    codeExtension: string
+    body: Buffer
+    contentType: string
+    filename: string
 }
 
 export type SubmissionTestcaseAnalysisData = {
@@ -207,9 +209,15 @@ export const fetchSubmissionCode = cache(
             return null
         }
 
+        const defaultExtension = tables.compilers[submission.compiler_id]?.extension ?? 'txt'
+
         return {
-            code: Buffer.from(codeB64, 'base64').toString('utf-8'),
-            codeExtension: tables.compilers[submission.compiler_id]?.extension ?? 'txt',
+            body: Buffer.from(codeB64, 'base64'),
+            contentType:
+                submission.compiler_id === MAKE_PRO2_COMPILER_ID
+                    ? 'application/x-tar'
+                    : 'text/plain; charset=utf-8',
+            filename: `${submission_id}.${defaultExtension}`,
         }
     },
 )
@@ -280,7 +288,10 @@ export const fetchSubmissionDetail = cache(
         const verdictMeta = tables.verdicts[verdict]
         const compilerMeta = tables.compilers[submission.compiler_id]
 
-        const extension = compilerMeta?.extension ?? 'txt'
+        const defaultExtension = compilerMeta?.extension ?? 'txt'
+        const decodedCode = codeB64
+            ? decodeSubmissionCodeBase64(codeB64, submission.compiler_id, defaultExtension)
+            : null
 
         const codeMetrics = shouldShowCodeMetrics({
             submission,
@@ -299,9 +310,9 @@ export const fetchSubmissionDetail = cache(
             verdictEmoji: verdictMeta?.emoji,
             compilerFullName: compilerMeta?.name ?? submission.compiler_id,
             time_in: formatSubmissionTime(submission.time_in),
-            code: codeB64 ? Buffer.from(codeB64, 'base64').toString('utf-8') : null,
-            codeExtension: codeB64 ? extension : null,
-            codeFilename: codeB64 ? `${submission_id}.${extension}` : null,
+            code: decodedCode?.code ?? null,
+            codeExtension: decodedCode?.extension ?? null,
+            codeFilename: codeB64 ? `${submission_id}.${defaultExtension}` : null,
             analysis: analysis.map((row) => ({
                 ...row,
                 verdictEmoji: tables.verdicts[row.verdict]?.emoji,

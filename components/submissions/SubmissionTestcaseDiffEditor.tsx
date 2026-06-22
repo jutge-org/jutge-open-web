@@ -1,5 +1,6 @@
 'use client'
 
+import { GraphicTestcaseDiffView } from '@/components/submissions/GraphicTestcaseDiffView'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import dynamic from 'next/dynamic'
 import { useTheme } from 'next-themes'
@@ -30,15 +31,8 @@ type SubmissionTestcaseDiffEditorProps = {
     input: string
     output: string
     expected: string
-}
-
-function DiffSectionTitle() {
-    return (
-        <div className="grid shrink-0 grid-cols-2 px-4 py-2">
-            <h2 className="text-sm font-semibold text-foreground">Output</h2>
-            <h2 className="text-right text-sm font-semibold text-foreground pr-10">Expected</h2>
-        </div>
-    )
+    outputImageSrc?: string
+    expectedImageSrc?: string
 }
 
 function SectionTitle({ children }: { children: string }) {
@@ -49,7 +43,13 @@ function SectionTitle({ children }: { children: string }) {
     )
 }
 
-export function SubmissionTestcaseDiffEditor({ input, output, expected }: SubmissionTestcaseDiffEditorProps) {
+export function SubmissionTestcaseDiffEditor({
+    input,
+    output,
+    expected,
+    outputImageSrc,
+    expectedImageSrc,
+}: SubmissionTestcaseDiffEditorProps) {
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -58,26 +58,39 @@ export function SubmissionTestcaseDiffEditor({ input, output, expected }: Submis
     }, [])
 
     const theme = mounted && resolvedTheme === 'dark' ? 'vs-dark' : 'vs'
+    const isGraphic = Boolean(outputImageSrc && expectedImageSrc)
 
     return (
         <ResizablePanelGroup orientation="vertical" className="h-full">
             <ResizablePanel defaultSize={75} minSize={25} className="flex min-h-0 flex-col">
-                <DiffSectionTitle />
-                <div className="min-h-0 flex-1 pb-2">
-                    <MonacoDiffEditor
-                        height="100%"
-                        language="plaintext"
-                        original={output}
-                        modified={expected}
-                        originalModelPath="output.txt"
-                        modifiedModelPath="expected.txt"
-                        theme={theme}
-                        options={{
-                            ...monacoOptions,
-                            renderSideBySide: true,
-                        }}
+                {!isGraphic ? (
+                    <>
+                        <div className="grid shrink-0 grid-cols-2 px-4 py-2">
+                            <h2 className="text-sm font-semibold text-foreground">Output</h2>
+                            <h2 className="pr-10 text-right text-sm font-semibold text-foreground">Expected</h2>
+                        </div>
+                        <div className="min-h-0 flex-1 pb-2">
+                            <MonacoDiffEditor
+                                height="100%"
+                                language="plaintext"
+                                original={output}
+                                modified={expected}
+                                originalModelPath="output.txt"
+                                modifiedModelPath="expected.txt"
+                                theme={theme}
+                                options={{
+                                    ...monacoOptions,
+                                    renderSideBySide: true,
+                                }}
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <GraphicTestcaseDiffView
+                        outputImageSrc={outputImageSrc!}
+                        expectedImageSrc={expectedImageSrc!}
                     />
-                </div>
+                )}
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={25} minSize={15} className="flex min-h-0 flex-col">

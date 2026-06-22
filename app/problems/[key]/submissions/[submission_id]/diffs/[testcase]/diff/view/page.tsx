@@ -38,6 +38,8 @@ export default async function ProblemSubmissionTestcaseDiffViewPage({ params }: 
                 input={analysis.input}
                 output={analysis.output}
                 expected={analysis.expected}
+                outputImageSrc={analysis.outputImageSrc}
+                expectedImageSrc={analysis.expectedImageSrc}
             />
         )
     })

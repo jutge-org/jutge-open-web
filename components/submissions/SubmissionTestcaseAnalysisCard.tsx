@@ -1,10 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
     AArrowDownIcon,
     AArrowUpIcon,
+    BlendIcon,
     Columns2Icon,
     EyeIcon,
     EyeOffIcon,
@@ -15,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { GraphicTestcaseDiffView } from '@/components/submissions/GraphicTestcaseDiffView'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, TESTCASES_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { cn } from '@/lib/utils'
@@ -59,23 +61,52 @@ function formatTestcaseText(text: string, showWhitespace: boolean): ReactNode {
 function TestcaseField({
     label,
     text,
+    imageSrc,
     showWhitespace,
     fontScale,
 }: {
     label: string
-    text: string
+    text?: string
+    imageSrc?: string
     showWhitespace: boolean
     fontScale: number
 }) {
+    const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null)
+
+    useEffect(() => {
+        setImageSize(null)
+    }, [imageSrc])
+
     return (
         <div className="flex min-w-0 flex-col gap-2">
             <p className="ml-1 text-sm font-bold text-foreground">{label}</p>
-            <pre
-                className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4 font-mono text-sm text-foreground"
-                style={{ fontSize: `calc(0.875rem * ${fontScale})` }}
-            >
-                {formatTestcaseText(text, showWhitespace)}
-            </pre>
+            {imageSrc ? (
+                <div className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={imageSrc}
+                        alt={`${label} testcase`}
+                        className="max-w-full origin-top-left"
+                        style={{ width: `calc(100% * ${fontScale})` }}
+                        onLoad={(event) => {
+                            const img = event.currentTarget
+                            setImageSize({ width: img.naturalWidth, height: img.naturalHeight })
+                        }}
+                    />
+                    {imageSize ? (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                            ({imageSize.width}×{imageSize.height})
+                        </p>
+                    ) : null}
+                </div>
+            ) : (
+                <pre
+                    className="overflow-x-auto rounded-lg border border-border bg-muted/50 p-4 font-mono text-sm text-foreground"
+                    style={{ fontSize: `calc(0.875rem * ${fontScale})` }}
+                >
+                    {formatTestcaseText(text ?? '', showWhitespace)}
+                </pre>
+            )}
         </div>
     )
 }
@@ -83,7 +114,9 @@ function TestcaseField({
 export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTestcaseAnalysisCardProps) {
     const [showWhitespace, setShowWhitespace] = useState(false)
     const [sideways, setSideways] = useState(true)
+    const [showImageDiff, setShowImageDiff] = useState(false)
     const [fontScale, setFontScale] = useFontScalePreference(TESTCASES_FONT_SCALE_KEY)
+    const isGraphic = Boolean(data.outputImageSrc && data.expectedImageSrc)
 
     return (
         <TooltipProvider>
@@ -126,7 +159,7 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                                                     : 'Show output and expected side by side'
                                             }
                                             onClick={() => setSideways((value) => !value)}
-                                            className="rounded-none border-0"
+                                            className="rounded-none border-0 border-r border-input"
                                         >
                                             {sideways ? <Rows2Icon /> : <Columns2Icon />}
                                         </Button>
@@ -137,6 +170,32 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                                             : 'Show output and expected side by side'}
                                     </TooltipContent>
                                 </Tooltip>
+                                {isGraphic ? (
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant={showImageDiff ? 'default' : 'outline'}
+                                                size="sm"
+                                                aria-label={
+                                                    showImageDiff
+                                                        ? 'Hide image difference view'
+                                                        : 'Show image difference view'
+                                                }
+                                                aria-pressed={showImageDiff}
+                                                onClick={() => setShowImageDiff((value) => !value)}
+                                                className="rounded-none border-0"
+                                            >
+                                                <BlendIcon />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top">
+                                            {showImageDiff
+                                                ? 'Hide image difference view'
+                                                : 'Show image difference view'}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                ) : null}
                             </div>
                             <div className="inline-flex overflow-hidden rounded-lg border border-input">
                                 <Tooltip>
@@ -226,20 +285,32 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                         showWhitespace={showWhitespace}
                         fontScale={fontScale}
                     />
-                    <div className={cn('grid gap-4', sideways && 'md:grid-cols-2')}>
-                        <TestcaseField
-                            label="Output"
-                            text={data.output}
-                            showWhitespace={showWhitespace}
+                    {isGraphic && showImageDiff ? (
+                        <GraphicTestcaseDiffView
+                            outputImageSrc={data.outputImageSrc!}
+                            expectedImageSrc={data.expectedImageSrc!}
+                            variant="embedded"
                             fontScale={fontScale}
+                            sideways={sideways}
                         />
-                        <TestcaseField
-                            label="Expected"
-                            text={data.expected}
-                            showWhitespace={showWhitespace}
-                            fontScale={fontScale}
-                        />
-                    </div>
+                    ) : (
+                        <div className={cn('grid gap-4', sideways && 'md:grid-cols-2')}>
+                            <TestcaseField
+                                label="Output"
+                                text={data.output}
+                                imageSrc={data.outputImageSrc}
+                                showWhitespace={showWhitespace}
+                                fontScale={fontScale}
+                            />
+                            <TestcaseField
+                                label="Expected"
+                                text={data.expected}
+                                imageSrc={data.expectedImageSrc}
+                                showWhitespace={showWhitespace}
+                                fontScale={fontScale}
+                            />
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </TooltipProvider>

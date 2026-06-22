@@ -21,7 +21,7 @@ import {
 import type { JutgeApiClient, Submission, SubmissionAnalysis, TestcaseAnalysis } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
-import { resolveProblemId } from './problemDetail'
+import { fetchAbstractProblem, resolveProblemId } from './problemDetail'
 
 function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
     const nms = new Set<string>()
@@ -112,17 +112,32 @@ export type SubmissionTestcaseAnalysisData = {
     input: string
     output: string
     expected: string
+    outputImageSrc?: string
+    expectedImageSrc?: string
 }
 
-function decodeTestcaseAnalysis(analysis: TestcaseAnalysis): SubmissionTestcaseAnalysisData {
-    return {
+function decodeTestcaseAnalysis(
+    analysis: TestcaseAnalysis,
+    outputAsImage: boolean,
+): SubmissionTestcaseAnalysisData {
+    const decoded: SubmissionTestcaseAnalysisData = {
         testcase: analysis.testcase,
         execution: analysis.execution,
         verdict: analysis.verdict,
         input: Buffer.from(analysis.input_b64, 'base64').toString('utf-8'),
-        output: Buffer.from(analysis.output_b64, 'base64').toString('utf-8'),
-        expected: Buffer.from(analysis.expected_b64, 'base64').toString('utf-8'),
+        output: '',
+        expected: '',
     }
+
+    if (outputAsImage) {
+        decoded.outputImageSrc = `data:image/png;base64,${analysis.output_b64}`
+        decoded.expectedImageSrc = `data:image/png;base64,${analysis.expected_b64}`
+        return decoded
+    }
+
+    decoded.output = Buffer.from(analysis.output_b64, 'base64').toString('utf-8')
+    decoded.expected = Buffer.from(analysis.expected_b64, 'base64').toString('utf-8')
+    return decoded
 }
 
 function submissionProblemNm(submission: Submission): string | null {
@@ -318,15 +333,19 @@ export const fetchSubmissionTestcaseAnalysis = cache(
         }
 
         try {
-            const [analysis, tables] = await Promise.all([
+            const parsed = parseProblemKey(submission.problem_id)
+            const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id
+
+            const [analysis, tables, abstractProblem] = await Promise.all([
                 client.student.submissions.getTestcaseAnalysis({
                     problem_id: submission.problem_id,
                     submission_id,
                     testcase,
                 }),
                 client.tables.get(),
+                fetchAbstractProblem(problem_nm),
             ])
-            const decoded = decodeTestcaseAnalysis(analysis)
+            const decoded = decodeTestcaseAnalysis(analysis, abstractProblem?.type === 'graphic')
             return {
                 ...decoded,
                 verdictEmoji: tables.verdicts[decoded.verdict]?.emoji,

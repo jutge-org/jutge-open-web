@@ -9,6 +9,7 @@ import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
 import { fetchCourseListsData } from '@/services/queries/lists'
 import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
+import { fetchLastSubmissionsByProblemNm } from '@/services/queries/submissions'
 
 export const dynamic = 'force-dynamic'
 
@@ -47,12 +48,14 @@ export default async function CoursePage({ params }: PageProps) {
         const row = buildCourseRow(course, status, courseKey)
         const href = courseHref(courseKey)
 
-        const [problems, languages, statuses] = await Promise.all([
+        const [problems, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
             fetchAllAbstractProblems(),
             fetchLanguages(),
             fetchStudentProblemStatuses(client),
+            fetchLastSubmissionsByProblemNm(client),
         ])
         const lists = await fetchCourseListsData(client, course.lists, problems)
+        const lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
 
         return (
             <div className="flex flex-col gap-6">
@@ -69,6 +72,7 @@ export default async function CoursePage({ params }: PageProps) {
                     lists={lists}
                     languages={languages}
                     statuses={statuses}
+                    lastSubmissions={lastSubmissions}
                 />
             </div>
         )

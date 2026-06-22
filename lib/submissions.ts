@@ -21,6 +21,38 @@ export function buildSubmissionHref(problem_id: string, submission_id: string): 
     return `/problems/${problem_id}/submissions/${submission_id}`
 }
 
+export type LastSubmissionInfo = {
+    submission_id: string
+    submissionHref: string
+}
+
+export function buildLastSubmissionsByProblemNm(submissions: Submission[]): Map<string, LastSubmissionInfo> {
+    const latest = new Map<string, { submission: Submission; timeMs: number }>()
+
+    for (const submission of submissions) {
+        const parsed = parseProblemKey(submission.problem_id)
+        if (parsed.kind !== 'problem_id' && parsed.kind !== 'problem_nm') {
+            continue
+        }
+
+        const timeMs = parseSubmissionTime(submission.time_in).getTime()
+        const current = latest.get(parsed.problem_nm)
+        if (!current || timeMs > current.timeMs) {
+            latest.set(parsed.problem_nm, { submission, timeMs })
+        }
+    }
+
+    const result = new Map<string, LastSubmissionInfo>()
+    for (const [problem_nm, { submission }] of latest) {
+        result.set(problem_nm, {
+            submission_id: submission.submission_id,
+            submissionHref: buildSubmissionHref(submission.problem_id, submission.submission_id),
+        })
+    }
+
+    return result
+}
+
 export const PRIVATE_TESTCASE_NAME = '[privates]'
 
 export function isLinkableTestcase(testcase: string): boolean {

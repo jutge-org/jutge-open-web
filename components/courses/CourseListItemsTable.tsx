@@ -8,6 +8,7 @@ import { AgTableAutoHeight } from '@/components/administrator/AgTable'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import type { CourseListItemRow } from '@/services/queries/lists'
 
@@ -15,6 +16,7 @@ type CourseListItemsTableProps = {
     items: CourseListItemRow[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
+    lastSubmissions?: Record<string, LastSubmissionInfo>
 }
 
 const statusTooltipFields = [
@@ -85,7 +87,7 @@ function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow,
 
 const ROW_HEIGHT = 36
 
-export function CourseListItemsTable({ items, languages, statuses }: CourseListItemsTableProps) {
+export function CourseListItemsTable({ items, languages, statuses, lastSubmissions }: CourseListItemsTableProps) {
     const colDefs = useMemo(
         () => [
             ...(statuses
@@ -138,6 +140,30 @@ export function CourseListItemsTable({ items, languages, statuses }: CourseListI
                     return params.data.title
                 },
             },
+            ...(lastSubmissions
+                ? [
+                      {
+                          field: 'last_submission_id',
+                          headerName: 'Last sub',
+                          width: 112,
+                          sortable: false,
+                          filter: false,
+                          cellRenderer: (params: { data: CourseListItemRow }) => {
+                              if (!isProblemRow(params.data)) return ''
+                              const submission = lastSubmissions[params.data.problem_nm]
+                              if (!submission) return ''
+                              return (
+                                  <Link
+                                      href={submission.submissionHref}
+                                      className="text-sm hover:text-primary hover:underline"
+                                  >
+                                      {submission.submission_id}
+                                  </Link>
+                              )
+                          },
+                      },
+                  ]
+                : []),
             {
                 field: 'language_ids',
                 headerName: 'Languages',
@@ -152,9 +178,7 @@ export function CourseListItemsTable({ items, languages, statuses }: CourseListI
                             {params.data.language_ids.map((languageId) => (
                                 <Tooltip key={languageId}>
                                     <TooltipTrigger asChild>
-                                        <Badge variant="outline">
-                                            {languageId}
-                                        </Badge>
+                                        <Badge variant="outline">{languageId}</Badge>
                                     </TooltipTrigger>
                                     <TooltipContent side="left">
                                         {languages[languageId]?.eng_name ?? languageId}
@@ -181,7 +205,7 @@ export function CourseListItemsTable({ items, languages, statuses }: CourseListI
                 },
             },
         ],
-        [languages, statuses],
+        [languages, lastSubmissions, statuses],
     )
 
     return (

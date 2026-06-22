@@ -6,6 +6,7 @@ import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { buildCourseRow, type CourseStatus } from '@/lib/courses'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Course, Language } from '@/lib/jutge_api_client'
 import type { CourseListData } from '@/services/queries/lists'
 
@@ -16,9 +17,18 @@ type CourseDetailProps = {
     lists: CourseListData[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
+    lastSubmissions?: Record<string, LastSubmissionInfo>
 }
 
-export function CourseDetail({ courseKey, course, status, lists, languages, statuses }: CourseDetailProps) {
+export function CourseDetail({
+    courseKey,
+    course,
+    status,
+    lists,
+    languages,
+    statuses,
+    lastSubmissions,
+}: CourseDetailProps) {
     const row = buildCourseRow(course, status)
 
     return (
@@ -79,6 +89,7 @@ export function CourseDetail({ courseKey, course, status, lists, languages, stat
                 lists={lists}
                 languages={languages}
                 statuses={statuses}
+                lastSubmissions={lastSubmissions}
             />
         </div>
     )

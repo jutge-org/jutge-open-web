@@ -8,10 +8,12 @@ import {
 } from '@/lib/codeMetrics'
 import { parseProblemKey } from '@/lib/problems'
 import {
+    buildLastSubmissionsByProblemNm,
     buildProblemSubmissionRow,
     buildSubmissionRow,
     formatSubmissionTime,
     submissionVerdict,
+    type LastSubmissionInfo,
     type ProblemSubmissionRow,
     type SubmissionRow,
 } from '@/lib/submissions'
@@ -50,6 +52,13 @@ export const fetchSubmissionsData = cache(async (client: JutgeApiClient): Promis
 
     return submissions.map((submission) => buildSubmissionRow(submission, tables, problemTitles))
 })
+
+export const fetchLastSubmissionsByProblemNm = cache(
+    async (client: JutgeApiClient): Promise<Map<string, LastSubmissionInfo>> => {
+        const submissions = await client.student.submissions.getAll()
+        return buildLastSubmissionsByProblemNm(submissions)
+    },
+)
 
 export const fetchProblemSubmissionsData = cache(
     async (

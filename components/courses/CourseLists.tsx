@@ -6,6 +6,7 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
 import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
@@ -16,6 +17,7 @@ type CourseListsProps = {
     lists: CourseListData[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
+    lastSubmissions?: Record<string, LastSubmissionInfo>
 }
 
 type ListProblemCounts = {
@@ -69,7 +71,7 @@ function ListProblemCountBadges({ counts, className }: { counts: ListProblemCoun
     )
 }
 
-export function CourseLists({ courseKey, lists, languages, statuses }: CourseListsProps) {
+export function CourseLists({ courseKey, lists, languages, statuses, lastSubmissions }: CourseListsProps) {
     const listNames = useMemo(() => lists.map((list) => list.list_nm), [lists])
     const [openItems, setOpenItems] = useCourseListAccordionPreference(courseKey, listNames)
 
@@ -127,6 +129,7 @@ export function CourseLists({ courseKey, lists, languages, statuses }: CourseLis
                                         items={list.items}
                                         languages={languages}
                                         statuses={statuses}
+                                        lastSubmissions={lastSubmissions}
                                     />
                                 )}
                             </CardContent>

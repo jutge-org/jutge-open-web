@@ -1,4 +1,5 @@
 import { HomeLoginCard } from '@/components/HomeLoginCard'
+import { HomeNewsSection } from '@/components/general/HomeNewsSection'
 import { HomepageStatsDashboard } from '@/components/general/HomepageStatsDashboard'
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
@@ -35,11 +36,12 @@ export default async function Home() {
                     administrator={user?.administrator ?? false}
                 />
             ) : (
-                <>
+                <div className="flex flex-col gap-8 pb-12">
                     <HomeLoginCard />
                     <HomeQuickNav authenticated={false} />
+                    <HomeNewsSection />
                     {homepageStats ? <HomepageStatsDashboard stats={homepageStats} /> : null}
-                </>
+                </div>
             )}
         </div>
     )

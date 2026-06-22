@@ -42,8 +42,8 @@ export function HomeYearsRibbon() {
         <button
             type="button"
             className="years-ribbon"
-            data-ribbon="20 Years"
-            aria-label="Celebrate 20 years of Jutge"
+            data-ribbon="20 Years 🎂"
+            aria-label="Celebrate 20 years of Jutge.org"
             onClick={launchConfetti}
         />
     )

@@ -30,11 +30,13 @@ export default async function Home() {
             </div>
 
             {authenticated ? (
-                <HomeQuickNav
-                    authenticated
-                    instructor={user?.instructor ?? false}
-                    administrator={user?.administrator ?? false}
-                />
+                <div className="flex flex-col gap-8 pb-12">
+                    <HomeQuickNav
+                        authenticated
+                        instructor={user?.instructor ?? false}
+                        administrator={user?.administrator ?? false}
+                    />
+                </div>
             ) : (
                 <div className="flex flex-col gap-8 pb-12">
                     <HomeLoginCard />

@@ -3,7 +3,7 @@ import { cache } from 'react'
 
 import { getJutgeAuthSession } from '@/lib/jutge-auth-session'
 import { jutgeClientFromToken } from '@/lib/jutge-clients'
-import type { JutgeApiClient, Profile } from '@/lib/jutge_api_client'
+import { JutgeApiClient, type Profile } from '@/lib/jutge_api_client'
 
 export type SessionUser = {
     id: string
@@ -77,6 +77,12 @@ export async function getCurrentClient(): Promise<JutgeApiClient> {
         throw new Error('Not authenticated')
     }
     return session.client
+}
+
+/** Jutge API client for problem endpoints; authenticated when the session is valid. */
+export async function getProblemsApiClient(): Promise<JutgeApiClient> {
+    const session = await resolveJutgeSessionFromCookie()
+    return session?.client ?? new JutgeApiClient()
 }
 
 /** Profile language for problems; `null` when not authenticated or unavailable. */

@@ -1,4 +1,4 @@
-import { JutgeApiClient } from '@/lib/jutge_api_client'
+import { getProblemsApiClient } from '@/lib/auth'
 import { resolveProblemId } from '@/services/queries/problemDetail'
 import { NextResponse } from 'next/server'
 
@@ -14,7 +14,7 @@ export async function GET(_request: Request, context: RouteContext) {
     }
 
     try {
-        const client = new JutgeApiClient()
+        const client = await getProblemsApiClient()
         const download = await client.problems.getPdfStatement(problemId)
 
         return new NextResponse(Buffer.from(download.data), {

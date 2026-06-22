@@ -1,10 +1,10 @@
 import { cache } from 'react'
 
-import { getPreferredLanguageId } from '@/lib/auth'
+import { getPreferredLanguageId, getProblemsApiClient } from '@/lib/auth'
 import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import { resolveProblemIdFromAbstract } from '@/lib/problemVariants'
 import {
-    JutgeApiClient,
+    type JutgeApiClient,
     type AbstractProblem,
     type AbstractStatus,
     type Compiler,
@@ -59,7 +59,7 @@ function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTest
 
 export const fetchAbstractProblem = cache(async (problem_nm: string): Promise<AbstractProblem | null> => {
     try {
-        const client = new JutgeApiClient()
+        const client = await getProblemsApiClient()
         return await client.problems.getAbstractProblem(problem_nm)
     } catch {
         return null
@@ -98,7 +98,7 @@ export const fetchProblemStatus = cache(
 
 export const fetchProblemDetail = cache(async (problemId: string): Promise<ProblemDetailData | null> => {
     try {
-        const client = new JutgeApiClient()
+        const client = await getProblemsApiClient()
         const problem = await client.problems.getProblem(problemId)
 
         const [

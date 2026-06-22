@@ -201,6 +201,16 @@ export function SubmissionsList(props: SubmissionsListProps) {
         [variant],
     )
 
+    if (rows.length === 0) {
+        return (
+            <p className="w-full border p-12 text-sm text-muted-foreground text-center">
+                {variant === 'problem'
+                    ? 'You have not submitted any solution to this problem yet.'
+                    : 'No submissions yet.'}
+            </p>
+        )
+    }
+
     return (
         <TooltipProvider>
             <AgTableFull rowData={rows} columnDefs={colDefs} />

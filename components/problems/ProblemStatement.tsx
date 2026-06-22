@@ -64,21 +64,27 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                         </div>
                     </CardAction>
                 </CardHeader>
-                <CardContent className="flex flex-col gap-6 pt-6">
+                <CardContent className="flex flex-col gap-2 pt-0">
                     <div className="flex flex-wrap gap-4">
                         <Link
                             href={`/problems/${pageKey}/pdf`}
-                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-5 py-4 transition-colors hover:bg-muted"
+                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-4 transition-colors hover:bg-muted"
                         >
-                            <FileText className="size-10 text-red-600 dark:text-red-400" aria-hidden />
-                            <span className="text-sm font-medium text-foreground">PDF</span>
+                            <FileText
+                                className="size-10 text-red-600 dark:text-red-400"
+                                aria-hidden
+                                strokeWidth={0.7}
+                            />
                         </Link>
                         <Link
                             href={`/problems/${pageKey}/zip`}
-                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-5 py-4 transition-colors hover:bg-muted"
+                            className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-4 transition-colors hover:bg-muted"
                         >
-                            <FileArchive className="size-10 text-amber-600 dark:text-amber-400" aria-hidden />
-                            <span className="text-sm font-medium text-foreground">ZIP</span>
+                            <FileArchive
+                                className="size-10 text-amber-600 dark:text-amber-400"
+                                aria-hidden
+                                strokeWidth={0.7}
+                            />
                         </Link>
                     </div>
                     <div

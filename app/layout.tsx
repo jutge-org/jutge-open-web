@@ -52,7 +52,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         footer={
                             <footer className="mt-auto border-t border-border bg-background">
                                 <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                                    <p>© Universitat Politècnica de Catalunya — BarcelonaTech, {currentYear}</p>
+                                    <p>
+                                        © Universitat Politècnica de Catalunya
+                                        <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
+                                    </p>
                                 </div>
                             </footer>
                         }

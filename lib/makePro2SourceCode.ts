@@ -154,6 +154,8 @@ export function makePro2TarToFakeCpp(tarBuffer: Buffer): string {
         'is shown below, followed by each file prefixed with its relative path.',
         '',
         renderTree(entries),
+        '',
+        'Use the download button to download the original submission as a tar archive.',
         '────────────────────────────────────────────────────────────────────────────────────',
         '*/',
     ]

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { CourseDetail } from '@/components/courses/CourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import { getCurrentClient } from '@/lib/auth'
+import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
 import { buildCourseRow, courseHref } from '@/lib/courses'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
@@ -48,12 +48,13 @@ export default async function CoursePage({ params }: PageProps) {
         const row = buildCourseRow(course, status, courseKey)
         const href = courseHref(courseKey)
 
-        const [problems, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
-            fetchAllAbstractProblems(),
+        const [preferredLanguageId, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
+            getPreferredLanguageId(),
             fetchLanguages(),
             fetchStudentProblemStatuses(client),
             fetchLastSubmissionsByProblemNm(client),
         ])
+        const problems = await fetchAllAbstractProblems(preferredLanguageId)
         const lists = await fetchCourseListsData(client, course.lists, problems)
         const lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
 

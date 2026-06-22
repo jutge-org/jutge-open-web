@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 
+import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import { JutgeApiClient, type AbstractProblem, type AbstractStatus, type Language } from '@/lib/jutge_api_client'
 
 const PROBLEMS_LIST_CACHE_SECONDS = 300
@@ -15,7 +16,10 @@ export type ProblemRow = {
     updated_at: string | number
 }
 
-export function abstractProblemsToTitleMap(abstractProblems: Record<string, AbstractProblem>): Map<string, string> {
+export function abstractProblemsToTitleMap(
+    abstractProblems: Record<string, AbstractProblem>,
+    preferredLanguageId?: string | null,
+): Map<string, string> {
     const titles = new Map<string, string>()
 
     for (const ap of Object.values(abstractProblems)) {
@@ -25,16 +29,18 @@ export function abstractProblemsToTitleMap(abstractProblems: Record<string, Abst
             titles.set(variant.problem_id, variant.title)
         }
 
-        titles.set(ap.problem_nm, variants.map((p) => p.title).join(' / ') || ap.problem_nm)
+        const preferredVariant = getPreferredProblemVariant(ap, preferredLanguageId)
+        titles.set(ap.problem_nm, preferredVariant?.title ?? ap.problem_nm)
     }
 
     return titles
 }
 
-export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
+export function abstractProblemToRow(ap: AbstractProblem, preferredLanguageId?: string | null): ProblemRow {
     const variants = Object.values(ap.problems).sort((a, b) => a.language_id.localeCompare(b.language_id))
     const language_ids = variants.map((p) => p.language_id)
-    const title = variants.map((p) => p.title).join(' / ') || ap.problem_nm
+    const preferredVariant = getPreferredProblemVariant(ap, preferredLanguageId)
+    const title = preferredVariant?.title ?? ap.problem_nm
 
     return {
         problem_nm: ap.problem_nm,
@@ -47,15 +53,21 @@ export function abstractProblemToRow(ap: AbstractProblem): ProblemRow {
     }
 }
 
-async function loadAllAbstractProblems(): Promise<ProblemRow[]> {
+export function abstractProblemsToRows(
+    abstractProblems: Record<string, AbstractProblem>,
+    preferredLanguageId?: string | null,
+): ProblemRow[] {
+    return Object.values(abstractProblems)
+        .map((ap) => abstractProblemToRow(ap, preferredLanguageId))
+        .sort((a, b) => a.problem_nm.localeCompare(b.problem_nm))
+}
+
+async function loadAbstractProblemsDict(): Promise<Record<string, AbstractProblem>> {
     try {
         const client = new JutgeApiClient()
-        const abstractProblems = await client.problems.getAllAbstractProblems()
-        return Object.values(abstractProblems)
-            .map(abstractProblemToRow)
-            .sort((a, b) => a.problem_nm.localeCompare(b.problem_nm))
+        return await client.problems.getAllAbstractProblems()
     } catch {
-        return []
+        return {}
     }
 }
 
@@ -68,12 +80,17 @@ async function loadLanguages(): Promise<Record<string, Language>> {
     }
 }
 
-export const fetchAllAbstractProblems = unstable_cache(loadAllAbstractProblems, ['all-abstract-problems'], {
+export const fetchAbstractProblemsDict = unstable_cache(loadAbstractProblemsDict, ['abstract-problems-dict'], {
     revalidate: PROBLEMS_LIST_CACHE_SECONDS,
 })
 
 export const fetchLanguages = unstable_cache(loadLanguages, ['languages'], {
     revalidate: PROBLEMS_LIST_CACHE_SECONDS,
+})
+
+export const fetchAllAbstractProblems = cache(async (preferredLanguageId?: string | null): Promise<ProblemRow[]> => {
+    const abstractProblems = await fetchAbstractProblemsDict()
+    return abstractProblemsToRows(abstractProblems, preferredLanguageId)
 })
 
 export const fetchStudentProblemStatuses = cache(

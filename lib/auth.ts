@@ -23,18 +23,20 @@ function profileToSessionUser(profile: Profile): SessionUser {
     }
 }
 
-const resolveJutgeSessionFromCookie = cache(async (): Promise<{ user: SessionUser; client: JutgeApiClient } | null> => {
-    const session = await getJutgeAuthSession()
-    if (!session?.token || !session.userUid) return null
+const resolveJutgeSessionFromCookie = cache(
+    async (): Promise<{ user: SessionUser; client: JutgeApiClient; languageId: string | null } | null> => {
+        const session = await getJutgeAuthSession()
+        if (!session?.token || !session.userUid) return null
 
-    const client = await jutgeClientFromToken(session.token, session.userUid)
-    try {
-        const profile = await client.student.profile.get()
-        return { user: profileToSessionUser(profile), client }
-    } catch {
-        return null
-    }
-})
+        const client = await jutgeClientFromToken(session.token, session.userUid)
+        try {
+            const profile = await client.student.profile.get()
+            return { user: profileToSessionUser(profile), client, languageId: profile.language_id }
+        } catch {
+            return null
+        }
+    },
+)
 
 /** Whether the current user has auth cookies (token and user id). Memoized per request via `cache`. */
 export async function isAuthenticated(): Promise<boolean> {
@@ -75,4 +77,10 @@ export async function getCurrentClient(): Promise<JutgeApiClient> {
         throw new Error('Not authenticated')
     }
     return session.client
+}
+
+/** Profile language for problems; `null` when not authenticated or unavailable. */
+export async function getPreferredLanguageId(): Promise<string | null> {
+    const session = await resolveJutgeSessionFromCookie()
+    return session?.languageId ?? null
 }

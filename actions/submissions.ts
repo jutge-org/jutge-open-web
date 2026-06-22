@@ -1,6 +1,6 @@
 'use server'
 
-import { getCurrentClient } from '@/lib/auth'
+import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
 import type { ProblemSubmissionRow, SubmissionRow } from '@/lib/submissions'
 import { fetchProblemSubmissionsData, fetchSubmissionsData } from '@/services/queries/submissions'
 import { abstractProblemsToTitleMap } from '@/services/queries/problems'
@@ -12,8 +12,11 @@ export async function fetchSubmissionsRowsAction(): Promise<SubmissionRow[]> {
 
 export async function fetchProblemSubmissionsRowsAction(problem_nm: string): Promise<ProblemSubmissionRow[]> {
     const client = await getCurrentClient()
-    const abstractProblems = await client.problems.getAbstractProblems(problem_nm)
-    const languageTitles = abstractProblemsToTitleMap(abstractProblems)
+    const [abstractProblems, preferredLanguageId] = await Promise.all([
+        client.problems.getAbstractProblems(problem_nm),
+        getPreferredLanguageId(),
+    ])
+    const languageTitles = abstractProblemsToTitleMap(abstractProblems, preferredLanguageId)
     return fetchProblemSubmissionsData(client, problem_nm, languageTitles)
 }
 

@@ -1,5 +1,6 @@
 import { cache } from 'react'
 
+import { getPreferredLanguageId } from '@/lib/auth'
 import {
     buildSubmissionCodeMetricsData,
     parseCodeMetricsResponse,
@@ -36,7 +37,11 @@ function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
 }
 
 export const fetchSubmissionsData = cache(async (client: JutgeApiClient): Promise<SubmissionRow[]> => {
-    const [submissions, tables] = await Promise.all([client.student.submissions.getAll(), client.tables.get()])
+    const [submissions, tables, preferredLanguageId] = await Promise.all([
+        client.student.submissions.getAll(),
+        client.tables.get(),
+        getPreferredLanguageId(),
+    ])
 
     const problemNms = submissionProblemNms(submissions)
     let problemTitles = new Map<string, string>()
@@ -44,7 +49,7 @@ export const fetchSubmissionsData = cache(async (client: JutgeApiClient): Promis
     if (problemNms.length > 0) {
         try {
             const abstractProblems = await client.problems.getAbstractProblems(problemNms.join(','))
-            problemTitles = abstractProblemsToTitleMap(abstractProblems)
+            problemTitles = abstractProblemsToTitleMap(abstractProblems, preferredLanguageId)
         } catch {
             // Titles fall back to the problem id in buildSubmissionRow.
         }
@@ -246,8 +251,11 @@ export const fetchSubmissionDetail = cache(
         let problemTitle = submission.problem_id
 
         try {
-            const abstractProblems = await client.problems.getAbstractProblems(problem_nm)
-            const titles = abstractProblemsToTitleMap(abstractProblems)
+            const [abstractProblems, preferredLanguageId] = await Promise.all([
+                client.problems.getAbstractProblems(problem_nm),
+                getPreferredLanguageId(),
+            ])
+            const titles = abstractProblemsToTitleMap(abstractProblems, preferredLanguageId)
             problemTitle = titles.get(submission.problem_id) ?? titles.get(problem_nm) ?? submission.problem_id
         } catch {
             // Title falls back to the problem id.

@@ -15,14 +15,24 @@ type UserProfileProps = {
 
 export async function UserProfile({ user }: UserProfileProps) {
     const client = await getCurrentClient()
-    const [profile, countriesRecord, avatarDataUrl] = await Promise.all([
+    const [profile, countriesRecord, languagesRecord, compilersRecord, avatarDataUrl] = await Promise.all([
         client.student.profile.get(),
         client.tables.getCountries(),
+        client.tables.getLanguages(),
+        client.tables.getCompilers(),
         fetchStudentAvatarDataUrl(client),
     ])
 
     const countryName =
         profile.country_id && countriesRecord[profile.country_id] ? countriesRecord[profile.country_id].eng_name : '—'
+    const languageName =
+        profile.language_id && languagesRecord[profile.language_id]
+            ? languagesRecord[profile.language_id].eng_name
+            : '—'
+    const compilerName =
+        profile.compiler_id && compilersRecord[profile.compiler_id]
+            ? compilersRecord[profile.compiler_id].name
+            : '—'
 
     return (
         <div className="flex w-full max-w-lg flex-col gap-4">
@@ -49,6 +59,14 @@ export async function UserProfile({ user }: UserProfileProps) {
                     <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
                         <dt className="text-muted-foreground sm:min-w-32">Country</dt>
                         <dd>{countryName}</dd>
+                    </div>
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
+                        <dt className="text-muted-foreground sm:min-w-32">Favorite language</dt>
+                        <dd>{languageName}</dd>
+                    </div>
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
+                        <dt className="text-muted-foreground sm:min-w-32">Favorite compiler</dt>
+                        <dd>{compilerName}</dd>
                     </div>
                     {user.instructor ? (
                         <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">

@@ -1,6 +1,8 @@
 import { cache } from 'react'
 
+import { getPreferredLanguageId } from '@/lib/auth'
 import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
+import { resolveProblemIdFromAbstract } from '@/lib/problemVariants'
 import {
     JutgeApiClient,
     type AbstractProblem,
@@ -77,13 +79,8 @@ export const resolveProblemId = cache(async (key: string): Promise<string | null
             return null
         }
 
-        const variants = Object.values(abstractProblem.problems)
-        if (variants.length === 0) {
-            return null
-        }
-
-        const originalLanguageId = variants[0].original_language_id
-        return `${parsed.problem_nm}_${originalLanguageId}`
+        const preferredLanguageId = await getPreferredLanguageId()
+        return resolveProblemIdFromAbstract(abstractProblem, preferredLanguageId)
     }
 
     return null

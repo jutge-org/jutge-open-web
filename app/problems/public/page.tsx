@@ -1,17 +1,18 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemsList } from '@/components/problems/ProblemsList'
-import { isAuthenticated } from '@/lib/auth'
+import { getPreferredLanguageId, isAuthenticated } from '@/lib/auth'
 import { fetchAllAbstractProblems, fetchLanguages } from '@/services/queries/problems'
 
 export const metadata = { title: 'Public problems — Jutge.org' }
 
 export default async function PublicProblemsPage() {
-    const [authenticated, problems, languages] = await Promise.all([
+    const [authenticated, preferredLanguageId, languages] = await Promise.all([
         isAuthenticated(),
-        fetchAllAbstractProblems(),
+        getPreferredLanguageId(),
         fetchLanguages(),
     ])
+    const problems = await fetchAllAbstractProblems(preferredLanguageId)
 
     return (
         <div className="flex flex-col gap-6">

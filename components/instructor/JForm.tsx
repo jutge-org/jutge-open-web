@@ -31,7 +31,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useTheme } from 'next-themes'
 import HtmlEditor from '@/components/administrator/HtmlEditor'
 
 export type JFormInputField = {
@@ -638,12 +637,9 @@ interface JMarkdownComponentProps {
 }
 
 function JMarkdownComponent(props: JMarkdownComponentProps) {
-    const { resolvedTheme } = useTheme()
-
     const content = (
         <MDEditor
-            className="mx-[1px] wmde-markdown-var"
-            data-color-mode={resolvedTheme === 'dark' ? 'dark' : 'light'}
+            className="mx-[1px]"
             height={200}
             value={props.field.value}
             onChange={(v) => {

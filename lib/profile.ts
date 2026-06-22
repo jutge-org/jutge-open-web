@@ -1,0 +1,21 @@
+export type ProfileTab = 'index' | 'update' | 'avatar' | 'password'
+
+export type ProfileNavItem = {
+    tab: ProfileTab
+    label: string
+    href: string
+}
+
+export const profileNavItems: ProfileNavItem[] = [
+    { tab: 'index', label: 'Profile', href: '/profile' },
+    { tab: 'update', label: 'Update', href: '/profile/update' },
+    { tab: 'avatar', label: 'Avatar', href: '/profile/avatar' },
+    { tab: 'password', label: 'Password', href: '/profile/password' },
+]
+
+export function profileTabFromPathname(pathname: string): ProfileTab {
+    if (pathname === '/profile/update') return 'update'
+    if (pathname === '/profile/avatar') return 'avatar'
+    if (pathname === '/profile/password') return 'password'
+    return 'index'
+}

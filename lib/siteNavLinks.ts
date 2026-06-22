@@ -49,7 +49,7 @@ const awardsLink: SiteNavLink = {
 const profileLink: SiteNavLink = {
     href: '/profile',
     label: 'Profile',
-    match: (pathname) => pathname === '/profile',
+    match: (pathname) => pathname === '/profile' || pathname.startsWith('/profile/'),
 }
 
 const instructorLink: SiteNavLink = {

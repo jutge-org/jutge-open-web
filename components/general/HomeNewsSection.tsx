@@ -28,13 +28,7 @@ function HomeNewsCard({
                     rel={imageHref.startsWith('http') ? 'noreferrer' : undefined}
                     className="shrink-0"
                 >
-                    <Image
-                        src={imageSrc}
-                        alt=""
-                        width={80}
-                        height={80}
-                        className="size-22 rounded-md object-contain"
-                    />
+                    <Image src={imageSrc} alt="" width={80} height={80} className="size-22 rounded-md object-contain" />
                 </a>
                 <div className={cn('flex min-w-0 flex-1 flex-col gap-2 text-sm leading-relaxed text-muted-foreground')}>
                     {children}

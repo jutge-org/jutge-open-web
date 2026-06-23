@@ -19,10 +19,10 @@ export default async function Home() {
             <HomeYearsRibbon />
             <MainBreadcrumbs breadcrumbs={[{ title: 'Jutge.org', url: '/' }]} />
             <div className="flex flex-col items-center space-y-4 pt-8 text-center">
-                <h1 className="text-5xl font-thin tracking-wide text-balance sm:text-6xl dark:inline-block dark:bg-linear-to-r dark:from-cyan-300 dark:via-sky-400 dark:to-blue-500 dark:bg-clip-text dark:pb-1 dark:leading-[1.2] dark:text-transparent">
+                <h1 className="inline-block bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text pb-1 text-5xl leading-[1.2] font-thin tracking-wide text-balance text-transparent sm:text-6xl">
                     Jutge.org
                 </h1>
-                <p className="max-w-2xl text-xl text-pretty text-muted-foreground italic sm:text-2xl">
+                <p className="max-w-2xl text-xl text-pretty font-thin text-muted-foreground italic sm:text-2xl">
                     {authenticated
                         ? `Welcome back, ${user?.name ?? 'user'}`
                         : 'The Virtual Learning Environment for Computer Programming'}

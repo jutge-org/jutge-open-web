@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import byteSize from 'byte-size'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -32,12 +16,15 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import Widget from '@/components/administrator/dashboard/Widget'
 
 export default function DatabasesWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [data, setData] = useState<DatabasesInfo>([])
 
     async function fetchData() {
-        setData(await fetchAdminDashboardDatabasesInfo())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.dashboard.getDatabasesInfo())
     }
 
     useEffect(() => {

@@ -1,10 +1,7 @@
 'use client'
 
-import {
-    fetchInstructorSharingSettings,
-    instructorProblemSetSharingSettings,
-    instructorProblemShareWith,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
@@ -158,6 +155,8 @@ function ShareWithEmailsForm({
 }
 
 export function ProblemSharingView() {
+    const { client } = useJutgeAuth()
+
     const { problem_nm } = useParams<{ problem_nm: string }>()
     const [loading, setLoading] = useState(true)
     const [passcode, setPasscode] = useState<string | null>(null)
@@ -169,7 +168,9 @@ export function ProblemSharingView() {
 
     useEffect(() => {
         async function fetchSharing() {
-            const settings = await fetchInstructorSharingSettings(problem_nm)
+    const { client } = useJutgeAuth()
+
+            const settings = await client.instructor.problems.getSharingSettings(problem_nm)
             setPasscode(settings.passcode)
             setSharedTestcases(settings.shared_testcases)
             setSharedSolutions(settings.shared_solutions)
@@ -182,6 +183,8 @@ export function ProblemSharingView() {
     if (loading) return <SimpleSpinner size={64} className="pt-24" />
 
     async function saveSharing() {
+    const { client } = useJutgeAuth()
+
         const trimmed = passcodeInput.trim()
         const newPasscode = trimmed === '' ? null : trimmed
         if (newPasscode !== null) {
@@ -192,7 +195,7 @@ export function ProblemSharingView() {
             }
         }
         try {
-            await instructorProblemSetSharingSettings({
+            await client.instructor.problems.setSharingSettings({
                 problem_nm,
                 passcode: newPasscode,
                 shared_testcases: sharedTestcases,
@@ -206,6 +209,8 @@ export function ProblemSharingView() {
     }
 
     async function shareWithEmails() {
+    const { client } = useJutgeAuth()
+
         const emails = parseEmailList(shareEmailsInput)
         if (emails.length === 0) {
             toast.error('Enter at least one email address.')
@@ -217,7 +222,7 @@ export function ProblemSharingView() {
             return
         }
         try {
-            await instructorProblemShareWith({
+            await client.instructor.problems.shareWith({
                 problem_nm,
                 emails,
                 text: shareMessageInput.trim(),

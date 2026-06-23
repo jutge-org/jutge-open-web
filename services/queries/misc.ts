@@ -1,13 +1,9 @@
-import { cache } from 'react'
+import { type HomepageStats, type JutgeApiClient } from '@/lib/jutge_api_client'
 
-import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
-import { type HomepageStats } from '@/lib/jutge_api_client'
-
-export const fetchHomepageStats = cache(async (): Promise<HomepageStats | null> => {
+export async function fetchHomepageStats(client: JutgeApiClient): Promise<HomepageStats | null> {
     try {
-        const client = getAnonymousJutgeClient()
         return await client.misc.getHomepageStats()
     } catch {
         return null
     }
-})
+}

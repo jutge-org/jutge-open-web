@@ -1,6 +1,3 @@
-import { cache } from 'react'
-
-import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import { JutgeApiClient, type AbstractProblem, type AbstractStatus, type Language } from '@/lib/jutge_api_client'
 
@@ -60,39 +57,36 @@ export function abstractProblemsToRows(
         .sort((a, b) => a.problem_nm.localeCompare(b.problem_nm))
 }
 
-async function loadAbstractProblemsDict(): Promise<Record<string, AbstractProblem>> {
+export async function fetchAbstractProblemsDict(client: JutgeApiClient): Promise<Record<string, AbstractProblem>> {
     try {
-        const client = getAnonymousJutgeClient()
         return await client.problems.getAllAbstractProblems()
     } catch {
         return {}
     }
 }
 
-async function loadLanguages(): Promise<Record<string, Language>> {
+export async function fetchLanguages(client: JutgeApiClient): Promise<Record<string, Language>> {
     try {
-        const client = getAnonymousJutgeClient()
         return await client.tables.getLanguages()
     } catch {
         return {}
     }
 }
 
-export const fetchAbstractProblemsDict = cache(loadAbstractProblemsDict)
-
-export const fetchLanguages = cache(loadLanguages)
-
-export const fetchAllAbstractProblems = cache(async (preferredLanguageId?: string | null): Promise<ProblemRow[]> => {
-    const abstractProblems = await fetchAbstractProblemsDict()
+export async function fetchAllAbstractProblems(
+    client: JutgeApiClient,
+    preferredLanguageId?: string | null,
+): Promise<ProblemRow[]> {
+    const abstractProblems = await fetchAbstractProblemsDict(client)
     return abstractProblemsToRows(abstractProblems, preferredLanguageId)
-})
+}
 
-export const fetchStudentProblemStatuses = cache(
-    async (client: JutgeApiClient): Promise<Record<string, AbstractStatus>> => {
-        try {
-            return await client.student.statuses.getAll()
-        } catch {
-            return {}
-        }
-    },
-)
+export async function fetchStudentProblemStatuses(
+    client: JutgeApiClient,
+): Promise<Record<string, AbstractStatus>> {
+    try {
+        return await client.student.statuses.getAll()
+    } catch {
+        return {}
+    }
+}

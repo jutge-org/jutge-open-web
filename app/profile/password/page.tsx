@@ -1,15 +1,12 @@
-import { ProfilePageShell } from '@/components/profile/ProfilePageShell'
+import { ProfilePageClient } from '@/components/pages/ProfilePageClient'
 import { UserProfilePasswordForm } from '@/components/profile/UserProfilePasswordForm'
-import { renderAuthed } from '@/lib/renderAuthed'
-
-export const dynamic = 'force-dynamic'
 
 export const metadata = { title: 'Password — Jutge.org' }
 
-export default async function ProfilePasswordPage() {
-    return renderAuthed(() => (
-        <ProfilePageShell activeTab="password" subpage={{ title: 'Password', url: '/profile/password' }}>
+export default function ProfilePasswordPage() {
+    return (
+        <ProfilePageClient activeTab="password" subpage={{ title: 'Password', url: '/profile/password' }}>
             <UserProfilePasswordForm />
-        </ProfilePageShell>
-    ))
+        </ProfilePageClient>
+    )
 }

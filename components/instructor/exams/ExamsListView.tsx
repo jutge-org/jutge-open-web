@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorExamsArchived, fetchInstructorExamsIndex } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -12,6 +13,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export function ExamsListView() {
+    const { client } = useJutgeAuth()
+
     const isMobile = useIsMobile()
     const [exams, setExams] = useState<InstructorBriefExam[]>([])
     const [rows, setRows] = useState<InstructorBriefExam[]>([])
@@ -66,8 +69,10 @@ export function ExamsListView() {
 
     useEffect(() => {
         async function fetchExams() {
-            const archived = await fetchInstructorExamsArchived()
-            const dict = await fetchInstructorExamsIndex()
+    const { client } = useJutgeAuth()
+
+            const archived = await client.instructor.exams.getArchived()
+            const dict = await client.instructor.exams.index()
             const array = Object.values(dict).sort((a, b) => dayjs(b.exp_time_start).diff(dayjs(a.exp_time_start)))
             setRows(array.filter((exam) => !archived.includes(exam.exam_nm)))
             setExams(array)

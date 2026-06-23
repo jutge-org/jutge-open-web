@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorCoursesIndex, instructorExamCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import type { InstructorBriefCourse } from '@/lib/jutge_api_client'
@@ -11,6 +12,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ExamsNewView() {
+    const { client } = useJutgeAuth()
     const [exam_nm, setExam_nm] = useState('')
     const [course_nm, setCourse_nm] = useState<string | null>('')
     const [title, setTitle] = useState('')
@@ -20,7 +22,9 @@ export function ExamsNewView() {
 
     useEffect(() => {
         async function fetchCourses() {
-            const courses = await fetchInstructorCoursesIndex()
+    const { client } = useJutgeAuth()
+
+            const courses = await client.instructor.courses.index()
             setCourses(courses)
         }
         fetchCourses()
@@ -82,8 +86,10 @@ export function ExamsNewView() {
     }
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         try {
-            await instructorExamCreate({
+            await client.instructor.exams.create({
                 exam_nm,
                 course_nm: course_nm || '',
                 title,

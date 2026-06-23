@@ -1,11 +1,14 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { fetchSubmissionsData, fetchProblemSubmissionsData } from '@/services/queries/submissions'
+import { abstractProblemsToTitleMap } from '@/services/queries/problems'
+
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
-import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/actions/submissions'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -30,6 +33,8 @@ type SubmissionsListProps =
       }
 
 export function SubmissionsList(props: SubmissionsListProps) {
+    const { client, languageId } = useJutgeAuth()
+
     const { rows: initialRows, variant = 'default' } = props
     const problemNm = props.variant === 'problem' ? props.problemNm : undefined
     const [rows, setRows] = useState(initialRows)
@@ -49,8 +54,15 @@ export function SubmissionsList(props: SubmissionsListProps) {
 
             const nextRows =
                 problemNm !== undefined
-                    ? await fetchProblemSubmissionsRowsAction(problemNm)
-                    : await fetchSubmissionsRowsAction()
+                    ? await fetchProblemSubmissionsData(
+                          client,
+                          problemNm,
+                          abstractProblemsToTitleMap(
+                              await client.problems.getAbstractProblems(problemNm),
+                              languageId,
+                          ),
+                      )
+                    : await fetchSubmissionsData(client, languageId)
 
             setRows(nextRows)
 
@@ -63,7 +75,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
         }, PENDING_SUBMISSION_REFRESH_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
-    }, [hasPending, problemNm])
+    }, [client, hasPending, languageId, problemNm])
     const colDefs = useMemo(
         () => [
             {

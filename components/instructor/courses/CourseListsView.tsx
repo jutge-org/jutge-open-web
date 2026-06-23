@@ -1,12 +1,7 @@
 'use client'
 
-import {
-    fetchAllAbstractProblems,
-    fetchInstructorCourse,
-    fetchInstructorList,
-    fetchInstructorListsIndex,
-    instructorCourseUpdate,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Button } from '@/components/ui/button'
@@ -32,12 +27,11 @@ import { toast } from 'sonner'
 
 type Item = { title: string; list_nm: string }
 
-type CourseListsViewProps = {
-    profile: Profile
-}
+export function CourseListsView() {
+    const { client } = useJutgeAuth()
 
-export function CourseListsView({ profile }: CourseListsViewProps) {
     const { course_nm } = useParams<{ course_nm: string }>()
+    const [profile, setProfile] = useState<Profile | null>(null)
 
     const [course, setCourse] = useState<InstructorCourse | null>(null)
     const [lists, setLists] = useState<Record<string, InstructorBriefList>>({})
@@ -77,9 +71,13 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
     ])
 
     useEffect(() => {
+        void client.student.profile.get().then(setProfile)
+    }, [client])
+
+    useEffect(() => {
         async function fetchCourse() {
-            const lists = await fetchInstructorListsIndex()
-            const course = await fetchInstructorCourse(course_nm)
+            const lists = await client.instructor.lists.index()
+            const course = await client.instructor.courses.get(course_nm)
             const items = course.lists.map((list_nm) => ({ title: lists[list_nm].title, list_nm }))
             setLists(lists)
             setCourse(course)
@@ -88,10 +86,10 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
         }
 
         fetchCourse()
-    }, [course_nm, setChanges])
+    }, [client, course_nm, setChanges])
 
     useEffect(() => {
-        fetchAllAbstractProblems()
+        client.problems.getAllAbstractProblems()
     }, [course_nm])
 
     const rowSelection = useMemo<RowSelectionOptions | 'single' | 'multiple'>(() => {
@@ -103,9 +101,9 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
         gridRef.current!.api.forEachNode((rowNode) => {
             if (rowNode.data?.list_nm) lists.push(rowNode.data?.list_nm)
         })
-        const course = await fetchInstructorCourse(course_nm)
+        const course = await client.instructor.courses.get(course_nm)
         const newCourse = { ...course, lists }
-        await instructorCourseUpdate(newCourse)
+        await client.instructor.courses.update(newCourse)
         toast.success(`Lists saved.`)
         setChanges(false)
     }
@@ -138,7 +136,7 @@ export function CourseListsView({ profile }: CourseListsViewProps) {
         setIsShowListDialogOpen(true)
     }
 
-    if (course === null) return <SimpleSpinner />
+    if (profile === null || course === null) return <SimpleSpinner />
 
     return (
         <>
@@ -262,6 +260,7 @@ function DialogToShowList({
     listToShow: string | null
     profile: Profile
 }) {
+    const { client } = useJutgeAuth()
     const [rows, setRows] = useState<InstructorListItem[]>([])
     const [colDefs, setColDefs] = useState<
         {
@@ -276,11 +275,11 @@ function DialogToShowList({
     useEffect(() => {
         async function fetchData() {
             if (listToShow === null) return
-            const list = await fetchInstructorList(listToShow)
+            const list = await client.instructor.lists.get(listToShow)
             const items = list.items
             setRows(items)
 
-            const allAbstractProblems = await fetchAllAbstractProblems()
+            const allAbstractProblems = await client.problems.getAllAbstractProblems()
 
             const cols = [
                 {

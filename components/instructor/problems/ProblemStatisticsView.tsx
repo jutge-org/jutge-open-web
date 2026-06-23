@@ -1,5 +1,7 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 /**
  * Problem statistics page: pie charts (users, submissions, verdicts, compilers, languages),
  * submission heatmap by day, time-to-first-pass funnel, and stacked OK/KO bar charts.
@@ -33,13 +35,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Switch } from '@/components/ui/switch'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import {
-    fetchAbstractProblem,
-    fetchInstructorAnonymousSubmissions,
-    fetchInstructorProblemPopularityBuckets,
-    fetchMiscHexColors,
-    fetchTablesLanguages,
-} from '@/actions/instructor'
 import {
     AbstractProblem,
     ColorMapping,
@@ -1271,6 +1266,8 @@ function ProblemPopularityChart({ buckets, problemTotalSubmissions }: ProblemPop
 // -----------------------------------------------------------------------------
 
 export function ProblemStatisticsView() {
+    const { client, languageId } = useJutgeAuth()
+
     const { problem_nm } = useParams<{ problem_nm: string }>()
     const [statistics, setStatistics] = useState<{
         submissions: ProblemAnonymousSubmission[]
@@ -1286,12 +1283,14 @@ export function ProblemStatisticsView() {
 
     useEffect(() => {
         async function fetchData() {
+    const { client } = useJutgeAuth()
+
             const [submissions, colorMap, languages, abstract, buckets] = await Promise.all([
-                fetchInstructorAnonymousSubmissions(problem_nm),
-                fetchMiscHexColors(),
-                fetchTablesLanguages(),
-                fetchAbstractProblem(problem_nm),
-                fetchInstructorProblemPopularityBuckets(),
+                client.instructor.problems.getAnonymousSubmissions(problem_nm),
+                client.misc.getHexColors(),
+                client.tables.getLanguages(),
+                client.problems.getAbstractProblem(problem_nm),
+                client.instructor.problems.getProblemPopularityBuckets(),
             ])
             setStatistics({ submissions })
             setColors(colorMap)

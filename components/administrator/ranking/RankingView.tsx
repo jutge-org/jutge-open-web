@@ -1,12 +1,15 @@
 'use client'
 
-import { fetchAdminRanking } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
 import type { UserRanking } from '@/lib/jutge_api_client'
 import { useEffect, useState } from 'react'
 
 export default function RankingView() {
+    const { client } = useJutgeAuth()
+
     const [rows, setRows] = useState<UserRanking>([])
 
     const colDefs = [
@@ -23,7 +26,7 @@ export default function RankingView() {
     ]
 
     useEffect(() => {
-        void fetchAdminRanking(100).then(setRows)
+        void client.admin.stats.getRankingOfUsers(100).then(setRows)
     }, [])
 
     return <AgTableFull rowData={rows} columnDefs={colDefs} />

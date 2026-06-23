@@ -1,6 +1,7 @@
 'use client'
 
-import { adminAddInstructor, adminRemoveInstructor, fetchAdminInstructors } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { useAddInstructorDialog } from '@/components/administrator/instructors/AddInstructorDialog'
@@ -15,6 +16,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 export default function InstructorsView() {
+    const { client } = useJutgeAuth()
+
     const isMobile = useIsMobile()
     const [rows, setRows] = useState<InstructorEntries>([])
     const [colDefs, setColDefs] = useState<Record<string, unknown>[]>([])
@@ -43,23 +46,27 @@ export default function InstructorsView() {
     )
 
     useEffect(() => {
-        void fetchAdminInstructors().then(setRows)
+        void client.admin.instructors.get().then(setRows)
     }, [])
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         const result = await runAddInstructorDialog()
         if (!result) return
         try {
-            await adminAddInstructor(result)
+            await client.admin.instructors.add(result)
         } catch (e) {
             toast.error(e instanceof Error ? e.message : 'Some error occurred')
             return
         }
         toast.success(`Instructor ${result.username} added.`)
-        setRows(await fetchAdminInstructors())
+        setRows(await client.admin.instructors.get())
     }
 
     async function removeAction() {
+    const { client } = useJutgeAuth()
+
         const grid = gridRef.current!.api
         const emails = grid.getSelectedNodes().map((node) => node.data!.email)
         if (emails.length === 0) {
@@ -69,13 +76,13 @@ export default function InstructorsView() {
         if (!(await runConfirmDialog(`Are you sure you want to remove ${emails.length} instructors?`))) return
         for (const email of emails) {
             try {
-                await adminRemoveInstructor(email)
+                await client.admin.instructors.remove(email)
             } catch (e) {
                 toast.error(e instanceof Error ? e.message : 'Some error occurred.')
             }
             toast.success(`Instructor ${email} removed.`)
         }
-        setRows(await fetchAdminInstructors())
+        setRows(await client.admin.instructors.get())
     }
 
     return (

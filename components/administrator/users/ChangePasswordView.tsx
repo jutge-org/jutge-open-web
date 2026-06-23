@@ -1,6 +1,7 @@
 'use client'
 
-import { adminSetPassword } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import HtmlEditor from '@/components/administrator/HtmlEditor'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -12,6 +13,8 @@ import { toast } from 'sonner'
 import zxcvbn, { type ZXCVBNResult } from 'zxcvbn'
 
 export default function ChangePasswordView() {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
     const initialPassword = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2, 6)
     const [email, setEmail] = useState('')
@@ -23,6 +26,8 @@ export default function ChangePasswordView() {
     const strengthColor = ['text-red-700', 'text-red-500', 'text-yellow-500', 'text-orange-400', 'text-green-700']
 
     async function onSubmit(e: React.FormEvent) {
+    const { client } = useJutgeAuth()
+
         e.preventDefault()
         if (!email.includes('@')) {
             toast.error('Invalid email')
@@ -35,7 +40,7 @@ export default function ChangePasswordView() {
         }
         const body = message === '<p></p>' ? '' : message
         try {
-            await adminSetPassword({ email, password, message: body })
+            await client.admin.users.setPassword({ email, password, message: body })
         } catch (e) {
             toast.error(e instanceof Error ? e.message : 'Some error occurred')
             return

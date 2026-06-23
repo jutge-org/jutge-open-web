@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { ServerCogIcon } from 'lucide-react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 
@@ -27,12 +11,15 @@ import { RecentLoadAverages } from '@/lib/jutge_api_client'
 import Widget from '@/components/administrator/dashboard/Widget'
 
 export default function RecentLoadAveragesWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [data, setData] = useState<RecentLoadAverages | null>(null)
 
     async function fetchData() {
-        setData(await fetchAdminDashboardRecentLoadAverages())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.dashboard.getRecentLoadAverages())
     }
 
     useEffect(() => {

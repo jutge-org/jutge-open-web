@@ -1,13 +1,8 @@
 'use client'
 
-import { makeExamPdf } from '@/actions/instructor/makeExamPdf'
-import {
-    fetchAbstractProblems,
-    fetchAllAbstractProblems,
-    fetchInstructorExam,
-    fetchMiscExamIcons,
-    instructorExamUpdateProblems,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { makeExamPdf } from '@/lib/spreadsheet-client'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useTextareaDialog } from '@/components/instructor/TextareaDialog'
@@ -53,13 +48,12 @@ import { capitalize } from 'radash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-type ExamProblemsViewProps = {
-    profile: Profile
-}
+export function ExamProblemsView() {
+    const { client } = useJutgeAuth()
 
-export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     const [changes, setChanges] = usePageChanges()
     const { exam_nm } = useParams<{ exam_nm: string }>()
+    const [profile, setProfile] = useState<Profile | null>(null)
 
     const [exam, setExam] = useState<InstructorExam | null>(null)
     const [allAbstractProblems, setAllAbstractProblems] = useState<Record<string, AbstractProblem> | null>(null)
@@ -84,9 +78,11 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     }, [])
 
     const fetchData = useCallback(async () => {
-        const exam = await fetchInstructorExam(exam_nm)
+        if (!profile) return
+
+        const exam = await client.instructor.exams.get(exam_nm)
         const problem_nms = exam.problems.map((p) => p.problem_nm).join(',')
-        const usedAbstractProblems = await fetchAbstractProblems(problem_nms)
+        const usedAbstractProblems = await client.problems.getAbstractProblems(problem_nms)
 
         const defs = [
             {
@@ -140,17 +136,22 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     }, [exam_nm, profile, allAbstractProblems, setChanges])
 
     const fetchProblems = useCallback(async () => {
-        const allAbstractProblems = await fetchAllAbstractProblems()
+        const allAbstractProblems = await client.problems.getAllAbstractProblems()
         setAllAbstractProblems(allAbstractProblems)
     }, [])
+
+    useEffect(() => {
+        void client.student.profile.get().then(setProfile)
+    }, [client])
 
     useEffect(() => {
         fetchProblems()
     }, [exam_nm, fetchProblems])
 
     useEffect(() => {
+        if (!profile) return
         fetchData()
-    }, [exam_nm, fetchData])
+    }, [exam_nm, fetchData, profile])
 
     function addCallback(problem: InstructorExamProblem) {
         setRows((oldRows) => [...oldRows, problem])
@@ -200,12 +201,14 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     }
 
     async function save() {
+    const { client } = useJutgeAuth()
+
         const problems: InstructorExamProblem[] = []
         gridRef.current!.api.forEachNode((rowNode) => {
             if (rowNode.data) problems.push(rowNode.data)
         })
         try {
-            await instructorExamUpdateProblems({ exam_nm, problems })
+            await client.instructor.exams.updateProblems({ exam_nm, problems })
             toast.success(`Problems of the exam saved.`)
             setChanges(false)
             await fetchData()
@@ -226,7 +229,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
     }
 
     async function print() {
-        const extra = await runTextareaDialog(`© ${profile.name}\n\n`)
+        const extra = await runTextareaDialog(`© ${profile!.name}\n\n`)
         if (extra === null) return
         toast.info('Generating PDF...')
         const doc = await makeExamPdf({ exam_nm, extra })
@@ -268,7 +271,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
         }
     }
 
-    if (exam === null || usedAbstractProblems === null) return <SimpleSpinner />
+    if (profile === null || exam === null || usedAbstractProblems === null) return <SimpleSpinner />
 
     return (
         <>
@@ -455,12 +458,16 @@ type ExamIconsProps = {
 }
 
 function ExamIcons(props: ExamIconsProps) {
+    const { client } = useJutgeAuth()
+
     const [icons, setIcons] = useState<Record<string, string[]> | null>(null)
     const [theme, setTheme] = useState<string | null>(null)
 
     useEffect(() => {
         async function fetchData() {
-            const icons = await fetchMiscExamIcons()
+    const { client } = useJutgeAuth()
+
+            const icons = await client.misc.getExamIcons()
             setIcons(icons)
             setTheme('basic')
         }

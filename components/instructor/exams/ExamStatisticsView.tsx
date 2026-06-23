@@ -1,11 +1,7 @@
 'use client'
 
-import {
-    fetchAbstractProblems,
-    fetchInstructorExam,
-    fetchInstructorExamStatistics,
-    fetchMiscHexColors,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Warning } from '@/components/instructor/Warning'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -35,24 +31,27 @@ import { Bar, BarChart, CartesianGrid, LabelList, Pie, PieChart, XAxis, YAxis } 
 
 dayjs.extend(duration)
 
-type ExamStatisticsViewProps = {
-    profile: Profile
-}
+export function ExamStatisticsView() {
+    const { client } = useJutgeAuth()
 
-export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
     const { exam_nm } = useParams<{ exam_nm: string }>()
+    const [profile, setProfile] = useState<Profile | null>(null)
     const [exam, setExam] = useState<InstructorExam | null>(null)
     const [statistics, setStatistics] = useState<ExamStatistics | null>(null)
     const [abstractProblems, setAbstractProblems] = useState<Dict<AbstractProblem> | null>(null)
     const [colors, setColors] = useState<ColorMapping | null>(null)
 
     useEffect(() => {
+        void client.student.profile.get().then(setProfile)
+    }, [client])
+
+    useEffect(() => {
         async function fetchData() {
-            const exam = await fetchInstructorExam(exam_nm)
-            const statistics = await fetchInstructorExamStatistics(exam_nm)
+            const exam = await client.instructor.exams.get(exam_nm)
+            const statistics = await client.instructor.exams.getStatistics(exam_nm)
             const problem_nms = exam.problems.map((problem) => problem.problem_nm).join(',')
-            const allAbstractProblems = await fetchAbstractProblems(problem_nms)
-            const colors = await fetchMiscHexColors()
+            const allAbstractProblems = await client.problems.getAbstractProblems(problem_nms)
+            const colors = await client.misc.getHexColors()
 
             setExam(exam)
             setStatistics(statistics)
@@ -60,9 +59,9 @@ export function ExamStatisticsView({ profile }: ExamStatisticsViewProps) {
             setColors(colors)
         }
         fetchData()
-    }, [exam_nm])
+    }, [client, exam_nm])
 
-    if (exam === null || statistics === null || abstractProblems === null || colors === null) {
+    if (profile === null || exam === null || statistics === null || abstractProblems === null || colors === null) {
         return <SimpleSpinner />
     }
 

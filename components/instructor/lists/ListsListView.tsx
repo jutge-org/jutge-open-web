@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorListsArchived, fetchInstructorListsIndex } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -12,6 +13,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export function ListsListView() {
+    const { client } = useJutgeAuth()
+
     const isMobile = useIsMobile()
 
     const [lists, setLists] = useState<InstructorBriefList[]>([])
@@ -53,8 +56,10 @@ export function ListsListView() {
 
     useEffect(() => {
         async function fetchLists() {
-            const archived = await fetchInstructorListsArchived()
-            const dict = await fetchInstructorListsIndex()
+    const { client } = useJutgeAuth()
+
+            const archived = await client.instructor.lists.getArchived()
+            const dict = await client.instructor.lists.index()
             const array = Object.values(dict).sort((a, b) => a.list_nm.localeCompare(b.list_nm))
             setRows(array.filter((list) => !archived.includes(list.list_nm)))
             setLists(array)

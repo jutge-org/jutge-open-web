@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorApiUrl } from '@/actions/instructor'
+import { getJutgeApiUrl } from '@/lib/jutge-browser'
+
 import { useXTerm } from '@/components/instructor/XTerm'
 import { Button } from '@/components/ui/button'
 import { FitAddon } from '@xterm/addon-fit'
@@ -41,7 +42,7 @@ export function ProblemUpdateTerminalView() {
     useEffect(() => {
         const fetchData = async () => {
             if (!instance || !ref || !ref.current) return
-            const apiUrl = await fetchInstructorApiUrl()
+            const apiUrl = getJutgeApiUrl()
             const response = await fetch(`${apiUrl}/webstreams/${webstream_id}`)
             if (response.body === null) return
             const reader = response.body.getReader()

@@ -1,7 +1,8 @@
 'use client'
 
-import { array2csv } from '@/actions/instructor/csv'
-import { fetchInstructorExam, instructorExamUpdateStudents } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { array2csv } from '@/lib/spreadsheet-client'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useEmailsDialog } from '@/components/instructor/EmailsDialog'
@@ -18,6 +19,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 export function ExamStudentsView() {
+    const { client } = useJutgeAuth()
+
     const [changes, setChanges] = usePageChanges()
     const { exam_nm } = useParams<{ exam_nm: string }>()
 
@@ -85,7 +88,7 @@ export function ExamStudentsView() {
     })
 
     const fetchData = useCallback(async () => {
-        const exam = await fetchInstructorExam(exam_nm)
+        const exam = await client.instructor.exams.get(exam_nm)
         const rows = exam.students.sort((a, b) => a.email.localeCompare(b.email))
         setExam(exam)
         setRows(rows)
@@ -149,8 +152,10 @@ export function ExamStudentsView() {
     }
 
     async function saveHandle() {
+    const { client } = useJutgeAuth()
+
         try {
-            await instructorExamUpdateStudents({
+            await client.instructor.exams.updateStudents({
                 exam_nm,
                 students: rows,
             })

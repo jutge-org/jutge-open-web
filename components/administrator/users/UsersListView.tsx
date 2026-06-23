@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchAdminUserProfiles } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useProfileDialog } from '@/components/administrator/users/ProfileDialog'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
@@ -9,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 
 export default function UsersListView() {
+    const { client } = useJutgeAuth()
+
     const [runProfileDialog, ProfileDialogComponent] = useProfileDialog({})
     const [rows, setRows] = useState<ProfileForAdmin[]>([])
     const [search, setSearch] = useState('')
@@ -61,13 +64,15 @@ export default function UsersListView() {
     ]
 
     async function updateSearch(next: string) {
+    const { client } = useJutgeAuth()
+
         setSearch(next)
         if (next.length < 3) {
             setMessage('Search must be at least 3 characters long')
             setRows([])
             return
         }
-        const users = await fetchAdminUserProfiles(next)
+        const users = await client.admin.users.getProfiles(next)
         setRows(users)
         setMessage(users.length === 0 ? 'No users found' : `${users.length} users shown`)
     }

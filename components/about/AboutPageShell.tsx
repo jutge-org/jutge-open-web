@@ -1,9 +1,12 @@
+'use client'
+
+import type { ReactNode } from 'react'
+
 import { AboutNav } from '@/components/about/AboutNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
 import type { AboutTab } from '@/lib/about'
-import { isAuthenticated } from '@/lib/auth'
-import type { ReactNode } from 'react'
 
 type AboutPageShellProps = {
     activeTab: AboutTab
@@ -11,8 +14,12 @@ type AboutPageShellProps = {
     children: ReactNode
 }
 
-export async function AboutPageShell({ activeTab, breadcrumbs, children }: AboutPageShellProps) {
-    const authenticated = await isAuthenticated()
+export function AboutPageShell({ activeTab, breadcrumbs, children }: AboutPageShellProps) {
+    const { authenticated, loading } = useJutgeAuth()
+
+    if (loading) {
+        return <p className="py-16 text-center text-muted-foreground">Loading…</p>
+    }
 
     return (
         <div className="flex flex-col gap-6">

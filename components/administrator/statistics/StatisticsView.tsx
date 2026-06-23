@@ -1,24 +1,11 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { ChartPieIcon, TableIcon } from 'lucide-react'
 import { capitalize } from 'radash'
 import { useEffect, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, Pie, PieChart, XAxis, YAxis } from 'recharts'
-import {
-    fetchAdminStatsCounters,
-    fetchAdminStatsDistributionOfCompilers,
-    fetchAdminStatsDistributionOfDomains,
-    fetchAdminStatsDistributionOfProglangs,
-    fetchAdminStatsDistributionOfSubmissionsByHour,
-    fetchAdminStatsDistributionOfSubmissionsByWeekday,
-    fetchAdminStatsDistributionOfSubmissionsByDay,
-    fetchAdminStatsDistributionOfSubmissionsByYear,
-    fetchAdminStatsDistributionOfUsersByCountry,
-    fetchAdminStatsDistributionOfUsersBySubmissions,
-    fetchAdminStatsDistributionOfUsersByYear,
-    fetchAdminStatsDistributionOfVerdicts,
-    fetchProblemPopularityBuckets,
-} from '@/actions/administrator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -59,10 +46,14 @@ function MyCard({ title, children }: { title: string; children: React.ReactNode 
 }
 
 function Counters() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     async function update() {
-        setData(await fetchAdminStatsCounters())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.stats.getCounters())
     }
 
     useEffect(() => {
@@ -89,11 +80,15 @@ function Counters() {
 }
 
 function CompilersDistribution() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfCompilers())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfCompilers())
         }
         update()
     }, [])
@@ -102,11 +97,15 @@ function CompilersDistribution() {
 }
 
 function VerdictsDistribution() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfVerdicts())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfVerdicts())
         }
         update()
     }, [])
@@ -115,11 +114,15 @@ function VerdictsDistribution() {
 }
 
 function ProglangsDistribution() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfProglangs())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfProglangs())
         }
         update()
     }, [])
@@ -128,11 +131,15 @@ function ProglangsDistribution() {
 }
 
 function DistributionOfUsersByCountry() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfUsersByCountry())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfUsersByCountry())
         }
         update()
     }, [])
@@ -141,11 +148,15 @@ function DistributionOfUsersByCountry() {
 }
 
 function SubmissionsByYear() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByYear())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfSubmissionsByYear())
         }
         update()
     }, [])
@@ -154,11 +165,15 @@ function SubmissionsByYear() {
 }
 
 function RegisteredUsersByYear() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfUsersByYear())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfUsersByYear())
         }
         update()
     }, [])
@@ -167,11 +182,15 @@ function RegisteredUsersByYear() {
 }
 
 function SubmissionsByWeekDay() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByWeekday())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfSubmissionsByWeekday())
         }
         update()
     }, [])
@@ -180,11 +199,15 @@ function SubmissionsByWeekDay() {
 }
 
 function SubmissionsByDay() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByDay())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfSubmissionsByDay())
         }
         update()
     }, [])
@@ -193,11 +216,15 @@ function SubmissionsByDay() {
 }
 
 function SubmissionsByHour() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByHour())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfSubmissionsByHour())
         }
         update()
     }, [])
@@ -206,11 +233,15 @@ function SubmissionsByHour() {
 }
 
 function DistributionOfUsersBySubmissions() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfUsersBySubmissions(100))
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfUsersBySubmissions(100))
         }
         update()
     }, [])
@@ -219,11 +250,15 @@ function DistributionOfUsersBySubmissions() {
 }
 
 function DomainsDistribution() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<Distribution | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchAdminStatsDistributionOfDomains())
+    const { client } = useJutgeAuth()
+
+            setData(await client.admin.stats.getDistributionOfDomains())
         }
         update()
     }, [])
@@ -232,11 +267,15 @@ function DomainsDistribution() {
 }
 
 function ProblemPopularity() {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<ProblemPopularityBucketEntry[] | null>(null)
 
     useEffect(() => {
         async function update() {
-            setData(await fetchProblemPopularityBuckets())
+    const { client } = useJutgeAuth()
+
+            setData(await client.instructor.problems.getProblemPopularityBuckets())
         }
         update()
     }, [])

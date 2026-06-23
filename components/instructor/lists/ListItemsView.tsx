@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchAllAbstractProblems, fetchInstructorList, instructorListUpdate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePageChanges } from '@/hooks/use-page-changes'
 import { getProblemTitle } from '@/lib/instructor/problems'
-import type { AbstractProblem, InstructorListItem, Profile } from '@/lib/jutge_api_client'
+import type { AbstractProblem, InstructorList, InstructorListItem, Profile } from '@/lib/jutge_api_client'
 import type { RowSelectionOptions } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { CircleMinusIcon, PlusCircleIcon, SaveIcon } from 'lucide-react'
@@ -21,13 +22,12 @@ import { toast } from 'sonner'
 type Item = { description: string | null; problem_nm: string | null; title: string | null }
 type ProblemItem = { problem_nm: string; title: string }
 
-type ListItemsViewProps = {
-    profile: Profile
-}
+export function ListItemsView() {
+    const { client } = useJutgeAuth()
 
-export function ListItemsView({ profile }: ListItemsViewProps) {
     const { list_nm } = useParams<{ list_nm: string }>()
-    const [list, setList] = useState<Awaited<ReturnType<typeof fetchInstructorList>> | null>(null)
+    const [profile, setProfile] = useState<Profile | null>(null)
+    const [list, setList] = useState<InstructorList | null>(null)
     const [problems, setProblems] = useState<Record<string, AbstractProblem>>({})
     const [items, setItems] = useState<Item[]>([])
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
@@ -59,13 +59,19 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
     ])
 
     useEffect(() => {
+        void client.student.profile.get().then(setProfile)
+    }, [client])
+
+    useEffect(() => {
+        if (!profile) return
+
         async function fetchData() {
-            const list = await fetchInstructorList(list_nm)
-            const problems = await fetchAllAbstractProblems()
+            const list = await client.instructor.lists.get(list_nm)
+            const problems = await client.problems.getAllAbstractProblems()
             const items = list.items.map((item) => ({
                 problem_nm: item.problem_nm,
                 description: item.description,
-                title: item.problem_nm ? getProblemTitle(profile, item.problem_nm, problems) : null,
+                title: item.problem_nm ? getProblemTitle(profile!, item.problem_nm, problems) : null,
             }))
 
             setList(list)
@@ -75,7 +81,7 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
         }
 
         fetchData()
-    }, [list_nm, profile, setChanges])
+    }, [client, list_nm, profile, setChanges])
 
     const rowSelection = useMemo<RowSelectionOptions | 'single' | 'multiple'>(() => {
         return { mode: 'multiRow', headerCheckbox: true }
@@ -98,9 +104,9 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
                 })
             }
         })
-        const list = await fetchInstructorList(list_nm)
+        const list = await client.instructor.lists.get(list_nm)
         const newList = { ...list, items }
-        await instructorListUpdate(newList)
+        await client.instructor.lists.update(newList)
         toast.success(`Problems updated.`)
         setChanges(false)
     }
@@ -110,7 +116,7 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
         const grid = gridRef.current!.api
         const itemsToAdd: Item[] = problemsToAdd.map((problem_nm) => ({
             problem_nm,
-            title: getProblemTitle(profile, problem_nm, problems),
+            title: getProblemTitle(profile!, problem_nm, problems),
             description: null,
         }))
         const selectedRows = grid.getSelectedNodes().map((node) => node.rowIndex) as number[]
@@ -144,7 +150,7 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
         setChanges(true)
     }
 
-    if (list === null) return <SimpleSpinner />
+    if (profile === null || list === null) return <SimpleSpinner />
 
     return (
         <>

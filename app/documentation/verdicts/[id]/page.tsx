@@ -1,8 +1,8 @@
-import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
-import { VerdictDetail } from '@/components/documentation/VerdictDetail'
-import { fetchVerdicts } from '@/services/queries/tables'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+
+import { DocumentationVerdictDetailPageClient } from '@/components/pages/DocumentationCompilersPageClient'
+import { getAnonymousServerJutgeClient } from '@/lib/server-request-auth'
+import { fetchVerdicts } from '@/services/queries/tables'
 
 type PageProps = {
     params: Promise<{ id: string }>
@@ -10,7 +10,8 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { id } = await params
-    const verdicts = await fetchVerdicts()
+    const client = await getAnonymousServerJutgeClient()
+    const verdicts = await fetchVerdicts(client)
     const verdict = verdicts.find((v) => v.verdict_id === id)
     if (!verdict) return { title: 'Verdict — Documentation — Jutge.org' }
     return { title: `${verdict.verdict_id} — Verdicts — Documentation — Jutge.org` }
@@ -18,21 +19,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DocumentationVerdictDetailPage({ params }: PageProps) {
     const { id } = await params
-    const verdicts = await fetchVerdicts()
-    const verdict = verdicts.find((v) => v.verdict_id === id)
 
-    if (!verdict) notFound()
-
-    return (
-        <DocumentationPageShell
-            activeTab="verdicts"
-            breadcrumbs={[
-                { title: 'Documentation', url: '/documentation' },
-                { title: 'Verdicts', url: '/documentation/verdicts' },
-                { title: verdict.verdict_id, url: `/documentation/verdicts/${id}` },
-            ]}
-        >
-            <VerdictDetail verdict={verdict} />
-        </DocumentationPageShell>
-    )
+    return <DocumentationVerdictDetailPageClient verdictId={id} />
 }

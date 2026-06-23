@@ -1,5 +1,7 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState, useTransition } from 'react'
 import Dropzone from 'shadcn-dropzone'
@@ -7,7 +9,6 @@ import { filesize } from 'filesize'
 import { CloudUploadIcon, SendIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { submitSolutionAction } from '@/actions/submissions'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,6 +37,8 @@ export function SubmissionDialog({
     compilers,
     defaultCompilerId,
 }: SubmissionDialogProps) {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
     const [file, setFile] = useState<File | null>(null)
     const [annotation, setAnnotation] = useState('')
@@ -69,6 +72,8 @@ export function SubmissionDialog({
     }
 
     function handleSubmit() {
+    const { client } = useJutgeAuth()
+
         setErrorMessage(null)
 
         if (!file) {
@@ -82,21 +87,25 @@ export function SubmissionDialog({
         }
 
         startTransition(async () => {
-            const result = await submitSolutionAction({
-                problem_id: problemId,
-                compiler_id: compilerId,
-                annotation,
-                file,
-            })
+            try {
+                const { submission_id } = await client.student.submissions.submitFull(
+                {
+                    problem_id: problemId,
+                    compiler_id: compilerId,
+                    annotation,
+                    extraSubmissionInfo: {},
+                },
+                [file],
+            )
 
-            if (!result.ok) {
-                setErrorMessage(result.error)
-                return
-            }
+            
 
-            toast.success(`Submission ${result.submission_id} queued.`)
+            toast.success(`Submission ${submission_id} queued.`)
             handleOpenChange(false)
-            router.push(buildSubmissionHref(problemId, result.submission_id))
+            router.push(buildSubmissionHref(problemId, submission_id))
+            } catch (e) {
+                setErrorMessage(e instanceof Error ? e.message : 'Submission failed.')
+            }
         })
     }
 

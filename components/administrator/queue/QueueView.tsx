@@ -1,5 +1,7 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { DevIcon } from '@/components/administrator/DevIcon'
 import dayjs from 'dayjs'
@@ -19,15 +21,6 @@ import {
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import {
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-    fetchAdminQueue,
-    fetchTablesCompilers,
-    fetchTablesVerdicts,
-} from '@/actions/administrator'
 import { Compiler, SubmissionQueueItems, Verdict } from '@/lib/jutge_api_client'
 import { Button } from '@/components/ui/button'
 import {
@@ -44,6 +37,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useIsMobile } from '@/hooks/use-mobile'
 
 export default function QueueView() {
+    const { client } = useJutgeAuth()
+
     //
 
     const searchParams = useSearchParams()
@@ -61,6 +56,8 @@ export default function QueueView() {
 
     const fetchData = useCallback(async () => {
         async function getRows() {
+    const { client } = useJutgeAuth()
+
             let verdicts: string[] = []
             const limit = 500
 
@@ -77,12 +74,12 @@ export default function QueueView() {
             } else if (view == 'internal-errors') {
                 verdicts = ['IE']
             }
-            return await fetchAdminQueue({ verdicts, limit })
+            return await client.admin.queue.getQueue({ verdicts, limit })
         }
 
         const rows = await getRows()
-        const verdicts = await fetchTablesVerdicts()
-        const compilers = await fetchTablesCompilers()
+        const verdicts = await client.tables.getVerdicts()
+        const compilers = await client.tables.getCompilers()
 
         const colDefs = [
             {
@@ -259,22 +256,30 @@ export default function QueueView() {
     }, [counter, speed, rows, fetchData])
 
     function resubmitIEs() {
-        void adminResubmitIEs()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.resubmitIEs()
         toast.success(`IEs resubmitted.`)
     }
 
     function resubmitPendings() {
-        void adminResubmitPendings()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.resubmitPendings()
         toast.success(`Pendings resubmitted.`)
     }
 
     function fatalizeIEs() {
-        void adminFatalizeIEs()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.fatalizeIEs()
         toast.success(`IEs fatalized.`)
     }
 
     function fatalizePendings() {
-        void adminFatalizePendings()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.fatalizePendings()
         toast.success(`Pendings fatalized.`)
     }
 

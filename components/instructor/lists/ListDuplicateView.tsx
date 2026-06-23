@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorList, instructorListCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
@@ -12,12 +13,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ListDuplicateView() {
+    const { client } = useJutgeAuth()
     const { list_nm } = useParams<{ list_nm: string }>()
     const [list, setList] = useState<InstructorList | null>(null)
 
     useEffect(() => {
         async function fetchList() {
-            const list = await fetchInstructorList(list_nm)
+    const { client } = useJutgeAuth()
+
+            const list = await client.instructor.lists.get(list_nm)
             setList(list)
         }
 
@@ -30,6 +34,8 @@ export function ListDuplicateView() {
 }
 
 function ListDuplicateForm({ list }: { list: InstructorList }) {
+    const { client } = useJutgeAuth()
+
     const [newNm, setNewNm] = useState(list.list_nm + '_copy')
     const [newTitle, setNewTitle] = useState('Copy of ' + list.title)
 
@@ -75,7 +81,9 @@ function ListDuplicateForm({ list }: { list: InstructorList }) {
     }
 
     async function duplicateAction() {
-        const oldCurse: InstructorList = await fetchInstructorList(list.list_nm)
+    const { client } = useJutgeAuth()
+
+        const oldCurse: InstructorList = await client.instructor.lists.get(list.list_nm)
         const newList = {
             ...oldCurse,
             list_nm: newNm,
@@ -83,7 +91,7 @@ function ListDuplicateForm({ list }: { list: InstructorList }) {
         }
 
         try {
-            await instructorListCreate(newList)
+            await client.instructor.lists.create(newList)
         } catch (error) {
             return showError(error)
         }

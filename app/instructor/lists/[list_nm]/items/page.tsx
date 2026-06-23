@@ -1,7 +1,6 @@
 import { ListItemsView } from '@/components/instructor/lists/ListItemsView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
-import { getCurrentClient } from '@/lib/auth'
 import { instructorListSubNav } from '@/lib/instructor/menus'
 
 export const metadata = { title: 'List items — Instructor — Jutge.org' }
@@ -13,8 +12,6 @@ type Props = {
 export default async function InstructorListItemsPage({ params }: Props) {
     const { list_nm } = await params
     const baseHref = `/instructor/lists/${list_nm}`
-    const client = await getCurrentClient()
-    const profile = await client.student.profile.get()
 
     return (
         <InstructorPageShell
@@ -25,7 +22,7 @@ export default async function InstructorListItemsPage({ params }: Props) {
             ]}
         >
             <InstructorSubNav items={instructorListSubNav(list_nm)} baseHref={baseHref} activeSegment="items" />
-            <ListItemsView profile={profile} />
+            <ListItemsView />
         </InstructorPageShell>
     )
 }

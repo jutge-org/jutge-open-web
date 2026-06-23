@@ -1,5 +1,3 @@
-import { cache } from 'react'
-
 import {
     buildCourseKey,
     buildCourseRow,
@@ -13,7 +11,6 @@ import {
     type CoursesNavItem,
     type GuestCourseRow,
 } from '@/lib/courses'
-import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
 import { JutgeApiClient, type Course } from '@/lib/jutge_api_client'
 
 async function resolveEnrolledCourseKey(client: JutgeApiClient, courseKeyParam: string): Promise<string | null> {
@@ -60,7 +57,7 @@ async function resolveAvailableCourseKey(client: JutgeApiClient, courseKeyParam:
     return null
 }
 
-export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<CoursesData> => {
+export async function fetchCoursesData(client: JutgeApiClient): Promise<CoursesData> {
     const [enrolledMap, availableMap, archivedKeys] = await Promise.all([
         client.student.courses.indexEnrolled(),
         client.student.courses.indexAvailable(),
@@ -87,12 +84,12 @@ export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<Co
     )
 
     return { enrolled, available, archived }
-})
+}
 
-export const fetchEnrolledCoursesNavItems = cache(async (client: JutgeApiClient): Promise<CoursesNavItem[]> => {
+export async function fetchEnrolledCoursesNavItems(client: JutgeApiClient): Promise<CoursesNavItem[]> {
     const data = await fetchCoursesData(client)
     return buildCoursesNavItems(data.enrolled)
-})
+}
 
 export type FetchedCourse = {
     courseKey: string
@@ -100,56 +97,51 @@ export type FetchedCourse = {
     status: CourseStatus
 }
 
-export const fetchCourse = cache(
-    async (client: JutgeApiClient, courseKeyParam: string): Promise<FetchedCourse | null> => {
-        const enrolledKey = await resolveEnrolledCourseKey(client, courseKeyParam)
-        if (enrolledKey) {
-            try {
-                const [course, archivedKeys] = await Promise.all([
-                    client.student.courses.getEnrolled(enrolledKey),
-                    client.student.courses.getArchivedKeys(),
-                ])
+export async function fetchCourse(client: JutgeApiClient, courseKeyParam: string): Promise<FetchedCourse | null> {
+    const enrolledKey = await resolveEnrolledCourseKey(client, courseKeyParam)
+    if (enrolledKey) {
+        try {
+            const [course, archivedKeys] = await Promise.all([
+                client.student.courses.getEnrolled(enrolledKey),
+                client.student.courses.getArchivedKeys(),
+            ])
+            const status: CourseStatus = archivedKeys.includes(enrolledKey) ? 'archived' : 'enrolled'
+            return { courseKey: enrolledKey, course, status }
+        } catch {
+            const enrolledMap = await client.student.courses.indexEnrolled()
+            const brief = enrolledMap[enrolledKey]
+            if (brief) {
+                const archivedKeys = await client.student.courses.getArchivedKeys()
                 const status: CourseStatus = archivedKeys.includes(enrolledKey) ? 'archived' : 'enrolled'
-                return { courseKey: enrolledKey, course, status }
-            } catch {
-                const enrolledMap = await client.student.courses.indexEnrolled()
-                const brief = enrolledMap[enrolledKey]
-                if (brief) {
-                    const archivedKeys = await client.student.courses.getArchivedKeys()
-                    const status: CourseStatus = archivedKeys.includes(enrolledKey) ? 'archived' : 'enrolled'
-                    return { courseKey: enrolledKey, course: { ...brief, lists: [] }, status }
-                }
+                return { courseKey: enrolledKey, course: { ...brief, lists: [] }, status }
             }
         }
+    }
 
-        const availableKey = await resolveAvailableCourseKey(client, courseKeyParam)
-        if (!availableKey) {
+    const availableKey = await resolveAvailableCourseKey(client, courseKeyParam)
+    if (!availableKey) {
+        return null
+    }
+
+    try {
+        const course = await client.student.courses.getAvailable(availableKey)
+        return { courseKey: availableKey, course, status: 'available' }
+    } catch {
+        const availableMap = await client.student.courses.indexAvailable()
+        const brief = availableMap[availableKey]
+        if (!brief) {
             return null
         }
 
-        try {
-            const course = await client.student.courses.getAvailable(availableKey)
-            return { courseKey: availableKey, course, status: 'available' }
-        } catch {
-            const availableMap = await client.student.courses.indexAvailable()
-            const brief = availableMap[availableKey]
-            if (!brief) {
-                return null
-            }
+        return { courseKey: availableKey, course: { ...brief, lists: [] }, status: 'available' }
+    }
+}
 
-            return { courseKey: availableKey, course: { ...brief, lists: [] }, status: 'available' }
-        }
-    },
-)
-
-async function loadPublicCourses(): Promise<GuestCourseRow[]> {
+export async function fetchPublicCourses(client: JutgeApiClient): Promise<GuestCourseRow[]> {
     try {
-        const client = getAnonymousJutgeClient()
         const courses = await client.courses.indexPublic()
         return sortGuestCourseRows(Object.values(courses).map((course) => buildGuestCourseRow(course)))
     } catch {
         return []
     }
 }
-
-export const fetchPublicCourses = cache(loadPublicCourses)

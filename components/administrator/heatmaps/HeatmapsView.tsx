@@ -1,7 +1,8 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import dayjs, { Dayjs } from 'dayjs'
-import { fetchAdminHeatmapCalendar } from '@/actions/administrator'
 import { ReactNode, useEffect, useState } from 'react'
 import type { HeatmapCalendar } from '@/lib/jutge_api_client'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -28,11 +29,15 @@ interface HeatmapWidgetProps {
 }
 
 function HeatmapWidget(props: HeatmapWidgetProps) {
+    const { client } = useJutgeAuth()
+
     const [data, setData] = useState<HeatmapCalendar | null>(null)
 
     useEffect(() => {
         async function fetchData() {
-            const data = await fetchAdminHeatmapCalendar({
+    const { client } = useJutgeAuth()
+
+            const data = await client.admin.stats.getHeatmapCalendarOfSubmissions({
                 start: props.start.toISOString(),
                 end: props.end.toISOString(),
             })

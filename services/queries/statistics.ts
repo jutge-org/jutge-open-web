@@ -1,5 +1,3 @@
-import { cache } from 'react'
-
 import type { JutgeApiClient } from '@/lib/jutge_api_client'
 import type { AllTables, ColorMapping, Dashboard, Submission } from '@/lib/jutge_api_client'
 
@@ -11,7 +9,7 @@ export type StatisticsData = {
     submissions: Submission[]
 }
 
-export const fetchStatisticsData = cache(async (client: JutgeApiClient): Promise<StatisticsData> => {
+export async function fetchStatisticsData(client: JutgeApiClient): Promise<StatisticsData> {
     const [dashboard, level, tables, hexColors, submissions] = await Promise.all([
         client.student.dashboard.getDashboard(),
         client.student.dashboard.getLevel(),
@@ -21,4 +19,4 @@ export const fetchStatisticsData = cache(async (client: JutgeApiClient): Promise
     ])
 
     return { dashboard, level, tables, hexColors, submissions }
-})
+}

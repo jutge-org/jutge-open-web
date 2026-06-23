@@ -1,11 +1,7 @@
 'use client'
 
-import {
-    fetchInstructorExam,
-    fetchInstructorExamProblems,
-    fetchInstructorExamRanking,
-    fetchMiscHexColors,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type {
     ColorMapping,
@@ -20,6 +16,8 @@ import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 export function ExamRankingView() {
+    const { client } = useJutgeAuth()
+
     const { exam_nm } = useParams<{ exam_nm: string }>()
 
     const [exam, setExam] = useState<InstructorBriefExam | null>(null)
@@ -31,10 +29,10 @@ export function ExamRankingView() {
     const [counter, setCounter] = useState(0)
 
     const fetchData = useCallback(async () => {
-        const exam = await fetchInstructorExam(exam_nm)
-        const examProblems = await fetchInstructorExamProblems(exam_nm)
-        const ranking = await fetchInstructorExamRanking(exam_nm)
-        const colors = await fetchMiscHexColors()
+        const exam = await client.instructor.exams.get(exam_nm)
+        const examProblems = await client.instructor.exams.getProblems(exam_nm)
+        const ranking = await client.instructor.exams.getRanking(exam_nm)
+        const colors = await client.misc.getHexColors()
 
         setExam(exam)
         setExamProblems(examProblems)

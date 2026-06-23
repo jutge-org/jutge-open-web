@@ -1,5 +1,8 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { updateProfileAvatar } from '@/services/mutations/users'
+
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import Dropzone from 'shadcn-dropzone'
@@ -7,7 +10,6 @@ import { filesize } from 'filesize'
 import { CloudUploadIcon, SaveIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { updateProfileAvatarAction } from '@/actions/profile'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -17,6 +19,7 @@ type UserProfileAvatarFormProps = {
 }
 
 export function UserProfileAvatarForm({ avatarDataUrl }: UserProfileAvatarFormProps) {
+    const { client } = useJutgeAuth()
     const router = useRouter()
     const [avatarFile, setAvatarFile] = useState<File | null>(null)
     const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(avatarDataUrl)
@@ -61,15 +64,15 @@ export function UserProfileAvatarForm({ avatarDataUrl }: UserProfileAvatarFormPr
         }
 
         startTransition(async () => {
-            const result = await updateProfileAvatarAction(avatarFile)
-            if (!result.ok) {
-                setErrorMessage(result.error)
-                return
-            }
+            try {
+                await updateProfileAvatar(client, avatarFile)
 
-            toast.success('Avatar saved.')
-            setAvatarFile(null)
-            router.refresh()
+                toast.success('Avatar saved.')
+                setAvatarFile(null)
+                router.refresh()
+            } catch (e) {
+                setErrorMessage(e instanceof Error ? e.message : 'Failed to update avatar.')
+            }
         })
     }
 

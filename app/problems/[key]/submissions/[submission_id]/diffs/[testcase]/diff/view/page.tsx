@@ -1,20 +1,17 @@
-import { SubmissionTestcaseDiffEditor } from '@/components/submissions/SubmissionTestcaseDiffEditor'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+
+import { ProblemSubmissionTestcaseDiffViewPageClient } from '@/components/pages/ProblemSubmissionTestcaseDiffViewPageClient'
+import { getAnonymousServerJutgeClient } from '@/lib/server-request-auth'
+import { resolveProblemId } from '@/services/queries/problemDetail'
 
 type PageProps = {
     params: Promise<{ key: string; submission_id: string; testcase: string }>
 }
 
-export const dynamic = 'force-dynamic'
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { key, submission_id, testcase } = await params
-    const problemId = await resolveProblemId(key)
+    const client = await getAnonymousServerJutgeClient()
+    const problemId = await resolveProblemId(client, key)
     if (!problemId) {
         return { title: `${testcase} — ${submission_id} — Jutge.org` }
     }
@@ -25,22 +22,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ProblemSubmissionTestcaseDiffViewPage({ params }: PageProps) {
     const { key, submission_id, testcase } = await params
 
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const analysis = await fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase)
-
-        if (!analysis) {
-            notFound()
-        }
-
-        return (
-            <SubmissionTestcaseDiffEditor
-                input={analysis.input}
-                output={analysis.output}
-                expected={analysis.expected}
-                outputImageSrc={analysis.outputImageSrc}
-                expectedImageSrc={analysis.expectedImageSrc}
-            />
-        )
-    })
+    return (
+        <ProblemSubmissionTestcaseDiffViewPageClient
+            pageKey={key}
+            submissionId={submission_id}
+            testcase={testcase}
+        />
+    )
 }

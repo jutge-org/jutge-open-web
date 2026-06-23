@@ -14,7 +14,8 @@ Put these in a `.env` file in the project root (there are some examples in the `
 - **`AUTH_SECRET`**: Secret (≥ 32 chars) to sign session JWTs.
 - **`COMPETITIONS_TOKEN`**: Jutge API token for server-side calls and `god` imports.
 - **`DATA_DIR`**: Root folder for assets.
-- **`JUTGE_API_URL`**: Jutge API base URL (default: `https://api.jutge.org/api`).
+- **`JUTGE_API_URL`**: Jutge API base URL for server-side routes (default: `https://api.jutge.org/api`).
+- **`NEXT_PUBLIC_JUTGE_API_URL`**: Jutge API base URL for the browser client (defaults to `JUTGE_API_URL` or `https://api.jutge.org/api`).
 - **`NODE_ENV`**: Set by Next.js (`development` / `production`).
 - **`JUTGE_EMAIL`**: Default email for Jutge API calls.
 - **`JUTGE_PASSWORD`**: Default password for Jutge API calls.

@@ -1,18 +1,7 @@
 'use client'
 
-import {
-    fetchAllAbstractProblems,
-    fetchAbstractProblemSuppl,
-    fetchHtmlStatement,
-    fetchInstructorAnonymousSubmissions,
-    fetchInstructorProblemPopularityBuckets,
-    fetchMarkdownStatement,
-    fetchMiscHexColors,
-    fetchPdfStatement,
-    fetchTextStatement,
-    instructorFullTextSearch,
-    instructorSemanticSearch,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import {
     BookmarkIcon,
     BotIcon,
@@ -73,11 +62,14 @@ import {
 import { offerDownloadFile } from '@/lib/instructor/utils'
 
 export function SearchView() {
+    const { client } = useJutgeAuth()
     const [allAbstractProblems, setAllAbstractProblems] = useState<Record<string, AbstractProblem> | null>(null)
 
     useEffect(() => {
         async function load() {
-            const data = await fetchAllAbstractProblems()
+    const { client } = useJutgeAuth()
+
+            const data = await client.problems.getAllAbstractProblems()
             setAllAbstractProblems(data)
         }
         load()
@@ -91,6 +83,8 @@ type SearchViewProps = {
 }
 
 function SearchViewInner(props: SearchViewProps) {
+    const { client } = useJutgeAuth()
+
     const [searching, setSearching] = useState(false)
     const [results, setResults] = useState<SearchResults | undefined>(undefined)
 
@@ -98,25 +92,29 @@ function SearchViewInner(props: SearchViewProps) {
     const [fullTextQuery, setFullTextQuery] = useState('')
 
     async function semanticSearch() {
+    const { client } = useJutgeAuth()
+
         if (searching) return
         setResults((old) => undefined)
         const query = semanticQuery.trim()
         setSemanticQuery((old) => query)
         if (query.length === 0) return
         setSearching((old) => true)
-        const results = await instructorSemanticSearch(query)
+        const results = await client.problems.semanticSearch({ query, limit: 50 })
         setSearching((old) => false)
         setResults((old) => results)
     }
 
     async function fullTextSearch() {
+    const { client } = useJutgeAuth()
+
         if (searching) return
         setResults((old) => undefined)
         const query = fullTextQuery.trim()
         setFullTextQuery((old) => query)
         if (query.length === 0) return
         setSearching(true)
-        const results = await instructorFullTextSearch(query)
+        const results = await client.problems.fullTextSearch({ query, limit: 50 })
         setSearching((old) => false)
         setResults((old) => results)
     }
@@ -730,6 +728,8 @@ function CompactProblemPopularityChart({
 }
 
 function CompactProblemStats({ problem_nm }: { problem_nm: string }) {
+    const { client } = useJutgeAuth()
+
     const [submissions, setSubmissions] = useState<ProblemAnonymousSubmission[] | null>(null)
     const [popularityBuckets, setPopularityBuckets] = useState<ProblemPopularityBucketEntry[]>([])
     const [colors, setColors] = useState<ColorMapping | null>(null)
@@ -746,9 +746,9 @@ function CompactProblemStats({ problem_nm }: { problem_nm: string }) {
         ;(async () => {
             try {
                 const [subs, colorMap, buckets] = await Promise.all([
-                    fetchInstructorAnonymousSubmissions(problem_nm),
-                    fetchMiscHexColors(),
-                    fetchInstructorProblemPopularityBuckets().catch(() => []),
+                    client.instructor.problems.getAnonymousSubmissions(problem_nm),
+                    client.misc.getHexColors(),
+                    client.instructor.problems.getProblemPopularityBuckets().catch(() => []),
                 ])
                 if (!cancelled) {
                     setSubmissions(subs)
@@ -848,6 +848,8 @@ function CompactProblemStats({ problem_nm }: { problem_nm: string }) {
 }
 
 function Result(props: ResultProps) {
+    const { client } = useJutgeAuth()
+
     const [statement, setStatement] = useState<JSX.Element | null>(null)
     const [isStatementDialogOpen, setIsStatementDialogOpen] = useState(false)
 
@@ -860,7 +862,9 @@ function Result(props: ResultProps) {
 
     useEffect(() => {
         async function fetchSuppl() {
-            const suppl = await fetchAbstractProblemSuppl(abspbm.problem_nm)
+    const { client } = useJutgeAuth()
+
+            const suppl = await client.problems.getAbstractProblemSuppl(abspbm.problem_nm)
             setAbspbmSuppl(suppl)
         }
         fetchSuppl()
@@ -871,12 +875,16 @@ function Result(props: ResultProps) {
     }
 
     async function pdfFile() {
-        const download = await fetchPdfStatement(pbm.problem_id)
+    const { client } = useJutgeAuth()
+
+        const download = await client.problems.getPdfStatement(pbm.problem_id)
         offerDownloadFile(download)
     }
 
     async function htmlFile() {
-        const htmlStatement = await fetchHtmlStatement(pbm.problem_id)
+    const { client } = useJutgeAuth()
+
+        const htmlStatement = await client.problems.getHtmlStatement(pbm.problem_id)
         setStatement(
             <div
                 className="border rounded-lg p-4 w-full h-96 overflow-y-auto"
@@ -887,13 +895,17 @@ function Result(props: ResultProps) {
     }
 
     async function textFile() {
-        const textStatement = await fetchTextStatement(pbm.problem_id)
+    const { client } = useJutgeAuth()
+
+        const textStatement = await client.problems.getTextStatement(pbm.problem_id)
         setStatement(<Textarea className="text-sm w-full h-96" value={textStatement} />)
         setIsStatementDialogOpen(true)
     }
 
     async function markdownFile() {
-        const markdownStatement = await fetchMarkdownStatement(pbm.problem_id)
+    const { client } = useJutgeAuth()
+
+        const markdownStatement = await client.problems.getMarkdownStatement(pbm.problem_id)
         setStatement(
             <div className="text-sm border rounded-lg p-4 w-full h-96 overflow-y-auto">
                 <MarkdownText className="max-w-none text-foreground">{markdownStatement}</MarkdownText>

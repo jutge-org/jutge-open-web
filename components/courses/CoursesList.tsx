@@ -1,5 +1,8 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { archiveCourse, enrollInCourse, unarchiveCourse, unenrollFromCourse } from '@/services/mutations/courses'
+
 import { useRouter } from 'next/navigation'
 import { useMemo, useState, useTransition } from 'react'
 import {
@@ -18,7 +21,6 @@ import {
 import { toast } from 'sonner'
 import Link from 'next/link'
 
-import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { MarkdownText } from '@/components/general/MarkdownText'
@@ -178,6 +180,7 @@ const emptyStateByTab: Record<CoursesTab, { title: string; description: string; 
 }
 
 export function CoursesList({ tab, courses }: CoursesListProps) {
+    const { client } = useJutgeAuth()
     const router = useRouter()
     const [pendingKey, setPendingKey] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
@@ -225,7 +228,7 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
 
         setPendingKey(course.course_key)
         startTransition(async () => {
-            const result = await runServerAction(course.course_key, action)
+            const result = await runCourseAction(client, course.course_key, action)
             setPendingKey(null)
 
             if (result.ok) {
@@ -301,15 +304,43 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
     )
 }
 
-async function runServerAction(courseKey: string, action: CourseAction) {
-    switch (action) {
-        case 'enroll':
-            return enrollCourseAction(courseKey)
-        case 'unenroll':
-            return unenrollCourseAction(courseKey)
-        case 'archive':
-            return archiveCourseAction(courseKey)
-        case 'unarchive':
-            return unarchiveCourseAction(courseKey)
+async function runCourseAction(
+    client: ReturnType<typeof useJutgeAuth>['client'],
+    courseKey: string,
+    action: CourseAction,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+    const trimmed = courseKey.trim()
+    if (!trimmed) {
+        return { ok: false, error: 'Course key is required.' }
+    }
+
+    try {
+        switch (action) {
+            case 'enroll':
+                await enrollInCourse(client, trimmed)
+                break
+            case 'unenroll':
+                await unenrollFromCourse(client, trimmed)
+                break
+            case 'archive':
+                await archiveCourse(client, trimmed)
+                break
+            case 'unarchive':
+                await unarchiveCourse(client, trimmed)
+                break
+        }
+        return { ok: true }
+    } catch (e) {
+        const message =
+            e instanceof Error
+                ? e.message
+                : action === 'enroll'
+                  ? 'Failed to enroll in course.'
+                  : action === 'unenroll'
+                    ? 'Failed to unenroll from course.'
+                    : action === 'archive'
+                      ? 'Failed to archive course.'
+                      : 'Failed to unarchive course.'
+        return { ok: false, error: message }
     }
 }

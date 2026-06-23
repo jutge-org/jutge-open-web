@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import dayjs from 'dayjs'
 import { ChartAreaIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -28,12 +12,15 @@ import Loading from '@/components/administrator/dashboard/Loading'
 import Widget from '@/components/administrator/dashboard/Widget'
 
 export default function HistogramHourWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [data, setData] = useState<SubmissionsHistograms | null>(null)
 
     async function fetchData() {
-        const data = await fetchAdminDashboardSubmissionsHistograms()
+    const { client } = useJutgeAuth()
+
+        const data = await client.admin.dashboard.getSubmissionsHistograms()
         setData(data)
     }
 

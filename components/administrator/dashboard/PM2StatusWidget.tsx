@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -30,12 +14,15 @@ dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
 export default function PM2StatusWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [status, setStatus] = useState<any[]>([])
 
     async function fetchData() {
-        setStatus(await fetchAdminDashboardPM2Status())
+    const { client } = useJutgeAuth()
+
+        setStatus(await client.admin.dashboard.getPM2Status())
     }
 
     useEffect(() => {

@@ -13,7 +13,8 @@ export async function fetchStudentAvatarDataUrl(client: JutgeApiClient): Promise
     try {
         const avatar = await client.student.profile.getAvatar()
         if (avatar.data.length === 0) return null
-        const b64 = Buffer.from(avatar.data).toString('base64')
+        const binary = String.fromCharCode(...avatar.data)
+        const b64 = btoa(binary)
         const mime = avatar.type || 'image/png'
         return `data:${mime};base64,${b64}`
     } catch {

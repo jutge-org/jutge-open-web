@@ -1,24 +1,19 @@
-import { cache } from 'react'
+import { type Compiler, type JutgeApiClient, type Verdict } from '@/lib/jutge_api_client'
 
-import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
-import { type Compiler, type Verdict } from '@/lib/jutge_api_client'
-
-export const fetchCompilers = cache(async (): Promise<Compiler[]> => {
+export async function fetchCompilers(client: JutgeApiClient): Promise<Compiler[]> {
     try {
-        const client = getAnonymousJutgeClient()
         const compilers = await client.tables.getCompilers()
         return Object.values(compilers).sort((a, b) => a.compiler_id.localeCompare(b.compiler_id))
     } catch {
         return []
     }
-})
+}
 
-export const fetchVerdicts = cache(async (): Promise<Verdict[]> => {
+export async function fetchVerdicts(client: JutgeApiClient): Promise<Verdict[]> {
     try {
-        const client = getAnonymousJutgeClient()
         const verdicts = await client.tables.getVerdicts()
         return Object.values(verdicts).sort((a, b) => a.verdict_id.localeCompare(b.verdict_id))
     } catch {
         return []
     }
-})
+}

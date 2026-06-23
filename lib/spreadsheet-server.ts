@@ -1,5 +1,3 @@
-'use server'
-
 import { writeToString } from '@fast-csv/format'
 import { parseString } from '@fast-csv/parse'
 import { sleep } from 'radash'

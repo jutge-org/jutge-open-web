@@ -1,16 +1,19 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { PlusCircleIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { instructorDocumentCreate } from '@/actions/instructor'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { documentFileAccept } from '@/lib/instructor/documents'
 import { showError } from '@/lib/instructor/utils'
 
 export function DocumentsNewView() {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
     const [document_nm, setDocument_nm] = useState('')
     const [title, setTitle] = useState('')
@@ -61,13 +64,15 @@ export function DocumentsNewView() {
     }
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         const newDocument = {
             document_nm: document_nm,
             title: title,
             description: description,
         }
         try {
-            await instructorDocumentCreate(newDocument, file!)
+            await client.instructor.documents.create(newDocument, file!)
         } catch (error) {
             return showError(error)
         }

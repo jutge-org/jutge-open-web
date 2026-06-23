@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorCourse, instructorCourseCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
@@ -12,12 +13,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function CourseDuplicateView() {
+    const { client } = useJutgeAuth()
     const { course_nm } = useParams<{ course_nm: string }>()
     const [course, setCourse] = useState<InstructorCourse | null>(null)
 
     useEffect(() => {
         async function fetchCourse() {
-            const course = await fetchInstructorCourse(course_nm)
+    const { client } = useJutgeAuth()
+
+            const course = await client.instructor.courses.get(course_nm)
             setCourse(course)
         }
 
@@ -30,6 +34,8 @@ export function CourseDuplicateView() {
 }
 
 function CourseDuplicateForm({ course }: { course: InstructorCourse }) {
+    const { client } = useJutgeAuth()
+
     const [newNm, setNewNm] = useState(course.course_nm + '_copy')
     const [newTitle, setNewTitle] = useState('Copy of ' + course.title)
 
@@ -75,7 +81,9 @@ function CourseDuplicateForm({ course }: { course: InstructorCourse }) {
     }
 
     async function duplicateAction() {
-        const oldCurse: InstructorCourse = await fetchInstructorCourse(course.course_nm)
+    const { client } = useJutgeAuth()
+
+        const oldCurse: InstructorCourse = await client.instructor.courses.get(course.course_nm)
         const newCourse = {
             ...oldCurse,
             course_nm: newNm,
@@ -84,7 +92,7 @@ function CourseDuplicateForm({ course }: { course: InstructorCourse }) {
         }
 
         try {
-            await instructorCourseCreate(newCourse)
+            await client.instructor.courses.create(newCourse)
         } catch (error) {
             return showError(error)
         }

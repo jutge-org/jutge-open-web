@@ -1,11 +1,13 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { updateProfile } from '@/services/mutations/users'
+
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { toast } from 'sonner'
 
-import { updateProfileAction } from '@/actions/profile'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
 import { ProfileFormShell } from '@/components/profile/ProfileFormShell'
 import { Input } from '@/components/ui/input'
@@ -18,6 +20,7 @@ type UserProfileEditFormProps = {
 }
 
 export function UserProfileEditForm({ profile, countries }: UserProfileEditFormProps) {
+    const { client } = useJutgeAuth()
     const router = useRouter()
     const [name, setName] = useState(profile.name)
     const [nickname, setNickname] = useState(profile.nickname ?? '')
@@ -40,24 +43,36 @@ export function UserProfileEditForm({ profile, countries }: UserProfileEditFormP
         }
 
         startTransition(async () => {
-            const result = await updateProfileAction({
-                name,
-                nickname,
-                affiliation,
-                description,
-                webpage,
-                birth_year: parsedBirthYear,
-                country_id: countryId,
-                timezone_id: timezoneId,
-            })
-
-            if (!result.ok) {
-                setErrorMessage(result.error)
+            if (!name.trim()) {
+                setErrorMessage('Name is required.')
+                return
+            }
+            if (!countryId.trim()) {
+                setErrorMessage('Country is required.')
+                return
+            }
+            if (!timezoneId.trim()) {
+                setErrorMessage('Timezone is required.')
                 return
             }
 
-            toast.success('Profile saved.')
-            router.refresh()
+            try {
+                await updateProfile(client, {
+                    name: name.trim(),
+                    nickname: nickname.trim(),
+                    affiliation: affiliation.trim(),
+                    description: description.trim(),
+                    webpage: webpage.trim(),
+                    birth_year: parsedBirthYear,
+                    country_id: countryId.trim(),
+                    timezone_id: timezoneId.trim(),
+                })
+
+                toast.success('Profile saved.')
+                router.refresh()
+            } catch (e) {
+                setErrorMessage(e instanceof Error ? e.message : 'Failed to update profile.')
+            }
         })
     }
 

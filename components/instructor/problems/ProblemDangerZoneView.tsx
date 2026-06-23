@@ -1,11 +1,7 @@
 'use client'
 
-import {
-    fetchAbstractProblem,
-    fetchInstructorAnonymousSubmissions,
-    instructorProblemRemove,
-    instructorProblemSetDeprecation,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
@@ -143,6 +139,8 @@ function RemoveProblemForm({
 }
 
 export function ProblemDangerZoneView() {
+    const { client } = useJutgeAuth()
+
     const { problem_nm } = useParams<{ problem_nm: string }>()
     const router = useRouter()
     const [abstractProblem, setAbstractProblem] = useState<AbstractProblem | null>(null)
@@ -153,9 +151,11 @@ export function ProblemDangerZoneView() {
 
     useEffect(() => {
         async function fetchData() {
+    const { client } = useJutgeAuth()
+
             const [abstractProblemData, submissionsData] = await Promise.all([
-                fetchAbstractProblem(problem_nm),
-                fetchInstructorAnonymousSubmissions(problem_nm),
+                client.problems.getAbstractProblem(problem_nm),
+                client.instructor.problems.getAnonymousSubmissions(problem_nm),
             ])
             setAbstractProblem(abstractProblemData)
             setSubmissions(submissionsData.length)
@@ -170,16 +170,18 @@ export function ProblemDangerZoneView() {
     const canRemove = totalSubmissions < REMOVE_MAX_SUBMISSIONS
 
     async function saveDeprecation() {
+    const { client } = useJutgeAuth()
+
         const trimmed = reason.trim()
         try {
             if (trimmed === '') {
-                await instructorProblemSetDeprecation({ problem_nm, reason: null })
+                await client.instructor.problems.setDeprecation({ problem_nm, reason: null })
                 toast.success('Problem undeprecated.')
             } else {
-                await instructorProblemSetDeprecation({ problem_nm, reason: trimmed })
+                await client.instructor.problems.setDeprecation({ problem_nm, reason: trimmed })
                 toast.success('Problem deprecated.')
             }
-            const updated = await fetchAbstractProblem(problem_nm)
+            const updated = await client.problems.getAbstractProblem(problem_nm)
             setAbstractProblem(updated)
             setReason(updated.deprecation || '')
         } catch (error) {
@@ -188,6 +190,8 @@ export function ProblemDangerZoneView() {
     }
 
     async function removeProblem() {
+    const { client } = useJutgeAuth()
+
         if (!removeConfirmCheckbox) {
             toast.error('You must confirm the removal with the switch.')
             return
@@ -199,7 +203,7 @@ export function ProblemDangerZoneView() {
             return
         }
         try {
-            await instructorProblemRemove(problem_nm)
+            await client.instructor.problems.remove(problem_nm)
             toast.success('Problem removed.')
             router.push('/instructor/problems')
         } catch (error) {

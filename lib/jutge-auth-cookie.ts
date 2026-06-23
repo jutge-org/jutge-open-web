@@ -11,7 +11,9 @@ export const JUTGE_AUTH_COOKIE_FALLBACK_MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 
 /**
  * Computes Max-Age (seconds) for the session cookie from Jutge credentials metadata.
  */
-export function maxAgeSecondsFromCredentialsExpiration(expiration: CredentialsOut['expiration']): number {
+export function maxAgeSecondsFromCredentialsExpiration(
+    expiration: CredentialsOut['expiration'] | null | undefined,
+): number {
     if (expiration === null || expiration === undefined) {
         return JUTGE_AUTH_COOKIE_FALLBACK_MAX_AGE_SECONDS
     }

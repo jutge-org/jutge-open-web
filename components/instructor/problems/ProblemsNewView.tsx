@@ -1,6 +1,7 @@
 'use client'
 
-import { instructorProblemCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { PlusCircleIcon } from 'lucide-react'
@@ -10,6 +11,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ProblemsNewView() {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
     const [file, setFile] = useState<File | null>(null)
     const [passcode, setPasscode] = useState<string>(Math.random().toString(36).substring(2, 12))
@@ -60,13 +63,15 @@ export function ProblemsNewView() {
     }
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         if (!file) {
             toast.error('Please select a ZIP archive.')
             return
         }
 
         try {
-            const { id } = await instructorProblemCreate(passcode, file)
+            const { id } = await client.instructor.problems.create(passcode, file)
             router.push(`/instructor/problems/new/${id}`)
         } catch (error) {
             showError(error)

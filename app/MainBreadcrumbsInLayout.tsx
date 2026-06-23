@@ -21,12 +21,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { administratorIndexItems } from '@/lib/administrator'
 import { instructorIndexItems } from '@/lib/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
 import {
     getSiteNavLinks,
     homeLink,
     pathsHrefEqual,
     type SiteNavLink,
-    type SiteNavLinksContext,
 } from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
 import { useMainBreadcrumbs } from '@/store/MainBreadcrumbs'
@@ -63,10 +63,6 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment, type ComponentType } from 'react'
-
-type MainBreadcrumbsInLayoutProps = SiteNavLinksContext & {
-    enrolledCoursesNavItems?: readonly { href: string; label: string }[]
-}
 
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
     const documentation = links.find((l) => l.href === '/documentation')
@@ -217,12 +213,10 @@ function MainNavRoleSubmenu({
     )
 }
 
-export function MainBreadcrumbsInLayout({
-    authenticated,
-    instructor,
-    administrator,
-    enrolledCoursesNavItems = [],
-}: MainBreadcrumbsInLayoutProps) {
+export function MainBreadcrumbsInLayout() {
+    const { authenticated, user, enrolledCoursesNavItems } = useJutgeAuth()
+    const instructor = user?.instructor ?? false
+    const administrator = user?.administrator ?? false
     const breadcrumbs = useMainBreadcrumbs((s) => s.breadcrumbs)
     const pathname = usePathname()
     const navLinks = getSiteNavLinks({ authenticated, instructor, administrator })

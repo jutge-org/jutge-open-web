@@ -1,6 +1,7 @@
 'use client'
 
-import { instructorCourseCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { PlusCircleIcon } from 'lucide-react'
@@ -10,6 +11,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function CoursesNewView() {
+    const { client } = useJutgeAuth()
+
     const [course_nm, setCourse_nm] = useState('')
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -60,6 +63,8 @@ export function CoursesNewView() {
     }
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         const newCourse = {
             course_nm,
             title,
@@ -80,7 +85,7 @@ export function CoursesNewView() {
             lists: [],
         }
         try {
-            await instructorCourseCreate(newCourse)
+            await client.instructor.courses.create(newCourse)
         } catch (error) {
             return showError(error)
         }

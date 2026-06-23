@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorExam, instructorExamGetSubmissions } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { Warning } from '@/components/instructor/Warning'
@@ -10,12 +11,15 @@ import { redirect, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export function ExamSubmissionsView() {
+    const { client } = useJutgeAuth()
     const { exam_nm } = useParams<{ exam_nm: string }>()
     const [exam, setExam] = useState<InstructorExam | null>(null)
 
     useEffect(() => {
         async function fetchData() {
-            const exam = await fetchInstructorExam(exam_nm)
+    const { client } = useJutgeAuth()
+
+            const exam = await client.instructor.exams.get(exam_nm)
             setExam(exam)
         }
 
@@ -36,6 +40,8 @@ interface ExamFormProps {
 }
 
 function EditExamForm(props: ExamFormProps) {
+    const { client } = useJutgeAuth()
+
     const [selectedProblems, setSelectedProblems] = useState(props.exam.problems.map((p) => p.problem_nm))
     const [includeSource, setIncludeSource] = useState(true)
     const [includePDF, setIncludePDF] = useState(true)
@@ -153,6 +159,8 @@ function EditExamForm(props: ExamFormProps) {
     }
 
     async function downloadAction() {
+    const { client } = useJutgeAuth()
+
         const options: InstructorExamSubmissionsOptions = {
             include_source: includeSource,
             include_pdf: includePDF,
@@ -163,7 +171,7 @@ function EditExamForm(props: ExamFormProps) {
             layout: layout,
             obscure_private_testcases_names: obscurePrivateTestNames,
         }
-        const webstream = await instructorExamGetSubmissions({
+        const webstream = await client.instructor.exams.getSubmissions({
             exam_nm: props.exam.exam_nm,
             options: options,
         })

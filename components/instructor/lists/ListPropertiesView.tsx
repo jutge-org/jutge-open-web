@@ -1,14 +1,7 @@
 'use client'
 
-import {
-    fetchAllAbstractProblems,
-    fetchInstructorList,
-    fetchInstructorListsArchived,
-    instructorListArchive,
-    instructorListRemove,
-    instructorListUnarchive,
-    instructorListUpdate,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
@@ -24,14 +17,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ListPropertiesView() {
+    const { client } = useJutgeAuth()
     const { list_nm } = useParams<{ list_nm: string }>()
     const [list, setList] = useState<InstructorList | null>(null)
     const [archived, setArchived] = useState(false)
 
     const fetchData = useCallback(async () => {
         const data = await all({
-            list: fetchInstructorList(list_nm),
-            archived: fetchInstructorListsArchived(),
+            list: client.instructor.lists.get(list_nm),
+            archived: client.instructor.lists.getArchived(),
         })
         setList(data.list)
         setArchived(data.archived.includes(list_nm))
@@ -39,7 +33,7 @@ export function ListPropertiesView() {
 
     useEffect(() => {
         fetchData()
-        fetchAllAbstractProblems()
+        client.problems.getAllAbstractProblems()
     }, [list_nm, fetchData])
 
     if (list === null) return <SimpleSpinner size={64} className="pt-24" />
@@ -55,6 +49,8 @@ type ListPropertiesFormProps = {
 }
 
 function ListPropertiesForm(props: ListPropertiesFormProps) {
+    const { client } = useJutgeAuth()
+
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
         title: 'Delete list',
         acceptIcon: <TrashIcon />,
@@ -128,7 +124,9 @@ function ListPropertiesForm(props: ListPropertiesFormProps) {
     }
 
     async function save() {
-        const oldCurse = await fetchInstructorList(list_nm)
+    const { client } = useJutgeAuth()
+
+        const oldCurse = await client.instructor.lists.get(list_nm)
         const newList = {
             ...oldCurse,
             title,
@@ -137,10 +135,10 @@ function ListPropertiesForm(props: ListPropertiesFormProps) {
         }
 
         try {
-            await instructorListUpdate(newList)
+            await client.instructor.lists.update(newList)
 
-            if (props.archived) await instructorListArchive(list_nm)
-            else await instructorListUnarchive(list_nm)
+            if (props.archived) await client.instructor.lists.archive(list_nm)
+            else await client.instructor.lists.unarchive(list_nm)
         } catch (error) {
             return showError(error)
         }
@@ -149,11 +147,13 @@ function ListPropertiesForm(props: ListPropertiesFormProps) {
     }
 
     async function remove() {
+    const { client } = useJutgeAuth()
+
         const message = `Are you sure you want to delete list '${props.list.list_nm}'?`
         if (!(await runConfirmDialog(message))) return
 
         try {
-            await instructorListRemove(props.list.list_nm)
+            await client.instructor.lists.remove(props.list.list_nm)
         } catch (error) {
             return showError(error)
         }

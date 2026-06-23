@@ -1,12 +1,8 @@
 'use client'
 
-import { array2csv, csv2array, xls2array } from '@/actions/instructor/csv'
-import {
-    fetchInstructorCourse,
-    fetchInstructorCourseStudentProfiles,
-    instructorCourseSendInviteToStudents,
-    instructorCourseUpdate,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { array2csv, csv2array, xls2array } from '@/lib/spreadsheet-client'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
@@ -35,14 +31,17 @@ import { toast } from 'sonner'
 type Row = { email: string; name: string; state: string }
 
 export function CourseStudentsView() {
+    const { client } = useJutgeAuth()
     const { course_nm } = useParams<{ course_nm: string }>()
     const [course, setCourse] = useState<InstructorCourse | null>(null)
     const [profiles, setProfiles] = useState<Dict<StudentProfile> | null>(null)
 
     useEffect(() => {
         async function fetchData() {
-            const course = await fetchInstructorCourse(course_nm)
-            const profiles = await fetchInstructorCourseStudentProfiles(course_nm)
+    const { client } = useJutgeAuth()
+
+            const course = await client.instructor.courses.get(course_nm)
+            const profiles = await client.instructor.courses.getStudentProfiles(course_nm)
             setCourse(course)
             setProfiles(profiles)
         }
@@ -61,6 +60,8 @@ type CourseStudentProps = {
 }
 
 function CourseStudentsForm(props: CourseStudentProps) {
+    const { client } = useJutgeAuth()
+
     const [changes, setChanges] = usePageChanges()
 
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
@@ -171,10 +172,12 @@ function CourseStudentsForm(props: CourseStudentProps) {
     }
 
     async function save() {
-        const course = await fetchInstructorCourse(course_nm)
+    const { client } = useJutgeAuth()
+
+        const course = await client.instructor.courses.get(course_nm)
         course.students.invited = rows.map((row) => row.email)
         try {
-            await instructorCourseUpdate(course)
+            await client.instructor.courses.update(course)
             toast.success(`Students saved.`)
             setChanges(false)
         } catch (error) {
@@ -183,6 +186,8 @@ function CourseStudentsForm(props: CourseStudentProps) {
     }
 
     async function invite() {
+    const { client } = useJutgeAuth()
+
         if (
             !(await runConfirmDialog(
                 'Are you sure you want to send an invitation to the pending students? (Please do not abuse this feature.)',
@@ -192,7 +197,7 @@ function CourseStudentsForm(props: CourseStudentProps) {
         }
 
         try {
-            await instructorCourseSendInviteToStudents(course_nm)
+            await client.instructor.courses.sendInviteToStudents(course_nm)
             toast.success(`An email has been sent to the pending students.`)
         } catch (error) {
             showError(error)

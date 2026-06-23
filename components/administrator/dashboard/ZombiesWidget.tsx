@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { AudioLinesIcon, ChevronDownIcon, GhostIcon, RotateCwIcon, SkullIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -30,6 +14,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import Widget from '@/components/administrator/dashboard/Widget'
 
 export default function ZombiesWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const router = useRouter()
@@ -37,7 +22,9 @@ export default function ZombiesWidget() {
     const [data, setData] = useState<Zombies | null>(null)
 
     async function fetchData() {
-        setData(await fetchAdminDashboardZombies())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.dashboard.getZombies())
     }
 
     useEffect(() => {
@@ -47,25 +34,33 @@ export default function ZombiesWidget() {
     }, [])
 
     function resubmitIEs() {
-        void adminResubmitIEs()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.resubmitIEs()
         toast.success(`Resubmitting IEs...`)
         setInterval(fetchData, 1000)
     }
 
     function resubmitPendings() {
-        void adminResubmitPendings()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.resubmitPendings()
         toast.success(`Resubmitting Pendings...`)
         setInterval(fetchData, 1000)
     }
 
     function fatalizeIEs() {
-        void adminFatalizeIEs()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.fatalizeIEs()
         toast.success(`Fatalizing IEs...`)
         setInterval(fetchData, 1000)
     }
 
     function fatalizePendings() {
-        void adminFatalizePendings()
+    const { client } = useJutgeAuth()
+
+        void client.admin.tasks.fatalizePendings()
         toast.success(`Fatalizing Pendings...`)
         setInterval(fetchData, 1000)
     }

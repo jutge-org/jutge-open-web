@@ -1,19 +1,7 @@
 'use client'
 
-import {
-    fetchInstructorCoursesIndex,
-    fetchInstructorDocumentsIndex,
-    fetchInstructorExam,
-    fetchInstructorExamsArchived,
-    fetchMiscAvatarPacks,
-    fetchTablesCompilers,
-    instructorExamArchive,
-    instructorExamRemove,
-    instructorExamUnarchive,
-    instructorExamUpdate,
-    instructorExamUpdateCompilers,
-    instructorExamUpdateDocuments,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
@@ -35,6 +23,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ExamPropertiesView() {
+    const { client } = useJutgeAuth()
+
     const { exam_nm } = useParams<{ exam_nm: string }>()
     const [exam, setExam] = useState<InstructorExam | null>(null)
     const [compilers, setCompilers] = useState<Record<string, Compiler> | null>(null)
@@ -45,12 +35,12 @@ export function ExamPropertiesView() {
 
     const fetchData = useCallback(async () => {
         const data = await all({
-            courses: fetchInstructorCoursesIndex(),
-            exam: fetchInstructorExam(exam_nm),
-            archived: fetchInstructorExamsArchived(),
-            compilers: fetchTablesCompilers(),
-            documents: fetchInstructorDocumentsIndex(),
-            avatarPacks: fetchMiscAvatarPacks(),
+            courses: client.instructor.courses.index(),
+            exam: client.instructor.exams.get(exam_nm),
+            archived: client.instructor.exams.getArchived(),
+            compilers: client.tables.getCompilers(),
+            documents: client.instructor.documents.index(),
+            avatarPacks: client.misc.getAvatarPacks(),
         })
         setCourses(data.courses)
         setExam(data.exam)
@@ -101,6 +91,8 @@ interface ExamFormProps {
 }
 
 function EditExamForm(props: ExamFormProps) {
+    const { client } = useJutgeAuth()
+
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
         title: 'Delete exam',
         acceptIcon: <TrashIcon />,
@@ -315,6 +307,8 @@ function EditExamForm(props: ExamFormProps) {
     }
 
     async function save() {
+    const { client } = useJutgeAuth()
+
         try {
             const newExam: InstructorExamUpdate = {
                 exam_nm,
@@ -334,12 +328,12 @@ function EditExamForm(props: ExamFormProps) {
                 started_by: props.exam.started_by,
             }
 
-            await instructorExamUpdate(newExam)
-            await instructorExamUpdateDocuments({ exam_nm, document_nms: documents })
-            await instructorExamUpdateCompilers({ exam_nm, compiler_ids: compilers })
+            await client.instructor.exams.update(newExam)
+            await client.instructor.exams.updateDocuments({ exam_nm, document_nms: documents })
+            await client.instructor.exams.updateCompilers({ exam_nm, compiler_ids: compilers })
 
-            if (props.archived) await instructorExamArchive(exam_nm)
-            else await instructorExamUnarchive(exam_nm)
+            if (props.archived) await client.instructor.exams.archive(exam_nm)
+            else await client.instructor.exams.unarchive(exam_nm)
         } catch (error) {
             return showError(error)
         }
@@ -353,11 +347,13 @@ function EditExamForm(props: ExamFormProps) {
     }
 
     async function remove() {
+    const { client } = useJutgeAuth()
+
         const message = `Are you sure you want to delete exam '${props.exam.exam_nm}'?`
         if (!(await runConfirmDialog(message))) return
 
         try {
-            await instructorExamRemove(props.exam.exam_nm)
+            await client.instructor.exams.remove(props.exam.exam_nm)
         } catch (error) {
             return showError(error)
         }

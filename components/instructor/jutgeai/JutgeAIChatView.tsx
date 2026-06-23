@@ -1,6 +1,8 @@
 'use client'
 
-import { fetchInstructorApiUrl, fetchJutgeaiSupportedModels, jutgeaiChatMessages } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { getJutgeApiUrl } from '@/lib/jutge-browser'
+
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -17,6 +19,7 @@ const USAGE_JSON_END = '---USAGE_JSON_END---'
 type UiMessage = { role: 'user' | 'assistant' | 'system'; content: string }
 
 export function JutgeAIChatView() {
+    const { client } = useJutgeAuth()
     const [models, setModels] = useState<string[]>([])
     const [selectedModel, setSelectedModel] = useState<string>('openai/gpt-4.1-mini')
     const [messages, setMessages] = useState<UiMessage[]>([])
@@ -26,7 +29,9 @@ export function JutgeAIChatView() {
 
     useEffect(() => {
         async function loadModels() {
-            const list = await fetchJutgeaiSupportedModels()
+    const { client } = useJutgeAuth()
+
+            const list = await client.instructor.jutgeai.supportedModels()
             setModels(list)
             const preferred = 'openai/gpt-4.1-mini'
             setSelectedModel((current) => {
@@ -47,6 +52,8 @@ export function JutgeAIChatView() {
     }, [messages, scrollToBottom])
 
     async function handleSend() {
+    const { client } = useJutgeAuth()
+
         const text = input.trim()
         if (!text || !selectedModel || loading) return
 
@@ -65,8 +72,8 @@ export function JutgeAIChatView() {
         setMessages((prev) => [...prev, assistantPlaceholder])
 
         try {
-            const stream = await jutgeaiChatMessages(selectedModel, apiMessages)
-            const apiUrl = await fetchInstructorApiUrl()
+            const stream = await client.instructor.jutgeai.chat({ model: selectedModel, label: 'chat', messages: apiMessages, addUsage: true })
+            const apiUrl = getJutgeApiUrl()
             const response = await fetch(`${apiUrl}/webstreams/${stream.id}`)
             if (!response.body) {
                 setMessages((prev) => {

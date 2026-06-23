@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { signInAction } from '@/actions/auth'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -19,6 +19,7 @@ export type SignInDialogProps = {
 }
 
 export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss }: SignInDialogProps) {
+    const { signIn } = useJutgeAuth()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -45,7 +46,7 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss }: Sign
     function handleSignIn() {
         setErrorMessage(null)
         startTransition(async () => {
-            const result = await signInAction(email, password)
+            const result = await signIn(email, password)
             if (!result.ok) {
                 setErrorMessage(result.error)
                 return

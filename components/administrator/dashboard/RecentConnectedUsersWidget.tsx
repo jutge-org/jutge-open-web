@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { UsersIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -26,12 +10,15 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import Widget from '@/components/administrator/dashboard/Widget'
 
 export default function RecentConnectedUsersWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [data, setData] = useState<RecentConnectedUsers | null>(null)
 
     async function fetchData() {
-        setData(await fetchAdminDashboardRecentConnectedUsers())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.dashboard.getRecentConnectedUsers())
     }
 
     useEffect(() => {

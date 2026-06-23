@@ -1,14 +1,17 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+import { updateProfilePassword } from '@/services/mutations/users'
+
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { updateProfilePasswordAction } from '@/actions/profile'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
 import { ProfileFormShell } from '@/components/profile/ProfileFormShell'
 import { Input } from '@/components/ui/input'
 
 export function UserProfilePasswordForm() {
+    const { client } = useJutgeAuth()
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -35,20 +38,16 @@ export function UserProfilePasswordForm() {
         }
 
         startTransition(async () => {
-            const result = await updateProfilePasswordAction({
-                oldPassword,
-                newPassword,
-            })
+            try {
+                await updateProfilePassword(client, { oldPassword, newPassword })
 
-            if (!result.ok) {
-                setErrorMessage(result.error)
-                return
+                toast.success('Password updated.')
+                setOldPassword('')
+                setNewPassword('')
+                setConfirmPassword('')
+            } catch (e) {
+                setErrorMessage(e instanceof Error ? e.message : 'Failed to update password.')
             }
-
-            toast.success('Password updated.')
-            setOldPassword('')
-            setNewPassword('')
-            setConfirmPassword('')
         })
     }
 

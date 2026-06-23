@@ -1,7 +1,6 @@
 import { ExamStatisticsView } from '@/components/instructor/exams/ExamStatisticsView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
-import { getCurrentClient } from '@/lib/auth'
 import { instructorExamSubNav } from '@/lib/instructor/menus'
 
 export const metadata = { title: 'Exam statistics — Instructor — Jutge.org' }
@@ -13,8 +12,6 @@ type Props = {
 export default async function InstructorExamStatisticsPage({ params }: Props) {
     const { exam_nm } = await params
     const baseHref = `/instructor/exams/${exam_nm}`
-    const client = await getCurrentClient()
-    const profile = await client.student.profile.get()
 
     return (
         <InstructorPageShell
@@ -25,7 +22,7 @@ export default async function InstructorExamStatisticsPage({ params }: Props) {
             ]}
         >
             <InstructorSubNav items={instructorExamSubNav(exam_nm)} baseHref={baseHref} activeSegment="statistics" />
-            <ExamStatisticsView profile={profile} />
+            <ExamStatisticsView />
         </InstructorPageShell>
     )
 }

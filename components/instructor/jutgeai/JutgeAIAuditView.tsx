@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchJutgeaiLlmUsage } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { llmEstimates } from '@/lib/ai-utils'
 import type { LlmUsageEntry } from '@/lib/jutge_api_client'
@@ -86,6 +87,8 @@ async function enrichRowWithEstimates(row: ModelAuditRow): Promise<ModelAuditRow
 }
 
 export function JutgeAIAuditView() {
+    const { client } = useJutgeAuth()
+
     const [entries, setEntries] = useState<LlmUsageEntry[]>([])
     const baseRows = useMemo(() => aggregateByModel(entries), [entries])
     const [rows, setRows] = useState<ModelAuditRow[]>([])
@@ -104,7 +107,9 @@ export function JutgeAIAuditView() {
 
     useEffect(() => {
         async function fetchEntries() {
-            const data = await fetchJutgeaiLlmUsage()
+    const { client } = useJutgeAuth()
+
+            const data = await client.instructor.jutgeai.getLlmUsage()
             setEntries(data)
         }
         fetchEntries()

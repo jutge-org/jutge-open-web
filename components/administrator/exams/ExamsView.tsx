@@ -1,7 +1,8 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
-import { fetchAdminDashboardUpcomingExams } from '@/actions/administrator'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -24,6 +25,7 @@ dayjs.extend(duration)
 dayjs.extend(relativeTime)
 
 export default function ExamsView() {
+    const { client } = useJutgeAuth()
     const isMobile = useIsMobile()
     const [exams, setExams] = useState<UpcomingExams>([])
     const [view, setView] = useState<'table' | 'timeline'>(isMobile ? 'timeline' : 'table')
@@ -31,7 +33,9 @@ export default function ExamsView() {
 
     useEffect(() => {
         async function fetchData() {
-            const data = await fetchAdminDashboardUpcomingExams({
+    const { client } = useJutgeAuth()
+
+            const data = await client.admin.dashboard.getUpcomingExams({
                 daysBefore: -range[0],
                 daysAfter: range[1],
             })

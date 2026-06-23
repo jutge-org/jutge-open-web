@@ -3,8 +3,8 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { signOutAction } from '@/actions/auth'
 import { SignInDialog } from '@/components/SignInDialog'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -26,22 +26,20 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-type AuthToolbarProps = {
-    authenticated: boolean
-    instructor?: boolean
-    administrator?: boolean
-    userName?: string
-}
-
-export function AuthToolbar({ authenticated, instructor = false, administrator = false, userName }: AuthToolbarProps) {
+export function AuthToolbar() {
     const router = useRouter()
     const pathname = usePathname()
+    const { authenticated, user, signOut, loading } = useJutgeAuth()
     const [dialogOpen, setDialogOpen] = useState(false)
     const [signOutPending, startSignOut] = useTransition()
 
+    const instructor = user?.instructor ?? false
+    const administrator = user?.administrator ?? false
+    const userName = user?.name
+
     function handleSignOut() {
         startSignOut(async () => {
-            await signOutAction()
+            await signOut()
             toast.success(userName ? `Bye ${userName}, you signed out` : 'Signed out')
             if (pathname === '/') {
                 router.refresh()
@@ -49,6 +47,10 @@ export function AuthToolbar({ authenticated, instructor = false, administrator =
                 router.push('/')
             }
         })
+    }
+
+    if (loading) {
+        return null
     }
 
     if (authenticated) {

@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchInstructorApiUrl } from '@/actions/instructor'
+import { getJutgeApiUrl } from '@/lib/jutge-browser'
+
 import { useXTerm } from '@/components/instructor/XTerm'
 import { Button } from '@/components/ui/button'
 import { CloudDownloadIcon } from 'lucide-react'
@@ -18,7 +19,7 @@ export function ExamSubmissionsWebStreamView({ webstream_id }: ExamSubmissionsWe
     const [apiUrl, setApiUrl] = useState<string | null>(null)
 
     useEffect(() => {
-        fetchInstructorApiUrl().then(setApiUrl)
+        setApiUrl(getJutgeApiUrl())
     }, [])
 
     useEffect(() => {

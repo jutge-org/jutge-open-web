@@ -1,12 +1,15 @@
 'use client'
 
-import { fetchJutgeaiLlmUsage } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import type { LlmUsageEntry } from '@/lib/jutge_api_client'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 export function JutgeAIUsageView() {
+    const { client } = useJutgeAuth()
+
     const [rows, setRows] = useState<LlmUsageEntry[]>([])
 
     const colDefs = [
@@ -52,7 +55,9 @@ export function JutgeAIUsageView() {
 
     useEffect(() => {
         async function fetchEntries() {
-            const entries = await fetchJutgeaiLlmUsage()
+    const { client } = useJutgeAuth()
+
+            const entries = await client.instructor.jutgeai.getLlmUsage()
             setRows(entries)
         }
 

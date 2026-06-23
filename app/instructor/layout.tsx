@@ -1,8 +1,14 @@
+'use client'
+
 import { NavigationGuardProvider } from 'next-navigation-guard'
 import type { ReactNode } from 'react'
 
-import { renderInstructor } from '@/lib/renderAuthed'
+import { InstructorGate } from '@/components/auth/AuthGates'
 
-export default async function InstructorLayout({ children }: { children: ReactNode }) {
-    return renderInstructor(() => <NavigationGuardProvider>{children}</NavigationGuardProvider>)
+export default function InstructorLayout({ children }: { children: ReactNode }) {
+    return (
+        <InstructorGate>
+            <NavigationGuardProvider>{children}</NavigationGuardProvider>
+        </InstructorGate>
+    )
 }

@@ -1,13 +1,7 @@
 'use client'
 
-import {
-    fetchInstructorCourse,
-    fetchInstructorCoursesArchived,
-    instructorCourseArchive,
-    instructorCourseRemove,
-    instructorCourseUnarchive,
-    instructorCourseUpdate,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
@@ -23,14 +17,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function CoursePropertiesView() {
+    const { client } = useJutgeAuth()
     const { course_nm } = useParams<{ course_nm: string }>()
     const [course, setCourse] = useState<InstructorCourse | null>(null)
     const [archived, setArchived] = useState(false)
 
     const fetchData = useCallback(async () => {
         const data = await all({
-            course: fetchInstructorCourse(course_nm),
-            archived: fetchInstructorCoursesArchived(),
+            course: client.instructor.courses.get(course_nm),
+            archived: client.instructor.courses.getArchived(),
         })
         setCourse(data.course)
         setArchived(data.archived.includes(course_nm))
@@ -53,6 +48,8 @@ type CourseFormProps = {
 }
 
 function EditCourseForm(props: CourseFormProps) {
+    const { client } = useJutgeAuth()
+
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
         title: 'Delete course',
         acceptIcon: <TrashIcon />,
@@ -126,7 +123,9 @@ function EditCourseForm(props: CourseFormProps) {
     }
 
     async function save() {
-        const oldCurse = await fetchInstructorCourse(course_nm)
+    const { client } = useJutgeAuth()
+
+        const oldCurse = await client.instructor.courses.get(course_nm)
         const newCourse = {
             ...oldCurse,
             title,
@@ -135,10 +134,10 @@ function EditCourseForm(props: CourseFormProps) {
         }
 
         try {
-            await instructorCourseUpdate(newCourse)
+            await client.instructor.courses.update(newCourse)
 
-            if (props.archived) await instructorCourseArchive(course_nm)
-            else await instructorCourseUnarchive(course_nm)
+            if (props.archived) await client.instructor.courses.archive(course_nm)
+            else await client.instructor.courses.unarchive(course_nm)
         } catch (error) {
             return showError(error)
         }
@@ -147,11 +146,13 @@ function EditCourseForm(props: CourseFormProps) {
     }
 
     async function remove() {
+    const { client } = useJutgeAuth()
+
         const message = `Are you sure you want to delete course '${props.course.course_nm}'?`
         if (!(await runConfirmDialog(message))) return
 
         try {
-            await instructorCourseRemove(props.course.course_nm)
+            await client.instructor.courses.remove(props.course.course_nm)
         } catch (error) {
             return showError(error)
         }

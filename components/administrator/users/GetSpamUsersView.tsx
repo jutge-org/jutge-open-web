@@ -1,6 +1,7 @@
 'use client'
 
-import { adminRemoveSpamUsers, fetchAdminSpamUsers } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 export default function GetSpamUsersView() {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
         title: 'Remove spam users',
@@ -32,15 +35,17 @@ export default function GetSpamUsersView() {
     ]
 
     useEffect(() => {
-        void fetchAdminSpamUsers().then(setSpammers)
+        void client.admin.users.getSpamUsers().then(setSpammers)
     }, [])
 
     async function remove() {
+    const { client } = useJutgeAuth()
+
         if (spammers === null) return
         const message = `Are you sure you want to remove ${spammers.length} spam users?`
         if (!(await runConfirmDialog(message))) return
         try {
-            await adminRemoveSpamUsers(spammers)
+            await client.admin.users.removeSpamUsers(spammers)
             toast.success('Spam users are being removed')
         } catch {
             toast.error('Error removing spam users')

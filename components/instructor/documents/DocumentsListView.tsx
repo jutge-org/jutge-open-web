@@ -1,10 +1,11 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import dayjs from 'dayjs'
 import { SquarePlusIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { fetchInstructorDocumentsIndex } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -14,6 +15,8 @@ import { offerDownloadFile } from '@/lib/instructor/utils'
 import type { ICellRendererParams } from 'ag-grid-community'
 
 export function DocumentsListView() {
+    const { client } = useJutgeAuth()
+
     const isMobile = useIsMobile()
 
     const [documents, setDocuments] = useState<Document[]>([])
@@ -71,7 +74,9 @@ export function DocumentsListView() {
 
     useEffect(() => {
         async function fetchDocuments() {
-            const dict = await fetchInstructorDocumentsIndex()
+    const { client } = useJutgeAuth()
+
+            const dict = await client.instructor.documents.index()
             const array = Object.values(dict).sort((a: Document, b: Document) =>
                 a.document_nm.localeCompare(b.document_nm),
             )
@@ -82,7 +87,7 @@ export function DocumentsListView() {
     }, [])
 
     async function downloadFile(document: Document) {
-        const download = await getDocumentFile(document)
+        const download = await getDocumentFile(client, document)
         offerDownloadFile(download, `${document.document_nm}${documentFileExtension(document)}`)
     }
 

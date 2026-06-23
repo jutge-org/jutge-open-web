@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchAdminDashboardZombies, fetchHomepageStats } from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { cn } from '@/lib/utils'
 import { AlertTriangleIcon, PuzzleIcon, SendIcon, UsersIcon } from 'lucide-react'
@@ -61,6 +62,7 @@ function useIncrementer(top: number, time: number) {
 }
 
 export default function HeaderWidget() {
+    const { client } = useJutgeAuth()
     const [stats, setStats] = useState<HomepageStats | null>(null)
     const [zombies, setZombies] = useState<Zombies | null>(null)
     const usersIncrementer = useIncrementer(42000, 1000)
@@ -68,9 +70,11 @@ export default function HeaderWidget() {
     const problemsIncrementer = useIncrementer(6000, 1000)
 
     async function fetchData() {
+    const { client } = useJutgeAuth()
+
         const data = await all({
-            stats: fetchHomepageStats(),
-            zombies: fetchAdminDashboardZombies(),
+            stats: client.misc.getHomepageStats(),
+            zombies: client.admin.dashboard.getZombies(),
         })
         setStats(data.stats)
         setZombies(data.zombies)

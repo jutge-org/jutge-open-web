@@ -1,11 +1,7 @@
 'use client'
 
-import {
-    fetchAbstractProblems,
-    fetchInstructorAllAlerts,
-    fetchInstructorAllSharingSettings,
-    fetchInstructorOwnProblems,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -50,6 +46,8 @@ type ProblemRow = {
 }
 
 export function ProblemsListView() {
+    const { client } = useJutgeAuth()
+
     const isMobile = useIsMobile()
 
     const [problemRows, setProblemRows] = useState<ProblemRow[]>([])
@@ -64,12 +62,14 @@ export function ProblemsListView() {
 
     useEffect(() => {
         async function fetchProblems() {
+    const { client } = useJutgeAuth()
+
             setLoading(true)
             try {
-                const ownProblems = await fetchInstructorOwnProblems()
-                const ownProblemsSharingSettings = await fetchInstructorAllSharingSettings()
-                const allAlerts = await fetchInstructorAllAlerts()
-                const abstractProblems = await fetchAbstractProblems(ownProblems.join(','))
+                const ownProblems = await client.instructor.problems.getOwnProblems()
+                const ownProblemsSharingSettings = await client.instructor.problems.getAllSharingSettings()
+                const allAlerts = await client.instructor.problems.getAllAlerts()
+                const abstractProblems = await client.problems.getAbstractProblems(ownProblems.join(','))
                 const sharingByProblem: Record<string, SharingSettings> = Object.fromEntries(
                     ownProblemsSharingSettings.map((s) => [s.problem_nm, s]),
                 )

@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchAbstractProblem, fetchInstructorProblemDownload } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { mapmap, offerDownloadFile } from '@/lib/instructor/utils'
@@ -18,16 +19,19 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 dayjs.extend(LocalizedFormat)
 
 export function ProblemPropertiesView() {
+    const { client } = useJutgeAuth()
     const { problem_nm } = useParams<{ problem_nm: string }>()
     const [abstractProblem, setAbstractProblem] = useState<AbstractProblem | null>(null)
 
     useEffect(() => {
-        async function fetchProblem() {
-            const abstractProblem = await fetchAbstractProblem(problem_nm)
+        async function fetchData() {
+    const { client } = useJutgeAuth()
+
+            const abstractProblem = await client.problems.getAbstractProblem(problem_nm)
             setAbstractProblem(abstractProblem)
         }
-        fetchProblem()
-    }, [problem_nm])
+        void fetchData()
+    }, [client, problem_nm])
 
     if (abstractProblem === null) return <SimpleSpinner size={64} className="pt-24" />
 
@@ -35,7 +39,9 @@ export function ProblemPropertiesView() {
     const updated_at = dayjs(abstractProblem.updated_at).format('YYYY-MM-DD HH:mm:ss')
 
     async function downloadAction() {
-        const download = await fetchInstructorProblemDownload(problem_nm)
+    const { client } = useJutgeAuth()
+
+        const download = await client.instructor.problems.download(problem_nm)
         offerDownloadFile(download, download.name)
     }
 

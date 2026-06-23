@@ -1,6 +1,7 @@
 'use client'
 
-import { instructorListCreate } from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { PlusCircleIcon } from 'lucide-react'
@@ -10,6 +11,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 export function ListsNewView() {
+    const { client } = useJutgeAuth()
+
     const [list_nm, setList_nm] = useState('')
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -60,6 +63,8 @@ export function ListsNewView() {
     }
 
     async function addAction() {
+    const { client } = useJutgeAuth()
+
         const newList = {
             list_nm,
             title,
@@ -70,7 +75,7 @@ export function ListsNewView() {
             items: [],
         }
         try {
-            await instructorListCreate(newList)
+            await client.instructor.lists.create(newList)
         } catch (error) {
             return showError(error)
         }

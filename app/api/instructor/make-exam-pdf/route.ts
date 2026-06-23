@@ -1,11 +1,11 @@
-'use server'
-
 import { exec } from 'child_process'
 import { readFile, writeFile } from 'fs/promises'
 import { nanoid } from 'nanoid'
+import { NextResponse } from 'next/server'
 import util from 'util'
 import { z } from 'zod'
-import { withInstructorClient } from '@/lib/instructor/with-instructor-client'
+
+import { getClientFromRequestCookies } from '@/lib/server-request-auth'
 
 const execAsync = util.promisify(exec)
 
@@ -14,10 +14,25 @@ const zMakeExamPdfData = z.object({
     extra: z.string(),
 })
 
-export async function makeExamPdf(data: { exam_nm: string; extra: string }): Promise<Blob> {
-    zMakeExamPdfData.parse(data)
+export async function POST(request: Request) {
+    const client = getClientFromRequestCookies(request)
+    if (!client) {
+        return new NextResponse(null, { status: 401 })
+    }
 
-    return withInstructorClient(async (jutge) => {
+    try {
+        const profile = await client.student.profile.get()
+        if (!profile.instructor) {
+            return new NextResponse(null, { status: 403 })
+        }
+    } catch {
+        return new NextResponse(null, { status: 401 })
+    }
+
+    try {
+        const data = zMakeExamPdfData.parse(await request.json())
+        const jutge = client
+
         const exam = await jutge.instructor.exams.get(data.exam_nm)
         if (!exam) throw new Error(`Exam ${data.exam_nm} not found`)
 
@@ -75,10 +90,17 @@ ${data.extra}
         )
 
         const buffer = await readFile(`${tmp}/exam.pdf`)
-        const blob = new Blob([buffer], { type: 'application/pdf' })
 
         await execAsync(`rm -rf ${tmp}`)
 
-        return blob
-    })
+        return new NextResponse(buffer, {
+            headers: {
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': `attachment; filename="${data.exam_nm}.pdf"`,
+            },
+        })
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to generate exam PDF'
+        return NextResponse.json({ error: message }, { status: 500 })
+    }
 }

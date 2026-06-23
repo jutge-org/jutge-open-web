@@ -1194,8 +1194,18 @@ export class JutgeApiClient {
     /** Meta information */
     meta: Meta | null = null
 
-    /** Function that sends a request to the API and returns the response. **/
     async execute(func: string, input: any, ifiles: File[] = []): Promise<[any, Download[]]> {
+        const startTime = Date.now()
+        const r = await this.execute2(func, input, ifiles)
+        const endTime = Date.now()
+        const duration = endTime - startTime
+        const durationColor = duration < 100 ? '\x1b[32m' : duration < 200 ? '\x1b[38;5;208m' : '\x1b[31m'
+        console.log(`${func} ${durationColor}${duration}ms\x1b[0m`)
+        return r
+    }
+
+    /** Function that sends a request to the API and returns the response. **/
+    async execute2(func: string, input: any, ifiles: File[] = []): Promise<[any, Download[]]> {
         //
 
         const caching = this.useCache && this.clientTTLs.has(func) && ifiles.length === 0

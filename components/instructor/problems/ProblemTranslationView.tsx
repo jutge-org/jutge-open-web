@@ -1,14 +1,7 @@
 'use client'
 
-import {
-    fetchAbstractProblem,
-    fetchHtmlStatement,
-    fetchMarkdownStatement,
-    fetchPdfStatement,
-    fetchProblem,
-    fetchProblemSuppl,
-    fetchTextStatement,
-} from '@/actions/instructor'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import StatementDialog from '@/components/instructor/StatementDialog'
@@ -31,6 +24,8 @@ type ProblemInfo = {
 }
 
 export function ProblemTranslationView() {
+    const { client } = useJutgeAuth()
+
     const { problem_id, problem_nm } = useParams<{ problem_id: string; problem_nm: string }>()
     const [abstractProblem, setAbstractProblem] = useState<BriefAbstractProblem | null>(null)
     const [problem, setProblem] = useState<Problem | null>(null)
@@ -38,10 +33,12 @@ export function ProblemTranslationView() {
 
     useEffect(() => {
         async function fetchData() {
+    const { client } = useJutgeAuth()
+
             const data = await all({
-                abstractProblem: fetchAbstractProblem(problem_nm),
-                problem: fetchProblem(problem_id),
-                problemSuppl: fetchProblemSuppl(problem_id),
+                abstractProblem: client.problems.getAbstractProblem(problem_nm),
+                problem: client.problems.getProblem(problem_id),
+                problemSuppl: client.problems.getProblemSuppl(problem_id),
             })
             setAbstractProblem(data.abstractProblem)
             setProblem(data.problem)
@@ -70,6 +67,8 @@ interface ProblemFormProps {
 }
 
 function EditProblemForm({ info }: ProblemFormProps) {
+    const { client } = useJutgeAuth()
+
     const [statement, setStatement] = useState<JSX.Element | null>(null)
     const [isStatementDialogOpen, setIsStatementDialogOpen] = useState(false)
 
@@ -209,12 +208,16 @@ function EditProblemForm({ info }: ProblemFormProps) {
     if (!info.abstractProblem.author_email) delete fields.author_email
 
     async function pdfAction() {
-        const download = await fetchPdfStatement(info.problem.problem_id)
+    const { client } = useJutgeAuth()
+
+        const download = await client.problems.getPdfStatement(info.problem.problem_id)
         offerDownloadFile(download)
     }
 
     async function htmlAction() {
-        const htmlStatement = await fetchHtmlStatement(info.problem.problem_id)
+    const { client } = useJutgeAuth()
+
+        const htmlStatement = await client.problems.getHtmlStatement(info.problem.problem_id)
         setStatement(
             <div
                 className="h-96 w-full overflow-y-auto rounded-lg border p-4"
@@ -225,13 +228,17 @@ function EditProblemForm({ info }: ProblemFormProps) {
     }
 
     async function textAction() {
-        const textStatement = await fetchTextStatement(info.problem.problem_id)
+    const { client } = useJutgeAuth()
+
+        const textStatement = await client.problems.getTextStatement(info.problem.problem_id)
         setStatement(<Textarea className="h-96 w-full text-sm" value={textStatement} readOnly />)
         setIsStatementDialogOpen(true)
     }
 
     async function markdownAction() {
-        const markdownStatement = await fetchMarkdownStatement(info.problem.problem_id)
+    const { client } = useJutgeAuth()
+
+        const markdownStatement = await client.problems.getMarkdownStatement(info.problem.problem_id)
         setStatement(
             <div className="prose prose-sm h-96 w-full overflow-y-auto rounded-lg border p-4 text-sm">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownStatement}</ReactMarkdown>

@@ -1,8 +1,14 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+import { AuthedGate } from '@/components/auth/AuthGates'
 import { CoursesList } from '@/components/courses/CoursesList'
 import { CoursesNav } from '@/components/courses/CoursesNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { getCurrentClient } from '@/lib/auth'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
 import type { CoursesData, CoursesTab } from '@/lib/courses'
 import { fetchCoursesData } from '@/services/queries/courses'
 
@@ -34,13 +40,42 @@ type CoursesTabPageProps = {
     activeTab: CoursesTab
 }
 
-export async function CoursesTabPage({ activeTab }: CoursesTabPageProps) {
-    const client = await getCurrentClient()
-    const data = await fetchCoursesData(client)
+export function CoursesTabPage({ activeTab }: CoursesTabPageProps) {
+    const router = useRouter()
+    const { authenticated, client, loading: authLoading } = useJutgeAuth()
+    const [data, setData] = useState<CoursesData | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (authLoading) return
+        if (!authenticated) {
+            router.replace('/courses/public')
+            return
+        }
+
+        let cancelled = false
+        setLoading(true)
+        void fetchCoursesData(client).then((result) => {
+            if (!cancelled) {
+                setData(result)
+                setLoading(false)
+            }
+        })
+
+        return () => {
+            cancelled = true
+        }
+    }, [authLoading, authenticated, client, router])
+
+    if (authLoading || !authenticated || loading || !data) {
+        return <p className="py-16 text-center text-muted-foreground">Loading…</p>
+    }
 
     return (
-        <CoursesStudentShell activeTab={activeTab} data={data}>
-            <CoursesList tab={activeTab} courses={data[activeTab]} />
-        </CoursesStudentShell>
+        <AuthedGate>
+            <CoursesStudentShell activeTab={activeTab} data={data}>
+                <CoursesList tab={activeTab} courses={data[activeTab]} />
+            </CoursesStudentShell>
+        </AuthedGate>
     )
 }

@@ -1,6 +1,4 @@
-import { cache } from 'react'
-
-import { getPreferredLanguageId, getProblemsApiClient } from '@/lib/auth'
+import { decodeBase64Utf8 } from '@/lib/base64'
 import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import { resolveProblemIdFromAbstract } from '@/lib/problemVariants'
 import {
@@ -13,8 +11,8 @@ import {
     type Testcase,
 } from '@/lib/jutge_api_client'
 
-import { fetchLanguages } from './problems'
 import { fetchCompilers } from './tables'
+import { fetchLanguages } from './problems'
 
 export type DecodedTestcase = {
     name: string
@@ -44,7 +42,7 @@ export type ProblemDetailData = {
 function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTestcase {
     const decoded: DecodedTestcase = {
         name: testcase.name,
-        input: Buffer.from(testcase.input_b64, 'base64').toString('utf-8'),
+        input: decodeBase64Utf8(testcase.input_b64),
         output: '',
     }
 
@@ -53,20 +51,26 @@ function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTest
         return decoded
     }
 
-    decoded.output = Buffer.from(testcase.correct_b64, 'base64').toString('utf-8')
+    decoded.output = decodeBase64Utf8(testcase.correct_b64)
     return decoded
 }
 
-export const fetchAbstractProblem = cache(async (problem_nm: string): Promise<AbstractProblem | null> => {
+export async function fetchAbstractProblem(
+    client: JutgeApiClient,
+    problem_nm: string,
+): Promise<AbstractProblem | null> {
     try {
-        const client = await getProblemsApiClient()
         return await client.problems.getAbstractProblem(problem_nm)
     } catch {
         return null
     }
-})
+}
 
-export const resolveProblemId = cache(async (key: string): Promise<string | null> => {
+export async function resolveProblemId(
+    client: JutgeApiClient,
+    key: string,
+    preferredLanguageId?: string | null,
+): Promise<string | null> {
     const parsed = parseProblemKey(key)
 
     if (parsed.kind === 'problem_id') {
@@ -74,31 +78,33 @@ export const resolveProblemId = cache(async (key: string): Promise<string | null
     }
 
     if (parsed.kind === 'problem_nm') {
-        const abstractProblem = await fetchAbstractProblem(parsed.problem_nm)
+        const abstractProblem = await fetchAbstractProblem(client, parsed.problem_nm)
         if (!abstractProblem) {
             return null
         }
 
-        const preferredLanguageId = await getPreferredLanguageId()
         return resolveProblemIdFromAbstract(abstractProblem, preferredLanguageId)
     }
 
     return null
-})
+}
 
-export const fetchProblemStatus = cache(
-    async (client: JutgeApiClient, problem_nm: string): Promise<AbstractStatus | null> => {
-        try {
-            return await client.student.statuses.getForAbstractProblem(problem_nm)
-        } catch {
-            return null
-        }
-    },
-)
-
-export const fetchProblemDetail = cache(async (problemId: string): Promise<ProblemDetailData | null> => {
+export async function fetchProblemStatus(
+    client: JutgeApiClient,
+    problem_nm: string,
+): Promise<AbstractStatus | null> {
     try {
-        const client = await getProblemsApiClient()
+        return await client.student.statuses.getForAbstractProblem(problem_nm)
+    } catch {
+        return null
+    }
+}
+
+export async function fetchProblemDetail(
+    client: JutgeApiClient,
+    problemId: string,
+): Promise<ProblemDetailData | null> {
+    try {
         const problem = await client.problems.getProblem(problemId)
 
         const [
@@ -114,9 +120,9 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             client.problems.getSampleTestcases(problemId),
             client.problems.getPublicTestcases(problemId),
             client.problems.getProblemSuppl(problemId),
-            fetchAbstractProblem(problem.problem_nm),
-            fetchLanguages(),
-            fetchCompilers(),
+            fetchAbstractProblem(client, problem.problem_nm),
+            fetchLanguages(client),
+            fetchCompilers(client),
         ])
 
         if (!abstractProblem) {
@@ -165,4 +171,4 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
     } catch {
         return null
     }
-})
+}

@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import {
     mdiNumeric0Circle,
     mdiNumeric0CircleOutline,
@@ -53,12 +37,15 @@ import Widget from '@/components/administrator/dashboard/Widget'
 dayjs.extend(isoWeek)
 
 export default function CalendarExamsWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [exams, setExams] = useState<UpcomingExams | null>(null)
 
     async function fetchData() {
-        setExams(await fetchAdminDashboardUpcomingExams({ daysBefore: 31, daysAfter: 31 }))
+    const { client } = useJutgeAuth()
+
+        setExams(await client.admin.dashboard.getUpcomingExams({ daysBefore: 31, daysAfter: 31 }))
     }
 
     useEffect(() => {

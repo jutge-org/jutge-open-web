@@ -1,17 +1,9 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
-import { CourseDetail } from '@/components/courses/CourseDetail'
-import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
-import { buildCourseRow, courseHref } from '@/lib/courses'
-import { renderAuthed } from '@/lib/renderAuthed'
+import { CourseDetailPageClient } from '@/components/pages/CourseDetailPageClient'
+import { buildCourseRow } from '@/lib/courses'
+import { getServerJutgeClient } from '@/lib/server-request-auth'
 import { fetchCourse } from '@/services/queries/courses'
-import { fetchCourseListsData } from '@/services/queries/lists'
-import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
-import { fetchLastSubmissionsByProblemNm } from '@/services/queries/submissions'
-
-export const dynamic = 'force-dynamic'
 
 type PageProps = {
     params: Promise<{ course_key: string }>
@@ -21,7 +13,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { course_key: rawCourseKey } = await params
 
     try {
-        const client = await getCurrentClient()
+        const client = await getServerJutgeClient()
+        if (!client) {
+            return { title: 'Course — Jutge.org' }
+        }
+
         const result = await fetchCourse(client, rawCourseKey)
         if (!result) {
             return { title: 'Course — Jutge.org' }
@@ -37,45 +33,5 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CoursePage({ params }: PageProps) {
     const { course_key: rawCourseKey } = await params
 
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const result = await fetchCourse(client, rawCourseKey)
-        if (!result) {
-            notFound()
-        }
-
-        const { courseKey, course, status } = result
-        const row = buildCourseRow(course, status, courseKey)
-        const href = courseHref(courseKey)
-
-        const [preferredLanguageId, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
-            getPreferredLanguageId(),
-            fetchLanguages(),
-            fetchStudentProblemStatuses(client),
-            fetchLastSubmissionsByProblemNm(client),
-        ])
-        const problems = await fetchAllAbstractProblems(preferredLanguageId)
-        const lists = await fetchCourseListsData(client, course.lists, problems)
-        const lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
-
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Courses', url: '/courses' },
-                        { title: row.title, url: href },
-                    ]}
-                />
-                <CourseDetail
-                    courseKey={courseKey}
-                    course={course}
-                    status={status}
-                    lists={lists}
-                    languages={languages}
-                    statuses={statuses}
-                    lastSubmissions={lastSubmissions}
-                />
-            </div>
-        )
-    })
+    return <CourseDetailPageClient courseKey={rawCourseKey} />
 }

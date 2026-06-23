@@ -1,12 +1,13 @@
 'use client'
 
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import dayjs from 'dayjs'
 import { SaveIcon, TrashIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { fetchInstructorDocument, instructorDocumentRemove, instructorDocumentUpdate } from '@/actions/instructor'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
@@ -27,10 +28,12 @@ type DocumentPropertiesViewProps = {
 }
 
 export function DocumentPropertiesView({ document_nm }: DocumentPropertiesViewProps) {
+    const { client } = useJutgeAuth()
+
     const [document, setDocument] = useState<Document | null>(null)
 
     const fetchData = useCallback(async () => {
-        const document = await fetchInstructorDocument(document_nm)
+        const document = await client.instructor.documents.get(document_nm)
         setDocument(document)
     }, [document_nm])
 
@@ -49,6 +52,8 @@ interface DocumentFormProps {
 }
 
 function EditDocumentForm(props: DocumentFormProps) {
+    const { client } = useJutgeAuth()
+
     const router = useRouter()
 
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
@@ -134,7 +139,7 @@ function EditDocumentForm(props: DocumentFormProps) {
 
     async function download() {
         try {
-            const download = await getDocumentFile(props.document)
+            const download = await getDocumentFile(client, props.document)
             offerDownloadFile(download, props.document.document_nm + documentFileExtension(props.document))
         } catch (error) {
             return showError(error)
@@ -142,8 +147,10 @@ function EditDocumentForm(props: DocumentFormProps) {
     }
 
     async function save() {
+    const { client } = useJutgeAuth()
+
         try {
-            const download = await getDocumentFile(props.document)
+            const download = await getDocumentFile(client, props.document)
             const newDocument = {
                 document_nm: document_nm,
                 title: title,
@@ -151,7 +158,7 @@ function EditDocumentForm(props: DocumentFormProps) {
             }
             const newFile = file ? file : new File([new Uint8Array(download.data)], download.name)
 
-            await instructorDocumentUpdate(newDocument, newFile)
+            await client.instructor.documents.update(newDocument, newFile)
         } catch (error) {
             return showError(error)
         }
@@ -160,11 +167,13 @@ function EditDocumentForm(props: DocumentFormProps) {
     }
 
     async function remove() {
+    const { client } = useJutgeAuth()
+
         const message = `Are you sure you want to delete document '${props.document.document_nm}'?`
         if (!(await runConfirmDialog(message))) return
 
         try {
-            await instructorDocumentRemove(props.document.document_nm)
+            await client.instructor.documents.remove(props.document.document_nm)
         } catch (error) {
             return showError(error)
         }

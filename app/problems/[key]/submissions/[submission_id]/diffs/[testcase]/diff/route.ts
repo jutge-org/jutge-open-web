@@ -1,4 +1,4 @@
-import { getCurrentClient, tryGetCurrentUser } from '@/lib/auth'
+import { getClientFromRequestCookies, tryGetUserFromRequest } from '@/lib/server-request-auth'
 import { fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
 import { NextResponse } from 'next/server'
 
@@ -6,16 +6,20 @@ type RouteContext = {
     params: Promise<{ key: string; submission_id: string; testcase: string }>
 }
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
     const { key, submission_id, testcase } = await context.params
 
-    const user = await tryGetCurrentUser()
+    const user = await tryGetUserFromRequest(request)
     if (!user) {
         return new NextResponse(null, { status: 401 })
     }
 
     try {
-        const client = await getCurrentClient()
+        const client = getClientFromRequestCookies(request)
+        if (!client) {
+            return new NextResponse(null, { status: 401 })
+        }
+
         const analysis = await fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase)
 
         if (!analysis) {

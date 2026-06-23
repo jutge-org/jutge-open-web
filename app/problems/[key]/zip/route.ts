@@ -1,4 +1,4 @@
-import { getProblemsApiClient } from '@/lib/auth'
+import { getClientFromRequestCookies, getAnonymousServerJutgeClient } from '@/lib/server-request-auth'
 import { resolveProblemId } from '@/services/queries/problemDetail'
 import { NextResponse } from 'next/server'
 
@@ -6,15 +6,15 @@ type RouteContext = {
     params: Promise<{ key: string }>
 }
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
     const { key } = await context.params
-    const problemId = await resolveProblemId(key)
+    const client = getClientFromRequestCookies(request) ?? (await getAnonymousServerJutgeClient())
+    const problemId = await resolveProblemId(client, key)
     if (!problemId) {
         return new NextResponse(null, { status: 404 })
     }
 
     try {
-        const client = await getProblemsApiClient()
         const download = await client.problems.getZipStatement(problemId)
 
         return new NextResponse(Buffer.from(download.data), {

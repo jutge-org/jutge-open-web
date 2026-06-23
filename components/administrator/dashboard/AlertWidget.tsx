@@ -1,23 +1,7 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { useJutgeAuth } from '@/hooks/use-jutge-auth'
+
 import { Prose } from '@/components/documentation/Prose'
 import { MessageSquareWarningIcon } from 'lucide-react'
 import pluralize from 'pluralize'
@@ -26,12 +10,15 @@ import { AdminDashboard } from '@/lib/jutge_api_client'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export default function AlertWidget() {
+    const { client } = useJutgeAuth()
     //
 
     const [data, setData] = useState<AdminDashboard | null>(null)
 
     async function fetchData() {
-        setData(await fetchAdminDashboardAll())
+    const { client } = useJutgeAuth()
+
+        setData(await client.admin.dashboard.getAll())
     }
 
     useEffect(() => {

@@ -4,10 +4,20 @@ import { HomepageStatsDashboard } from '@/components/general/HomepageStatsDashbo
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
+import { countActiveProglangs, getActiveCompilers } from '@/lib/documentation'
 import { fetchHomepageStats } from '@/services/queries/misc'
+import { fetchCompilers } from '@/services/queries/tables'
 
 export async function HomePageGuest() {
-    const homepageStats = await fetchHomepageStats()
+    const [homepageStats, compilers] = await Promise.all([fetchHomepageStats(), fetchCompilers()])
+    const activeCompilers = getActiveCompilers(compilers)
+    const platformStats = homepageStats
+        ? {
+              ...homepageStats,
+              languages: countActiveProglangs(compilers),
+              compilers: activeCompilers.length,
+          }
+        : null
 
     return (
         <div className="flex flex-col gap-10">
@@ -26,7 +36,7 @@ export async function HomePageGuest() {
                 <HomeLoginCard />
                 <HomeQuickNav authenticated={false} />
                 <HomeNewsSection />
-                {homepageStats ? <HomepageStatsDashboard stats={homepageStats} /> : null}
+                {platformStats ? <HomepageStatsDashboard stats={platformStats} /> : null}
             </div>
         </div>
     )

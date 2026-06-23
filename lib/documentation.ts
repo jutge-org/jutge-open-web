@@ -109,6 +109,14 @@ export function getCompilerStatus(compiler: Compiler): { icon: string; label: st
     return { icon: '🟢', label: 'Ok', defunct: false }
 }
 
+export function getActiveCompilers(compilers: Compiler[]): Compiler[] {
+    return compilers.filter((compiler) => !getCompilerStatus(compiler).defunct)
+}
+
+export function countActiveProglangs(compilers: Compiler[]): number {
+    return new Set(getActiveCompilers(compilers).map((compiler) => compiler.language)).size
+}
+
 export function findCompilerBySlug(compilers: Compiler[], slug: string): Compiler | undefined {
     const compilerId = slugToCompilerId(slug)
     return compilers.find((c) => c.compiler_id === compilerId)

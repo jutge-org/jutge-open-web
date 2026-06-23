@@ -2,7 +2,7 @@
 
 import type { HomepageStats } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
-import { PuzzleIcon, SchoolIcon, SendIcon, TrophyIcon, UsersIcon } from 'lucide-react'
+import { CodeIcon, PuzzleIcon, SchoolIcon, SendIcon, TerminalIcon, TrophyIcon, UsersIcon } from 'lucide-react'
 import { useState } from 'react'
 
 import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
@@ -10,16 +10,19 @@ import { HomepageStatsRefreshButton } from '@/components/general/HomepageStatsRe
 import { HomeSectionHeading } from '@/components/general/HomeSectionHeading'
 
 type HomepageStatsDashboardProps = {
-    stats: HomepageStats
+    stats: HomepageStats & {
+        languages: number
+        compilers: number
+    }
 }
 
 const statItems = [
     {
-        key: 'users' as const,
-        label: 'Users',
-        icon: UsersIcon,
-        borderAccent: 'border-t-emerald-500',
-        iconAccent: 'text-emerald-600 dark:text-emerald-400',
+        key: 'submissions' as const,
+        label: 'Submissions',
+        icon: SendIcon,
+        borderAccent: 'border-t-blue-500',
+        iconAccent: 'text-blue-600 dark:text-blue-400',
     },
     {
         key: 'problems' as const,
@@ -29,11 +32,11 @@ const statItems = [
         iconAccent: 'text-violet-600 dark:text-violet-400',
     },
     {
-        key: 'submissions' as const,
-        label: 'Submissions',
-        icon: SendIcon,
-        borderAccent: 'border-t-blue-500',
-        iconAccent: 'text-blue-600 dark:text-blue-400',
+        key: 'users' as const,
+        label: 'Users',
+        icon: UsersIcon,
+        borderAccent: 'border-t-emerald-500',
+        iconAccent: 'text-emerald-600 dark:text-emerald-400',
     },
     {
         key: 'exams' as const,
@@ -48,6 +51,20 @@ const statItems = [
         icon: TrophyIcon,
         borderAccent: 'border-t-amber-500',
         iconAccent: 'text-amber-600 dark:text-amber-400',
+    },
+    {
+        key: 'languages' as const,
+        label: 'Programming Languages',
+        icon: CodeIcon,
+        borderAccent: 'border-t-indigo-300',
+        iconAccent: 'text-indigo-700 dark:text-indigo-300',
+    },
+    {
+        key: 'compilers' as const,
+        label: 'Compilers',
+        icon: TerminalIcon,
+        borderAccent: 'border-t-teal-300',
+        iconAccent: 'text-teal-700 dark:text-teal-300',
     },
 ]
 
@@ -66,7 +83,7 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                 </h2>
                 <HomepageStatsRefreshButton onRefresh={handleRefresh} />
             </HomeSectionHeading>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {statItems.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
                     <div
                         key={key}

@@ -1,7 +1,11 @@
+'use client'
+
 import type { HomepageStats } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
 import { PuzzleIcon, SchoolIcon, SendIcon, TrophyIcon, UsersIcon } from 'lucide-react'
+import { useState } from 'react'
 
+import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
 import { HomepageStatsRefreshButton } from '@/components/general/HomepageStatsRefreshButton'
 import { HomeSectionHeading } from '@/components/general/HomeSectionHeading'
 
@@ -47,18 +51,20 @@ const statItems = [
     },
 ]
 
-function formatStat(value: number): string {
-    return value.toLocaleString()
-}
-
 export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
+    const [replayKey, setReplayKey] = useState(0)
+
+    function handleRefresh() {
+        setReplayKey((key) => key + 1)
+    }
+
     return (
         <section aria-label="Platform statistics" className="flex flex-col gap-4">
             <HomeSectionHeading>
                 <h2 className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
                     Platform at a glance
                 </h2>
-                <HomepageStatsRefreshButton />
+                <HomepageStatsRefreshButton onRefresh={handleRefresh} />
             </HomeSectionHeading>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 {statItems.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
@@ -70,7 +76,7 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                         )}
                     >
                         <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground group-hover:animate-pulse">
-                            {formatStat(stats[key])}
+                            <AnimatedStatValue value={stats[key]} replayKey={replayKey} />
                         </p>
                         <div className="flex items-center gap-2">
                             <Icon className={cn('size-5 shrink-0 opacity-80', iconAccent)} aria-hidden />

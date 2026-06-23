@@ -8,11 +8,16 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
-export function HomepageStatsRefreshButton() {
+type HomepageStatsRefreshButtonProps = {
+    onRefresh?: () => void
+}
+
+export function HomepageStatsRefreshButton({ onRefresh }: HomepageStatsRefreshButtonProps) {
     const router = useRouter()
     const [isRefreshing, startTransition] = useTransition()
 
     function handleRefresh() {
+        onRefresh?.()
         startTransition(() => {
             router.refresh()
         })

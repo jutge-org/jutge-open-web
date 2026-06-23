@@ -188,6 +188,8 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                         </div>
                     )
                 },
+                valueGetter: (params: { data: CourseListItemRow }) =>
+                    isProblemRow(params.data) ? params.data.language_ids.join(', ') : '',
             },
             {
                 field: 'type',

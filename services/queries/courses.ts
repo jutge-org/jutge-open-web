@@ -1,5 +1,4 @@
 import { cache } from 'react'
-import { unstable_cache } from 'next/cache'
 
 import {
     buildCourseKey,
@@ -14,9 +13,8 @@ import {
     type CoursesNavItem,
     type GuestCourseRow,
 } from '@/lib/courses'
+import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
 import { JutgeApiClient, type Course } from '@/lib/jutge_api_client'
-
-const PUBLIC_COURSES_CACHE_SECONDS = 300
 
 async function resolveEnrolledCourseKey(client: JutgeApiClient, courseKeyParam: string): Promise<string | null> {
     const normalized = normalizeCourseKeyParam(courseKeyParam)
@@ -146,7 +144,7 @@ export const fetchCourse = cache(
 
 async function loadPublicCourses(): Promise<GuestCourseRow[]> {
     try {
-        const client = new JutgeApiClient()
+        const client = getAnonymousJutgeClient()
         const courses = await client.courses.indexPublic()
         return sortGuestCourseRows(Object.values(courses).map((course) => buildGuestCourseRow(course)))
     } catch {
@@ -154,6 +152,4 @@ async function loadPublicCourses(): Promise<GuestCourseRow[]> {
     }
 }
 
-export const fetchPublicCourses = unstable_cache(loadPublicCourses, ['public-courses'], {
-    revalidate: PUBLIC_COURSES_CACHE_SECONDS,
-})
+export const fetchPublicCourses = cache(loadPublicCourses)

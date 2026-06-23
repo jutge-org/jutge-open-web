@@ -1,10 +1,8 @@
-import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 
+import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import { JutgeApiClient, type AbstractProblem, type AbstractStatus, type Language } from '@/lib/jutge_api_client'
-
-const PROBLEMS_LIST_CACHE_SECONDS = 300
 
 export type ProblemRow = {
     problem_nm: string
@@ -64,7 +62,7 @@ export function abstractProblemsToRows(
 
 async function loadAbstractProblemsDict(): Promise<Record<string, AbstractProblem>> {
     try {
-        const client = new JutgeApiClient()
+        const client = getAnonymousJutgeClient()
         return await client.problems.getAllAbstractProblems()
     } catch {
         return {}
@@ -73,20 +71,16 @@ async function loadAbstractProblemsDict(): Promise<Record<string, AbstractProble
 
 async function loadLanguages(): Promise<Record<string, Language>> {
     try {
-        const client = new JutgeApiClient()
+        const client = getAnonymousJutgeClient()
         return await client.tables.getLanguages()
     } catch {
         return {}
     }
 }
 
-export const fetchAbstractProblemsDict = unstable_cache(loadAbstractProblemsDict, ['abstract-problems-dict'], {
-    revalidate: PROBLEMS_LIST_CACHE_SECONDS,
-})
+export const fetchAbstractProblemsDict = cache(loadAbstractProblemsDict)
 
-export const fetchLanguages = unstable_cache(loadLanguages, ['languages'], {
-    revalidate: PROBLEMS_LIST_CACHE_SECONDS,
-})
+export const fetchLanguages = cache(loadLanguages)
 
 export const fetchAllAbstractProblems = cache(async (preferredLanguageId?: string | null): Promise<ProblemRow[]> => {
     const abstractProblems = await fetchAbstractProblemsDict()

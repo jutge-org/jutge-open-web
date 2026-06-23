@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
 import { getJutgeAuthSession } from '@/lib/jutge-auth-session'
-import { jutgeClientFromToken } from '@/lib/jutge-clients'
+import { getAnonymousJutgeClient, getAuthenticatedJutgeClient } from '@/lib/jutge-client-registry'
 import { JutgeApiClient, type Profile } from '@/lib/jutge_api_client'
 
 export type SessionUser = {
@@ -28,7 +28,7 @@ const resolveJutgeSessionFromCookie = cache(
         const session = await getJutgeAuthSession()
         if (!session?.token || !session.userUid) return null
 
-        const client = await jutgeClientFromToken(session.token, session.userUid)
+        const client = getAuthenticatedJutgeClient(session.token, session.userUid)
         try {
             const profile = await client.student.profile.get()
             return { user: profileToSessionUser(profile), client, languageId: profile.language_id }
@@ -82,7 +82,7 @@ export async function getCurrentClient(): Promise<JutgeApiClient> {
 /** Jutge API client for problem endpoints; authenticated when the session is valid. */
 export async function getProblemsApiClient(): Promise<JutgeApiClient> {
     const session = await resolveJutgeSessionFromCookie()
-    return session?.client ?? new JutgeApiClient()
+    return session?.client ?? getAnonymousJutgeClient()
 }
 
 /** Profile language for problems; `null` when not authenticated or unavailable. */

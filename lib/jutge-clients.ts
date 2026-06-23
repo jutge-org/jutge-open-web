@@ -1,3 +1,4 @@
+import { getAuthenticatedJutgeClient } from '@/lib/jutge-client-registry'
 import { JutgeApiClient } from './jutge_api_client'
 
 export function getUserUidFromClient(client: JutgeApiClient): string {
@@ -8,8 +9,12 @@ export function getUserUidFromClient(client: JutgeApiClient): string {
     return userUid
 }
 
-export async function jutgeClientFromToken(token: string, userUid?: string) {
+export function jutgeClientFromToken(token: string, userUid?: string): JutgeApiClient {
+    if (userUid) {
+        return getAuthenticatedJutgeClient(token, userUid)
+    }
+
     const client = new JutgeApiClient()
-    client.meta = userUid ? { token, user_uid: userUid } : ({ token } as JutgeApiClient['meta'])
+    client.meta = { token } as JutgeApiClient['meta']
     return client
 }

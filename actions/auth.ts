@@ -1,7 +1,8 @@
 'use server'
 
+import { evictJutgeClient } from '@/lib/jutge-client-registry'
 import { jutgeClientFromToken } from '@/lib/jutge-clients'
-import { clearJutgeAuthCookie, getJutgeAuthToken, setJutgeAuthCookie } from '@/lib/jutge-auth-session'
+import { clearJutgeAuthCookie, getJutgeAuthSession, setJutgeAuthCookie } from '@/lib/jutge-auth-session'
 import { loginUser } from '@/services/mutations/users'
 
 export async function signInAction(
@@ -24,15 +25,19 @@ export async function signInAction(
 }
 
 export async function signOutAction(): Promise<void> {
-    const token = await getJutgeAuthToken()
+    const session = await getJutgeAuthSession()
 
-    if (token) {
+    if (session?.token) {
         try {
-            const client = await jutgeClientFromToken(token)
+            const client = jutgeClientFromToken(session.token, session.userUid)
             await client.auth.logout()
         } catch {
             /* token may already be invalid */
         }
+    }
+
+    if (session?.userUid) {
+        evictJutgeClient(session.userUid)
     }
 
     await clearJutgeAuthCookie()

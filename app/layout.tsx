@@ -1,3 +1,5 @@
+import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
+import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { AuthToolbar } from '@/components/AuthToolbar'
 import { RootShell } from '@/components/RootShell'
 import { ThemeProvider } from '@/components/ThemeProvider'
@@ -51,11 +53,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         }
                         footer={
                             <footer className="mt-auto border-t border-border bg-background">
-                                <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                                    <p>
+                                <div className="mx-auto flex max-w-6xl flex-row gap-2 px-6 py-3 text-sm text-muted-foreground items-center justify-between">
+                                    <span className="">
                                         © Universitat Politècnica de Catalunya
                                         <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
-                                    </p>
+                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        <JutgeLogoIcon className="size-6 text-foreground" />
+                                        <UpcLogoIcon className="size-6 text-foreground" />
+                                    </div>
                                 </div>
                             </footer>
                         }

@@ -12,7 +12,7 @@ export default async function PublicProblemsPage() {
         getPreferredLanguageId(),
         fetchLanguages(),
     ])
-    const problems = await fetchAllAbstractProblems(preferredLanguageId)
+    const problems = await fetchAllAbstractProblems(preferredLanguageId, { allLanguageTitles: true })
 
     return (
         <div className="flex flex-col gap-6">

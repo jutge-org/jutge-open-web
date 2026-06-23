@@ -34,11 +34,20 @@ export function abstractProblemsToTitleMap(
     return titles
 }
 
-export function abstractProblemToRow(ap: AbstractProblem, preferredLanguageId?: string | null): ProblemRow {
+export type AbstractProblemRowOptions = {
+    allLanguageTitles?: boolean
+}
+
+export function abstractProblemToRow(
+    ap: AbstractProblem,
+    preferredLanguageId?: string | null,
+    options?: AbstractProblemRowOptions,
+): ProblemRow {
     const variants = Object.values(ap.problems).sort((a, b) => a.language_id.localeCompare(b.language_id))
     const language_ids = variants.map((p) => p.language_id)
-    const preferredVariant = getPreferredProblemVariant(ap, preferredLanguageId)
-    const title = preferredVariant?.title ?? ap.problem_nm
+    const title = options?.allLanguageTitles
+        ? variants.map((p) => p.title).join(' / ') || ap.problem_nm
+        : (getPreferredProblemVariant(ap, preferredLanguageId)?.title ?? ap.problem_nm)
 
     return {
         problem_nm: ap.problem_nm,
@@ -54,9 +63,10 @@ export function abstractProblemToRow(ap: AbstractProblem, preferredLanguageId?: 
 export function abstractProblemsToRows(
     abstractProblems: Record<string, AbstractProblem>,
     preferredLanguageId?: string | null,
+    options?: AbstractProblemRowOptions,
 ): ProblemRow[] {
     return Object.values(abstractProblems)
-        .map((ap) => abstractProblemToRow(ap, preferredLanguageId))
+        .map((ap) => abstractProblemToRow(ap, preferredLanguageId, options))
         .sort((a, b) => a.problem_nm.localeCompare(b.problem_nm))
 }
 
@@ -82,10 +92,15 @@ export const fetchAbstractProblemsDict = cache(loadAbstractProblemsDict)
 
 export const fetchLanguages = cache(loadLanguages)
 
-export const fetchAllAbstractProblems = cache(async (preferredLanguageId?: string | null): Promise<ProblemRow[]> => {
-    const abstractProblems = await fetchAbstractProblemsDict()
-    return abstractProblemsToRows(abstractProblems, preferredLanguageId)
-})
+export const fetchAllAbstractProblems = cache(
+    async (
+        preferredLanguageId?: string | null,
+        options?: AbstractProblemRowOptions,
+    ): Promise<ProblemRow[]> => {
+        const abstractProblems = await fetchAbstractProblemsDict()
+        return abstractProblemsToRows(abstractProblems, preferredLanguageId, options)
+    },
+)
 
 export const fetchStudentProblemStatuses = cache(
     async (client: JutgeApiClient): Promise<Record<string, AbstractStatus>> => {

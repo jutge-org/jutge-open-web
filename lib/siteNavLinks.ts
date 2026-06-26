@@ -73,7 +73,7 @@ const documentationLink: SiteNavLink = {
 const aboutLink: SiteNavLink = {
     href: '/about',
     label: 'About',
-    match: (pathname) => pathname === '/about',
+    match: (pathname) => pathname === '/about' || pathname.startsWith('/about/'),
 }
 
 /** Compare hrefs loosely (trailing slashes) for matching menu anchors to crumbs. */

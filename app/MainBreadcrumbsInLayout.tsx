@@ -19,7 +19,10 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { ExternalLink } from '@/components/ExternalLink'
+import { aboutNavItems } from '@/lib/about'
 import { administratorIndexItems } from '@/lib/administrator'
+import { documentationNavItems } from '@/lib/documentation'
 import { instructorIndexItems } from '@/lib/instructor'
 import {
     getSiteNavLinks,
@@ -31,19 +34,29 @@ import {
 import { cn } from '@/lib/utils'
 import { useMainBreadcrumbs } from '@/store/MainBreadcrumbs'
 import {
+    AccessibilityIcon,
     Award,
     AudioLinesIcon,
+    BookMarkedIcon,
     BookOpen,
     BookOpenCheckIcon,
     BookText,
     ActivityIcon,
     BotIcon,
+    BoxesIcon,
     CalendarIcon,
+    CameraIcon,
     ChartPieIcon,
+    Code2Icon,
+    FileCode2Icon,
     FileIcon,
     FilePenIcon,
+    FileTextIcon,
+    GavelIcon,
+    HelpCircleIcon,
     LayoutDashboardIcon,
     ListIcon,
+    MegaphoneIcon,
     ScrollTextIcon,
     SendIcon,
     PuzzleIcon,
@@ -54,6 +67,9 @@ import {
     Info,
     MenuIcon,
     SearchIcon,
+    ShieldIcon,
+    StampIcon,
+    StethoscopeIcon,
     TableIcon,
     TrophyIcon,
     UserRoundPenIcon,
@@ -155,6 +171,58 @@ function MainNavAdministratorSubItemIcon({ href }: { href: string }) {
     }
 }
 
+function MainNavDocumentationSubItemIcon({ href }: { href: string }) {
+    switch (href) {
+        case '/documentation/faq':
+            return <HelpCircleIcon aria-hidden />
+        case '/documentation/compilers':
+            return <Code2Icon aria-hidden />
+        case '/documentation/verdicts':
+            return <GavelIcon aria-hidden />
+        case '/documentation/code-metrics':
+            return <StethoscopeIcon aria-hidden />
+        case '/documentation/pylibs':
+            return <BoxesIcon aria-hidden />
+        case '/documentation/certificates':
+            return <StampIcon aria-hidden />
+        case '/documentation/markdown':
+            return <FileCode2Icon aria-hidden />
+        case '/documentation/references':
+            return <BookMarkedIcon aria-hidden />
+        default:
+            return null
+    }
+}
+
+function MainNavAboutSubItemIcon({ href }: { href: string }) {
+    switch (href) {
+        case 'https://t.me/jutge':
+            return <SendIcon aria-hidden />
+        case '/about/terms-of-service':
+            return <MegaphoneIcon aria-hidden />
+        case '/about/honor-code':
+            return <ShieldIcon aria-hidden />
+        case '/about/accessibility':
+            return <AccessibilityIcon aria-hidden />
+        case '/about/pictures':
+            return <CameraIcon aria-hidden />
+        case '/about/publications':
+            return <FileTextIcon aria-hidden />
+        case '/about/credits':
+            return <Info aria-hidden />
+        default:
+            return null
+    }
+}
+
+const documentationSubmenuItems = documentationNavItems
+    .filter((item) => item.tab !== 'index')
+    .map(({ href, label, external }) => ({ href, label, external }))
+
+const aboutSubmenuItems = aboutNavItems
+    .filter((item) => item.tab !== 'index')
+    .map(({ href, label, external }) => ({ href, label, external }))
+
 function navSubItemIsCurrent(pathname: string, href: string, indexHref: string): boolean {
     if (href === indexHref) return pathname === indexHref
     return pathname === href || pathname.startsWith(`${href}/`)
@@ -164,7 +232,7 @@ type MainNavRoleSubmenuProps = {
     href: string
     label: string
     indexHref: string
-    items: readonly { href: string; label: string }[]
+    items: readonly { href: string; label: string; external?: boolean }[]
     pathname: string
     isCurrentSection: boolean
     subItemIcon: ComponentType<{ href: string }>
@@ -197,20 +265,29 @@ function MainNavRoleSubmenu({
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    {items.map((item) => (
-                        <DropdownMenuItem asChild key={item.href}>
-                            <Link
-                                href={item.href}
-                                className={cn(
-                                    navSubItemIsCurrent(pathname, item.href, indexHref) &&
-                                        'font-semibold text-foreground',
-                                )}
-                            >
-                                <SubItemIcon href={item.href} />
-                                {item.label}
-                            </Link>
-                        </DropdownMenuItem>
-                    ))}
+                    {items.map((item) =>
+                        item.external ? (
+                            <DropdownMenuItem asChild key={item.href}>
+                                <ExternalLink href={item.href}>
+                                    <SubItemIcon href={item.href} />
+                                    {item.label}
+                                </ExternalLink>
+                            </DropdownMenuItem>
+                        ) : (
+                            <DropdownMenuItem asChild key={item.href}>
+                                <Link
+                                    href={item.href}
+                                    className={cn(
+                                        navSubItemIsCurrent(pathname, item.href, indexHref) &&
+                                            'font-semibold text-foreground',
+                                    )}
+                                >
+                                    <SubItemIcon href={item.href} />
+                                    {item.label}
+                                </Link>
+                            </DropdownMenuItem>
+                        ),
+                    )}
                 </DropdownMenuSubContent>
             </DropdownMenuPortal>
         </DropdownMenuSub>
@@ -294,6 +371,26 @@ export function MainBreadcrumbsInLayout({
                                                 pathname={pathname}
                                                 isCurrentSection={linkIsCurrentMainSection(href)}
                                                 subItemIcon={MainNavCoursesSubItemIcon}
+                                            />
+                                        ) : href === '/documentation' ? (
+                                            <MainNavRoleSubmenu
+                                                href={href}
+                                                label={label}
+                                                indexHref="/documentation"
+                                                items={documentationSubmenuItems}
+                                                pathname={pathname}
+                                                isCurrentSection={linkIsCurrentMainSection(href)}
+                                                subItemIcon={MainNavDocumentationSubItemIcon}
+                                            />
+                                        ) : href === '/about' ? (
+                                            <MainNavRoleSubmenu
+                                                href={href}
+                                                label={label}
+                                                indexHref="/about"
+                                                items={aboutSubmenuItems}
+                                                pathname={pathname}
+                                                isCurrentSection={linkIsCurrentMainSection(href)}
+                                                subItemIcon={MainNavAboutSubItemIcon}
                                             />
                                         ) : (
                                             <DropdownMenuItem asChild>

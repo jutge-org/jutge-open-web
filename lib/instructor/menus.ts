@@ -9,6 +9,7 @@ export const instructorCourseSubNav = (course_nm: string): InstructorSubNavItem[
     { key: 'students', label: 'Students', segment: 'students' },
     { key: 'tutors', label: 'Tutors', segment: 'tutors' },
     { key: 'lists', label: 'Lists', segment: 'lists' },
+    { key: 'statistics', label: 'Statistics', segment: 'statistics' },
     { key: 'duplicate', label: 'Duplicate', segment: 'duplicate' },
 ]
 

@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-26T07:31:46.273Z
+ * This file has been automatically generated at 2026-06-26T17:09:32.999Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -636,6 +636,16 @@ export type InstructorCourse = {
 export type StudentProfile = {
     name: string
     email: string
+}
+
+export type CourseSubmission = {
+    time: string
+    user_uid: string
+    email: string
+    problem_id: string
+    verdict: string
+    compiler_id: string
+    proglang: string
 }
 
 export type InstructorCourseCreation = {
@@ -3268,6 +3278,18 @@ class Module_instructor_courses {
      */
     async sendInviteToTutors(course_nm: string): Promise<void> {
         const [output, ofiles] = await this.root.execute("instructor.courses.sendInviteToTutors", course_nm)
+        return output
+    }
+
+    /**
+     * Get all submissions for a course.
+     *
+     * 🔐 Authentication: instructor
+     * No warnings
+     * Returns all submissions for all problems in all lists of the course, from all enrolled students. Each submission includes the student user uid, email, time, problem id, verdict, compiler id, and programming language.
+     */
+    async getCourseSubmissions(course_nm: string): Promise<CourseSubmission[]> {
+        const [output, ofiles] = await this.root.execute("instructor.courses.getCourseSubmissions", course_nm)
         return output
     }
 

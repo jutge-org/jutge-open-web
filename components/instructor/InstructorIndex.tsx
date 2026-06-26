@@ -1,11 +1,11 @@
 import { instructorIndexItems } from '@/lib/instructor'
 import { cn } from '@/lib/utils'
-import { BotIcon, FileIcon, FilePenIcon, ListIcon, PuzzleIcon, SearchIcon, TableIcon } from 'lucide-react'
+import { BookOpenIcon, BotIcon, FileIcon, FilePenIcon, ListIcon, PuzzleIcon, SearchIcon, TableIcon } from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof TableIcon> = {
     Search: SearchIcon,
-    Courses: TableIcon,
+    Courses: BookOpenIcon,
     Lists: ListIcon,
     Exams: FilePenIcon,
     Documents: FileIcon,

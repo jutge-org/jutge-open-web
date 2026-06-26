@@ -1,0 +1,122 @@
+'use client'
+
+import { AgTable } from '@/components/administrator/AgTable'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Toggle } from '@/components/ui/toggle'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { emailRenderer } from '@/lib/administrator/grid-renderers'
+import { deriveCourseStudentRanking } from '@/lib/instructor/courseStudentRanking'
+import type { Dict } from '@/lib/instructor/utils'
+import type { CourseSubmission, InstructorCourse, InstructorList, StudentProfile } from '@/lib/jutge_api_client'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
+
+type CourseStudentRankingCardProps = {
+    course: InstructorCourse
+    profiles: Dict<StudentProfile>
+    lists: InstructorList[]
+    submissions: CourseSubmission[]
+}
+
+const PRIVACY_CELL_STYLE = { filter: 'blur(4px)', userSelect: 'none' } as const
+const CLEAR_PRIVACY_CELL_STYLE = { filter: 'none', userSelect: 'text' } as const
+
+export function CourseStudentRankingCard({ course, profiles, lists, submissions }: CourseStudentRankingCardProps) {
+    const [blurPersonalData, setBlurPersonalData] = useState(false)
+
+    const colDefs = useMemo(
+        () => [
+            {
+                field: 'rank',
+                headerName: 'Ranking',
+                width: 100,
+                sortable: false,
+                type: 'rightAligned',
+            },
+            {
+                field: 'name',
+                flex: 2,
+                filter: true,
+                cellStyle: blurPersonalData ? PRIVACY_CELL_STYLE : CLEAR_PRIVACY_CELL_STYLE,
+            },
+            {
+                field: 'email',
+                flex: 2,
+                filter: true,
+                cellRenderer: emailRenderer('email'),
+                cellStyle: blurPersonalData ? PRIVACY_CELL_STYLE : CLEAR_PRIVACY_CELL_STYLE,
+            },
+            {
+                field: 'ok',
+                headerName: 'OK problems',
+                width: 130,
+                filter: false,
+                type: 'rightAligned',
+            },
+            {
+                field: 'ko',
+                headerName: 'KO problems',
+                width: 130,
+                filter: false,
+                type: 'rightAligned',
+            },
+        ],
+        [blurPersonalData],
+    )
+
+    const rows = useMemo(
+        () => deriveCourseStudentRanking(course, profiles, lists, submissions),
+        [course, profiles, lists, submissions],
+    )
+
+    return (
+        <Card className="w-full">
+            <CardHeader className="p-4">
+                <CardTitle>Ranking</CardTitle>
+                <CardAction>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Toggle
+                                    variant="outline"
+                                    size="sm"
+                                    pressed={blurPersonalData}
+                                    onPressedChange={setBlurPersonalData}
+                                    aria-label={
+                                        blurPersonalData ? 'Show names and emails' : 'Blur names and emails'
+                                    }
+                                >
+                                    {blurPersonalData ? <EyeOffIcon aria-hidden /> : <EyeIcon aria-hidden />}
+                                    {blurPersonalData ? 'Show names' : 'Blur names'}
+                                </Toggle>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </CardAction>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+                {rows.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No students to display.</p>
+                ) : (
+                    <div className="h-96 w-full">
+                        <AgTable
+                            key={blurPersonalData ? 'blurred' : 'clear'}
+                            rowData={rows}
+                            columnDefs={colDefs}
+                            rowHeight={36}
+                            wrapperBorder={false}
+                            themeParams={{
+                                backgroundColor: 'var(--card)',
+                                oddRowBackgroundColor: 'var(--card)',
+                                chromeBackgroundColor: 'var(--card)',
+                            }}
+                        />
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    )
+}

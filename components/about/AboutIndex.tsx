@@ -1,12 +1,14 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import { aboutIndexItems } from '@/lib/about'
 import { cn } from '@/lib/utils'
-import { Camera, ExternalLink, FileText, Info, Megaphone, Send, Shield } from 'lucide-react'
+import { Accessibility as AccessibilityIcon, Camera, ExternalLink as ExternalLinkIcon, FileText, Info, Megaphone, Send, Shield } from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof Info> = {
     'Telegram channel': Send,
     'Terms of Service': Megaphone,
     'Honor Code': Shield,
+    Accessibility: AccessibilityIcon,
     Pictures: Camera,
     Publications: FileText,
     Credits: Info,
@@ -28,7 +30,7 @@ export function AboutIndex() {
                             <span className="flex items-center gap-1.5 text-lg font-semibold tracking-tight text-foreground">
                                 {item.label}
                                 {external ? (
-                                    <ExternalLink className="size-4 text-muted-foreground" aria-hidden />
+                                    <ExternalLinkIcon className="size-4 text-muted-foreground" aria-hidden />
                                 ) : null}
                             </span>
                             <span className="text-sm leading-snug text-muted-foreground">{item.description}</span>
@@ -44,9 +46,9 @@ export function AboutIndex() {
 
                 if (external) {
                     return (
-                        <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className={className}>
+                        <ExternalLink key={item.href} href={item.href} className={className}>
                             {card}
-                        </a>
+                        </ExternalLink>
                     )
                 }
 

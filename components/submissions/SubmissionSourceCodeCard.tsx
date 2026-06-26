@@ -234,7 +234,7 @@ export function SubmissionSourceCodeCard({
                                             asChild
                                             variant="outline"
                                             size="icon-sm"
-                                            aria-label="Show source code in full screen"
+                                            aria-label="Show source code in full screen (opens in new window)"
                                             className="rounded-none border-0"
                                         >
                                             <Link href={codeHref} target="_blank" rel="noopener noreferrer">

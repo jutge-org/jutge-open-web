@@ -246,7 +246,7 @@ export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTes
                                             asChild
                                             variant="outline"
                                             size="icon-sm"
-                                            aria-label="Show output diff in full screen"
+                                            aria-label="Show output diff in full screen (opens in new window)"
                                             className="rounded-none border-0"
                                         >
                                             <Link href={diffHref} target="_blank" rel="noopener noreferrer">

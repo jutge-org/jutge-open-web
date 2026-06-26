@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import { Prose } from '@/components/documentation/Prose'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -7,10 +8,11 @@ import remarkGfm from 'remark-gfm'
 
 type MarkdownDocProps = {
     filename: string
+    section?: 'documentation' | 'about'
 }
 
-export async function MarkdownDoc({ filename }: MarkdownDocProps) {
-    const filePath = path.join(process.cwd(), 'content', 'documentation', filename)
+export async function MarkdownDoc({ filename, section = 'documentation' }: MarkdownDocProps) {
+    const filePath = path.join(process.cwd(), 'content', section, filename)
     const content = await readFile(filePath, 'utf8')
 
     return (
@@ -29,11 +31,7 @@ export async function MarkdownDoc({ filename }: MarkdownDocProps) {
                                 </Link>
                             )
                         }
-                        return (
-                            <a href={href} target="_blank" rel="noreferrer">
-                                {children}
-                            </a>
-                        )
+                        return <ExternalLink href={href ?? ''}>{children}</ExternalLink>
                     },
                 }}
             >

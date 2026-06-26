@@ -107,7 +107,7 @@ export function AuthToolbar({ authenticated, instructor = false, administrator =
 
     return (
         <>
-            <Button size="icon" type="button" onClick={() => setDialogOpen(true)}>
+            <Button size="icon" type="button" aria-label="Sign in" onClick={() => setDialogOpen(true)}>
                 <SignIn aria-hidden />
             </Button>
 

@@ -1,3 +1,4 @@
+import { ExternalLink, OpensInNewWindow } from '@/components/ExternalLink'
 import Image from 'next/image'
 
 import { HomeSectionHeading } from '@/components/general/HomeSectionHeading'
@@ -29,6 +30,7 @@ function HomeNewsCard({
                     className="shrink-0"
                 >
                     <Image src={imageSrc} alt="" width={80} height={80} className="size-22 rounded-md object-contain" />
+                    {imageHref.startsWith('http') ? <OpensInNewWindow /> : null}
                 </a>
                 <div className={cn('flex min-w-0 flex-1 flex-col gap-2 text-sm leading-relaxed text-muted-foreground')}>
                     {children}
@@ -47,21 +49,16 @@ function QuizzesNewsItem() {
         >
             <p>
                 Try{' '}
-                <a href="https://quizzes.jutge.org" target="_blank" rel="noreferrer" className={newsLinkClassName}>
+                <ExternalLink href="https://quizzes.jutge.org" className={newsLinkClassName}>
                     quizzes.jutge.org
-                </a>
+                </ExternalLink>
                 : Play and learn, share your knowledge, wrong answers welcome!
             </p>
             <p>
                 Quizzes is currently under development. We appreciate your{' '}
-                <a
-                    href="https://feedback-quizzes.jutge.org"
-                    target="_blank"
-                    rel="noreferrer"
-                    className={newsLinkClassName}
-                >
+                <ExternalLink href="https://feedback-quizzes.jutge.org" className={newsLinkClassName}>
                     feedback
-                </a>
+                </ExternalLink>
                 .
             </p>
         </HomeNewsCard>
@@ -84,14 +81,9 @@ function VscodeNewsItem() {
             </p>
             <p>
                 Do you wish to contribute? See the{' '}
-                <a
-                    href="https://github.com/jutge-org/jutge-vscode"
-                    target="_blank"
-                    rel="noreferrer"
-                    className={newsLinkClassName}
-                >
+                <ExternalLink href="https://github.com/jutge-org/jutge-vscode" className={newsLinkClassName}>
                     repository
-                </a>
+                </ExternalLink>
                 .
             </p>
         </HomeNewsCard>
@@ -102,9 +94,9 @@ function ApiNewsItem() {
     return (
         <HomeNewsCard title="API for Jutge.org" imageSrc="/news/api-jutge.png" imageHref="https://api.jutge.org">
             <p className="text-lg font-medium leading-snug">
-                <a href="https://api.jutge.org" target="_blank" rel="noreferrer" className={newsLinkClassName}>
+                <ExternalLink href="https://api.jutge.org" className={newsLinkClassName}>
                     api.jutge.org
-                </a>
+                </ExternalLink>
             </p>
             <p>
                 Write programs to interact with Jutge.org: obtain information, test AIs, configure things
@@ -118,9 +110,9 @@ function LliconsNewsItem() {
     return (
         <HomeNewsCard title="Lliçons" imageSrc="/news/llicons.png" imageHref="https://lliçons.jutge.org">
             <p className="text-lg font-medium leading-snug">
-                <a href="https://lliçons.jutge.org" target="_blank" rel="noreferrer" className={newsLinkClassName}>
+                <ExternalLink href="https://lliçons.jutge.org" className={newsLinkClassName}>
                     lliçons.jutge.org
-                </a>
+                </ExternalLink>
             </p>
             <p>El recull de lliçons d&apos;algorísmia i programació de Jutge.org.</p>
         </HomeNewsCard>

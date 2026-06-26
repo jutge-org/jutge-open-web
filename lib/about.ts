@@ -3,6 +3,7 @@ export type AboutTab =
     | 'telegram'
     | 'terms-of-service'
     | 'honor-code'
+    | 'accessibility'
     | 'pictures'
     | 'publications'
     | 'credits'
@@ -19,6 +20,7 @@ export const aboutNavItems: AboutNavItem[] = [
     { tab: 'telegram', label: 'Telegram channel', href: 'https://t.me/jutge', external: true },
     { tab: 'terms-of-service', label: 'Terms of Service', href: '/about/terms-of-service' },
     { tab: 'honor-code', label: 'Honor Code', href: '/about/honor-code' },
+    { tab: 'accessibility', label: 'Accessibility', href: '/about/accessibility' },
     { tab: 'pictures', label: 'Pictures', href: '/about/pictures' },
     { tab: 'publications', label: 'Publications', href: '/about/publications' },
     { tab: 'credits', label: 'Credits', href: '/about/credits' },
@@ -40,6 +42,11 @@ export const aboutIndexItems = [
         href: '/about/honor-code',
         label: 'Honor Code',
         description: 'Academic integrity expectations for users',
+    },
+    {
+        href: '/about/accessibility',
+        label: 'Accessibility',
+        description: 'Accessibility statement and how to report barriers',
     },
     {
         href: '/about/pictures',

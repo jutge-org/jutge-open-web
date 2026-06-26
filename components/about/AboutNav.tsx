@@ -1,5 +1,6 @@
 'use client'
 
+import { ExternalLink } from '@/components/ExternalLink'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { aboutNavItems, type AboutTab } from '@/lib/about'
 import Link from 'next/link'
@@ -17,9 +18,9 @@ export function AboutNav({ activeTab }: AboutNavProps) {
                         if (external) {
                             return (
                                 <TabsTrigger key={tab} value={tab} asChild>
-                                    <a href={href} target="_blank" rel="noreferrer">
+                                    <ExternalLink href={href}>
                                         {label}
-                                    </a>
+                                    </ExternalLink>
                                 </TabsTrigger>
                             )
                         }

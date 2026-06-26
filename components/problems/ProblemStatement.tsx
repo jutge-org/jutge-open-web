@@ -38,7 +38,7 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                                         }
                                         className="rounded-none border-0 border-r border-input"
                                     >
-                                        <AArrowDownIcon />
+                                        <AArrowDownIcon aria-hidden />
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="top">Decrease font size</TooltipContent>
@@ -56,7 +56,7 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                                         }
                                         className="rounded-none border-0"
                                     >
-                                        <AArrowUpIcon />
+                                        <AArrowUpIcon aria-hidden />
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="top">Increase font size</TooltipContent>
@@ -68,6 +68,7 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                     <div className="flex flex-wrap gap-4">
                         <Link
                             href={`/problems/${pageKey}/pdf`}
+                            aria-label="Download problem statement as PDF"
                             className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-4 transition-colors hover:bg-muted"
                         >
                             <FileText
@@ -78,6 +79,7 @@ export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStateme
                         </Link>
                         <Link
                             href={`/problems/${pageKey}/zip`}
+                            aria-label="Download problem files as ZIP"
                             className="inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-4 transition-colors hover:bg-muted"
                         >
                             <FileArchive

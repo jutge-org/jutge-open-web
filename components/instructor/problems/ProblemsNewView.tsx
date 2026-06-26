@@ -1,6 +1,7 @@
 'use client'
 
 import { instructorProblemCreate } from '@/actions/instructor'
+import { ExternalLink } from '@/components/ExternalLink'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { PlusCircleIcon } from 'lucide-react'
@@ -23,9 +24,9 @@ export function ProblemsNewView() {
                     <p>
                         Create a new problem by uploading a ZIP archive with its content. Please read the documentation
                         in the{' '}
-                        <a href="https://github.com/jutge-org/jutge-toolkit" target="_blank">
+                        <ExternalLink href="https://github.com/jutge-org/jutge-toolkit">
                             Jutge Toolkit
-                        </a>{' '}
+                        </ExternalLink>{' '}
                         for more information about the format of the ZIP archive.
                     </p>
                     <p>Passcode is mandatory to create a new problem, you can remove it latter.</p>

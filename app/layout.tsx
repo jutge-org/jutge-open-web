@@ -2,6 +2,7 @@ import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
 import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { AuthToolbar } from '@/components/AuthToolbar'
 import { RootShell } from '@/components/RootShell'
+import { SkipLink } from '@/components/SkipLink'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AppToaster } from '@/components/AppToaster'
@@ -9,6 +10,7 @@ import { getCurrentClient, isAuthenticated, tryGetCurrentUser } from '@/lib/auth
 import type { CoursesNavItem } from '@/lib/courses'
 import { fetchEnrolledCoursesNavItems } from '@/services/queries/courses'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import './globals.css'
 import { MainBreadcrumbsInLayout } from './MainBreadcrumbsInLayout'
 
@@ -28,6 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     return (
         <html lang="en" className="bg-background" suppressHydrationWarning>
             <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
+                <SkipLink />
                 <ThemeProvider>
                     <RootShell
                         header={
@@ -53,14 +56,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         }
                         footer={
                             <footer className="mt-auto border-t border-border bg-background">
-                                <div className="mx-auto flex max-w-6xl flex-row gap-2 px-6 py-3 text-sm text-muted-foreground items-center justify-between">
-                                    <span className="">
+                                <div className="mx-auto flex max-w-6xl flex-row flex-wrap gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground items-center justify-between">
+                                    <span>
                                         © Universitat Politècnica de Catalunya
                                         <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
                                     </span>
-                                    <div className="flex items-center gap-3">
-                                        <JutgeLogoIcon className="size-6 text-foreground" />
-                                        <UpcLogoIcon className="size-6 text-foreground" />
+                                    <div className="flex items-center gap-4">
+                                        <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
+                                        <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
                                     </div>
                                 </div>
                             </footer>

@@ -10,6 +10,7 @@ import {
     fetchTextStatement,
 } from '@/actions/instructor'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
+import { ExternalLink } from '@/components/ExternalLink'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import StatementDialog from '@/components/instructor/StatementDialog'
 import { mapmap, offerDownloadFile } from '@/lib/instructor/utils'
@@ -195,9 +196,9 @@ function EditProblemForm({ info }: ProblemFormProps) {
             label: 'View',
             content: (
                 <div className="rounded-lg border p-2 text-sm">
-                    <a href={`https://jutge.org/problems/${info.problem.problem_id}`} target="_blank">
+                    <ExternalLink href={`https://jutge.org/problems/${info.problem.problem_id}`}>
                         {info.problem.problem_id}
-                    </a>
+                    </ExternalLink>
                 </div>
             ),
         },

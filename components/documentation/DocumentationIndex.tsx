@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import { documentationIndexItems } from '@/lib/documentation'
 import { cn } from '@/lib/utils'
 import {
@@ -63,9 +64,9 @@ export function DocumentationIndex() {
 
                 if (external) {
                     return (
-                        <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className={className}>
+                        <ExternalLink key={item.href} href={item.href} className={className}>
                             {card}
-                        </a>
+                        </ExternalLink>
                     )
                 }
 

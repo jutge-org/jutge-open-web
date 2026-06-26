@@ -6,6 +6,7 @@ import {
     fetchInstructorExamRanking,
     fetchMiscHexColors,
 } from '@/actions/instructor'
+import { ExternalLink } from '@/components/ExternalLink'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type {
     ColorMapping,
@@ -130,14 +131,13 @@ export function ExamRankingView() {
                                     key={index}
                                     className="bg-neutral-100 border-2 border-white rounded-lg w-40 h-12 px-4 text-center "
                                 >
-                                    <a
+                                    <ExternalLink
                                         href={`https://jutge.org/problems/${problem.problem_nm}`}
-                                        target="_blank"
                                         title={problem.problem_nm}
                                         className="font-bold text-primary"
                                     >
                                         {problem.caption || `P${index + 1}`}
-                                    </a>
+                                    </ExternalLink>
                                     {problem.weight !== null && (
                                         <>
                                             <br />

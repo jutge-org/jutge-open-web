@@ -2,6 +2,7 @@
 
 import { fetchAllAbstractProblems, fetchInstructorList, instructorListUpdate } from '@/actions/instructor'
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
+import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -43,9 +44,9 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
             cellRenderer: (p: { data: Item }) =>
                 p.data.problem_nm ? (
                     <div className="flex flex-row">
-                        <a className="w-24" target="_blank" href={`https://jutge.org/problems/${p.data.problem_nm}`}>
+                        <ExternalLink className="w-24" href={`https://jutge.org/problems/${p.data.problem_nm}`}>
                             {p.data.problem_nm}↗
-                        </a>
+                        </ExternalLink>
                         {p.data.title}
                     </div>
                 ) : (
@@ -214,9 +215,9 @@ function DialogToAddProblems({
             width: 120,
             filter: true,
             cellRenderer: (p: { data: ProblemItem }) => (
-                <a target="_blank" href={`https://jutge.org/problems/${p.data.problem_nm}`}>
+                <ExternalLink href={`https://jutge.org/problems/${p.data.problem_nm}`}>
                     {p.data.problem_nm}↗
-                </a>
+                </ExternalLink>
             ),
         },
         { field: 'title', flex: 1, filter: true },

@@ -78,6 +78,7 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss }: Sign
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             aria-invalid={errorMessage ? true : undefined}
+                            aria-describedby={errorMessage ? 'jutge-auth-error' : undefined}
                         />
                     </div>
                     <div className="grid gap-1.5">
@@ -93,9 +94,14 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss }: Sign
                                 if (e.key === 'Enter') handleSignIn()
                             }}
                             aria-invalid={errorMessage ? true : undefined}
+                            aria-describedby={errorMessage ? 'jutge-auth-error' : undefined}
                         />
                     </div>
-                    {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
+                    {errorMessage ? (
+                        <p id="jutge-auth-error" role="alert" className="text-sm text-destructive">
+                            {errorMessage}
+                        </p>
+                    ) : null}
                 </div>
 
                 <Button type="button" onClick={handleSignIn} disabled={pending} className="mt-2 w-full gap-2">

@@ -22,7 +22,7 @@ export function RootShell({ children, header, footer }: RootShellProps) {
     return (
         <>
             {header}
-            <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-2 sm:px-6">{children}</main>
+            <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-2 sm:px-6">{children}</main>
             {footer}
         </>
     )

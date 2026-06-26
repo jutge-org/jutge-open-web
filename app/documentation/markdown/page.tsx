@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
 import { Prose } from '@/components/documentation/Prose'
 
@@ -26,9 +27,9 @@ export default function DocumentationMarkdownPage() {
             <Prose>
                 <p>
                     This page is based on the{' '}
-                    <a href="https://guides.github.com/features/mastering-markdown/" target="_blank" rel="noreferrer">
+                    <ExternalLink href="https://guides.github.com/features/mastering-markdown/">
                         Mastering Markdown guide at GitHub
-                    </a>
+                    </ExternalLink>
                     .
                 </p>
 

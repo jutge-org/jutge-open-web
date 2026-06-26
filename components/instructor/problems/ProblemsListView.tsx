@@ -7,6 +7,7 @@ import {
     fetchInstructorOwnProblems,
 } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
+import { ExternalLink } from '@/components/ExternalLink'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -296,12 +297,12 @@ export function ProblemsListView() {
                 <Switch checked={showDeprecated} onCheckedChange={showDeprecatedChange} />
                 <div className="text-sm">Deprecated problems</div>
                 <div className="flex-grow" />
-                <a href="https://github.com/jutge-org/jutge-toolkit" target="_blank">
+                <ExternalLink href="https://github.com/jutge-org/jutge-toolkit">
                     <Button className="w-36 justify-start" title="Open Jutge Toolkit website">
                         <WrenchIcon />
                         Toolkit
                     </Button>
-                </a>
+                </ExternalLink>
                 <Link href="/instructor/problems/new">
                     <Button className="w-36 justify-start" title="Add a new problem">
                         <SquarePlusIcon /> New problem

@@ -9,6 +9,7 @@ import {
     instructorExamUpdateProblems,
 } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
+import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useTextareaDialog } from '@/components/instructor/TextareaDialog'
 import { Button } from '@/components/ui/button'
@@ -96,9 +97,9 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                 sortable: false,
                 rowDrag: true,
                 cellRenderer: (p: { data: InstructorExamProblem }) => (
-                    <a href={`https://jutge.org/problems/${p.data.problem_nm}`} target="_blank">
+                    <ExternalLink href={`https://jutge.org/problems/${p.data.problem_nm}`}>
                         {p.data.problem_nm}↗
-                    </a>
+                    </ExternalLink>
                 ),
                 valueGetter: (p: { data: InstructorExamProblem }) => p.data.problem_nm,
             },

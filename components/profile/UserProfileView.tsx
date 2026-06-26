@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import type { ReactNode } from 'react'
 
 import { getCurrentClient, type SessionUser } from '@/lib/auth'
@@ -49,14 +50,12 @@ export async function UserProfileView({ user }: UserProfileViewProps) {
                             label="Web page"
                             value={
                                 profile.webpage?.trim() ? (
-                                    <a
+                                    <ExternalLink
                                         href={profile.webpage}
-                                        target="_blank"
-                                        rel="noreferrer"
                                         className="text-primary underline-offset-4 hover:underline"
                                     >
                                         {profile.webpage}
-                                    </a>
+                                    </ExternalLink>
                                 ) : (
                                     '—'
                                 )

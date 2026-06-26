@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/ExternalLink'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
 
 export const metadata = { title: 'References — Documentation — Jutge.org' }
@@ -64,14 +65,12 @@ export default function DocumentationReferencesPage() {
                             <ul className="divide-y divide-border">
                                 {group.links.map((link) => (
                                     <li key={link.href}>
-                                        <a
+                                        <ExternalLink
                                             href={link.href}
-                                            target="_blank"
-                                            rel="noreferrer"
                                             className="block px-6 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                                         >
                                             {link.label}
-                                        </a>
+                                        </ExternalLink>
                                     </li>
                                 ))}
                             </ul>

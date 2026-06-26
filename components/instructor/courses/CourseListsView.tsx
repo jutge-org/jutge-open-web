@@ -8,6 +8,7 @@ import {
     instructorCourseUpdate,
 } from '@/actions/instructor'
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
+import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Button } from '@/components/ui/button'
 import {
@@ -290,13 +291,12 @@ function DialogToShowList({
                     cellRenderer: (p: { data: InstructorListItem }) =>
                         p.data.problem_nm ? (
                             <div className="flex flex-row">
-                                <a
+                                <ExternalLink
                                     className="w-24"
-                                    target="_blank"
                                     href={`https://jutge.org/problems/${p.data.problem_nm}`}
                                 >
                                     {p.data.problem_nm}↗
-                                </a>
+                                </ExternalLink>
                                 {getProblemTitle(profile, p.data.problem_nm, allAbstractProblems)}
                             </div>
                         ) : (

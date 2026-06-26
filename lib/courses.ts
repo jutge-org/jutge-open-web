@@ -7,7 +7,6 @@ export type CourseRow = {
     course_key: string
     title: string
     description: string
-    annotation: string
     ownerName: string
     isOfficial: boolean
     isPublic: boolean
@@ -76,7 +75,6 @@ export function buildCourseRow(course: BriefCourse, status: CourseStatus, course
         course_key: courseKey ?? buildCourseKey(course.owner, course.course_nm),
         title: displayText(course.title) || course.course_nm,
         description: displayText(course.description),
-        annotation: displayText(course.annotation),
         ownerName: ownerDisplayName(course.owner),
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,

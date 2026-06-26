@@ -88,9 +88,18 @@ export function sortCourseRows(rows: CourseRow[]): CourseRow[] {
     return [...rows].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
 }
 
-export function buildGuestCourseRow(course: PublicCourse): GuestCourseRow {
+export function publicCourseHref(courseKey: string): string {
+    return `/courses/public/${courseKey}`
+}
+
+export function listTitleFromKey(listKey: string): string {
+    const colonIndex = listKey.indexOf(':')
+    return colonIndex >= 0 ? listKey.slice(colonIndex + 1) : listKey
+}
+
+export function buildGuestCourseRow(course: PublicCourse, courseKey?: string): GuestCourseRow {
     return {
-        course_key: buildCourseKey(course.owner, course.course_nm),
+        course_key: courseKey ?? buildCourseKey(course.owner, course.course_nm),
         title: displayText(course.title) || course.course_nm,
         description: displayText(course.description),
         ownerName: displayText(course.owner.name) || displayText(course.owner.username) || course.owner.email,

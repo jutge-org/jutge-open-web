@@ -14,7 +14,7 @@ import {
     type GuestCourseRow,
 } from '@/lib/courses'
 import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
-import { JutgeApiClient, type Course } from '@/lib/jutge_api_client'
+import { JutgeApiClient, type Course, type PublicCourse, type PublicCourses } from '@/lib/jutge_api_client'
 
 async function resolveEnrolledCourseKey(client: JutgeApiClient, courseKeyParam: string): Promise<string | null> {
     const normalized = normalizeCourseKeyParam(courseKeyParam)
@@ -142,14 +142,53 @@ export const fetchCourse = cache(
     },
 )
 
-async function loadPublicCourses(): Promise<GuestCourseRow[]> {
+async function loadPublicCoursesIndex(): Promise<PublicCourses> {
     try {
         const client = getAnonymousJutgeClient()
-        const courses = await client.courses.indexPublic()
-        return sortGuestCourseRows(Object.values(courses).map((course) => buildGuestCourseRow(course)))
+        return await client.courses.indexPublic()
     } catch {
-        return []
+        return {}
     }
+}
+
+export const fetchPublicCoursesIndex = cache(loadPublicCoursesIndex)
+
+async function resolvePublicCourse(courseKeyParam: string): Promise<{ courseKey: string; course: PublicCourse } | null> {
+    const normalized = normalizeCourseKeyParam(courseKeyParam)
+    const courses = await loadPublicCoursesIndex()
+
+    if (courses[normalized]) {
+        return { courseKey: normalized, course: courses[normalized] }
+    }
+
+    const caseMatch = Object.keys(courses).find((key) => key.toLowerCase() === normalized.toLowerCase())
+    if (caseMatch) {
+        return { courseKey: caseMatch, course: courses[caseMatch] }
+    }
+
+    for (const [apiKey, course] of Object.entries(courses)) {
+        if (buildCourseKey(course.owner, course.course_nm) === normalized) {
+            return { courseKey: apiKey, course }
+        }
+    }
+
+    return null
+}
+
+export type FetchedPublicCourse = {
+    courseKey: string
+    course: PublicCourse
+}
+
+export const fetchPublicCourse = cache(
+    async (courseKeyParam: string): Promise<FetchedPublicCourse | null> => resolvePublicCourse(courseKeyParam),
+)
+
+async function loadPublicCourses(): Promise<GuestCourseRow[]> {
+    const courses = await loadPublicCoursesIndex()
+    return sortGuestCourseRows(
+        Object.entries(courses).map(([courseKey, course]) => buildGuestCourseRow(course, courseKey)),
+    )
 }
 
 export const fetchPublicCourses = cache(loadPublicCourses)

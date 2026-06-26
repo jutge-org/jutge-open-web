@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { GraduationCap, SearchIcon, ShieldCheck, SignatureIcon } from 'lucide-react'
 
@@ -13,6 +14,7 @@ import {
     type CoursesSortField,
     filterAndSortCourses,
     type GuestCourseRow,
+    publicCourseHref,
 } from '@/lib/courses'
 
 type GuestCoursesListProps = {
@@ -34,23 +36,27 @@ function GuestCourseBadges({ course }: { course: GuestCourseRow }) {
 
 function GuestCourseCard({ course }: { course: GuestCourseRow }) {
     return (
-        <Card className="flex h-full flex-col transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md">
-            <CardHeader>
-                <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
-                <CardDescription className="flex items-center gap-1 text-xs">
-                    <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                    {course.ownerName}
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-1 flex-col gap-3">
-                {course.description ? (
-                    <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
-                ) : null}
-                <div className="mt-auto">
-                    <GuestCourseBadges course={course} />
-                </div>
-            </CardContent>
-        </Card>
+        <Link href={publicCourseHref(course.course_key)} className="block h-full">
+            <Card className="flex h-full flex-col transition-[box-shadow,transform] duration-200 hover:border-primary/25 hover:shadow-md">
+                <CardHeader className="">
+                    <CardTitle className="line-clamp-2 text-base leading-snug hover:underline hover:underline-offset-4 hover:decoration-muted-foreground/50">
+                        {course.title}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-1 text-xs">
+                        <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                        {course.ownerName}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-1 flex-col gap-3">
+                    {course.description ? (
+                        <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
+                    ) : null}
+                    <div className="mt-auto">
+                        <GuestCourseBadges course={course} />
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
     )
 }
 

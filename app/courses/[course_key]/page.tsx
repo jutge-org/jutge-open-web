@@ -5,6 +5,7 @@ import { CourseDetail } from '@/components/courses/CourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
 import { buildCourseRow, courseHref } from '@/lib/courses'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
 import { fetchCourseListsData } from '@/services/queries/lists'
@@ -48,15 +49,26 @@ export default async function CoursePage({ params }: PageProps) {
         const row = buildCourseRow(course, status, courseKey)
         const href = courseHref(courseKey)
 
-        const [preferredLanguageId, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
-            getPreferredLanguageId(),
-            fetchLanguages(),
-            fetchStudentProblemStatuses(client),
-            fetchLastSubmissionsByProblemNm(client),
-        ])
-        const problems = await fetchAllAbstractProblems(preferredLanguageId)
-        const lists = await fetchCourseListsData(client, course.lists, problems)
-        const lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
+        const isEnrolled = status !== 'available'
+        let lists: Awaited<ReturnType<typeof fetchCourseListsData>> = []
+        let languages: Awaited<ReturnType<typeof fetchLanguages>> = {}
+        let statuses: Awaited<ReturnType<typeof fetchStudentProblemStatuses>> | undefined
+        let lastSubmissions: Record<string, LastSubmissionInfo> | undefined
+
+        if (isEnrolled) {
+            const [preferredLanguageId, languagesResult, statusesResult, lastSubmissionsByProblemNm] =
+                await Promise.all([
+                    getPreferredLanguageId(),
+                    fetchLanguages(),
+                    fetchStudentProblemStatuses(client),
+                    fetchLastSubmissionsByProblemNm(client),
+                ])
+            const problems = await fetchAllAbstractProblems(preferredLanguageId)
+            lists = await fetchCourseListsData(client, course.lists, problems)
+            languages = languagesResult
+            statuses = statusesResult
+            lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
+        }
 
         return (
             <div className="flex flex-col gap-6">

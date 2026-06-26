@@ -24,7 +24,7 @@ import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
@@ -37,6 +37,7 @@ import {
     type CoursesTab,
     filterAndSortCourses,
 } from '@/lib/courses'
+import { cn } from '@/lib/utils'
 
 const UNENROLL_CONFIRMATION =
     'Please take into account that, after unenrolling from it, your instructor will not be able to see your progress. This could have strong consequences in the event your grade depends on it. You can enroll it again at any time.'
@@ -78,13 +79,18 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
     const isPending = pendingKey === course.course_key
 
     return (
-        <Card className="flex h-full flex-col transition-[box-shadow,transform] duration-200 hover:border-primary/25 hover:shadow-md">
+        <div
+            className={cn(
+                'group flex h-full flex-col gap-4 rounded-2xl border border-border bg-card py-4 text-left shadow-sm transition-[box-shadow,border-color,background-color] duration-200 ease-out',
+                'hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
+            )}
+        >
             <CardHeader className="-mt-2">
                 <div className="flex items-start justify-between gap-2">
                     <CardTitle className="w-full flex flex-row items-start">
                         <Link
                             href={courseHref(course.course_key)}
-                            className="line-clamp-2 hover:underline hover:underline-offset-4 hover:decoration-muted-foreground/50"
+                            className="line-clamp-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                             {course.title}
                         </Link>
@@ -141,7 +147,7 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                         </DropdownMenu>
                     </CardTitle>
                 </div>
-                <CardDescription className="flex items-center gap-1 text-xs">
+                <CardDescription className="flex items-center gap-1 text-xs group-hover:text-foreground/80">
                     <SignatureIcon className="size-3 shrink-0" aria-hidden />
                     {course.ownerName}
                 </CardDescription>
@@ -154,7 +160,7 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                     <CourseBadges course={course} />
                 </div>
             </CardContent>
-        </Card>
+        </div>
     )
 }
 

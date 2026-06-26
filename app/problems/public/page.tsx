@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemsList } from '@/components/problems/ProblemsList'
@@ -7,8 +9,10 @@ import { fetchAllAbstractProblems, fetchLanguages } from '@/services/queries/pro
 export const metadata = { title: 'Public problems — Jutge.org' }
 
 export default async function PublicProblemsPage() {
-    const [authenticated, preferredLanguageId, languages] = await Promise.all([
-        isAuthenticated(),
+    const authenticated = await isAuthenticated()
+    if (authenticated) redirect('/problems')
+
+    const [preferredLanguageId, languages] = await Promise.all([
         getPreferredLanguageId(),
         fetchLanguages(),
     ])
@@ -17,14 +21,7 @@ export default async function PublicProblemsPage() {
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs breadcrumbs={[{ title: 'Problems', url: '/problems/public' }]} />
-            <PageTitle
-                section="/problems"
-                authenticated={authenticated}
-                hidden={false}
-                description={
-                    authenticated ? 'Browse public problems available' : undefined
-                }
-            />
+            <PageTitle section="/problems" authenticated={false} hidden={false} />
             {problems.length === 0 ? (
                 <p className="text-muted-foreground">Could not load problems. Please try again later.</p>
             ) : (

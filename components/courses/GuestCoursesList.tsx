@@ -7,7 +7,7 @@ import { GraduationCap, SearchIcon, ShieldCheck, SignatureIcon } from 'lucide-re
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
     type CoursesOfficialFilter,
@@ -16,6 +16,7 @@ import {
     type GuestCourseRow,
     publicCourseHref,
 } from '@/lib/courses'
+import { cn } from '@/lib/utils'
 
 type GuestCoursesListProps = {
     courses: GuestCourseRow[]
@@ -36,26 +37,29 @@ function GuestCourseBadges({ course }: { course: GuestCourseRow }) {
 
 function GuestCourseCard({ course }: { course: GuestCourseRow }) {
     return (
-        <Link href={publicCourseHref(course.course_key)} className="block h-full">
-            <Card className="flex h-full flex-col transition-[box-shadow,transform] duration-200 hover:border-primary/25 hover:shadow-md">
-                <CardHeader className="">
-                    <CardTitle className="line-clamp-2 text-base leading-snug hover:underline hover:underline-offset-4 hover:decoration-muted-foreground/50">
-                        {course.title}
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-1 text-xs">
-                        <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                        {course.ownerName}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col gap-3">
-                    {course.description ? (
-                        <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
-                    ) : null}
-                    <div className="mt-auto">
-                        <GuestCourseBadges course={course} />
-                    </div>
-                </CardContent>
-            </Card>
+        <Link
+            href={publicCourseHref(course.course_key)}
+            className={cn(
+                'group flex h-full flex-col gap-4 rounded-2xl border border-border bg-card py-4 text-left shadow-sm transition-[box-shadow,border-color,background-color] duration-200 ease-out',
+                'hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+            )}
+        >
+            <CardHeader className="">
+                <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
+                <CardDescription className="flex items-center gap-1 text-xs group-hover:text-foreground/80">
+                    <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                    {course.ownerName}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-1 flex-col gap-3">
+                {course.description ? (
+                    <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
+                ) : null}
+                <div className="mt-auto">
+                    <GuestCourseBadges course={course} />
+                </div>
+            </CardContent>
         </Link>
     )
 }

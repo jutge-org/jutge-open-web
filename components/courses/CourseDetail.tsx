@@ -84,13 +84,15 @@ export function CourseDetail({
                 </CardContent>
             </Card>
 
-            <CourseLists
-                courseKey={courseKey}
-                lists={lists}
-                languages={languages}
-                statuses={statuses}
-                lastSubmissions={lastSubmissions}
-            />
+            {status !== 'available' ? (
+                <CourseLists
+                    courseKey={courseKey}
+                    lists={lists}
+                    languages={languages}
+                    statuses={statuses}
+                    lastSubmissions={lastSubmissions}
+                />
+            ) : null}
         </div>
     )
 }

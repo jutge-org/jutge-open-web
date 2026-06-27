@@ -7,6 +7,7 @@ import { SubmissionsByDayCard } from '@/components/instructor/courses/statistics
 import { SubmissionsByDayOfWeekCard } from '@/components/instructor/courses/statistics/SubmissionsByDayOfWeekCard'
 import { SubmissionsByHourOfDayCard } from '@/components/instructor/courses/statistics/SubmissionsByHourOfDayCard'
 import { SubmissionsByMonthOfYearCard } from '@/components/instructor/courses/statistics/SubmissionsByMonthOfYearCard'
+import { CourseProblemRankingCard } from '@/components/instructor/courses/statistics/CourseProblemRankingCard'
 import { CourseStudentRankingCard } from '@/components/instructor/courses/statistics/CourseStudentRankingCard'
 import { SubmissionsOverTimeCard } from '@/components/instructor/courses/statistics/SubmissionsOverTimeCard'
 import { deriveCourseSubmissionChartData } from '@/lib/instructor/courseSubmissionStatistics'
@@ -25,7 +26,7 @@ function initialStartDate(submissions: CourseStatisticsPageData['submissions']):
 }
 
 export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
-    const { submissions, colors, course, profiles, lists, heatmap } = data
+    const { submissions, colors, course, profiles, lists, abstractProblems, heatmap } = data
     const [startDate, setStartDate] = useState(() => initialStartDate(submissions))
     const [endDate, setEndDate] = useState(() => dayjs().startOf('day').toDate())
     const [settingsOpen, setSettingsOpen] = useState(false)
@@ -76,6 +77,12 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
             </div>
             <ClassProgressHeatmapCards heatmap={heatmap} />
             <CourseStudentRankingCard course={course} profiles={profiles} lists={lists} submissions={submissions} />
+            <CourseProblemRankingCard
+                course={course}
+                lists={lists}
+                submissions={submissions}
+                abstractProblems={abstractProblems}
+            />
             <CourseStatisticsPeriodDialog
                 open={settingsOpen}
                 onOpenChange={setSettingsOpen}

@@ -1,7 +1,7 @@
 'use client'
 
 import { SubmissionVolumeAreaChart } from '@/components/instructor/courses/statistics/SubmissionVolumeAreaChart'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Slider } from '@/components/ui/slider'
 import {
     deriveSubmissionVolumeOverTime,
@@ -28,7 +28,7 @@ export function SubmissionsOverTimeCard({ submissions, startDate, endDate, color
     )
 
     return (
-        <Card className="w-full">
+        <ResizableCard className="w-full" defaultHeight={340}>
             <CardHeader className="p-4">
                 <CardTitle>Submissions over time</CardTitle>
                 <CardAction>
@@ -54,6 +54,6 @@ export function SubmissionsOverTimeCard({ submissions, startDate, endDate, color
             <CardContent className="px-4 pb-4">
                 <SubmissionVolumeAreaChart data={chartData} colors={colors} />
             </CardContent>
-        </Card>
+        </ResizableCard>
     )
 }

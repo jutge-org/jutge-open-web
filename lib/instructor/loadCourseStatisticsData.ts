@@ -23,6 +23,7 @@ export type CourseStatisticsPageData = {
     course: InstructorCourse
     profiles: Dict<StudentProfile>
     lists: InstructorList[]
+    abstractProblems: Dict<AbstractProblem>
     heatmap: HeatmapSourceData
 }
 
@@ -37,5 +38,5 @@ export async function loadCourseStatisticsData(course_nm: string): Promise<Cours
     const lists = await Promise.all(course.lists.map((list_nm) => fetchInstructorList(list_nm)))
     const heatmap = buildHeatmapSourceData(course, profiles, submissions, lists, abstractProblems)
 
-    return { course, profiles, submissions, colors, lists, heatmap }
+    return { course, profiles, submissions, colors, lists, abstractProblems, heatmap }
 }

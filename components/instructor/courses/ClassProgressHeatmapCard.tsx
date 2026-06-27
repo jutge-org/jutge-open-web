@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -814,7 +814,7 @@ function ClassProgressHeatmapCardBase({
     const isEmpty = sortedData.rowItems.length === 0 || sortedData.colItems.length === 0
 
     return (
-        <Card>
+        <ResizableCard defaultHeight={520}>
             <CardHeader className="gap-4">
                 <CardTitle>{title}</CardTitle>
                 <div className="flex flex-wrap items-center gap-3">
@@ -914,7 +914,7 @@ function ClassProgressHeatmapCardBase({
                     <p className="text-sm text-muted-foreground">No students or columns to display.</p>
                 ) : (
                     <div
-                        className={`${scrollAreaClassName} w-full overflow-auto rounded-md border border-border bg-background p-3 pt-4`}
+                        className={`${scrollAreaClassName} w-full overflow-auto rounded-md border border-border p-3 pt-4`}
                     >
                         <HeatmapSvg
                             rowItems={sortedData.rowItems}
@@ -931,7 +931,7 @@ function ClassProgressHeatmapCardBase({
                     </div>
                 )}
             </CardContent>
-        </Card>
+        </ResizableCard>
     )
 }
 

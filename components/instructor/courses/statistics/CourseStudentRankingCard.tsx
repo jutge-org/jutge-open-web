@@ -1,7 +1,7 @@
 'use client'
 
 import { AgTable } from '@/components/administrator/AgTable'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Toggle } from '@/components/ui/toggle'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
@@ -93,7 +93,7 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
     )
 
     return (
-        <Card className="w-full">
+        <ResizableCard className="w-full" defaultHeight={480}>
             <CardHeader className="p-4">
                 <CardTitle>Students</CardTitle>
                 <CardAction>
@@ -118,11 +118,11 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
                     </TooltipProvider>
                 </CardAction>
             </CardHeader>
-            <CardContent className="px-4 pb-4">
+            <CardContent className="flex min-h-0 flex-1 flex-col px-4 pb-4">
                 {rows.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No students to display.</p>
                 ) : (
-                    <div className="h-96 w-full">
+                    <div className="min-h-0 w-full flex-1">
                         <AgTable
                             key={blurPersonalData ? 'blurred' : 'clear'}
                             rowData={rows}
@@ -138,6 +138,6 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
                     </div>
                 )}
             </CardContent>
-        </Card>
+        </ResizableCard>
     )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -51,7 +51,7 @@ export function AcceptedProblemsStudentsCard({
     )
 
     return (
-        <Card className="w-full">
+        <ResizableCard className="w-full" defaultHeight={340}>
             <CardHeader className="p-4">
                 <CardTitle>Accepted problems/students</CardTitle>
                 <CardAction>
@@ -105,6 +105,6 @@ export function AcceptedProblemsStudentsCard({
                     </ChartContainer>
                 )}
             </CardContent>
-        </Card>
+        </ResizableCard>
     )
 }

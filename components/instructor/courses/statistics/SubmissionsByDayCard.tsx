@@ -1,7 +1,7 @@
 'use client'
 
 import { Heatmap } from '@/components/instructor/Heatmap'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import type { CourseSubmissionChartData } from '@/lib/instructor/courseSubmissionStatistics'
 
 type SubmissionsByDayCardProps = {
@@ -10,7 +10,7 @@ type SubmissionsByDayCardProps = {
 
 export function SubmissionsByDayCard({ chartData }: SubmissionsByDayCardProps) {
     return (
-        <Card className="w-full">
+        <ResizableCard className="w-full" defaultHeight={340}>
             <CardHeader className="p-4">
                 <CardTitle>Submissions by day</CardTitle>
             </CardHeader>
@@ -22,6 +22,6 @@ export function SubmissionsByDayCard({ chartData }: SubmissionsByDayCardProps) {
                     maxValue={chartData.maxValue}
                 />
             </CardContent>
-        </Card>
+        </ResizableCard>
     )
 }

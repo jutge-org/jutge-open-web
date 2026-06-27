@@ -14,6 +14,7 @@ import { SubmissionsOverTimeCard } from '@/components/instructor/courses/statist
 import { deriveCourseSubmissionChartData } from '@/lib/instructor/courseSubmissionStatistics'
 import type { CourseStatisticsPageData } from '@/lib/instructor/loadCourseStatisticsData'
 import { deriveSubmissionChartData, toStatisticsSubmissionFromCourse } from '@/lib/instructor/submissionStatistics'
+import { useCourseStatisticsPeriodPreference } from '@/hooks/use-course-statistics-period-preference'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 
@@ -29,12 +30,15 @@ function initialStartDate(submissions: CourseStatisticsPageData['submissions']):
 
 export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
     const { submissions, colors, course, profiles, lists, abstractProblems, heatmap } = data
-    const [startDate, setStartDate] = useState(() => initialStartDate(submissions))
-    const [endDate, setEndDate] = useState(() => dayjs().startOf('day').toDate())
     const [settingsOpen, setSettingsOpen] = useState(false)
 
     const defaultStartDate = useMemo(() => initialStartDate(submissions), [submissions])
     const defaultEndDate = useMemo(() => dayjs().startOf('day').toDate(), [])
+    const [{ startDate, endDate }, setPeriod] = useCourseStatisticsPeriodPreference(
+        course.course_nm,
+        defaultStartDate,
+        defaultEndDate,
+    )
 
     const filteredSubmissions = useMemo(() => {
         const start = dayjs(startDate).startOf('day')
@@ -58,8 +62,7 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
     const distributionData = useMemo(() => deriveSubmissionChartData(statisticsSubmissions), [statisticsSubmissions])
 
     const handleAcceptPeriod = (start: Date, end: Date) => {
-        setStartDate(start)
-        setEndDate(end)
+        setPeriod(start, end)
     }
 
     return (

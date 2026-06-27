@@ -3,6 +3,8 @@
 import { AgTable } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
 import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { deriveCourseProblemRanking } from '@/lib/instructor/courseProblemRanking'
 import type { Dict } from '@/lib/instructor/utils'
 import type {
@@ -12,6 +14,8 @@ import type {
     InstructorList,
 } from '@/lib/jutge_api_client'
 import type { ICellRendererParams } from 'ag-grid-community'
+import { BarChart3Icon } from 'lucide-react'
+import Link from 'next/link'
 import { useMemo } from 'react'
 
 type CourseProblemRankingCardProps = {
@@ -92,8 +96,32 @@ export function CourseProblemRankingCard({
                 valueFormatter: (params: { value: number }) =>
                     Number.isFinite(params.value) ? params.value.toFixed(1) : '',
             },
+            {
+                headerName: '',
+                width: 52,
+                filter: false,
+                sortable: false,
+                suppressHeaderMenuButton: true,
+                cellRenderer: (params: ICellRendererParams<{ problem_nm: string }>) => (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" className="size-8" asChild>
+                                    <Link
+                                        href={`/instructor/courses/${course.course_nm}/statistics/${params.data!.problem_nm}`}
+                                    >
+                                        <BarChart3Icon className="size-4" aria-hidden />
+                                        <span className="sr-only">Problem statistics</span>
+                                    </Link>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Problem statistics</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                ),
+            },
         ],
-        [],
+        [course.course_nm],
     )
 
     const rows = useMemo(

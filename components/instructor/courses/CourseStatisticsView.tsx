@@ -9,9 +9,11 @@ import { SubmissionsByHourOfDayCard } from '@/components/instructor/courses/stat
 import { SubmissionsByMonthOfYearCard } from '@/components/instructor/courses/statistics/SubmissionsByMonthOfYearCard'
 import { CourseProblemRankingCard } from '@/components/instructor/courses/statistics/CourseProblemRankingCard'
 import { CourseStudentRankingCard } from '@/components/instructor/courses/statistics/CourseStudentRankingCard'
+import { CourseSubmissionDistributionCards } from '@/components/instructor/courses/statistics/CourseSubmissionDistributionCards'
 import { SubmissionsOverTimeCard } from '@/components/instructor/courses/statistics/SubmissionsOverTimeCard'
 import { deriveCourseSubmissionChartData } from '@/lib/instructor/courseSubmissionStatistics'
 import type { CourseStatisticsPageData } from '@/lib/instructor/loadCourseStatisticsData'
+import { deriveSubmissionChartData, toStatisticsSubmissionFromCourse } from '@/lib/instructor/submissionStatistics'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 
@@ -48,6 +50,13 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
         [filteredSubmissions, startDate, endDate],
     )
 
+    const statisticsSubmissions = useMemo(
+        () => filteredSubmissions.map(toStatisticsSubmissionFromCourse),
+        [filteredSubmissions],
+    )
+
+    const distributionData = useMemo(() => deriveSubmissionChartData(statisticsSubmissions), [statisticsSubmissions])
+
     const handleAcceptPeriod = (start: Date, end: Date) => {
         setStartDate(start)
         setEndDate(end)
@@ -75,6 +84,7 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
                 <SubmissionsByDayOfWeekCard chartData={chartData} colors={colors} />
                 <SubmissionsByHourOfDayCard chartData={chartData} colors={colors} />
             </div>
+            <CourseSubmissionDistributionCards derived={distributionData} colors={colors} />
             <ClassProgressHeatmapCards heatmap={heatmap} />
             <CourseStudentRankingCard course={course} profiles={profiles} lists={lists} submissions={submissions} />
             <CourseProblemRankingCard

@@ -447,9 +447,7 @@ function HeatmapSvg({
     const bracketTop = showTopBrackets ? bracketFontSize + 3 * scaleY : 0
     const bracketBottom = showTopBrackets ? bracketTop + BRACKET_LEG * scaleY : 0
     const colLabelY = showTopBrackets ? bracketBottom + 2 * scaleY + problemLabelRise : 0
-    const gridTop = showTopBrackets
-        ? colLabelY + 2 * scaleY
-        : measureColLabelHeight(colItems, scaleX, scaleY)
+    const gridTop = showTopBrackets ? colLabelY + 2 * scaleY : measureColLabelHeight(colItems, scaleX, scaleY)
     const width = gridLeft + colItems.length * cellWidth + Math.max(0, colItems.length - 1) * gapX
     const height = gridTop + rowItems.length * cellHeight + Math.max(0, rowItems.length - 1) * gapY
     const cellRadius = 2 * Math.min(scaleX, scaleY)
@@ -480,10 +478,7 @@ function HeatmapSvg({
         >
             {showTopBrackets
                 ? listGroups.map((group) => {
-                      const { start: startX, end: endX, mid: midX } = columnGroupSpan(
-                          group.startIndex,
-                          group.endIndex,
-                      )
+                      const { start: startX, end: endX, mid: midX } = columnGroupSpan(group.startIndex, group.endIndex)
                       const maxChars = Math.max(2, Math.floor((endX - startX) / (bracketFontSize * 0.55)))
                       const label = truncateWithEllipsis(group.listTitle, maxChars)
                       return (
@@ -814,7 +809,7 @@ function ClassProgressHeatmapCardBase({
     const isEmpty = sortedData.rowItems.length === 0 || sortedData.colItems.length === 0
 
     return (
-        <ResizableCard defaultHeight={520}>
+        <ResizableCard defaultHeight={420}>
             <CardHeader className="gap-4">
                 <CardTitle>{title}</CardTitle>
                 <div className="flex flex-wrap items-center gap-3">
@@ -848,10 +843,7 @@ function ClassProgressHeatmapCardBase({
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">{columnSortLabel}</span>
-                        <Select
-                            value={columnSort}
-                            onValueChange={(value) => setColumnSort(value as ColumnSortField)}
-                        >
+                        <Select value={columnSort} onValueChange={(value) => setColumnSort(value as ColumnSortField)}>
                             <SelectTrigger className="h-8 w-44" aria-label={columnSortAriaLabel}>
                                 <SelectValue />
                             </SelectTrigger>

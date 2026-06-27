@@ -19,7 +19,7 @@ export type CourseProblemRankingRow = {
     avgSubmissionsPerStudent: number
 }
 
-function getAbstractProblemTitle(problem_nm: string, abstractProblems: Dict<AbstractProblem>): string {
+export function getAbstractProblemTitle(problem_nm: string, abstractProblems: Dict<AbstractProblem>): string {
     const abstractProblem = abstractProblems[problem_nm]
     if (!abstractProblem) return problem_nm
 

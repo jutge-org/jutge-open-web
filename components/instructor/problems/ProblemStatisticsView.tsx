@@ -8,9 +8,9 @@
 import { Heatmap } from '@/components/instructor/Heatmap'
 
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
+import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
     ChartContainer,
     ChartLegend,
@@ -41,10 +41,20 @@ import {
     fetchTablesLanguages,
 } from '@/actions/instructor'
 import {
+    deriveSubmissionChartData,
+    deriveSubmissionsByLanguageOverTime,
+    toStatisticsSubmissionFromAnonymous,
+    type AttemptsToSolvePoint,
+    type OkKoPoint,
+    type StatisticsSubmission,
+    type SubmissionsByLanguageOverTimePoint,
+    type TimeToFirstPassPoint,
+    type VolumeOverTimePoint,
+} from '@/lib/instructor/submissionStatistics'
+import {
     AbstractProblem,
     ColorMapping,
     Distribution,
-    HeatmapCalendar,
     Language,
     ProblemAnonymousSubmission,
     ProblemPopularityBucketEntry,
@@ -84,301 +94,14 @@ import {
     YAxis,
 } from 'recharts'
 
-/** Single submission entry, used for date filtering and derived stats. */
-type SubmissionEntry = ProblemAnonymousSubmission
-
-// -----------------------------------------------------------------------------
-// Constants
-// -----------------------------------------------------------------------------
-
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
 /** Pie chart: slices below this percentage are grouped into "Others". */
 const MIN_PERCENT_FOR_PIE_LABEL = 5
-
-// -----------------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------------
 
 function getCategoryColor(key: string, category: string, colors: ColorMapping): string {
     if (!(category in colors) || !(key in colors[category])) {
         return 'hsl(var(--chart-1))'
     }
     return colors[category][key]
-}
-
-type OkKoPoint = { label: string; ok: number; ko: number }
-
-/** Submission volume over time: one point per year, ok/ko counts. */
-type VolumeOverTimePoint = { year: number; label: string; ok: number; ko: number }
-
-/** Submissions by (human) language over time: one point per year, one series per language. */
-type SubmissionsByLanguageOverTimePoint = {
-    year: number
-    label: string
-    [language_id: string]: number | string
-}
-
-/** Time-to-first-pass funnel: at each hour threshold T, cumulative % of solvers who passed by T. */
-type TimeToFirstPassPoint = { hours: number; label: string; cumulativePct: number }
-
-/** Compute per-student Δt (first AC − first submission in hours), then build cumulative curve. */
-function computeTimeToFirstPassFunnel(submissions: SubmissionEntry[]): {
-    curve: TimeToFirstPassPoint[]
-    totalSolvers: number
-    neverSolved: number
-    medianHours: number | null
-} {
-    const byUser = new Map<string, { firstTime: number; firstAcTime: number | null }>()
-    for (const s of submissions) {
-        const t = dayjs(s.time).valueOf()
-        const existing = byUser.get(s.anonymous_user_id)
-        if (!existing) {
-            byUser.set(s.anonymous_user_id, {
-                firstTime: t,
-                firstAcTime: s.verdict === 'AC' ? t : null,
-            })
-        } else {
-            if (t < existing.firstTime) existing.firstTime = t
-            if (s.verdict === 'AC' && (existing.firstAcTime === null || t < existing.firstAcTime)) {
-                existing.firstAcTime = t
-            }
-        }
-    }
-    const deltasHours: number[] = []
-    let neverSolved = 0
-    for (const { firstTime, firstAcTime } of byUser.values()) {
-        if (firstAcTime != null) {
-            deltasHours.push((firstAcTime - firstTime) / (60 * 60 * 1000))
-        } else {
-            neverSolved += 1
-        }
-    }
-    deltasHours.sort((a, b) => a - b)
-    const totalSolvers = deltasHours.length
-    const medianHours = totalSolvers > 0 ? deltasHours[Math.floor(totalSolvers / 2)] : null
-
-    const timeBucketsHours = [0, 0.25, 0.5, 1, 2, 4, 8, 12, 24, 48, 72, 168]
-    const curve: TimeToFirstPassPoint[] = timeBucketsHours.map((hours) => {
-        const count = totalSolvers === 0 ? 0 : deltasHours.filter((d) => d <= hours).length
-        const cumulativePct = totalSolvers === 0 ? 0 : (count / totalSolvers) * 100
-        let label: string
-        if (hours < 1) label = `${Math.round(hours * 60)}m`
-        else if (hours < 24) label = `${hours}h`
-        else label = `${hours / 24}d`
-        return { hours, label, cumulativePct }
-    })
-    return { curve, totalSolvers, neverSolved, medianHours }
-}
-
-/** Attempts-to-solve: per-student count of submissions up to (and including) first AC. */
-type AttemptsToSolvePoint = {
-    attempts: number
-    label: string
-    passed: number
-    neverPassed?: number
-}
-
-function computeAttemptsToSolve(submissions: SubmissionEntry[]): {
-    histogram: AttemptsToSolvePoint[]
-    medianAttempts: number | null
-    totalPassed: number
-    neverPassedCount: number
-} {
-    // Group by user and sort each user's submissions by time
-    const byUser = new Map<string, { time: string; verdict: string }[]>()
-    for (const s of submissions) {
-        let list = byUser.get(s.anonymous_user_id)
-        if (!list) {
-            list = []
-            byUser.set(s.anonymous_user_id, list)
-        }
-        list.push({ time: s.time, verdict: s.verdict })
-    }
-    for (const list of byUser.values()) {
-        list.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-    }
-
-    const attemptCounts: number[] = []
-    let neverPassedCount = 0
-    for (const list of byUser.values()) {
-        const firstAcIndex = list.findIndex((s) => s.verdict === 'AC')
-        if (firstAcIndex >= 0) {
-            attemptCounts.push(firstAcIndex + 1) // 1-based attempts
-        } else {
-            neverPassedCount += 1
-        }
-    }
-
-    attemptCounts.sort((a, b) => a - b)
-    const totalPassed = attemptCounts.length
-    const medianAttempts = totalPassed > 0 ? attemptCounts[Math.floor(totalPassed / 2)] : null
-
-    // Build histogram buckets: 1, 2, 3, ... maxAttempts, then optionally "Never passed"
-    const maxAttempts = attemptCounts.length > 0 ? Math.max(...attemptCounts) : 0
-    const bucketCount: Record<number, number> = {}
-    for (let k = 1; k <= maxAttempts; k++) bucketCount[k] = 0
-    for (const k of attemptCounts) {
-        bucketCount[k] = (bucketCount[k] ?? 0) + 1
-    }
-    const histogram: AttemptsToSolvePoint[] = []
-    for (let k = 1; k <= maxAttempts; k++) {
-        histogram.push({
-            attempts: k,
-            label: String(k),
-            passed: bucketCount[k] ?? 0,
-        })
-    }
-    if (neverPassedCount > 0) {
-        histogram.push({
-            attempts: maxAttempts + 1,
-            label: 'No AC',
-            passed: 0,
-            neverPassed: neverPassedCount,
-        })
-    }
-    return { histogram, medianAttempts, totalPassed, neverPassedCount }
-}
-
-/** All chart/table data derived from a submissions list (e.g. filtered by date range). */
-function deriveChartData(submissions: SubmissionEntry[]) {
-    const isOk = (verdict: string) => verdict === 'AC'
-
-    const byDay: Record<string, number> = {}
-    for (const s of submissions) {
-        const key = dayjs(s.time).format('YYYY-MM-DD')
-        byDay[key] = (byDay[key] ?? 0) + 1
-    }
-    const heatmapData: HeatmapCalendar = Object.entries(byDay).map(([key, value]) => ({
-        date: dayjs(key).startOf('day').unix(),
-        value,
-    }))
-    const maxValue = heatmapData.length ? Math.max(...heatmapData.map((d) => d.value)) : 0
-    const heatmapEnd = dayjs().add(1, 'day').startOf('day')
-    const heatmapStart = submissions.length > 0 ? dayjs(submissions[0].time).startOf('day') : dayjs().startOf('day')
-
-    // Users: unique users with at least one AC = OK, others = KO (derived from submissions only)
-    const userStatus = new Map<string, boolean>()
-    for (const s of submissions) {
-        const hasAc = userStatus.get(s.anonymous_user_id)
-        if (!hasAc) userStatus.set(s.anonymous_user_id, s.verdict === 'AC')
-        else if (s.verdict === 'AC') userStatus.set(s.anonymous_user_id, true)
-    }
-    let usersOk = 0
-    let usersKo = 0
-    for (const ok of userStatus.values()) {
-        if (ok) usersOk += 1
-        else usersKo += 1
-    }
-    const usersOkKo: Distribution = { OK: usersOk, KO: usersKo }
-
-    const acCount = submissions.filter((s) => s.verdict === 'AC').length
-    const submissionsTotal = submissions.length
-    const submissionsOkKo: Distribution = {
-        OK: acCount,
-        KO: submissionsTotal - acCount,
-    }
-
-    // Verdicts, compilers, proglangs derived from submissions only
-    const verdicts: Distribution = {}
-    const compilers: Distribution = {}
-    const proglangs: Distribution = {}
-    for (const s of submissions) {
-        verdicts[s.verdict] = (verdicts[s.verdict] ?? 0) + 1
-        compilers[s.compiler_id] = (compilers[s.compiler_id] ?? 0) + 1
-        proglangs[s.proglang] = (proglangs[s.proglang] ?? 0) + 1
-    }
-
-    const byYear: Record<string, { ok: number; ko: number }> = {}
-    for (const s of submissions) {
-        const y = dayjs(s.time).year().toString()
-        if (!byYear[y]) byYear[y] = { ok: 0, ko: 0 }
-        if (isOk(s.verdict)) byYear[y].ok += 1
-        else byYear[y].ko += 1
-    }
-    const submissionsByYear: OkKoPoint[] = Object.entries(byYear)
-        .sort(([a], [b]) => Number(a) - Number(b))
-        .map(([label, counts]) => ({ label, ok: counts.ok, ko: counts.ko }))
-
-    const byDow: Record<number, { ok: number; ko: number }> = {}
-    for (let i = 0; i < 7; i++) byDow[i] = { ok: 0, ko: 0 }
-    for (const s of submissions) {
-        const d = dayjs(s.time).day()
-        const idx = (d + 6) % 7 // Sunday=0 → index 6 (last); Monday=0 (first)
-        if (isOk(s.verdict)) byDow[idx].ok += 1
-        else byDow[idx].ko += 1
-    }
-    const submissionsByWeekday: OkKoPoint[] = WEEKDAYS.map((label, i) => ({
-        label,
-        ok: byDow[i].ok,
-        ko: byDow[i].ko,
-    }))
-
-    const byHour: Record<number, { ok: number; ko: number }> = {}
-    for (let h = 0; h < 24; h++) byHour[h] = { ok: 0, ko: 0 }
-    for (const s of submissions) {
-        const h = dayjs(s.time).hour()
-        if (isOk(s.verdict)) byHour[h].ok += 1
-        else byHour[h].ko += 1
-    }
-    const submissionsByHour: OkKoPoint[] = Array.from({ length: 24 }, (_, h) => ({
-        label: h.toString(),
-        ok: byHour[h].ok,
-        ko: byHour[h].ko,
-    }))
-
-    const byMonth: Record<number, { ok: number; ko: number }> = {}
-    for (let m = 0; m < 12; m++) byMonth[m] = { ok: 0, ko: 0 }
-    for (const s of submissions) {
-        const m = dayjs(s.time).month()
-        if (isOk(s.verdict)) byMonth[m].ok += 1
-        else byMonth[m].ko += 1
-    }
-    const submissionsByMonth: OkKoPoint[] = MONTHS.map((label, i) => ({
-        label,
-        ok: byMonth[i].ok,
-        ko: byMonth[i].ko,
-    }))
-
-    const timeToFirstPass = computeTimeToFirstPassFunnel(submissions)
-    const attemptsToSolve = computeAttemptsToSolve(submissions)
-
-    // Submission volume over time: one point per year (ok = green base, ko = red stacked)
-    const submissionVolumeOverTime: VolumeOverTimePoint[] = (() => {
-        if (submissions.length === 0) return []
-        const byYear = new Map<number, { ok: number; ko: number }>()
-        for (const s of submissions) {
-            const year = dayjs(s.time).year()
-            const existing = byYear.get(year) ?? { ok: 0, ko: 0 }
-            if (isOk(s.verdict)) existing.ok += 1
-            else existing.ko += 1
-            byYear.set(year, existing)
-        }
-        const years = Array.from(byYear.keys()).sort((a, b) => a - b)
-        return years.map((year) => {
-            const { ok = 0, ko = 0 } = byYear.get(year) ?? {}
-            return { year, label: String(year), ok, ko }
-        })
-    })()
-
-    return {
-        heatmapData,
-        heatmapStart,
-        heatmapEnd,
-        maxValue,
-        usersOkKo,
-        submissionsOkKo,
-        verdicts,
-        compilers,
-        proglangs,
-        submissionsByYear,
-        submissionsByWeekday,
-        submissionsByHour,
-        submissionsByMonth,
-        timeToFirstPass,
-        attemptsToSolve,
-        submissionVolumeOverTime,
-    }
 }
 
 // -----------------------------------------------------------------------------
@@ -791,14 +514,14 @@ function StatisticsSettingsDialog({
     )
 }
 
-function StatCard({ title, children }: { title: string; children: React.ReactNode }) {
+function StatCard({ title, children, defaultHeight = 360 }: { title: string; children: React.ReactNode; defaultHeight?: number }) {
     return (
-        <Card>
+        <ResizableCard className="w-full" defaultHeight={defaultHeight}>
             <CardHeader className="p-4">
                 <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent className="px-2 py-0">{children}</CardContent>
-        </Card>
+        </ResizableCard>
     )
 }
 
@@ -1270,115 +993,64 @@ function ProblemPopularityChart({ buckets, problemTotalSubmissions }: ProblemPop
 // Page
 // -----------------------------------------------------------------------------
 
-export function ProblemStatisticsView() {
-    const { problem_nm } = useParams<{ problem_nm: string }>()
-    const [statistics, setStatistics] = useState<{
-        submissions: ProblemAnonymousSubmission[]
-    } | null>(null)
-    const [colors, setColors] = useState<ColorMapping | null>(null)
-    const [languagesTable, setLanguagesTable] = useState<Record<string, Language> | null>(null)
-    const [abstractProblem, setAbstractProblem] = useState<AbstractProblem | null>(null)
-    const [selectedProblemIds, setSelectedProblemIds] = useState<Set<string>>(new Set())
-    const [startDate, setStartDate] = useState<Date | null>(null)
-    const [endDate, setEndDate] = useState<Date | null>(null)
-    const [settingsOpen, setSettingsOpen] = useState(false)
-    const [popularityBuckets, setPopularityBuckets] = useState<ProblemPopularityBucketEntry[] | null>(null)
+export type ProblemStatisticsPanelProps = {
+    problem_nm: string
+    submissions: StatisticsSubmission[]
+    colors: ColorMapping
+    abstractProblem: AbstractProblem
+    languagesTable: Record<string, Language>
+    popularityBuckets?: ProblemPopularityBucketEntry[]
+    problemTotalSubmissionsAllTime?: number
+}
 
-    useEffect(() => {
-        async function fetchData() {
-            const [submissions, colorMap, languages, abstract, buckets] = await Promise.all([
-                fetchInstructorAnonymousSubmissions(problem_nm),
-                fetchMiscHexColors(),
-                fetchTablesLanguages(),
-                fetchAbstractProblem(problem_nm),
-                fetchInstructorProblemPopularityBuckets(),
-            ])
-            setStatistics({ submissions })
-            setColors(colorMap)
-            setLanguagesTable(languages)
-            setAbstractProblem(abstract)
-            setPopularityBuckets(buckets)
-            setSelectedProblemIds(new Set(Object.values(abstract.problems).map((p) => p.problem_id)))
-        }
-        fetchData()
-    }, [problem_nm])
-
+export function ProblemStatisticsPanel({
+    problem_nm,
+    submissions,
+    colors,
+    abstractProblem,
+    languagesTable,
+    popularityBuckets,
+    problemTotalSubmissionsAllTime,
+}: ProblemStatisticsPanelProps) {
+    const [selectedProblemIds, setSelectedProblemIds] = useState<Set<string>>(
+        () => new Set(Object.values(abstractProblem.problems).map((p) => p.problem_id)),
+    )
     const defaultStartDate = useMemo(() => {
-        if (!statistics || statistics.submissions.length === 0) return dayjs().startOf('day').toDate()
-        return dayjs(statistics.submissions[0].time).startOf('day').toDate()
-    }, [statistics])
+        if (submissions.length === 0) return dayjs().startOf('day').toDate()
+        const sorted = [...submissions].sort((a, b) => dayjs(a.time).valueOf() - dayjs(b.time).valueOf())
+        return dayjs(sorted[0].time).startOf('day').toDate()
+    }, [submissions])
     const defaultEndDate = useMemo(() => dayjs().startOf('day').toDate(), [])
-
-    useEffect(() => {
-        if (!statistics || startDate !== null) return
-        setStartDate(defaultStartDate)
-        setEndDate(defaultEndDate)
-    }, [statistics, defaultStartDate, defaultEndDate, startDate])
+    const [startDate, setStartDate] = useState(defaultStartDate)
+    const [endDate, setEndDate] = useState(defaultEndDate)
+    const [settingsOpen, setSettingsOpen] = useState(false)
 
     const filteredSubmissions = useMemo(() => {
-        if (!statistics || startDate === null || endDate === null) return statistics?.submissions ?? []
         const start = dayjs(startDate).startOf('day')
         const end = dayjs(endDate).endOf('day')
-        return statistics.submissions.filter((s) => {
+        return submissions.filter((s) => {
             const t = dayjs(s.time)
             const inRange = !t.isBefore(start) && !t.isAfter(end)
             const selected = selectedProblemIds.has(s.problem_id)
             return inRange && selected
         })
-    }, [statistics, startDate, endDate, selectedProblemIds])
+    }, [submissions, startDate, endDate, selectedProblemIds])
 
-    /** Submissions filtered by date only (all problem_ids). Used for "Submissions by language" card. */
     const submissionsByDateOnly = useMemo(() => {
-        if (!statistics || startDate === null || endDate === null) return statistics?.submissions ?? []
         const start = dayjs(startDate).startOf('day')
         const end = dayjs(endDate).endOf('day')
-        return statistics.submissions.filter((s) => {
+        return submissions.filter((s) => {
             const t = dayjs(s.time)
             return !t.isBefore(start) && !t.isAfter(end)
         })
-    }, [statistics, startDate, endDate])
+    }, [submissions, startDate, endDate])
 
-    const derived = useMemo(() => deriveChartData(filteredSubmissions), [filteredSubmissions])
+    const derived = useMemo(() => deriveSubmissionChartData(filteredSubmissions), [filteredSubmissions])
 
-    /** Submissions by (human) language over time: one point per year per language, date-filtered only. problem_id = problem_nm + '_' + language_id. */
-    const submissionsByLanguageOverTime = useMemo((): {
-        data: SubmissionsByLanguageOverTimePoint[]
-        languageIds: string[]
-        languageNames: Record<string, string>
-    } => {
-        if (!problem_nm || !languagesTable) return { data: [], languageIds: [], languageNames: {} }
-        const prefix = problem_nm + '_'
-        const byYearAndLang = new Map<number, Record<string, number>>()
-        const langIdSet = new Set<string>()
-        for (const s of submissionsByDateOnly) {
-            if (!s.problem_id.startsWith(prefix)) continue
-            const language_id = s.problem_id.slice(prefix.length)
-            const year = dayjs(s.time).year()
-            langIdSet.add(language_id)
-            const row = byYearAndLang.get(year) ?? {}
-            row[language_id] = (row[language_id] ?? 0) + 1
-            byYearAndLang.set(year, row)
-        }
-        const years = Array.from(byYearAndLang.keys()).sort((a, b) => a - b)
-        const languageIds = Array.from(langIdSet).sort((a, b) => {
-            const na = languagesTable[a]?.eng_name ?? a
-            const nb = languagesTable[b]?.eng_name ?? b
-            return na.localeCompare(nb)
-        })
-        const languageNames: Record<string, string> = {}
-        for (const lid of languageIds) {
-            languageNames[lid] = languagesTable[lid]?.eng_name ?? lid
-        }
-        const data: SubmissionsByLanguageOverTimePoint[] = years.map((year) => {
-            const row = byYearAndLang.get(year) ?? {}
-            const point: SubmissionsByLanguageOverTimePoint = { year, label: String(year) }
-            for (const lid of languageIds) {
-                point[lid] = row[lid] ?? 0
-            }
-            return point
-        })
-        return { data, languageIds, languageNames }
-    }, [problem_nm, languagesTable, submissionsByDateOnly])
+    const submissionsByLanguageOverTime = useMemo(
+        () => deriveSubmissionsByLanguageOverTime(problem_nm, submissionsByDateOnly, languagesTable),
+        [problem_nm, submissionsByDateOnly, languagesTable],
+    )
 
     const totalUsers = derived.usersOkKo.OK + derived.usersOkKo.KO
     const dashboardStats: DashboardStats = {
@@ -1390,24 +1062,11 @@ export function ProblemStatisticsView() {
         seCount: filteredSubmissions.filter((s) => s.verdict === 'SE').length,
     }
 
-    if (
-        statistics === null ||
-        colors === null ||
-        abstractProblem === null ||
-        startDate === null ||
-        endDate === null ||
-        popularityBuckets === null
-    ) {
-        return <SimpleSpinner size={64} className="pt-24" />
-    }
-
     const handleAcceptSettings = (ids: Set<string>, start: Date, end: Date) => {
         setSelectedProblemIds(ids)
         setStartDate(start)
         setEndDate(end)
     }
-
-    const problemTotalSubmissionsAllTime = statistics.submissions.length
 
     return (
         <div className="flex w-full flex-col gap-4">
@@ -1431,23 +1090,31 @@ export function ProblemStatisticsView() {
                     <MyPieChart data={derived.proglangs} category="proglangs" colors={colors} />
                 </StatCard>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <Card className="w-full">
-                    <CardHeader className="p-4">
-                        <CardTitle>Problem popularity</CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            The more to the right, the more submissions the problem has and more popular it is.
-                        </p>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                        <ProblemPopularityChart
-                            buckets={popularityBuckets}
-                            problemTotalSubmissions={problemTotalSubmissionsAllTime}
-                        />
-                    </CardContent>
-                </Card>
+            <div
+                className={
+                    popularityBuckets !== undefined && problemTotalSubmissionsAllTime !== undefined
+                        ? 'grid grid-cols-1 lg:grid-cols-3 gap-4'
+                        : 'grid grid-cols-1 lg:grid-cols-2 gap-4'
+                }
+            >
+                {popularityBuckets !== undefined && problemTotalSubmissionsAllTime !== undefined && (
+                    <ResizableCard className="w-full" defaultHeight={420}>
+                        <CardHeader className="p-4">
+                            <CardTitle>Problem popularity</CardTitle>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                The more to the right, the more submissions the problem has and more popular it is.
+                            </p>
+                        </CardHeader>
+                        <CardContent className="px-4 pb-4">
+                            <ProblemPopularityChart
+                                buckets={popularityBuckets}
+                                problemTotalSubmissions={problemTotalSubmissionsAllTime}
+                            />
+                        </CardContent>
+                    </ResizableCard>
+                )}
 
-                <Card className="w-full">
+                <ResizableCard className="w-full" defaultHeight={420}>
                     <CardHeader className="p-4">
                         <CardTitle>Attempts to solve</CardTitle>
                         <p className="text-sm text-muted-foreground mt-1">
@@ -1463,8 +1130,8 @@ export function ProblemStatisticsView() {
                             colors={colors}
                         />
                     </CardContent>
-                </Card>
-                <Card className="w-full">
+                </ResizableCard>
+                <ResizableCard className="w-full" defaultHeight={420}>
                     <CardHeader className="p-4">
                         <CardTitle>Time to solve</CardTitle>
                         <p className="text-sm text-muted-foreground mt-1">
@@ -1480,9 +1147,9 @@ export function ProblemStatisticsView() {
                             medianHours={derived.timeToFirstPass.medianHours}
                         />
                     </CardContent>
-                </Card>
+                </ResizableCard>
             </div>
-            <Card className="w-full">
+            <ResizableCard className="w-full" defaultHeight={340}>
                 <CardHeader className="p-4">
                     <CardTitle>Submissions by day</CardTitle>
                 </CardHeader>
@@ -1494,17 +1161,17 @@ export function ProblemStatisticsView() {
                         maxValue={derived.maxValue}
                     />
                 </CardContent>
-            </Card>
-            <Card className="w-full">
+            </ResizableCard>
+            <ResizableCard className="w-full" defaultHeight={260}>
                 <CardHeader className="p-4">
                     <CardTitle>Submission over time</CardTitle>
                 </CardHeader>
                 <CardContent className="px-4 pb-4">
                     <SubmissionVolumeAreaChart data={derived.submissionVolumeOverTime} colors={colors} />
                 </CardContent>
-            </Card>
+            </ResizableCard>
             {Object.values(abstractProblem.problems).length > 1 && (
-                <Card className="w-full">
+                <ResizableCard className="w-full" defaultHeight={260}>
                     <CardHeader className="p-4">
                         <CardTitle>Submissions by language</CardTitle>
                     </CardHeader>
@@ -1515,7 +1182,7 @@ export function ProblemStatisticsView() {
                             languageNames={submissionsByLanguageOverTime.languageNames}
                         />
                     </CardContent>
-                </Card>
+                </ResizableCard>
             )}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <StatCard title="Submissions by year">
@@ -1543,5 +1210,55 @@ export function ProblemStatisticsView() {
                 onAccept={handleAcceptSettings}
             />
         </div>
+    )
+}
+
+export function ProblemStatisticsView() {
+    const { problem_nm } = useParams<{ problem_nm: string }>()
+    const [statistics, setStatistics] = useState<{
+        submissions: ProblemAnonymousSubmission[]
+    } | null>(null)
+    const [colors, setColors] = useState<ColorMapping | null>(null)
+    const [languagesTable, setLanguagesTable] = useState<Record<string, Language> | null>(null)
+    const [abstractProblem, setAbstractProblem] = useState<AbstractProblem | null>(null)
+    const [popularityBuckets, setPopularityBuckets] = useState<ProblemPopularityBucketEntry[] | null>(null)
+
+    useEffect(() => {
+        async function fetchData() {
+            const [submissions, colorMap, languages, abstract, buckets] = await Promise.all([
+                fetchInstructorAnonymousSubmissions(problem_nm),
+                fetchMiscHexColors(),
+                fetchTablesLanguages(),
+                fetchAbstractProblem(problem_nm),
+                fetchInstructorProblemPopularityBuckets(),
+            ])
+            setStatistics({ submissions })
+            setColors(colorMap)
+            setLanguagesTable(languages)
+            setAbstractProblem(abstract)
+            setPopularityBuckets(buckets)
+        }
+        fetchData()
+    }, [problem_nm])
+
+    const normalizedSubmissions = useMemo(
+        () => (statistics?.submissions ?? []).map(toStatisticsSubmissionFromAnonymous),
+        [statistics],
+    )
+
+    if (statistics === null || colors === null || abstractProblem === null || languagesTable === null || popularityBuckets === null) {
+        return <SimpleSpinner size={64} className="pt-24" />
+    }
+
+    return (
+        <ProblemStatisticsPanel
+            problem_nm={problem_nm}
+            submissions={normalizedSubmissions}
+            colors={colors}
+            abstractProblem={abstractProblem}
+            languagesTable={languagesTable}
+            popularityBuckets={popularityBuckets}
+            problemTotalSubmissionsAllTime={statistics.submissions.length}
+        />
     )
 }

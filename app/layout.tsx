@@ -1,14 +1,19 @@
 import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
 import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { AuthToolbar } from '@/components/AuthToolbar'
+import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
+import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
+import { LayoutWidthProvider } from '@/components/layout/LayoutWidthProvider'
+import { AppearancePreferencesProvider } from '@/components/AppearancePreferencesProvider'
 import { RootShell } from '@/components/RootShell'
 import { SkipLink } from '@/components/SkipLink'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { AppToaster } from '@/components/AppToaster'
 import { getCurrentClient, isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
 import type { CoursesNavItem } from '@/lib/courses'
 import { fetchEnrolledCoursesNavItems } from '@/services/queries/courses'
+import { layoutWidthBootstrapScript } from '@/lib/layoutWidth'
+import { reducedMotionBootstrapScript } from '@/lib/reducedMotion'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import './globals.css'
@@ -29,49 +34,57 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     return (
         <html lang="en" className="bg-background" suppressHydrationWarning>
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: layoutWidthBootstrapScript() }} />
+                <script dangerouslySetInnerHTML={{ __html: reducedMotionBootstrapScript() }} />
+            </head>
             <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
                 <SkipLink />
                 <ThemeProvider>
-                    <RootShell
-                        header={
-                            <header className="sticky top-0 z-50 border-b border-border bg-background">
-                                <div className="mx-auto flex h-11 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-                                    <MainBreadcrumbsInLayout
-                                        authenticated={authenticated}
-                                        instructor={currentUser?.instructor ?? false}
-                                        administrator={currentUser?.administrator ?? false}
-                                        enrolledCoursesNavItems={enrolledCoursesNavItems}
-                                    />
-                                    <div className="flex items-center gap-4">
-                                        <ThemeToggle />
-                                        <AuthToolbar
+                    <LayoutWidthProvider>
+                        <AppearancePreferencesProvider>
+                            <RootShell
+                                header={
+                                <header className="sticky top-0 z-50 border-b border-border bg-background">
+                                    <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
+                                        <MainBreadcrumbsInLayout
                                             authenticated={authenticated}
                                             instructor={currentUser?.instructor ?? false}
                                             administrator={currentUser?.administrator ?? false}
-                                            userName={currentUser?.name}
+                                            enrolledCoursesNavItems={enrolledCoursesNavItems}
                                         />
-                                    </div>
-                                </div>
-                            </header>
-                        }
-                        footer={
-                            <footer className="mt-auto border-t border-border bg-background">
-                                <div className="mx-auto flex max-w-6xl flex-row flex-wrap gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground items-center justify-between">
-                                    <span>
-                                        © Universitat Politècnica de Catalunya
-                                        <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
-                                    </span>
-                                    <div className="flex items-center gap-4">
-                                        <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
-                                        <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
-                                    </div>
-                                </div>
-                            </footer>
-                        }
-                    >
-                        {children}
-                    </RootShell>
-                    <AppToaster />
+                                        <div className="flex items-center gap-4">
+                                            <AppearanceSettingsDialog />
+                                            <AuthToolbar
+                                                authenticated={authenticated}
+                                                instructor={currentUser?.instructor ?? false}
+                                                administrator={currentUser?.administrator ?? false}
+                                                userName={currentUser?.name}
+                                            />
+                                        </div>
+                                    </LayoutWidthContainer>
+                                </header>
+                                }
+                                footer={
+                                <footer className="mt-auto border-t border-border bg-background">
+                                    <LayoutWidthContainer className="flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground">
+                                        <span>
+                                            © Universitat Politècnica de Catalunya
+                                            <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
+                                        </span>
+                                        <div className="flex items-center gap-4">
+                                            <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
+                                            <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
+                                        </div>
+                                    </LayoutWidthContainer>
+                                </footer>
+                                }
+                            >
+                                {children}
+                            </RootShell>
+                            <AppToaster />
+                        </AppearancePreferencesProvider>
+                    </LayoutWidthProvider>
                 </ThemeProvider>
             </body>
         </html>

@@ -1,5 +1,6 @@
 'use client'
 
+import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 
@@ -22,7 +23,9 @@ export function RootShell({ children, header, footer }: RootShellProps) {
     return (
         <>
             {header}
-            <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-2 sm:px-6">{children}</main>
+            <LayoutWidthContainer as="main" id="main-content" className="flex-1 px-4 pt-4 pb-2 sm:px-6">
+                {children}
+            </LayoutWidthContainer>
             {footer}
         </>
     )

@@ -19,6 +19,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ExternalLink } from '@/components/ExternalLink'
 import { aboutNavItems } from '@/lib/about'
 import { administratorIndexItems } from '@/lib/administrator'
@@ -322,18 +323,25 @@ export function MainBreadcrumbsInLayout({
                 <BreadcrumbItem className="min-w-0 max-w-48 sm:max-w-xs">
                     <div className="flex max-w-full min-w-0 items-center gap-1">
                         <DropdownMenu>
-                            <DropdownMenuTrigger
-                                type="button"
-                                className="inline-flex size-9 shrink-0 items-center justify-center rounded-md text-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                                aria-haspopup="menu"
-                                aria-label={
-                                    menuAnchor
-                                        ? `Open main navigation (current section: ${menuAnchor.title})`
-                                        : 'Open main navigation'
-                                }
-                            >
-                                <MenuIcon className="size-4 shrink-0" aria-hidden />
-                            </DropdownMenuTrigger>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <DropdownMenuTrigger
+                                            type="button"
+                                            className="inline-flex size-9 shrink-0 items-center justify-center rounded-md text-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                                            aria-haspopup="menu"
+                                            aria-label={
+                                                menuAnchor
+                                                    ? `Open main navigation (current section: ${menuAnchor.title})`
+                                                    : 'Open main navigation'
+                                            }
+                                        >
+                                            <MenuIcon className="size-4 shrink-0" aria-hidden />
+                                        </DropdownMenuTrigger>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Main navigation</TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                             <DropdownMenuContent
                                 align="start"
                                 className="min-w-52 -translate-y-2 translate-x-4 overflow-visible shadow-lg **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base **:data-[slot=dropdown-menu-sub-trigger]:py-1.5 **:data-[slot=dropdown-menu-sub-trigger]:text-base"

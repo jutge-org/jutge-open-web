@@ -14,6 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import Link from 'next/link'
 import {
     ActivityIcon,
@@ -54,17 +55,24 @@ export function AuthToolbar({ authenticated, instructor = false, administrator =
     if (authenticated) {
         return (
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="outline" size="icon" aria-label="Account menu">
-                        {administrator ? (
-                            <CrownIcon className="size-4.5" aria-hidden />
-                        ) : instructor ? (
-                            <GraduationCapIcon className="size-4.5" aria-hidden />
-                        ) : (
-                            <User className="size-4.5" aria-hidden />
-                        )}
-                    </Button>
-                </DropdownMenuTrigger>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <DropdownMenuTrigger asChild>
+                                <Button type="button" variant="outline" size="icon" aria-label="Account menu">
+                                    {administrator ? (
+                                        <CrownIcon className="size-4.5" aria-hidden />
+                                    ) : instructor ? (
+                                        <GraduationCapIcon className="size-4.5" aria-hidden />
+                                    ) : (
+                                        <User className="size-4.5" aria-hidden />
+                                    )}
+                                </Button>
+                            </DropdownMenuTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>Account menu</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 <DropdownMenuContent
                     align="end"
                     className="min-w-48 **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base mr-4"

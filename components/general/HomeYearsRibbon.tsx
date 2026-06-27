@@ -1,6 +1,8 @@
 'use client'
 
 import confetti from 'canvas-confetti'
+import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
+import { isSoundEffectsEnabled } from '@/lib/soundEffects'
 
 import '@/styles/years-ribbon.css'
 
@@ -13,10 +15,12 @@ function playRibbonSound() {
     void audioClip.play()
 }
 
-function launchConfetti() {
+function launchConfetti(playSound: boolean) {
     const origin = { x: 0.5, y: 0.08 }
 
-    playRibbonSound()
+    if (playSound) {
+        playRibbonSound()
+    }
 
     confetti({
         particleCount: 80,
@@ -45,13 +49,15 @@ function launchConfetti() {
 }
 
 export function HomeYearsRibbon() {
+    const { soundEffects } = useAppearancePreferences()
+
     return (
         <button
             type="button"
             className="years-ribbon"
             data-ribbon="20 Years 🎂"
             aria-label="Celebrate 20 years of Jutge.org"
-            onClick={launchConfetti}
+            onClick={() => launchConfetti(isSoundEffectsEnabled(soundEffects))}
         />
     )
 }

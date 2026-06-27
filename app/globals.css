@@ -182,6 +182,26 @@
     margin: 1em 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    html:not([data-reduced-motion='full']) *,
+    html:not([data-reduced-motion='full']) *::before,
+    html:not([data-reduced-motion='full']) *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+html[data-reduced-motion='reduce'] *,
+html[data-reduced-motion='reduce'] *::before,
+html[data-reduced-motion='reduce'] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
 .ag-row.jutgeai-audit-total-row {
     font-weight: 700;
     background-color: rgba(0, 0, 0, 0.06);

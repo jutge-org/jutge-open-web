@@ -1,11 +1,14 @@
 import { cn } from '@/lib/utils'
 import type { ReactNode } from 'react'
 
-// The left-1/2 -ml-[50vw] w-screen trick centers the element and stretches it to the full viewport width, regardless of any ancestor's max-width.
+type FullWidthBreakoutProps = {
+    children: ReactNode
+    className?: string
+}
 
-export function FullWidthBreakout({ children, className }: { children: ReactNode; className?: string }) {
+export function FullWidthBreakout({ children, className }: FullWidthBreakoutProps) {
     return (
-        <div className={cn('relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] w-screen bg-background', className)}>
+        <div className={cn('bg-background', className)}>
             <div className="sm:px-2">{children}</div>
         </div>
     )

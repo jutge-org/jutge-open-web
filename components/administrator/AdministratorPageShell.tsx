@@ -1,6 +1,4 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import { PageTitle } from '@/components/general/PageTitle'
-import { FullWidthBreakout } from '@/components/layout/FullWidthBreakout'
 import type { ReactNode } from 'react'
 
 type AdministratorPageShellProps = {

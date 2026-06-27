@@ -8,6 +8,10 @@ export type CourseStudentRankingRow = {
     email: string
     ok: number
     ko: number
+    sc: number
+    nt: number
+    totalSubmissions: number
+    avgSubmissionsPerProblem: number
 }
 
 function problemNmFromSubmission(submission: CourseSubmission): string | null {
@@ -22,10 +26,16 @@ function isProblemOk(submissions: CourseSubmission[]): boolean {
     return submissions.some((submission) => submission.verdict === 'AC')
 }
 
+function isProblemSc(submissions: CourseSubmission[]): boolean {
+    if (submissions.length === 0) return false
+    if (isProblemOk(submissions)) return false
+    return submissions.some((submission) => submission.verdict === 'SC')
+}
+
 function isProblemKo(submissions: CourseSubmission[]): boolean {
     if (submissions.length === 0) return false
     if (isProblemOk(submissions)) return false
-    if (submissions.some((submission) => submission.verdict === 'SC')) return false
+    if (isProblemSc(submissions)) return false
     return true
 }
 
@@ -76,11 +86,17 @@ export function deriveCourseStudentRanking(
         const studentKey = uidByEmail.get(email) ?? email
         let ok = 0
         let ko = 0
+        let sc = 0
+        let nt = 0
+        let totalSubmissions = 0
 
         for (const problem_nm of problemNms) {
             const problemSubmissions = submissionsByStudentProblem.get(`${studentKey}\0${problem_nm}`) ?? []
+            totalSubmissions += problemSubmissions.length
             if (isProblemOk(problemSubmissions)) ok += 1
+            else if (isProblemSc(problemSubmissions)) sc += 1
             else if (isProblemKo(problemSubmissions)) ko += 1
+            else nt += 1
         }
 
         return {
@@ -89,6 +105,10 @@ export function deriveCourseStudentRanking(
             email,
             ok,
             ko,
+            sc,
+            nt,
+            totalSubmissions,
+            avgSubmissionsPerProblem: problemNms.length > 0 ? totalSubmissions / problemNms.length : 0,
         }
     })
 

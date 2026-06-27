@@ -27,13 +27,6 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
     const colDefs = useMemo(
         () => [
             {
-                field: 'rank',
-                headerName: 'Ranking',
-                width: 100,
-                sortable: false,
-                type: 'rightAligned',
-            },
-            {
                 field: 'name',
                 flex: 2,
                 filter: true,
@@ -48,17 +41,47 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
             },
             {
                 field: 'ok',
-                headerName: 'OK problems',
-                width: 130,
+                headerName: '#OK',
+                width: 120,
                 filter: false,
                 type: 'rightAligned',
             },
             {
                 field: 'ko',
-                headerName: 'KO problems',
-                width: 130,
+                headerName: '#KO',
+                width: 120,
                 filter: false,
                 type: 'rightAligned',
+            },
+            {
+                field: 'sc',
+                headerName: '#SC',
+                width: 120,
+                filter: false,
+                type: 'rightAligned',
+            },
+            {
+                field: 'nt',
+                headerName: '#NT',
+                width: 120,
+                filter: false,
+                type: 'rightAligned',
+            },
+            {
+                field: 'totalSubmissions',
+                headerName: '#Sub',
+                width: 120,
+                filter: false,
+                type: 'rightAligned',
+            },
+            {
+                field: 'avgSubmissionsPerProblem',
+                headerName: 'Avg #Sub/pbm',
+                width: 180,
+                filter: false,
+                type: 'rightAligned',
+                valueFormatter: (params: { value: number }) =>
+                    Number.isFinite(params.value) ? params.value.toFixed(1) : '',
             },
         ],
         [blurPersonalData],
@@ -72,7 +95,7 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
     return (
         <Card className="w-full">
             <CardHeader className="p-4">
-                <CardTitle>Ranking</CardTitle>
+                <CardTitle>Students</CardTitle>
                 <CardAction>
                     <TooltipProvider>
                         <Tooltip>
@@ -82,9 +105,7 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
                                     size="sm"
                                     pressed={blurPersonalData}
                                     onPressedChange={setBlurPersonalData}
-                                    aria-label={
-                                        blurPersonalData ? 'Show names and emails' : 'Blur names and emails'
-                                    }
+                                    aria-label={blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
                                 >
                                     {blurPersonalData ? <EyeOffIcon aria-hidden /> : <EyeIcon aria-hidden />}
                                     {blurPersonalData ? 'Show names' : 'Blur names'}

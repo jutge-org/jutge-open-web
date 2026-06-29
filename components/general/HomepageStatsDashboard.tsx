@@ -1,11 +1,10 @@
 'use client'
 
 import type { HomepageStats } from '@/lib/jutge_api_client'
-import { cn } from '@/lib/utils'
 import { CodeIcon, PuzzleIcon, SchoolIcon, SendIcon, TerminalIcon, TrophyIcon, UsersIcon } from 'lucide-react'
 import { useState } from 'react'
 
-import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
+import { HomepageStatCard } from '@/components/general/HomepageStatCard'
 import { HomepageStatsRefreshButton } from '@/components/general/HomepageStatsRefreshButton'
 import { HomeSectionHeading } from '@/components/general/HomeSectionHeading'
 import { RecentSubmissionsCard } from '@/components/general/RecentSubmissionsCard'
@@ -55,7 +54,7 @@ const statItems = [
     },
     {
         key: 'languages' as const,
-        label: 'Programming Languages',
+        label: 'Proglangs',
         icon: CodeIcon,
         borderAccent: 'border-t-violet-500',
         iconAccent: 'text-violet-500 dark:text-violet-400',
@@ -85,22 +84,16 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                 <HomepageStatsRefreshButton onRefresh={handleRefresh} />
             </HomeSectionHeading>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {statItems.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
-                    <div
+                {statItems.map(({ key, label, icon, borderAccent, iconAccent }) => (
+                    <HomepageStatCard
                         key={key}
-                        className={cn(
-                            'group flex flex-col gap-3 rounded-2xl border border-border border-t-4 bg-card px-5 py-5 shadow-sm',
-                            borderAccent,
-                        )}
-                    >
-                        <p className="text-3xl font-semibold tracking-tight tabular-nums text-foreground group-hover:animate-pulse">
-                            <AnimatedStatValue value={stats[key]} replayKey={replayKey} />
-                        </p>
-                        <div className="flex items-center gap-2">
-                            <Icon className={cn('size-5 shrink-0 opacity-80', iconAccent)} aria-hidden />
-                            <span className={cn('text-sm font-medium', iconAccent)}>{label}</span>
-                        </div>
-                    </div>
+                        label={label}
+                        value={stats[key]}
+                        icon={icon}
+                        borderAccent={borderAccent}
+                        iconAccent={iconAccent}
+                        replayKey={replayKey}
+                    />
                 ))}
                 <RecentSubmissionsCard recentSubmissions={stats.recent_submissions} replayKey={replayKey} />
             </div>

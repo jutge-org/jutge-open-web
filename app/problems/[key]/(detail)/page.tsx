@@ -1,4 +1,5 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
+import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { getCurrentClient, isAuthenticated } from '@/lib/auth'
 import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
@@ -54,11 +55,12 @@ export default async function ProblemPage({ params }: PageProps) {
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs
                 breadcrumbs={[
-                    { title: 'Problems', url: '/problems' },
+                    { title: 'Problems', url: authenticated ? '/problems' : '/problems/public' },
                     { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
                     { title: data.problem.title, url: `/problems/${key}` },
                 ]}
             />
+            {!authenticated ? <PageTitle section="/problems" authenticated={false} hidden={false} /> : null}
             <ProblemDetail pageKey={key} data={data} status={status} defaultCompilerId={defaultCompilerId} />
         </div>
     )

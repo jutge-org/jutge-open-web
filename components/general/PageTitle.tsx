@@ -1,3 +1,4 @@
+import { PageTitleGuestDescription } from '@/components/general/PageTitleGuestDescription'
 import { cn } from '@/lib/utils'
 import {
     Award,
@@ -36,7 +37,7 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/administrator': 'border-l-4 border-l-slate-500 text-slate-600 dark:text-slate-400',
-    '/documentation': 'border-l-4 border-l-indigo-500 text-indigo-600 dark:text-indigo-400',
+    '/documentation': 'border-l-4 border-l-amber-600 text-amber-600 dark:text-amber-400',
     '/about': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
 }
 
@@ -143,7 +144,13 @@ export function PageTitle({
             </span>
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <h1 className="text-lg font-semibold tracking-tight text-foreground">{title}</h1>
-                <p className="text-sm font-normal leading-snug text-muted-foreground">{description}</p>
+                <p className="text-sm font-normal leading-snug text-muted-foreground">
+                    {!authenticated ? (
+                        <PageTitleGuestDescription section={section} fallback={description} />
+                    ) : (
+                        description
+                    )}
+                </p>
             </span>
         </div>
     )

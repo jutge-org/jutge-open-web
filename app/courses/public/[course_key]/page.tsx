@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { GuestCourseDetail } from '@/components/courses/GuestCourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
+import { PageTitle } from '@/components/general/PageTitle'
 import { isAuthenticated } from '@/lib/auth'
 import { buildGuestCourseRow, publicCourseHref } from '@/lib/courses'
 import { fetchPublicCourse } from '@/services/queries/courses'
@@ -50,6 +51,7 @@ export default async function PublicCoursePage({ params }: PageProps) {
                     { title: row.title, url: href },
                 ]}
             />
+            <PageTitle section="/courses" authenticated={false} hidden={false} />
             <GuestCourseDetail courseKey={courseKey} course={course} />
         </div>
     )

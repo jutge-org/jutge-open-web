@@ -57,7 +57,7 @@ const cardAccent: Record<string, string> = {
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/administrator': 'border-l-4 border-l-slate-500 text-slate-600 dark:text-slate-400',
-    '/documentation': 'border-l-4 border-l-indigo-500 text-indigo-600 dark:text-indigo-400',
+    '/documentation': 'border-l-4 border-l-amber-400 text-amber-600 dark:text-amber-400',
     '/about': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
 }
 

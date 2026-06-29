@@ -1,3 +1,5 @@
+import { ExternalLink } from '@/components/ExternalLink'
+import { GithubIcon } from '@/components/GithubIcon'
 import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
 import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { AuthToolbar } from '@/components/AuthToolbar'
@@ -45,39 +47,49 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         <AppearancePreferencesProvider>
                             <RootShell
                                 header={
-                                <header className="sticky top-0 z-50 border-b border-border bg-background">
-                                    <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
-                                        <MainBreadcrumbsInLayout
-                                            authenticated={authenticated}
-                                            instructor={currentUser?.instructor ?? false}
-                                            administrator={currentUser?.administrator ?? false}
-                                            enrolledCoursesNavItems={enrolledCoursesNavItems}
-                                        />
-                                        <div className="flex items-center gap-4">
-                                            <AppearanceSettingsDialog />
-                                            <AuthToolbar
+                                    <header className="sticky top-0 z-50 border-b border-border bg-background">
+                                        <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
+                                            <MainBreadcrumbsInLayout
                                                 authenticated={authenticated}
                                                 instructor={currentUser?.instructor ?? false}
                                                 administrator={currentUser?.administrator ?? false}
-                                                userName={currentUser?.name}
+                                                enrolledCoursesNavItems={enrolledCoursesNavItems}
                                             />
-                                        </div>
-                                    </LayoutWidthContainer>
-                                </header>
+                                            <div className="flex items-center gap-4">
+                                                <AppearanceSettingsDialog />
+                                                <AuthToolbar
+                                                    authenticated={authenticated}
+                                                    instructor={currentUser?.instructor ?? false}
+                                                    administrator={currentUser?.administrator ?? false}
+                                                    userName={currentUser?.name}
+                                                />
+                                            </div>
+                                        </LayoutWidthContainer>
+                                    </header>
                                 }
                                 footer={
-                                <footer className="mt-auto border-t border-border bg-background">
-                                    <LayoutWidthContainer className="flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground">
-                                        <span>
-                                            © Universitat Politècnica de Catalunya
-                                            <span className="hidden sm:inline"> — BarcelonaTech, {currentYear}</span>
-                                        </span>
-                                        <div className="flex items-center gap-4">
-                                            <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
-                                            <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
-                                        </div>
-                                    </LayoutWidthContainer>
-                                </footer>
+                                    <footer className="mt-auto border-t border-border bg-background">
+                                        <LayoutWidthContainer className="flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground">
+                                            <span>
+                                                © Universitat Politècnica de Catalunya
+                                                <span className="hidden sm:inline">
+                                                    {' '}
+                                                    — BarcelonaTech, {currentYear}
+                                                </span>
+                                            </span>
+                                            <div className="flex items-center gap-4">
+                                                <ExternalLink
+                                                    href="https://github.com/jutge-org/jutge-open-web"
+                                                    aria-label="View source on GitHub"
+                                                    className="text-foreground transition-colors hover:text-primary"
+                                                >
+                                                    <GithubIcon className="size-6" aria-hidden />
+                                                </ExternalLink>
+                                                <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
+                                                <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
+                                            </div>
+                                        </LayoutWidthContainer>
+                                    </footer>
                                 }
                             >
                                 {children}

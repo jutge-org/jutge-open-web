@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-26T17:09:32.999Z
+ * This file has been automatically generated at 2026-06-29T17:27:49.388Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -50,6 +50,12 @@ export type HomepageStats = {
     submissions: number
     exams: number
     contests: number
+    recent_submissions: {
+        latest_01_minutes: number
+        latest_05_minutes: number
+        latest_15_minutes: number
+        latest_60_minutes: number
+    }
 }
 
 export type ColorMapping = Record<string, Record<string, string>>
@@ -1925,8 +1931,7 @@ class Module_problems {
      *
      * 🔐 Authentication: any
      * No warnings
-     * Includes accepted compilers, accepted proglangs, official solutions
-    checks and handler specifications
+     * Includes accepted compilers, accepted proglangs, official solutions checks and handler specifications
      */
     async getProblemSuppl(problem_id: string): Promise<ProblemSuppl> {
         const [output, ofiles] = await this.root.execute("problems.getProblemSuppl", problem_id)

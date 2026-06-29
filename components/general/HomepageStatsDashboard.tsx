@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
 import { HomepageStatsRefreshButton } from '@/components/general/HomepageStatsRefreshButton'
 import { HomeSectionHeading } from '@/components/general/HomeSectionHeading'
+import { RecentSubmissionsCard } from '@/components/general/RecentSubmissionsCard'
 
 type HomepageStatsDashboardProps = {
     stats: HomepageStats & {
@@ -101,6 +102,7 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                         </div>
                     </div>
                 ))}
+                <RecentSubmissionsCard recentSubmissions={stats.recent_submissions} replayKey={replayKey} />
             </div>
         </section>
     )

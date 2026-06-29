@@ -74,6 +74,10 @@ export function pickPreferredId(availableIds: string[], preferredId: string | nu
     return availableIds[0] ?? ''
 }
 
+export function isQuizProblem(type: string | null | undefined): boolean {
+    return type === 'quiz'
+}
+
 export function parseProblemKey(key: string): ParsedProblemKey {
     const idMatch = key.match(PROBLEM_ID_RE)
     if (idMatch) {

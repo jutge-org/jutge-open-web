@@ -18,6 +18,9 @@ type ProblemStatementProps = {
 export function ProblemStatement({ pageKey, shortHtmlStatement }: ProblemStatementProps) {
     const [fontScale, setFontScale] = useFontScalePreference(STATEMENT_FONT_SCALE_KEY)
 
+    // hack to get correct HTML statement for games, because they contain <html> and <body> tags
+    shortHtmlStatement = shortHtmlStatement.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? shortHtmlStatement
+
     return (
         <TooltipProvider>
             <Card className="ring-0 border border-border shadow-sm">

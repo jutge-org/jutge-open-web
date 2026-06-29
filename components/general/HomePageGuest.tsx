@@ -1,6 +1,7 @@
 import { HomeLoginCard } from '@/components/HomeLoginCard'
 import { HomeNewsSection } from '@/components/general/HomeNewsSection'
 import { HomepageStatsDashboard } from '@/components/general/HomepageStatsDashboard'
+import { HomePageSponsors } from '@/components/general/HomePageSponsors'
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
@@ -32,12 +33,16 @@ export async function HomePageGuest() {
                 </p>
             </div>
 
-            <div className="flex flex-col gap-8 pb-12">
+            <div className="flex flex-col gap-8 pb-1">
                 <HomeLoginCard />
                 <HomeQuickNav authenticated={false} />
                 <HomeNewsSection />
                 {platformStats ? <HomepageStatsDashboard stats={platformStats} /> : null}
             </div>
+
+            <HomePageSponsors className="mb-4" />
+
+            <div className="py-8"></div>
         </div>
     )
 }

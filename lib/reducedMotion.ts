@@ -34,3 +34,26 @@ export function syncReducedMotionDataset(preference: ReducedMotionPreference) {
 export function reducedMotionBootstrapScript(): string {
     return `(function(){try{var m=localStorage.getItem('${REDUCED_MOTION_STORAGE_KEY}');if(m==='reduce'||m==='full')document.documentElement.dataset.reducedMotion=m}catch(e){}})();`
 }
+
+export function systemPrefersReducedMotion(): boolean {
+    if (typeof window === 'undefined') {
+        return false
+    }
+
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+export function isMotionReduced(
+    preference: ReducedMotionPreference,
+    systemPrefersReduced: boolean = systemPrefersReducedMotion(),
+): boolean {
+    if (preference === REDUCED_MOTION_FULL) {
+        return false
+    }
+
+    if (preference === REDUCED_MOTION_REDUCE) {
+        return true
+    }
+
+    return systemPrefersReduced
+}

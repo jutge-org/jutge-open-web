@@ -25,6 +25,11 @@ export const administratorIndexItems = [
         description: 'Manage instructor accounts',
     },
     {
+        href: '/administrator/courses',
+        label: 'Courses',
+        description: 'Set public and official flags for all courses',
+    },
+    {
         href: '/administrator/statistics',
         label: 'Statistics',
         description: 'Platform-wide distributions and counters',

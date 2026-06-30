@@ -1,6 +1,16 @@
 import { administratorIndexItems } from '@/lib/administrator'
 import { cn } from '@/lib/utils'
-import { AudioLines, Calendar, ChartPie, LayoutDashboard, ScrollText, Trophy, UserRoundPen, Users } from 'lucide-react'
+import {
+    AudioLines,
+    BookOpenCheck,
+    Calendar,
+    ChartPie,
+    LayoutDashboard,
+    ScrollText,
+    Trophy,
+    UserRoundPen,
+    Users,
+} from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof LayoutDashboard> = {
@@ -9,6 +19,7 @@ const indexIcons: Record<string, typeof LayoutDashboard> = {
     Exams: Calendar,
     Users: Users,
     Instructors: UserRoundPen,
+    Courses: BookOpenCheck,
     Statistics: ChartPie,
     Heatmaps: AudioLines,
     Ranking: Trophy,

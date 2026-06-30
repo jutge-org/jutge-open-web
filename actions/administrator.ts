@@ -78,6 +78,18 @@ export async function adminFatalizePendings() {
     return withAdminClient((c) => c.admin.tasks.fatalizePendings())
 }
 
+export async function fetchAdminCourses() {
+    return withAdminClient((c) => c.admin.courses.getAll())
+}
+
+export async function adminSetCoursePublicAndOfficial(data: {
+    course_id: string
+    public: number
+    official: number
+}) {
+    return withAdminClient((c) => c.admin.courses.setPublicAndOfficial(data))
+}
+
 export async function fetchAdminInstructors() {
     return withAdminClient((c) => c.admin.instructors.get())
 }

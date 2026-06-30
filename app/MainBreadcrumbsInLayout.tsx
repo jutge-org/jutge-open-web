@@ -161,6 +161,8 @@ function MainNavAdministratorSubItemIcon({ href }: { href: string }) {
             return <UsersIcon aria-hidden />
         case '/administrator/instructors':
             return <UserRoundPenIcon aria-hidden />
+        case '/administrator/courses':
+            return <BookOpenCheckIcon aria-hidden />
         case '/administrator/statistics':
             return <ChartPieIcon aria-hidden />
         case '/administrator/heatmaps':

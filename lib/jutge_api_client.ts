@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-29T17:27:49.388Z
+ * This file has been automatically generated at 2026-06-30T19:59:23.196Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -946,6 +946,32 @@ export type InstructorEntry = {
 }
 
 export type InstructorEntries = InstructorEntry[]
+
+export type AdminCourseInstructor = {
+    username: string | null
+    name: string
+    email: string
+}
+
+export type AdminCourse = {
+    course_id: string
+    course_nm: string
+    title: string
+    description: string
+    official: number
+    public: number
+    created_at: string | string | string | number
+    updated_at: string | string | string | number
+    instructor: AdminCourseInstructor
+}
+
+export type AdminCourses = AdminCourse[]
+
+export type AdminCourseSetPublicAndOfficial = {
+    course_id: string
+    public: number
+    official: number
+}
 
 export type UserCreation = {
     email: string
@@ -4044,6 +4070,7 @@ class Module_admin {
     private readonly root: JutgeApiClient
 
     readonly instructors: Module_admin_instructors
+    readonly courses: Module_admin_courses
     readonly users: Module_admin_users
     readonly dashboard: Module_admin_dashboard
     readonly queue: Module_admin_queue
@@ -4054,6 +4081,7 @@ class Module_admin {
     constructor(root: JutgeApiClient) {
         this.root = root
         this.instructors = new Module_admin_instructors(root)
+        this.courses = new Module_admin_courses(root)
         this.users = new Module_admin_users(root)
         this.dashboard = new Module_admin_dashboard(root)
         this.queue = new Module_admin_queue(root)
@@ -4108,6 +4136,43 @@ class Module_admin_instructors {
      */
     async remove(email: string): Promise<void> {
         const [output, ofiles] = await this.root.execute("admin.instructors.remove", email)
+        return output
+    }
+}
+
+/**
+ *
+ * No description yet
+ *
+ */
+class Module_admin_courses {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get all courses from all instructors.
+     *
+     * 🔐 Authentication: admin
+     * No warnings
+     *
+     */
+    async getAll(): Promise<AdminCourses> {
+        const [output, ofiles] = await this.root.execute("admin.courses.getAll", null)
+        return output
+    }
+
+    /**
+     * Set the public and official fields of a course.
+     *
+     * 🔐 Authentication: admin
+     * No warnings
+     *
+     */
+    async setPublicAndOfficial(data: AdminCourseSetPublicAndOfficial): Promise<void> {
+        const [output, ofiles] = await this.root.execute("admin.courses.setPublicAndOfficial", data)
         return output
     }
 }

@@ -2,7 +2,7 @@ import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { SubmissionsList } from '@/components/submissions/SubmissionsList'
 import { getCurrentClient } from '@/lib/auth'
-import { parseProblemKey } from '@/lib/problems'
+import { isGameProblem, parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
 import { fetchProblemSubmissionsData } from '@/services/queries/submissions'
@@ -39,6 +39,10 @@ export default async function ProblemSubmissionsPage({ params }: PageProps) {
 
     const data = await fetchProblemDetail(problemId)
     if (!data) {
+        notFound()
+    }
+
+    if (isGameProblem(data.problem.abstract_problem.type)) {
         notFound()
     }
 

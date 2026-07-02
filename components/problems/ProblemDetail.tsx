@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { SignatureIcon } from 'lucide-react'
 
+import { GameProblemCompetitionsCard } from '@/components/problems/GameProblemCompetitionsCard'
 import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { ProblemStatus } from '@/components/problems/ProblemStatus'
@@ -9,6 +10,7 @@ import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { isGameProblem } from '@/lib/problems'
 import { cn } from '@/lib/utils'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import type { ProblemDetailData } from '@/services/queries/problemDetail'
@@ -38,10 +40,13 @@ export function ProblemDetail({
     children,
 }: ProblemDetailProps) {
     const { problem } = data
-    const showStatus = status !== undefined
+    const isGame = isGameProblem(problem.abstract_problem.type)
+    const showStatus = status !== undefined && !isGame
 
     return (
         <div className="flex flex-col gap-6">
+            {isGame ? <GameProblemCompetitionsCard /> : null}
+
             <Card className="ring-0 border border-border shadow-sm">
                 <CardContent className="w-full flex flex-col gap-0.5">
                     <TooltipProvider>

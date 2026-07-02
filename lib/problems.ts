@@ -78,6 +78,10 @@ export function isQuizProblem(type: string | null | undefined): boolean {
     return type === 'quiz'
 }
 
+export function isGameProblem(type: string | null | undefined): boolean {
+    return type === 'game'
+}
+
 export function parseProblemKey(key: string): ParsedProblemKey {
     const idMatch = key.match(PROBLEM_ID_RE)
     if (idMatch) {

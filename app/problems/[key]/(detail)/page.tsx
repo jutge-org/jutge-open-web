@@ -4,7 +4,7 @@ import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { QuizProblemUnsupportedCard } from '@/components/problems/QuizProblemUnsupportedCard'
 import { getCurrentClient, getPreferredLanguageId, isAuthenticated } from '@/lib/auth'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
-import { isQuizProblem, parseProblemKey } from '@/lib/problems'
+import { isGameProblem, isQuizProblem, parseProblemKey } from '@/lib/problems'
 import {
     fetchAbstractProblem,
     fetchProblemDetail,
@@ -32,8 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (isQuizProblem(abstractProblem.type)) {
         const preferredLanguageId = await getPreferredLanguageId()
-        const title =
-            getPreferredProblemVariant(abstractProblem, preferredLanguageId)?.title ?? parsed.problem_nm
+        const title = getPreferredProblemVariant(abstractProblem, preferredLanguageId)?.title ?? parsed.problem_nm
         return { title: `${title} — Problems — Jutge.org` }
     }
 
@@ -100,7 +99,7 @@ export default async function ProblemPage({ params }: PageProps) {
     let status: Awaited<ReturnType<typeof fetchProblemStatus>> | undefined
     let defaultCompilerId: string | null | undefined
 
-    if (authenticated) {
+    if (authenticated && !isGameProblem(abstractProblem.type)) {
         const client = await getCurrentClient()
         const [statusResult, profile] = await Promise.all([
             fetchProblemStatus(client, problem.problem_nm),

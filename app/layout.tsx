@@ -1,9 +1,6 @@
-import { ExternalLink } from '@/components/ExternalLink'
-import { GithubIcon } from '@/components/GithubIcon'
-import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
-import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { AuthToolbar } from '@/components/AuthToolbar'
 import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
+import { AppFooter } from '@/components/layout/AppFooter'
 import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 import { LayoutWidthProvider } from '@/components/layout/LayoutWidthProvider'
 import { AppearancePreferencesProvider } from '@/components/AppearancePreferencesProvider'
@@ -17,7 +14,6 @@ import { fetchEnrolledCoursesNavItems } from '@/services/queries/courses'
 import { layoutWidthBootstrapScript } from '@/lib/layoutWidth'
 import { reducedMotionBootstrapScript } from '@/lib/reducedMotion'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import './globals.css'
 import { MainBreadcrumbsInLayout } from './MainBreadcrumbsInLayout'
 
@@ -32,8 +28,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const enrolledCoursesNavItems: CoursesNavItem[] = authenticated
         ? await fetchEnrolledCoursesNavItems(await getCurrentClient())
         : []
-    const currentYear = new Date().getFullYear()
-
     return (
         <html lang="en" className="bg-background" suppressHydrationWarning>
             <head>
@@ -67,30 +61,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                         </LayoutWidthContainer>
                                     </header>
                                 }
-                                footer={
-                                    <footer className="mt-auto border-t border-border bg-background">
-                                        <LayoutWidthContainer className="flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3 text-sm text-muted-foreground">
-                                            <span>
-                                                © Universitat Politècnica de Catalunya
-                                                <span className="hidden sm:inline">
-                                                    {' '}
-                                                    — BarcelonaTech, {currentYear}
-                                                </span>
-                                            </span>
-                                            <div className="flex items-center gap-4">
-                                                <ExternalLink
-                                                    href="https://github.com/jutge-org/jutge-open-web"
-                                                    aria-label="View source on GitHub"
-                                                    className="text-foreground transition-colors hover:text-primary"
-                                                >
-                                                    <GithubIcon className="size-6" aria-hidden />
-                                                </ExternalLink>
-                                                <JutgeLogoIcon className="size-6 text-foreground" aria-hidden />
-                                                <UpcLogoIcon className="size-6 text-foreground" aria-hidden />
-                                            </div>
-                                        </LayoutWidthContainer>
-                                    </footer>
-                                }
+                                footer={<AppFooter />}
                             >
                                 {children}
                             </RootShell>

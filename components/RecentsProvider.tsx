@@ -58,15 +58,17 @@ export function RecentsProvider({ children, authenticated, userId }: RecentsProv
             return
         }
 
+        const activeUserId = userId
+
         function syncFromPage(record: boolean) {
             setRecents((current) => {
-                const base = mergeWithStoredRecents(userId, current)
+                const base = mergeWithStoredRecents(activeUserId, current)
                 const next = syncRecentsFromPage(pathname, base, { record })
                 if (next === base) {
                     return current
                 }
 
-                writeRecents(userId, next)
+                writeRecents(activeUserId, next)
                 return next
             })
         }

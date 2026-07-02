@@ -382,12 +382,13 @@ export function observeRecentPageMetadata(onChange: () => void): () => void {
     handleChange()
 
     const titleElement = document.querySelector('title')
-    const titleObserver =
-        titleElement &&
-        new MutationObserver(() => {
+    let titleObserver: MutationObserver | undefined
+    if (titleElement) {
+        titleObserver = new MutationObserver(() => {
             handleChange()
         })
-    titleObserver?.observe(titleElement, { childList: true, subtree: true, characterData: true })
+        titleObserver.observe(titleElement, { childList: true, subtree: true, characterData: true })
+    }
 
     const contentObserver = new MutationObserver(() => {
         handleChange()

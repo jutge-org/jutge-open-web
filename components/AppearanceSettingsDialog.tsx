@@ -150,7 +150,7 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <DialogTrigger asChild>
-                            <Button type="button" variant="outline" size={size} aria-label="Appearance settings">
+                            <Button type="button" variant="ghost" size={size} aria-label="Appearance settings">
                                 <Settings2Icon className="size-4.5" />
                             </Button>
                         </DialogTrigger>

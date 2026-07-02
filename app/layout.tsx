@@ -1,5 +1,7 @@
 import { AuthToolbar } from '@/components/AuthToolbar'
 import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
+import { RecentMenu } from '@/components/RecentMenu'
+import { RecentsProvider } from '@/components/RecentsProvider'
 import { AppFooter } from '@/components/layout/AppFooter'
 import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 import { LayoutWidthProvider } from '@/components/layout/LayoutWidthProvider'
@@ -39,33 +41,36 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ThemeProvider>
                     <LayoutWidthProvider>
                         <AppearancePreferencesProvider>
-                            <RootShell
-                                header={
-                                    <header className="sticky top-0 z-50 border-b border-border bg-background">
-                                        <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
-                                            <MainBreadcrumbsInLayout
-                                                authenticated={authenticated}
-                                                instructor={currentUser?.instructor ?? false}
-                                                administrator={currentUser?.administrator ?? false}
-                                                enrolledCoursesNavItems={enrolledCoursesNavItems}
-                                            />
-                                            <div className="flex items-center gap-4">
-                                                <AppearanceSettingsDialog />
-                                                <AuthToolbar
+                            <RecentsProvider authenticated={authenticated} userId={currentUser?.id ?? null}>
+                                <RootShell
+                                    header={
+                                        <header className="sticky top-0 z-50 border-b border-border bg-background">
+                                            <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
+                                                <MainBreadcrumbsInLayout
                                                     authenticated={authenticated}
                                                     instructor={currentUser?.instructor ?? false}
                                                     administrator={currentUser?.administrator ?? false}
-                                                    userName={currentUser?.name}
+                                                    enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                 />
-                                            </div>
-                                        </LayoutWidthContainer>
-                                    </header>
-                                }
-                                footer={<AppFooter />}
-                            >
-                                {children}
-                            </RootShell>
-                            <AppToaster />
+                                                <div className="flex items-center gap-0">
+                                                    {authenticated ? <RecentMenu /> : null}
+                                                    <AppearanceSettingsDialog />
+                                                    <AuthToolbar
+                                                        authenticated={authenticated}
+                                                        instructor={currentUser?.instructor ?? false}
+                                                        administrator={currentUser?.administrator ?? false}
+                                                        userName={currentUser?.name}
+                                                    />
+                                                </div>
+                                            </LayoutWidthContainer>
+                                        </header>
+                                    }
+                                    footer={<AppFooter />}
+                                >
+                                    {children}
+                                </RootShell>
+                                <AppToaster />
+                            </RecentsProvider>
                         </AppearancePreferencesProvider>
                     </LayoutWidthProvider>
                 </ThemeProvider>

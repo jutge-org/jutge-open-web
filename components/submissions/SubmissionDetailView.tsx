@@ -45,7 +45,11 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                     <CardHeader className="border-b border-border">
                         <CardTitle className="flex flex-wrap items-center gap-2 text-lg font-semibold">
                             {data.verdictEmoji ? (
-                                <span aria-hidden className={cn('text-xl', isPending && 'animate-pulse')}>
+                                <span
+                                    aria-hidden
+                                    data-recent-verdict-emoji={data.verdictEmoji}
+                                    className={cn('text-xl', isPending && 'animate-pulse')}
+                                >
                                     {data.verdictEmoji}
                                 </span>
                             ) : null}

@@ -514,7 +514,15 @@ function StatisticsSettingsDialog({
     )
 }
 
-function StatCard({ title, children, defaultHeight = 360 }: { title: string; children: React.ReactNode; defaultHeight?: number }) {
+function StatCard({
+    title,
+    children,
+    defaultHeight = 360,
+}: {
+    title: string
+    children: React.ReactNode
+    defaultHeight?: number
+}) {
     return (
         <ResizableCard className="w-full" defaultHeight={defaultHeight}>
             <CardHeader className="p-4">
@@ -1246,7 +1254,13 @@ export function ProblemStatisticsView() {
         [statistics],
     )
 
-    if (statistics === null || colors === null || abstractProblem === null || languagesTable === null || popularityBuckets === null) {
+    if (
+        statistics === null ||
+        colors === null ||
+        abstractProblem === null ||
+        languagesTable === null ||
+        popularityBuckets === null
+    ) {
         return <SimpleSpinner size={64} className="pt-24" />
     }
 

@@ -89,20 +89,25 @@ export function ProblemsListToolbar({
                         </Tooltip>
                     ) : null}
                 </ButtonGroup>
-                <div className="relative w-64">
-                    <SearchIcon
-                        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                        aria-hidden
-                    />
-                    <Input
-                        type="search"
-                        value={searchQuery}
-                        onChange={(event) => onSearchQueryChange(event.target.value)}
-                        placeholder="Search…"
-                        className="pl-9"
-                        aria-label="Search problems"
-                    />
-                </div>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="relative w-64">
+                            <SearchIcon
+                                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+                                aria-hidden
+                            />
+                            <Input
+                                type="search"
+                                value={searchQuery}
+                                onChange={(event) => onSearchQueryChange(event.target.value)}
+                                placeholder="Search…"
+                                className="pl-9"
+                                aria-label="Search problems"
+                            />
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">Simple search</TooltipContent>
+                </Tooltip>
             </div>
         </TooltipProvider>
     )

@@ -1,7 +1,7 @@
 'use server'
 
-import { getCurrentClient, isAuthenticated } from '@/lib/auth'
-import type { JutgeApiClient } from '@/lib/jutge_api_client'
+import { getCurrentClient, getProblemsApiClient, isAuthenticated } from '@/lib/auth'
+import type { AbstractProblem, JutgeApiClient } from '@/lib/jutge_api_client'
 
 async function withAuthenticatedClient<T>(fn: (client: JutgeApiClient) => Promise<T>): Promise<T> {
     if (!(await isAuthenticated())) {
@@ -12,6 +12,11 @@ async function withAuthenticatedClient<T>(fn: (client: JutgeApiClient) => Promis
 
 export async function fetchProblemsSearchCatalog() {
     return withAuthenticatedClient((c) => c.problems.getAllAbstractProblems())
+}
+
+export async function fetchProblemAbstractProblem(problem_nm: string): Promise<AbstractProblem> {
+    const client = await getProblemsApiClient()
+    return client.problems.getAbstractProblem(problem_nm)
 }
 
 export async function problemsSemanticSearch(query: string) {

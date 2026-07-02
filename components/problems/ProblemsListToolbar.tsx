@@ -42,6 +42,11 @@ export function ProblemsListToolbar({
 }: ProblemsListToolbarProps) {
     const columns = showStatusColumn ? (['status', ...TOGGLEABLE_COLUMNS] as ProblemsColumnField[]) : TOGGLEABLE_COLUMNS
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
+    const trimmedSearchQuery = searchQuery.trim()
+    const advancedSearchHref =
+        trimmedSearchQuery.length > 0
+            ? `/problems/search?q=${encodeURIComponent(trimmedSearchQuery)}`
+            : '/problems/search'
 
     return (
         <TooltipProvider>
@@ -80,7 +85,7 @@ export function ProblemsListToolbar({
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button asChild variant="outline" className="gap-2">
-                                    <Link href="/problems/search" aria-label="Advanced search">
+                                    <Link href={advancedSearchHref} aria-label="Advanced search">
                                         <BinocularsIcon aria-hidden />
                                     </Link>
                                 </Button>

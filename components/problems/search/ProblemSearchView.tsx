@@ -78,9 +78,10 @@ import { offerDownloadFile } from '@/lib/instructor/utils'
 type ProblemSearchViewProps = {
     actions: ProblemSearchActions
     showInstructorStats?: boolean
+    initialQuery?: string
 }
 
-export function ProblemSearchView({ actions, showInstructorStats = false }: ProblemSearchViewProps) {
+export function ProblemSearchView({ actions, showInstructorStats = false, initialQuery = '' }: ProblemSearchViewProps) {
     const [allAbstractProblems, setAllAbstractProblems] = useState<Record<string, AbstractProblem> | null>(null)
 
     useEffect(() => {
@@ -96,6 +97,7 @@ export function ProblemSearchView({ actions, showInstructorStats = false }: Prob
             actions={actions}
             allAbstractProblems={allAbstractProblems}
             showInstructorStats={showInstructorStats}
+            initialQuery={initialQuery}
         />
     )
 }
@@ -104,14 +106,15 @@ type SearchViewProps = {
     actions: ProblemSearchActions
     allAbstractProblems: Record<string, AbstractProblem> | null
     showInstructorStats: boolean
+    initialQuery?: string
 }
 
 function SearchViewInner(props: SearchViewProps) {
     const [searching, setSearching] = useState(false)
     const [results, setResults] = useState<SearchResults | undefined>(undefined)
 
-    const [semanticQuery, setSemanticQuery] = useState('')
-    const [fullTextQuery, setFullTextQuery] = useState('')
+    const [semanticQuery, setSemanticQuery] = useState(props.initialQuery ?? '')
+    const [fullTextQuery, setFullTextQuery] = useState(props.initialQuery ?? '')
 
     async function semanticSearch() {
         if (searching) return

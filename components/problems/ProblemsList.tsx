@@ -5,6 +5,7 @@ import { GaugeIcon, SearchIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-reac
 import Link from 'next/link'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
+import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSummaryTooltip'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { ProblemsListToolbar } from '@/components/problems/ProblemsListToolbar'
 import { Badge } from '@/components/ui/badge'
@@ -24,6 +25,7 @@ type ProblemsListProps = {
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
     showAdvancedSearch?: boolean
+    preferredLanguageId?: string | null
 }
 
 const statusTooltipFields = [
@@ -88,7 +90,13 @@ function ProblemStatusIcon({ data }: { data: AbstractStatus }) {
     )
 }
 
-export function ProblemsList({ problems, languages, statuses, showAdvancedSearch = false }: ProblemsListProps) {
+export function ProblemsList({
+    problems,
+    languages,
+    statuses,
+    showAdvancedSearch = false,
+    preferredLanguageId = null,
+}: ProblemsListProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [columnVisibility, setColumnVisibility] = useState<ProblemsColumnVisibility>(
         DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
@@ -146,6 +154,13 @@ export function ProblemsList({ problems, languages, statuses, showAdvancedSearch
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.title,
+                cellRenderer: (params: { data: ProblemRow }) => (
+                    <ProblemTitleSummaryTooltip
+                        problem_nm={params.data.problem_nm}
+                        title={params.data.title}
+                        preferredLanguageId={preferredLanguageId}
+                    />
+                ),
             },
             {
                 field: 'author',
@@ -198,7 +213,7 @@ export function ProblemsList({ problems, languages, statuses, showAdvancedSearch
                 valueGetter: (params: { data: ProblemRow }) => params.data.type ?? '',
             },
         ],
-        [columnVisibility, languages, statuses],
+        [columnVisibility, languages, preferredLanguageId, statuses],
     )
 
     return (

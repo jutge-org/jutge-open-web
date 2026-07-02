@@ -29,7 +29,7 @@ export default async function ProblemsPage() {
             {problems.length === 0 ? (
                 <p className="text-muted-foreground">Could not load problems. Please try again later.</p>
             ) : (
-                <ProblemsList problems={problems} languages={languages} statuses={statuses} showAdvancedSearch />
+                <ProblemsList problems={problems} languages={languages} statuses={statuses} showAdvancedSearch preferredLanguageId={preferredLanguageId} />
             )}
         </div>
     )

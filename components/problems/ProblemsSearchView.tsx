@@ -1,5 +1,7 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
+
 import {
     fetchProblemSearchHtmlStatement,
     fetchProblemSearchMarkdownStatement,
@@ -27,5 +29,8 @@ const problemsSearchActions: ProblemSearchActions = {
 }
 
 export function ProblemsSearchView() {
-    return <ProblemSearchView actions={problemsSearchActions} />
+    const searchParams = useSearchParams()
+    const initialQuery = searchParams.get('q') ?? ''
+
+    return <ProblemSearchView actions={problemsSearchActions} initialQuery={initialQuery} />
 }

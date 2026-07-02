@@ -1,4 +1,4 @@
-import type { BriefCourse, PublicCourse, PublicProfile } from '@/lib/jutge_api_client'
+import type { BriefCourse, Profile, PublicCourse, PublicProfile } from '@/lib/jutge_api_client'
 import { includesForSearch } from '@/lib/utils'
 
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
@@ -10,6 +10,7 @@ export type CourseRow = {
     ownerName: string
     isOfficial: boolean
     isPublic: boolean
+    isOwner: boolean
     status: CourseStatus
 }
 
@@ -70,7 +71,26 @@ export function buildCourseKey(owner: PublicProfile, course_nm: string): string 
     return `${displayText(owner.username)}:${course_nm}`
 }
 
-export function buildCourseRow(course: BriefCourse, status: CourseStatus, courseKey?: string): CourseRow {
+export function isCourseOwnedByUser(owner: PublicProfile, user: Pick<Profile, 'email' | 'username'>): boolean {
+    if (owner.email.toLowerCase() === user.email.toLowerCase()) {
+        return true
+    }
+
+    const ownerUsername = owner.username?.trim()
+    const userUsername = user.username?.trim()
+    if (ownerUsername && userUsername) {
+        return ownerUsername.toLowerCase() === userUsername.toLowerCase()
+    }
+
+    return false
+}
+
+export function buildCourseRow(
+    course: BriefCourse,
+    status: CourseStatus,
+    courseKey?: string,
+    isOwner = false,
+): CourseRow {
     return {
         course_key: courseKey ?? buildCourseKey(course.owner, course.course_nm),
         title: displayText(course.title) || course.course_nm,
@@ -78,6 +98,7 @@ export function buildCourseRow(course: BriefCourse, status: CourseStatus, course
         ownerName: ownerDisplayName(course.owner),
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
+        isOwner,
         status,
     }
 }
@@ -112,12 +133,14 @@ export function sortGuestCourseRows(rows: GuestCourseRow[]): GuestCourseRow[] {
 
 export type CoursesSortField = 'title' | 'author'
 export type CoursesOfficialFilter = 'all' | 'official' | 'unofficial'
+export type CoursesInstructorFilter = 'all' | 'instructor' | 'non-instructor'
 
 export type SearchableCourseRow = {
     title: string
     ownerName: string
     description: string
     isOfficial: boolean
+    isOwner?: boolean
 }
 
 function matchesCourseSearch(course: SearchableCourseRow, query: string): boolean {
@@ -140,6 +163,17 @@ function matchesCourseOfficialFilter(course: SearchableCourseRow, filter: Course
     }
 }
 
+function matchesCourseInstructorFilter(course: SearchableCourseRow, filter: CoursesInstructorFilter): boolean {
+    switch (filter) {
+        case 'all':
+            return true
+        case 'instructor':
+            return course.isOwner === true
+        case 'non-instructor':
+            return course.isOwner !== true
+    }
+}
+
 function compareCourseRows(a: SearchableCourseRow, b: SearchableCourseRow, sortField: CoursesSortField): number {
     switch (sortField) {
         case 'author':
@@ -154,10 +188,16 @@ export function filterAndSortCourses<T extends SearchableCourseRow>(
     searchQuery: string,
     officialFilter: CoursesOfficialFilter,
     sortField: CoursesSortField,
+    instructorFilter: CoursesInstructorFilter = 'all',
 ): T[] {
     const query = searchQuery.trim()
     return courses
-        .filter((course) => matchesCourseSearch(course, query) && matchesCourseOfficialFilter(course, officialFilter))
+        .filter(
+            (course) =>
+                matchesCourseSearch(course, query) &&
+                matchesCourseOfficialFilter(course, officialFilter) &&
+                matchesCourseInstructorFilter(course, instructorFilter),
+        )
         .sort((a, b) => compareCourseRows(a, b, sortField))
 }
 

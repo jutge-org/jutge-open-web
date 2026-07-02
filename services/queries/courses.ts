@@ -5,6 +5,7 @@ import {
     buildCourseRow,
     buildCoursesNavItems,
     buildGuestCourseRow,
+    isCourseOwnedByUser,
     normalizeCourseKeyParam,
     sortCourseRows,
     sortGuestCourseRows,
@@ -61,10 +62,11 @@ async function resolveAvailableCourseKey(client: JutgeApiClient, courseKeyParam:
 }
 
 export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<CoursesData> => {
-    const [enrolledMap, availableMap, archivedKeys] = await Promise.all([
+    const [enrolledMap, availableMap, archivedKeys, profile] = await Promise.all([
         client.student.courses.indexEnrolled(),
         client.student.courses.indexAvailable(),
         client.student.courses.getArchivedKeys(),
+        client.student.profile.get(),
     ])
 
     const archivedKeySet = new Set(archivedKeys)
@@ -72,7 +74,12 @@ export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<Co
     const archivedRows: ReturnType<typeof buildCourseRow>[] = []
 
     for (const [apiKey, course] of Object.entries(enrolledMap)) {
-        const row = buildCourseRow(course, archivedKeySet.has(apiKey) ? 'archived' : 'enrolled', apiKey)
+        const row = buildCourseRow(
+            course,
+            archivedKeySet.has(apiKey) ? 'archived' : 'enrolled',
+            apiKey,
+            isCourseOwnedByUser(course.owner, profile),
+        )
         if (archivedKeySet.has(apiKey)) {
             archivedRows.push(row)
         } else {
@@ -83,7 +90,9 @@ export const fetchCoursesData = cache(async (client: JutgeApiClient): Promise<Co
     const enrolled = sortCourseRows(enrolledRows)
     const archived = sortCourseRows(archivedRows)
     const available = sortCourseRows(
-        Object.entries(availableMap).map(([apiKey, course]) => buildCourseRow(course, 'available', apiKey)),
+        Object.entries(availableMap).map(([apiKey, course]) =>
+            buildCourseRow(course, 'available', apiKey, isCourseOwnedByUser(course.owner, profile)),
+        ),
     )
 
     return { enrolled, available, archived }

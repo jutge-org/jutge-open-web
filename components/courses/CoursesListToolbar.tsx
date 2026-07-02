@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { CoursesOfficialFilter, CoursesSortField } from '@/lib/courses'
+import type { CoursesInstructorFilter, CoursesOfficialFilter, CoursesSortField } from '@/lib/courses'
 import { ButtonGroup } from '../ui/button-group'
 
 type CoursesListToolbarProps = {
@@ -22,6 +22,8 @@ type CoursesListToolbarProps = {
     onSearchQueryChange: (value: string) => void
     officialFilter: CoursesOfficialFilter
     onOfficialFilterChange: (value: CoursesOfficialFilter) => void
+    instructorFilter?: CoursesInstructorFilter
+    onInstructorFilterChange?: (value: CoursesInstructorFilter) => void
     sortField: CoursesSortField
     onSortFieldChange: (value: CoursesSortField) => void
     visibleCount?: number
@@ -33,12 +35,15 @@ export function CoursesListToolbar({
     onSearchQueryChange,
     officialFilter,
     onOfficialFilterChange,
+    instructorFilter,
+    onInstructorFilterChange,
     sortField,
     onSortFieldChange,
     visibleCount,
     totalCount,
 }: CoursesListToolbarProps) {
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
+    const showInstructorFilter = instructorFilter !== undefined && onInstructorFilterChange !== undefined
 
     return (
         <TooltipProvider>
@@ -70,6 +75,21 @@ export function CoursesListToolbar({
                                 <DropdownMenuRadioItem value="official">Official</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="unofficial">Non-official</DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
+                            {showInstructorFilter ? (
+                                <>
+                                    <DropdownMenuLabel>Instructor</DropdownMenuLabel>
+                                    <DropdownMenuRadioGroup
+                                        value={instructorFilter}
+                                        onValueChange={(value) =>
+                                            onInstructorFilterChange(value as CoursesInstructorFilter)
+                                        }
+                                    >
+                                        <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="instructor">Instructor</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="non-instructor">Non-instructor</DropdownMenuRadioItem>
+                                    </DropdownMenuRadioGroup>
+                                </>
+                            ) : null}
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu>

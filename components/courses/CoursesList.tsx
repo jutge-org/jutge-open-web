@@ -8,6 +8,7 @@ import {
     BookOpenCheckIcon,
     Globe,
     GraduationCap,
+    GraduationCapIcon,
     Loader2,
     LogOutIcon,
     EllipsisVerticalIcon,
@@ -32,6 +33,7 @@ import {
     courseHref,
     type CourseRow,
     type CourseStudentAction,
+    type CoursesInstructorFilter,
     type CoursesOfficialFilter,
     type CoursesSortField,
     type CoursesTab,
@@ -52,6 +54,12 @@ type CourseAction = CourseStudentAction
 function CourseBadges({ course }: { course: CourseRow }) {
     return (
         <div className="flex flex-wrap gap-1.5">
+            {course.isOwner ? (
+                <Badge variant="outline" className="gap-1">
+                    <GraduationCapIcon aria-hidden />
+                    Instructor
+                </Badge>
+            ) : null}
             {course.isOfficial ? (
                 <Badge variant="outline" className="gap-1">
                     <ShieldCheck aria-hidden />
@@ -188,6 +196,7 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
     const [pendingKey, setPendingKey] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [officialFilter, setOfficialFilter] = useState<CoursesOfficialFilter>('all')
+    const [instructorFilter, setInstructorFilter] = useState<CoursesInstructorFilter>('all')
     const [sortField, setSortField] = useState<CoursesSortField>('title')
     const [, startTransition] = useTransition()
     const [runConfirmDialog, ConfirmDialogComponent] = useConfirmDialog({
@@ -202,8 +211,8 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
     })
 
     const visibleCourses = useMemo(
-        () => filterAndSortCourses(courses, searchQuery, officialFilter, sortField),
-        [courses, officialFilter, searchQuery, sortField],
+        () => filterAndSortCourses(courses, searchQuery, officialFilter, sortField, instructorFilter),
+        [courses, instructorFilter, officialFilter, searchQuery, sortField],
     )
 
     async function handleAction(course: CourseRow, action: CourseAction) {
@@ -269,6 +278,8 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
                     onSearchQueryChange={setSearchQuery}
                     officialFilter={officialFilter}
                     onOfficialFilterChange={setOfficialFilter}
+                    instructorFilter={instructorFilter}
+                    onInstructorFilterChange={setInstructorFilter}
                     sortField={sortField}
                     onSortFieldChange={setSortField}
                     visibleCount={visibleCourses.length}

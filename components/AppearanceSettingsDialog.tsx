@@ -131,19 +131,6 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
         setOpen(false)
     }
 
-    if (!mounted) {
-        return (
-            <span
-                className={
-                    size === 'icon-sm'
-                        ? 'inline-flex size-7 shrink-0 items-center justify-center rounded-md border border-transparent'
-                        : 'inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-transparent'
-                }
-                aria-hidden
-            />
-        )
-    }
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <TooltipProvider>
@@ -158,7 +145,8 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                     <TooltipContent>Appearance settings</TooltipContent>
                 </Tooltip>
             </TooltipProvider>
-            <DialogContent className="flex max-h-[75vh] w-full max-w-lg flex-col gap-0 overflow-hidden p-0">
+            {mounted ? (
+                <DialogContent className="flex max-h-[75vh] w-full max-w-lg flex-col gap-0 overflow-hidden p-0">
                 <DialogHeader className="shrink-0 px-6 pt-6">
                     <DialogTitle>Appearance</DialogTitle>
                     <DialogDescription>
@@ -341,6 +329,7 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                     </div>
                 </div>
             </DialogContent>
+            ) : null}
         </Dialog>
     )
 }

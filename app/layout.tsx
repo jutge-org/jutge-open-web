@@ -1,4 +1,5 @@
 import { AuthToolbar } from '@/components/AuthToolbar'
+import { CommandPalette } from '@/components/CommandPalette'
 import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
 import { RecentMenu } from '@/components/RecentMenu'
 import { RecentsProvider } from '@/components/RecentsProvider'
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                     enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                 />
                                                 <div className="flex items-center gap-0">
+                                                    <CommandPalette authenticated={authenticated} />
                                                     {authenticated ? <RecentMenu /> : null}
                                                     <AppearanceSettingsDialog />
                                                     <AuthToolbar

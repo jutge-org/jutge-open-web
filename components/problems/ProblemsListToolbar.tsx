@@ -1,6 +1,7 @@
 'use client'
 
-import { Columns3Icon, SearchIcon } from 'lucide-react'
+import { BinocularsIcon, Columns3Icon, SearchIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -14,11 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import {
-    PROBLEMS_COLUMN_LABELS,
-    type ProblemsColumnField,
-    type ProblemsColumnVisibility,
-} from '@/lib/problems'
+import { PROBLEMS_COLUMN_LABELS, type ProblemsColumnField, type ProblemsColumnVisibility } from '@/lib/problems'
 
 type ProblemsListToolbarProps = {
     searchQuery: string
@@ -26,6 +23,7 @@ type ProblemsListToolbarProps = {
     columnVisibility: ProblemsColumnVisibility
     onColumnVisibilityChange: (field: ProblemsColumnField, visible: boolean) => void
     showStatusColumn?: boolean
+    showAdvancedSearch?: boolean
     visibleCount?: number
     totalCount?: number
 }
@@ -38,6 +36,7 @@ export function ProblemsListToolbar({
     columnVisibility,
     onColumnVisibilityChange,
     showStatusColumn = false,
+    showAdvancedSearch = false,
     visibleCount,
     totalCount,
 }: ProblemsListToolbarProps) {
@@ -77,6 +76,18 @@ export function ProblemsListToolbar({
                             ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    {showAdvancedSearch ? (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button asChild variant="outline" className="gap-2">
+                                    <Link href="/problems/search" aria-label="Advanced search">
+                                        <BinocularsIcon aria-hidden />
+                                    </Link>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">Advanced search</TooltipContent>
+                        </Tooltip>
+                    ) : null}
                 </ButtonGroup>
                 <div className="relative w-64">
                     <SearchIcon

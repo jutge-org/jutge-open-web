@@ -23,6 +23,7 @@ type ProblemsListProps = {
     problems: ProblemRow[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
+    showAdvancedSearch?: boolean
 }
 
 const statusTooltipFields = [
@@ -87,7 +88,7 @@ function ProblemStatusIcon({ data }: { data: AbstractStatus }) {
     )
 }
 
-export function ProblemsList({ problems, languages, statuses }: ProblemsListProps) {
+export function ProblemsList({ problems, languages, statuses, showAdvancedSearch = false }: ProblemsListProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [columnVisibility, setColumnVisibility] = useState<ProblemsColumnVisibility>(
         DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
@@ -208,6 +209,7 @@ export function ProblemsList({ problems, languages, statuses }: ProblemsListProp
                 columnVisibility={columnVisibility}
                 onColumnVisibilityChange={handleColumnVisibilityChange}
                 showStatusColumn={statuses !== undefined}
+                showAdvancedSearch={showAdvancedSearch}
                 visibleCount={visibleProblems.length}
                 totalCount={problems.length}
             />

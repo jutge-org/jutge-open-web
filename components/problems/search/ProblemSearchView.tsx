@@ -17,8 +17,6 @@ import {
     FileTextIcon,
     FileTypeIcon,
     MedalIcon,
-    MicIcon,
-    MicOffIcon,
     ScrollIcon,
     ScrollTextIcon,
     SearchIcon,
@@ -27,7 +25,7 @@ import {
     TagsIcon,
 } from 'lucide-react'
 import dayjs from 'dayjs'
-import { JSX, useEffect, useMemo, useRef, useState } from 'react'
+import { JSX, useEffect, useMemo, useState } from 'react'
 import {
     Area,
     AreaChart,
@@ -44,11 +42,11 @@ import {
     YAxis,
 } from 'recharts'
 import StatementDialog from '@/components/instructor/StatementDialog'
+import { SearchInput } from '@/components/SearchInput'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { MarkdownText } from '@/components/general/MarkdownText'
@@ -1142,7 +1140,7 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
 
                     <TabsContent value="semantic" className="space-y-4 mt-4">
                         <div className="flex gap-2">
-                            <VoiceInput
+                            <SearchInput
                                 type="text"
                                 placeholder="Your query"
                                 value={props.semanticQuery}
@@ -1162,7 +1160,7 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
 
                     <TabsContent value="fulltext" className="space-y-4 mt-4">
                         <div className="flex gap-2">
-                            <VoiceInput
+                            <SearchInput
                                 type="text"
                                 placeholder="Your query"
                                 value={props.fullTextQuery}
@@ -1182,89 +1180,6 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
                     </TabsContent>
                 </Tabs>
             </div>
-        </div>
-    )
-}
-
-interface VoiceInputProps {
-    value: string
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    type?: string
-    placeholder?: string
-    onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void
-    className?: string
-}
-
-function VoiceInput({ value, onChange, type, placeholder, onKeyPress, className }: VoiceInputProps) {
-    const [isListening, setIsListening] = useState(false)
-    const recognitionRef = useRef<any>(null)
-
-    const startListening = () => {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-
-        if (!SpeechRecognition) {
-            alert('Speech recognition is not supported in your browser')
-            return
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        recognitionRef.current = new SpeechRecognition()
-        recognitionRef.current.continuous = true
-        recognitionRef.current.interimResults = true
-
-        recognitionRef.current.onresult = (event: any) => {
-            const transcript = Array.from(event.results)
-                .map((result: any) => result[0].transcript)
-                .join('')
-
-            // Create a synthetic event to match Input's onChange signature
-            const syntheticEvent = {
-                target: { value: transcript },
-                currentTarget: { value: transcript },
-            } as React.ChangeEvent<HTMLInputElement>
-
-            onChange(syntheticEvent)
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        recognitionRef.current.start()
-        setIsListening(true)
-    }
-
-    const stopListening = () => {
-        if (recognitionRef.current) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            recognitionRef.current.stop()
-            setIsListening(false)
-        }
-    }
-
-    const handleBlur = () => {
-        if (isListening) {
-            stopListening()
-        }
-    }
-
-    return (
-        <div className="w-full relative" onBlur={handleBlur}>
-            <Input
-                value={value}
-                onChange={onChange}
-                type={type}
-                placeholder={placeholder}
-                onKeyPress={onKeyPress}
-                className={`pr-10 ${className || ''}`}
-            />
-            <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className={`absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 ${isListening ? 'text-red-500' : ''}`}
-                onClick={isListening ? stopListening : startListening}
-                title={isListening ? 'Stop listening' : 'Start voice input'}
-            >
-                {isListening ? <MicOffIcon className="h-4 w-4" /> : <MicIcon className="h-4 w-4" />}
-            </Button>
         </div>
     )
 }

@@ -19,7 +19,7 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/SearchInput'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, SOURCE_CODE_FONT_SCALE_KEY } from '@/lib/fontScale'
@@ -157,8 +157,7 @@ export function SubmissionSourceCodeCard({
                                 </Tooltip>
                                 <DropdownMenuContent align="end" className="w-64 p-0">
                                     <div className="border-b border-border p-2">
-                                        <Input
-                                            type="search"
+                                        <SearchInput
                                             value={themeSearch}
                                             onChange={(event) => setThemeSearch(event.target.value)}
                                             onKeyDown={(event) => event.stopPropagation()}

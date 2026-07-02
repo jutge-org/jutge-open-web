@@ -13,7 +13,8 @@ import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useTextareaDialog } from '@/components/instructor/TextareaDialog'
 import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { CommandSearchInput } from '@/components/CommandSearchInput'
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import {
     Dialog,
     DialogContent,
@@ -580,7 +581,7 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 shadow-xl">
                     <Command shouldFilter={false}>
-                        <CommandInput
+                        <CommandSearchInput
                             placeholder="Search problem..."
                             value={search}
                             onValueChange={(search: string) => {

@@ -5,7 +5,7 @@ import { AgTableFull } from '@/components/administrator/AgTable'
 import { useProfileDialog } from '@/components/administrator/users/ProfileDialog'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
 import type { ProfileForAdmin } from '@/lib/jutge_api_client'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/SearchInput'
 import { useState } from 'react'
 
 export default function UsersListView() {
@@ -81,12 +81,13 @@ export default function UsersListView() {
             <div className="mb-4 flex flex-row items-center gap-2">
                 <div className="text-sm text-muted-foreground">{message}</div>
                 <div className="grow" />
-                <Input
+                <SearchInput
                     autoFocus
                     className="w-64"
                     placeholder="search by name/email"
                     value={search}
                     onChange={(e) => void updateSearch(e.target.value)}
+                    aria-label="Search users by name or email"
                 />
             </div>
             <AgTableFull rowData={rows} columnDefs={colDefs} />

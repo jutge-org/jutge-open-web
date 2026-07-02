@@ -8,7 +8,8 @@ import * as React from 'react'
 import { cn, commandFilter } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { CommandSearchInput } from '@/components/CommandSearchInput'
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 
@@ -244,7 +245,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
                     <Command filter={commandFilter}>
-                        <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
+                        <CommandSearchInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup>

@@ -142,9 +142,15 @@ export function ProblemsList({
                 filter: true,
                 hide: !columnVisibility.problem_nm,
                 cellRenderer: (params: { data: ProblemRow }) => (
-                    <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
-                        {params.data.problem_nm}
-                    </Link>
+                    <ProblemTitleSummaryTooltip
+                        problem_nm={params.data.problem_nm}
+                        title={params.data.title}
+                        preferredLanguageId={preferredLanguageId}
+                    >
+                        <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                            {params.data.problem_nm}
+                        </Link>
+                    </ProblemTitleSummaryTooltip>
                 ),
                 valueGetter: (params: { data: ProblemRow }) => params.data.problem_nm,
             },

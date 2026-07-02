@@ -1,7 +1,7 @@
 'use client'
 
 import { BookmarkIcon, BotIcon, LanguagesIcon, ScrollIcon, ScrollTextIcon, SignatureIcon, TagsIcon } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useRef, useState } from 'react'
 
 import { fetchProblemAbstractProblem } from '@/actions/problems'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -14,6 +14,7 @@ type ProblemTitleSummaryTooltipProps = {
     problem_nm: string
     title: string
     preferredLanguageId: string | null
+    children?: ReactNode
 }
 
 type ProblemSummaryTooltipBodyProps = {
@@ -99,6 +100,7 @@ export function ProblemTitleSummaryTooltip({
     problem_nm,
     title,
     preferredLanguageId,
+    children,
 }: ProblemTitleSummaryTooltipProps) {
     const [abstractProblem, setAbstractProblem] = useState<AbstractProblem | null>(
         () => abstractProblemCache.get(problem_nm) ?? null,
@@ -141,7 +143,7 @@ export function ProblemTitleSummaryTooltip({
     return (
         <Tooltip onOpenChange={handleOpenChange}>
             <TooltipTrigger asChild>
-                <span className="cursor-default truncate">{title}</span>
+                {children ?? <span className="cursor-default truncate">{title}</span>}
             </TooltipTrigger>
             <TooltipContent side="right" className="flex w-96 max-w-sm flex-col items-start px-3 py-2 text-left">
                 {loading && !abstractProblem ? (

@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, FunnelIcon, SearchIcon } from 'lucide-react'
+import { ArrowDownWideNarrowIcon, FunnelIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/SearchInput'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { CoursesInstructorFilter, CoursesOfficialFilter, CoursesSortField } from '@/lib/courses'
 import { ButtonGroup } from '../ui/button-group'
@@ -115,20 +115,14 @@ export function CoursesListToolbar({
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </ButtonGroup>
-                <div className="relative w-64">
-                    <SearchIcon
-                        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                        aria-hidden
-                    />
-                    <Input
-                        type="search"
-                        value={searchQuery}
-                        onChange={(event) => onSearchQueryChange(event.target.value)}
-                        placeholder="Search…"
-                        className="pl-9"
-                        aria-label="Search courses"
-                    />
-                </div>
+                <SearchInput
+                    showSearchIcon
+                    value={searchQuery}
+                    onChange={(event) => onSearchQueryChange(event.target.value)}
+                    placeholder="Search…"
+                    className="w-64 shrink-0"
+                    aria-label="Search courses"
+                />
             </div>
         </TooltipProvider>
     )

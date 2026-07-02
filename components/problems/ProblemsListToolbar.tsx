@@ -1,6 +1,6 @@
 'use client'
 
-import { BinocularsIcon, Columns3Icon, SearchIcon } from 'lucide-react'
+import { BinocularsIcon, Columns3Icon } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/SearchInput'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { PROBLEMS_COLUMN_LABELS, type ProblemsColumnField, type ProblemsColumnVisibility } from '@/lib/problems'
 
@@ -96,17 +96,12 @@ export function ProblemsListToolbar({
                 </ButtonGroup>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <div className="relative w-64">
-                            <SearchIcon
-                                className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                                aria-hidden
-                            />
-                            <Input
-                                type="search"
+                        <div className="w-64 shrink-0">
+                            <SearchInput
+                                showSearchIcon
                                 value={searchQuery}
                                 onChange={(event) => onSearchQueryChange(event.target.value)}
                                 placeholder="Search…"
-                                className="pl-9"
                                 aria-label="Search problems"
                             />
                         </div>

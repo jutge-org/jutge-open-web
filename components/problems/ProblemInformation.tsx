@@ -62,6 +62,11 @@ export function ProblemInformation({ data }: ProblemInformationProps) {
                             '—'
                         )}
                     </InfoRow>
+                    {problem.translator ? (
+                        <InfoRow label="Translator">
+                            <span className="inline-flex items-center gap-1">{problem.translator}</span>
+                        </InfoRow>
+                    ) : null}
                     <InfoRow label="Type">
                         {problem.abstract_problem.type ? (
                             <ProblemTypeOption type={problem.abstract_problem.type} />

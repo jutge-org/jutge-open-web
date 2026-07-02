@@ -32,6 +32,7 @@ export type LanguageVariant = {
 export type ProblemDetailData = {
     problem: Problem
     shortHtmlStatement: string
+    templates: string[]
     publicTestcases: DecodedTestcase[]
     languageVariants: LanguageVariant[]
     officialSolutions: string[]
@@ -103,6 +104,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
 
         const [
             shortHtmlStatement,
+            templates,
             sampleTestcases,
             publicTestcases,
             problemSuppl,
@@ -111,6 +113,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             allCompilers,
         ] = await Promise.all([
             client.problems.getShortHtmlStatement(problemId),
+            client.problems.getTemplates(problemId),
             client.problems.getSampleTestcases(problemId),
             client.problems.getPublicTestcases(problemId),
             client.problems.getProblemSuppl(problemId),
@@ -152,6 +155,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
         return {
             problem,
             shortHtmlStatement,
+            templates,
             publicTestcases: [...sampleTestcases, ...publicTestcases].map((testcase) =>
                 decodeTestcase(testcase, problem.abstract_problem.type === 'graphic'),
             ),

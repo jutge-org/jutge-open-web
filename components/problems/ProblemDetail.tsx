@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { SignatureIcon } from 'lucide-react'
+import { ExternalLinkIcon, SignatureIcon } from 'lucide-react'
 
+import { ExternalLink } from '@/components/ExternalLink'
 import { GameProblemCompetitionsCard } from '@/components/problems/GameProblemCompetitionsCard'
 import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
@@ -54,7 +55,19 @@ export function ProblemDetail({
                             <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground">
                                 {problem.title}
                             </h1>
-                            <p className="shrink-0 text-lg text-muted-foreground">
+                            <p className="flex shrink-0 items-center text-lg text-muted-foreground">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <ExternalLink
+                                            href={`https://jutge.org/problems/${problem.problem_nm}`}
+                                            className="mr-2 inline-flex text-muted-foreground hover:text-foreground"
+                                            aria-label="Open problem on jutge.org"
+                                        >
+                                            <ExternalLinkIcon className="size-4 shrink-0" aria-hidden />
+                                        </ExternalLink>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="left">Open on jutge.org</TooltipContent>
+                                </Tooltip>
                                 {problem.abstract_problem.type ? (
                                     <ProblemTypeIcon
                                         type={problem.abstract_problem.type}
@@ -119,7 +132,13 @@ export function ProblemDetail({
 
             {children}
 
-            {showStatement ? <ProblemStatement pageKey={pageKey} shortHtmlStatement={data.shortHtmlStatement} /> : null}
+            {showStatement ? (
+                <ProblemStatement
+                    pageKey={pageKey}
+                    shortHtmlStatement={data.shortHtmlStatement}
+                    templates={data.templates}
+                />
+            ) : null}
 
             {showTestcases && data.publicTestcases.length > 0 ? (
                 <PublicTestcases testcases={data.publicTestcases} />

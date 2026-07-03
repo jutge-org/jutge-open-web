@@ -215,12 +215,12 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                 className="max-w-2xl p-4"
             >
                 <Command shouldFilter={false}>
-                    <p className="px-2 pb-2 text-sm font-medium flex flex-row items-center gap-2">
+                    <div className="px-2 pb-2 text-sm font-medium flex flex-row items-center gap-2">
                         <TerminalIcon className="size-4.5" aria-hidden />
                         Quick search
                         <div className="flex-1"></div>
                         <SearchShortcutHint />
-                    </p>
+                    </div>
                     <CommandSearchInput placeholder="Search..." value={query} onValueChange={setQuery} autoFocus />
                     <CommandList className="max-h-96">
                         {loading ? <CommandEmpty>Loading…</CommandEmpty> : null}

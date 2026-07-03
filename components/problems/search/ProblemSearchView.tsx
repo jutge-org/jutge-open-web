@@ -48,6 +48,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Textarea } from '@/components/ui/textarea'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import {
@@ -1134,7 +1135,8 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
     return (
         <div className="w-full border rounded-lg p-6 mb-4">
             <div className="w-full sm:w-3/4 mx-auto">
-                <Tabs defaultValue="semantic" className="w-full">
+                <TooltipProvider>
+                    <Tabs defaultValue="semantic" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="semantic">
                             <BotIcon className="mr-2 -mt-1" size={16} />
@@ -1156,9 +1158,19 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
                                 onKeyPress={(e) => e.key === 'Enter' && props.handleSemanticSearch()}
                                 className="flex-1"
                             />
-                            <Button onClick={props.handleSemanticSearch} size="icon" className="shrink-0">
-                                <BotIcon className="h-4 w-4" />
-                            </Button>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        onClick={props.handleSemanticSearch}
+                                        size="icon"
+                                        className="shrink-0"
+                                        aria-label="Semantic search"
+                                    >
+                                        <BotIcon className="h-4 w-4" aria-hidden />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">Semantic search</TooltipContent>
+                            </Tooltip>
                         </div>
                         <p className="text-sm text-muted-foreground text-justify">
                             Semantic search understands the meaning, language and context of your query to find relevant
@@ -1176,9 +1188,19 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
                                 onKeyPress={(e) => e.key === 'Enter' && props.handleFullTextSearch()}
                                 className="flex-1"
                             />
-                            <Button onClick={props.handleFullTextSearch} size="icon" className="shrink-0">
-                                <SearchIcon className="h-4 w-4" />
-                            </Button>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        onClick={props.handleFullTextSearch}
+                                        size="icon"
+                                        className="shrink-0"
+                                        aria-label="Text search"
+                                    >
+                                        <SearchIcon className="h-4 w-4" aria-hidden />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">Text search</TooltipContent>
+                            </Tooltip>
                         </div>
                         <p className="text-sm text-muted-foreground text-justify">
                             Text search looks for exact keyword matches in the title, statement, keywords and summaries
@@ -1186,7 +1208,8 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
                             Use quotes for exact phrases. Problems are reindexed each night.
                         </p>
                     </TabsContent>
-                </Tabs>
+                    </Tabs>
+                </TooltipProvider>
             </div>
         </div>
     )

@@ -85,6 +85,7 @@ const EXTENSION_TO_HLJS: Record<string, string> = {
     cc: 'cpp',
     clj: 'clojure',
     cmake: 'cmake',
+    codon: 'python',
     cpp: 'cpp',
     cr: 'crystal',
     cs: 'csharp',

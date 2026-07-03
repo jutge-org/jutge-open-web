@@ -1,4 +1,5 @@
 import { ExamsList } from '@/components/exams/ExamsList'
+import { ExamsReminderAlert } from '@/components/exams/ExamsReminderAlert'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { getCurrentClient } from '@/lib/auth'
@@ -18,6 +19,7 @@ export default async function ExamsPage() {
             <div className="flex flex-col gap-6">
                 <MainBreadcrumbs breadcrumbs={[{ title: 'Exams', url: '/exams' }]} />
                 <PageTitle section="/exams" authenticated />
+                <ExamsReminderAlert />
                 <ExamsList rows={rows} />
             </div>
         )

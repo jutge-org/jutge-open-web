@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-03T06:37:01.510Z
+ * This file has been automatically generated at 2026-07-03T06:42:52.893Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -514,6 +514,7 @@ export type Exam = {
     description: string
     exp_time_start: string | string | string | number
     contest: boolean
+    finished: boolean
     course: { course_nm: string; title: string }
     owner: PublicProfile
 }
@@ -2926,6 +2927,7 @@ class Module_student_exams {
                 description: string
                 exp_time_start: string | string | string | number
                 contest: boolean
+                finished: boolean
                 course: InstructorExamCourse
                 owner: PublicProfile
             }
@@ -2951,6 +2953,7 @@ class Module_student_exams {
         description: string
         exp_time_start: string | string | string | number
         contest: boolean
+        finished: boolean
         course: InstructorExamCourse
         owner: PublicProfile
     }> {

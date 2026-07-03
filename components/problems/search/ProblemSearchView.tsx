@@ -53,6 +53,7 @@ import { MarkdownText } from '@/components/general/MarkdownText'
 import {
     AbstractProblem,
     AbstractProblemSuppl,
+    AbstractProblemSuppls,
     ColorMapping,
     Distribution,
     Download,
@@ -65,7 +66,7 @@ export type ProblemSearchActions = {
     fetchCatalog: () => Promise<Record<string, AbstractProblem>>
     semanticSearch: (query: string) => Promise<SearchResults>
     fullTextSearch: (query: string) => Promise<SearchResults>
-    fetchSuppl: (problem_nm: string) => Promise<AbstractProblemSuppl>
+    fetchManySuppl: (problem_nms: string) => Promise<AbstractProblemSuppls>
     fetchPdfStatement: (problem_id: string) => Promise<Download>
     fetchHtmlStatement: (problem_id: string) => Promise<string>
     fetchMarkdownStatement: (problem_id: string) => Promise<string>
@@ -110,9 +111,26 @@ type SearchViewProps = {
 function SearchViewInner(props: SearchViewProps) {
     const [searching, setSearching] = useState(false)
     const [results, setResults] = useState<SearchResults | undefined>(undefined)
+    const [suppls, setSuppls] = useState<AbstractProblemSuppls | null>(null)
 
     const [semanticQuery, setSemanticQuery] = useState(props.initialQuery ?? '')
     const [fullTextQuery, setFullTextQuery] = useState(props.initialQuery ?? '')
+
+    useEffect(() => {
+        if (!results || results.length === 0) {
+            setSuppls(null)
+            return
+        }
+        let cancelled = false
+        const problemNms = results.map((result) => result.problem_nm).join(',')
+        ;(async () => {
+            const data = await props.actions.fetchManySuppl(problemNms)
+            if (!cancelled) setSuppls(data)
+        })()
+        return () => {
+            cancelled = true
+        }
+    }, [results, props.actions])
 
     async function semanticSearch() {
         if (searching) return
@@ -166,6 +184,7 @@ function SearchViewInner(props: SearchViewProps) {
                                 key={result.problem_nm}
                                 result={result}
                                 allAbstractProblems={props.allAbstractProblems!}
+                                abspbmSuppl={suppls?.[result.problem_nm] ?? null}
                                 actions={props.actions}
                                 showInstructorStats={props.showInstructorStats}
                             />
@@ -182,6 +201,7 @@ type ResultProps = {
         score: number
     }
     allAbstractProblems: Record<string, AbstractProblem>
+    abspbmSuppl: AbstractProblemSuppl | null
     actions: ProblemSearchActions
     showInstructorStats: boolean
 }
@@ -876,16 +896,7 @@ function Result(props: ResultProps) {
     const [pbm, setPbm] = useState(
         Object.values(abspbm.problems).find((p) => p.original_language_id === p.language_id)!,
     )
-    const [abspbmSuppl, setAbspbmSuppl] = useState<AbstractProblemSuppl | null>(null)
     const [detailsOpen, setDetailsOpen] = useState(false)
-
-    useEffect(() => {
-        async function fetchSuppl() {
-            const suppl = await props.actions.fetchSuppl(abspbm.problem_nm)
-            setAbspbmSuppl(suppl)
-        }
-        fetchSuppl()
-    }, [abspbm.problem_nm, props.actions])
 
     function click(language_id: string) {
         setPbm((old) => Object.values(abspbm.problems).find((p) => p.language_id === language_id)!)
@@ -1026,13 +1037,13 @@ function Result(props: ResultProps) {
                         </div>
                     </div>
                 )}
-                {detailsOpen && abspbmSuppl && (
+                {detailsOpen && props.abspbmSuppl && (
                     <div className="w-full flex flex-row">
                         <div className="w-8">
                             <MedalIcon className="inline-block mr-1 mb-1" size={16} />
                         </div>
                         <div className="whitespace-nowrap overflow-auto text-ellipsis w-full flex flex-row gap-2">
-                            {abspbmSuppl.proglangs_with_ac.map((lang) => (
+                            {props.abspbmSuppl.proglangs_with_ac.map((lang) => (
                                 <Badge key={lang} className="px1.52 rounded-full" variant="secondary">
                                     {lang}
                                 </Badge>

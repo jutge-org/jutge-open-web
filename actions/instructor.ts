@@ -281,6 +281,10 @@ export async function fetchAbstractProblemSuppl(problem_nm: string) {
     return withInstructorClient((c) => c.problems.getAbstractProblemSuppl(problem_nm))
 }
 
+export async function fetchManyAbstractProblemSuppl(problem_nms: string) {
+    return withInstructorClient((c) => c.problems.getManyAbstractProblemSuppl(problem_nms))
+}
+
 export async function instructorSemanticSearch(query: string) {
     return withInstructorClient((c) => c.problems.semanticSearch({ query, limit: 50 }))
 }

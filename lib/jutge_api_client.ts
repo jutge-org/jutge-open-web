@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-03T06:42:52.893Z
+ * This file has been automatically generated at 2026-07-03T08:50:43.821Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -206,6 +206,8 @@ export type AbstractProblemSuppl = {
     compilers_with_ac: string[]
     proglangs_with_ac: string[]
 }
+
+export type AbstractProblemSuppls = Record<string, AbstractProblemSuppl>
 
 export type ProblemSuppl = {
     compilers_with_ac: string[]
@@ -1361,7 +1363,7 @@ export class JutgeApiClient {
     }): Promise<CredentialsOut> {
         const [credentials, _] = await this.execute("auth.loginExam", { email, password, exam, exam_password })
         if (credentials.error) throw new UnauthorizedError(credentials.error)
-        this.meta = { token: credentials.token, user_uid: credentials.user_uid }
+        this.meta = { token: credentials.token }
         return credentials
     }
 
@@ -1949,6 +1951,18 @@ class Module_problems {
      */
     async getAbstractProblemSuppl(problem_nm: string): Promise<AbstractProblemSuppl> {
         const [output, ofiles] = await this.root.execute("problems.getAbstractProblemSuppl", problem_nm)
+        return output
+    }
+
+    /**
+     * Get supplementary information of many abstract problems.
+     *
+     * 🔐 Authentication: any
+     * No warnings
+     * Includes accepted compilers and accepted proglangs. Keys are `problem_nm`s.
+     */
+    async getManyAbstractProblemSuppl(problem_nms: string): Promise<AbstractProblemSuppls> {
+        const [output, ofiles] = await this.root.execute("problems.getManyAbstractProblemSuppl", problem_nms)
         return output
     }
 

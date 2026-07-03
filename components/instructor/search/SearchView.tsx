@@ -2,7 +2,7 @@
 
 import {
     fetchAllAbstractProblems,
-    fetchAbstractProblemSuppl,
+    fetchManyAbstractProblemSuppl,
     fetchHtmlStatement,
     fetchMarkdownStatement,
     fetchPdfStatement,
@@ -19,7 +19,7 @@ const instructorSearchActions: ProblemSearchActions = {
     fetchCatalog: fetchAllAbstractProblems,
     semanticSearch: instructorSemanticSearch,
     fullTextSearch: instructorFullTextSearch,
-    fetchSuppl: fetchAbstractProblemSuppl,
+    fetchManySuppl: fetchManyAbstractProblemSuppl,
     fetchPdfStatement: fetchPdfStatement,
     fetchHtmlStatement: fetchHtmlStatement,
     fetchMarkdownStatement: fetchMarkdownStatement,

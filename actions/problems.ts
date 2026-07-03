@@ -31,6 +31,10 @@ export async function fetchProblemSearchSuppl(problem_nm: string) {
     return withAuthenticatedClient((c) => c.problems.getAbstractProblemSuppl(problem_nm))
 }
 
+export async function fetchManyProblemSearchSuppl(problem_nms: string) {
+    return withAuthenticatedClient((c) => c.problems.getManyAbstractProblemSuppl(problem_nms))
+}
+
 export async function fetchProblemSearchPdfStatement(problem_id: string) {
     return withAuthenticatedClient((c) => c.problems.getPdfStatement(problem_id))
 }

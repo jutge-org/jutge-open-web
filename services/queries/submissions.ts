@@ -19,9 +19,11 @@ import {
     type ProblemSubmissionRow,
     type SubmissionRow,
 } from '@/lib/submissions'
+import type { AwardRow } from '@/lib/awards'
 import type { JutgeApiClient, Submission, SubmissionAnalysis, TestcaseAnalysis } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
+import { fetchSubmissionAwards } from './awards'
 import { fetchAbstractProblem, resolveProblemId } from './problemDetail'
 
 function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
@@ -98,6 +100,7 @@ export type SubmissionDetailData = {
     codeFilename: string | null
     analysis: SubmissionAnalysisRow[]
     codeMetrics: SubmissionCodeMetricsData | null
+    awards: AwardRow[]
 }
 
 export type SubmissionCodeData = {
@@ -255,7 +258,7 @@ export const fetchSubmissionDetail = cache(
             return null
         }
 
-        const [tables, codeB64, analysis] = await Promise.all([
+        const [tables, codeB64, analysis, awards] = await Promise.all([
             client.tables.get(),
             submission.state === 'done'
                 ? client.student.submissions
@@ -267,6 +270,9 @@ export const fetchSubmissionDetail = cache(
                       .getAnalysis({ problem_id: submission.problem_id, submission_id })
                       .catch(() => [] as SubmissionAnalysis[])
                 : Promise.resolve([] as SubmissionAnalysis[]),
+            submission.state === 'done'
+                ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
+                : Promise.resolve([] as AwardRow[]),
         ])
 
         const parsed = parseProblemKey(submission.problem_id)
@@ -318,6 +324,7 @@ export const fetchSubmissionDetail = cache(
                 verdictEmoji: tables.verdicts[row.verdict]?.emoji,
             })),
             codeMetrics,
+            awards,
         }
     },
 )

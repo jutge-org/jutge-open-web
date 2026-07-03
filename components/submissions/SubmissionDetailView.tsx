@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
 
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
+import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionNavButton } from '@/components/submissions/SubmissionNavButton'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
@@ -113,6 +114,8 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                         </dl>
                     </CardContent>
                 </Card>
+
+                {data.awards.length > 0 ? <SubmissionAwardsCard awards={data.awards} /> : null}
 
                 {data.analysis.length > 0 ? (
                     <SubmissionAnalysisCard

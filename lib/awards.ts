@@ -1,5 +1,11 @@
-import type { Award, BriefAward, Submission } from '@/lib/jutge_api_client'
-import { parseSubmissionTime } from '@/lib/submissions'
+import { parseProblemKey } from '@/lib/problems'
+import type { AllTables, Award, BriefAward, Submission } from '@/lib/jutge_api_client'
+import {
+    buildSubmissionHref,
+    formatSubmissionTime,
+    parseSubmissionTime,
+    submissionVerdict,
+} from '@/lib/submissions'
 
 export type AwardRow = {
     award_id: string
@@ -12,8 +18,45 @@ export type AwardRow = {
     youtube: string | null
 }
 
+export type AwardSubmissionDetail = {
+    submission_id: string
+    submissionHref: string
+    problemTitle: string
+    problemHref: string | null
+    verdict: string
+    verdictFullName: string
+    verdictEmoji?: string
+    isPending: boolean
+    timeMs: number
+    timeFormatted: string
+}
+
 export type AwardDetail = AwardRow & {
-    submission: Submission | null
+    submission: AwardSubmissionDetail | null
+}
+
+export function buildAwardSubmissionDetail(submission: Submission, tables: AllTables): AwardSubmissionDetail {
+    const problem = parseProblemKey(submission.problem_id)
+    const problemHref =
+        problem?.kind === 'problem_id'
+            ? `/problems/${problem.problem_nm}`
+            : `/problems/${submission.problem_id}`
+    const problemLabel = problem?.kind === 'problem_id' ? problem.problem_nm : submission.problem_id
+    const verdict = submissionVerdict(submission)
+    const verdictMeta = tables.verdicts[verdict]
+
+    return {
+        submission_id: submission.submission_id,
+        submissionHref: buildSubmissionHref(submission.problem_id, submission.submission_id),
+        problemTitle: problemLabel ?? submission.problem_id,
+        problemHref,
+        verdict,
+        verdictFullName: verdictMeta?.name ?? verdict,
+        verdictEmoji: verdictMeta?.emoji,
+        isPending: submission.state !== 'done',
+        timeMs: parseSubmissionTime(submission.time_in).getTime(),
+        timeFormatted: formatSubmissionTime(submission.time_in),
+    }
 }
 
 export type AwardTypeSummary = {
@@ -38,10 +81,10 @@ export function buildAwardRow(award_id: string, award: BriefAward): AwardRow {
     }
 }
 
-export function buildAwardDetail(award: Award): AwardDetail {
+export function buildAwardDetail(award: Award, tables: AllTables): AwardDetail {
     return {
         ...buildAwardRow(award.award_id, award),
-        submission: award.submission,
+        submission: award.submission ? buildAwardSubmissionDetail(award.submission, tables) : null,
     }
 }
 

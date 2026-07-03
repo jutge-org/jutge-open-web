@@ -16,10 +16,10 @@
 | ✅     | Code metrics                                        | Yes                                | Yes                                                        |
 | ✅     | Source code view/download                           | Yes                                | Yes (stronger editor UX)                                   |
 | ⚠️     | Problem health warnings (deprecated, SE, unchecked) | On page                            | Not on problem page                                        |
-| ✅     | Inline PDF in statement                             | Yes                                | No (download only)                                         |
+|        | Inline PDF in statement                             | Yes                                | Done!                                                      |
 | ⚠️     | Auto hints, CE/Valgrind/inspector panels            | Yes                                | No                                                         |
 | ⚠️     | Scored-problem breakdown                            | Yes                                | No dedicated panel                                         |
-| ❌     | Awards on submission page                           | Yes                                | No (awards live under `/awards`)                           |
+| ✅     | Awards on submission page                           | Yes                                | Done!                                                      |
 | ⚠️     | Solutions / all testcases / distiller tabs          | On problem page (admin/instructor) | Not on `/problems/[key]` (instructor tooling is elsewhere) |
 | ⚠️     | Admin YAML/correction debug panels                  | On page                            | Not on student problem pages                               |
 | ✅     | Guest can read statement                            | Yes                                | Yes                                                        |

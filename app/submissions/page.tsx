@@ -18,7 +18,7 @@ export default async function SubmissionsPage() {
             <div className="flex flex-col gap-6">
                 <MainBreadcrumbs breadcrumbs={[{ title: 'Submissions', url: '/submissions' }]} />
                 <PageTitle section="/submissions" authenticated />
-                <SubmissionsList rows={rows} />
+                <SubmissionsList rows={rows} showHelp />
             </div>
         )
     })

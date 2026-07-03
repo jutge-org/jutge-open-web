@@ -1,5 +1,91 @@
 import { parseProblemKey } from '@/lib/problems'
 import type { AllTables, Submission } from '@/lib/jutge_api_client'
+import { includesForSearch } from '@/lib/utils'
+
+export type SubmissionsDefaultColumnField =
+    | 'problem_id'
+    | 'submission_id'
+    | 'verdict'
+    | 'compiler_id'
+    | 'time_inMs'
+    | 'annotation'
+
+export type SubmissionsProblemColumnField =
+    | 'language_id'
+    | 'submission_id'
+    | 'verdict'
+    | 'compiler_id'
+    | 'time_inMs'
+    | 'annotation'
+
+export type SubmissionsColumnField = SubmissionsDefaultColumnField | SubmissionsProblemColumnField
+
+export type SubmissionsColumnVisibility = Record<SubmissionsColumnField, boolean>
+
+export const DEFAULT_SUBMISSIONS_COLUMN_VISIBILITY: SubmissionsColumnVisibility = {
+    problem_id: true,
+    language_id: true,
+    submission_id: true,
+    verdict: true,
+    compiler_id: true,
+    time_inMs: true,
+    annotation: true,
+}
+
+export const SUBMISSIONS_COLUMN_LABELS: Record<SubmissionsColumnField, string> = {
+    problem_id: 'Problem',
+    language_id: 'Language',
+    submission_id: 'Submission',
+    verdict: 'Verdict',
+    compiler_id: 'Compiler',
+    time_inMs: 'Time',
+    annotation: 'Annotation',
+}
+
+export type SubmissionsVerdictFilter = 'all' | 'accepted' | 'pending' | 'rejected'
+
+function buildSubmissionSearchHaystack(row: SubmissionRow): string {
+    return [
+        row.problem_id,
+        row.problemTitle,
+        row.submission_id,
+        row.verdict,
+        row.verdictFullName,
+        row.compiler_id,
+        row.compilerFullName,
+        row.annotation ?? '',
+    ].join(' ')
+}
+
+export function buildProblemSubmissionSearchHaystack(row: ProblemSubmissionRow): string {
+    return [buildSubmissionSearchHaystack(row), row.language_id, row.languageTitle].join(' ')
+}
+
+function matchesSubmissionVerdictFilter(verdict: string, filter: SubmissionsVerdictFilter): boolean {
+    switch (filter) {
+        case 'all':
+            return true
+        case 'accepted':
+            return verdict === 'AC'
+        case 'pending':
+            return verdict === 'Pending'
+        case 'rejected':
+            return verdict !== 'AC' && verdict !== 'Pending'
+    }
+}
+
+export function filterSubmissions<T extends SubmissionRow>(
+    rows: T[],
+    searchQuery: string,
+    verdictFilter: SubmissionsVerdictFilter,
+    buildHaystack: (row: T) => string = buildSubmissionSearchHaystack,
+): T[] {
+    const query = searchQuery.trim()
+
+    return rows.filter(
+        (row) => matchesSubmissionVerdictFilter(row.verdict, verdictFilter) && includesForSearch(buildHaystack(row), query),
+    )
+}
 
 export function parseSubmissionTime(time_in: Submission['time_in']): Date {
     if (typeof time_in === 'number') return new Date(time_in)

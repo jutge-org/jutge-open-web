@@ -59,6 +59,7 @@ export function ExamsList({ rows }: ExamsListProps) {
                 onSortFieldChange={setSortField}
                 visibleCount={visibleRows.length}
                 totalCount={rows.length}
+                showHelp
             />
 
             {visibleRows.length === 0 ? (

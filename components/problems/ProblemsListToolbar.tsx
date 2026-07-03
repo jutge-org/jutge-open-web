@@ -13,6 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
+import { ProblemsHelpDialog } from '@/components/problems/ProblemsHelpDialog'
 import { SearchInput } from '@/components/SearchInput'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { PROBLEMS_COLUMN_LABELS, type ProblemsColumnField, type ProblemsColumnVisibility } from '@/lib/problems'
@@ -26,6 +27,7 @@ type ProblemsListToolbarProps = {
     showAdvancedSearch?: boolean
     visibleCount?: number
     totalCount?: number
+    showHelp?: boolean
 }
 
 const TOGGLEABLE_COLUMNS: ProblemsColumnField[] = ['problem_nm', 'title', 'author', 'language_ids', 'driver_id']
@@ -39,6 +41,7 @@ export function ProblemsListToolbar({
     showAdvancedSearch = false,
     visibleCount,
     totalCount,
+    showHelp = false,
 }: ProblemsListToolbarProps) {
     const columns = showStatusColumn ? (['status', ...TOGGLEABLE_COLUMNS] as ProblemsColumnField[]) : TOGGLEABLE_COLUMNS
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
@@ -108,6 +111,7 @@ export function ProblemsListToolbar({
                     </TooltipTrigger>
                     <TooltipContent side="top">Simple search</TooltipContent>
                 </Tooltip>
+                {showHelp ? <ProblemsHelpDialog /> : null}
             </div>
         </TooltipProvider>
     )

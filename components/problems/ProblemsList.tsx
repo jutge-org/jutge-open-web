@@ -25,6 +25,7 @@ type ProblemsListProps = {
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
     showAdvancedSearch?: boolean
+    showHelp?: boolean
     preferredLanguageId?: string | null
 }
 
@@ -95,6 +96,7 @@ export function ProblemsList({
     languages,
     statuses,
     showAdvancedSearch = false,
+    showHelp = false,
     preferredLanguageId = null,
 }: ProblemsListProps) {
     const [searchQuery, setSearchQuery] = useState('')
@@ -231,6 +233,7 @@ export function ProblemsList({
                 onColumnVisibilityChange={handleColumnVisibilityChange}
                 showStatusColumn={statuses !== undefined}
                 showAdvancedSearch={showAdvancedSearch}
+                showHelp={showHelp}
                 visibleCount={visibleProblems.length}
                 totalCount={problems.length}
             />

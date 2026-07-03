@@ -2,18 +2,27 @@
 
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
 import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/actions/submissions'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
+import { SubmissionsListToolbar } from '@/components/submissions/SubmissionsListToolbar'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
+    DEFAULT_SUBMISSIONS_COLUMN_VISIBILITY,
     PENDING_SUBMISSION_REFRESH_INTERVAL_MS,
     PENDING_SUBMISSION_REFRESH_MAX_COUNT,
     type ProblemSubmissionRow,
     type SubmissionRow,
+    type SubmissionsColumnField,
+    type SubmissionsColumnVisibility,
+    type SubmissionsVerdictFilter,
+    buildProblemSubmissionSearchHaystack,
+    filterSubmissions,
 } from '@/lib/submissions'
 
 dayjs.extend(relativeTime)
@@ -22,17 +31,24 @@ type SubmissionsListProps =
     | {
           rows: SubmissionRow[]
           variant?: 'default'
+          showHelp?: boolean
       }
     | {
           rows: ProblemSubmissionRow[]
           variant: 'problem'
           problemNm: string
+          showHelp?: boolean
       }
 
 export function SubmissionsList(props: SubmissionsListProps) {
-    const { rows: initialRows, variant = 'default' } = props
+    const { rows: initialRows, variant = 'default', showHelp = false } = props
     const problemNm = props.variant === 'problem' ? props.problemNm : undefined
     const [rows, setRows] = useState(initialRows)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [verdictFilter, setVerdictFilter] = useState<SubmissionsVerdictFilter>('all')
+    const [columnVisibility, setColumnVisibility] = useState<SubmissionsColumnVisibility>(
+        DEFAULT_SUBMISSIONS_COLUMN_VISIBILITY,
+    )
 
     useEffect(() => {
         setRows(initialRows)
@@ -64,6 +80,24 @@ export function SubmissionsList(props: SubmissionsListProps) {
 
         return () => window.clearInterval(intervalId)
     }, [hasPending, problemNm])
+
+    const visibleRows = useMemo(() => {
+        if (variant === 'problem') {
+            return filterSubmissions(
+                rows as ProblemSubmissionRow[],
+                searchQuery,
+                verdictFilter,
+                buildProblemSubmissionSearchHaystack,
+            )
+        }
+
+        return filterSubmissions(rows as SubmissionRow[], searchQuery, verdictFilter)
+    }, [rows, searchQuery, verdictFilter, variant])
+
+    function handleColumnVisibilityChange(field: SubmissionsColumnField, visible: boolean) {
+        setColumnVisibility((current) => ({ ...current, [field]: visible }))
+    }
+
     const colDefs = useMemo(
         () => [
             {
@@ -88,6 +122,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                       width: 112,
                       sortable: true,
                       filter: true,
+                      hide: !columnVisibility.language_id,
                       cellRenderer: (params: { data: ProblemSubmissionRow }) => (
                           <Tooltip>
                               <TooltipTrigger asChild>
@@ -109,6 +144,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                       width: 112,
                       sortable: true,
                       filter: true,
+                      hide: !columnVisibility.problem_id,
                       cellRenderer: (params: { data: SubmissionRow }) => (
                           <Tooltip>
                               <TooltipTrigger asChild>
@@ -130,6 +166,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 width: 112,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.submission_id,
                 cellRenderer: (params: { data: SubmissionRow }) => (
                     <Link href={params.data.submissionHref} className="text-sm hover:text-primary hover:underline">
                         {params.data.submission_id}
@@ -142,6 +179,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 width: 96,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.verdict,
                 cellRenderer: (params: { data: SubmissionRow }) => (
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -158,6 +196,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 width: 112,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.compiler_id,
                 cellRenderer: (params: { data: SubmissionRow }) => (
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -174,6 +213,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 width: 176,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.time_inMs,
                 sort: 'desc',
                 cellRenderer: (params: { data: SubmissionRow }) => (
                     <Tooltip>
@@ -191,6 +231,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 flex: 1,
                 sortable: true,
                 filter: true,
+                hide: !columnVisibility.annotation,
                 cellRenderer: (params: { data: SubmissionRow }) =>
                     params.data.annotation ? (
                         <span className="text-muted-foreground">{params.data.annotation}</span>
@@ -198,7 +239,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 valueGetter: (params: { data: SubmissionRow }) => params.data.annotation ?? '',
             },
         ],
-        [variant],
+        [columnVisibility, variant],
     )
 
     if (rows.length === 0) {
@@ -212,8 +253,37 @@ export function SubmissionsList(props: SubmissionsListProps) {
     }
 
     return (
-        <TooltipProvider>
-            <AgTableFull rowData={rows} columnDefs={colDefs} />
-        </TooltipProvider>
+        <div className="flex flex-col gap-4">
+            <SubmissionsListToolbar
+                variant={variant}
+                searchQuery={searchQuery}
+                onSearchQueryChange={setSearchQuery}
+                verdictFilter={verdictFilter}
+                onVerdictFilterChange={setVerdictFilter}
+                columnVisibility={columnVisibility}
+                onColumnVisibilityChange={handleColumnVisibilityChange}
+                visibleCount={visibleRows.length}
+                totalCount={rows.length}
+                showHelp={showHelp}
+            />
+
+            {visibleRows.length === 0 ? (
+                <Empty className="border border-dashed border-border bg-muted/20 py-12">
+                    <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                            <SearchIcon aria-hidden />
+                        </EmptyMedia>
+                        <EmptyTitle>No matching submissions</EmptyTitle>
+                        <EmptyDescription>
+                            Try a different search term, adjust filters, or clear the search box.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
+            ) : (
+                <TooltipProvider>
+                    <AgTableFull rowData={visibleRows} columnDefs={colDefs} />
+                </TooltipProvider>
+            )}
+        </div>
     )
 }

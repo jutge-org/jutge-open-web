@@ -2,6 +2,7 @@
 
 import { ArrowDownWideNarrowIcon, FunnelIcon } from 'lucide-react'
 
+import { ExamsHelpDialog } from '@/components/exams/ExamsHelpDialog'
 import { SearchInput } from '@/components/SearchInput'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -28,6 +29,7 @@ type ExamsListToolbarProps = {
     onSortFieldChange: (value: ExamsSortField) => void
     visibleCount?: number
     totalCount?: number
+    showHelp?: boolean
 }
 
 export function ExamsListToolbar({
@@ -41,6 +43,7 @@ export function ExamsListToolbar({
     onSortFieldChange,
     visibleCount,
     totalCount,
+    showHelp = false,
 }: ExamsListToolbarProps) {
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
 
@@ -119,6 +122,7 @@ export function ExamsListToolbar({
                     className="w-64 shrink-0"
                     aria-label="Search exams"
                 />
+                {showHelp ? <ExamsHelpDialog /> : null}
             </div>
         </TooltipProvider>
     )

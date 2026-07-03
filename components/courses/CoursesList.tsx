@@ -298,6 +298,7 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
                     onSortFieldChange={setSortField}
                     visibleCount={visibleCourses.length}
                     totalCount={courses.length}
+                    showHelp
                 />
 
                 {visibleCourses.length === 0 ? (

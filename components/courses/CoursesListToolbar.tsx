@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
+import { CoursesHelpDialog } from '@/components/courses/CoursesHelpDialog'
 import { SearchInput } from '@/components/SearchInput'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { CoursesInstructorFilter, CoursesOfficialFilter, CoursesSortField } from '@/lib/courses'
@@ -28,6 +29,7 @@ type CoursesListToolbarProps = {
     onSortFieldChange: (value: CoursesSortField) => void
     visibleCount?: number
     totalCount?: number
+    showHelp?: boolean
 }
 
 export function CoursesListToolbar({
@@ -41,6 +43,7 @@ export function CoursesListToolbar({
     onSortFieldChange,
     visibleCount,
     totalCount,
+    showHelp = false,
 }: CoursesListToolbarProps) {
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
     const showInstructorFilter = instructorFilter !== undefined && onInstructorFilterChange !== undefined
@@ -123,6 +126,7 @@ export function CoursesListToolbar({
                     className="w-64 shrink-0"
                     aria-label="Search courses"
                 />
+                {showHelp ? <CoursesHelpDialog /> : null}
             </div>
         </TooltipProvider>
     )

@@ -1,7 +1,7 @@
 import { includesForSearch } from '@/lib/utils'
 import type { ProblemRow } from '@/services/queries/problems'
 
-export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'type'
+export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'driver_id'
 
 export type ProblemsColumnVisibility = Record<ProblemsColumnField, boolean>
 
@@ -11,7 +11,7 @@ export const DEFAULT_PROBLEMS_COLUMN_VISIBILITY: ProblemsColumnVisibility = {
     title: true,
     author: true,
     language_ids: true,
-    type: true,
+    driver_id: true,
 }
 
 export const PROBLEMS_COLUMN_LABELS: Record<ProblemsColumnField, string> = {
@@ -20,7 +20,7 @@ export const PROBLEMS_COLUMN_LABELS: Record<ProblemsColumnField, string> = {
     title: 'Title',
     author: 'Author',
     language_ids: 'Languages',
-    type: 'Type',
+    driver_id: 'Driver',
 }
 
 function buildProblemSearchHaystack(problem: ProblemRow): string {
@@ -28,7 +28,7 @@ function buildProblemSearchHaystack(problem: ProblemRow): string {
         problem.problem_nm,
         problem.title,
         problem.author ?? '',
-        problem.type ?? '',
+        problem.driver_id ?? '',
         ...problem.language_ids,
     ].join(' ')
 }
@@ -74,12 +74,16 @@ export function pickPreferredId(availableIds: string[], preferredId: string | nu
     return availableIds[0] ?? ''
 }
 
-export function isQuizProblem(type: string | null | undefined): boolean {
-    return type === 'quiz'
+export function isQuizProblem(driverId: string | null | undefined): boolean {
+    return driverId === 'quiz'
 }
 
-export function isGameProblem(type: string | null | undefined): boolean {
-    return type === 'game'
+export function isGameProblem(driverId: string | null | undefined): boolean {
+    return driverId === 'game'
+}
+
+export function isGraphicProblem(driverId: string | null | undefined): boolean {
+    return driverId === 'graphic'
 }
 
 export function parseProblemKey(key: string): ParsedProblemKey {

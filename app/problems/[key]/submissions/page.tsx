@@ -42,7 +42,7 @@ export default async function ProblemSubmissionsPage({ params }: PageProps) {
         notFound()
     }
 
-    if (isGameProblem(data.problem.abstract_problem.type)) {
+    if (isGameProblem(data.problem.abstract_problem.driver_id)) {
         notFound()
     }
 

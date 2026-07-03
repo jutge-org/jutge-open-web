@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         return { title: 'Problem — Jutge.org' }
     }
 
-    if (isQuizProblem(abstractProblem.type)) {
+    if (isQuizProblem(abstractProblem.driver_id)) {
         const preferredLanguageId = await getPreferredLanguageId()
         const title = getPreferredProblemVariant(abstractProblem, preferredLanguageId)?.title ?? parsed.problem_nm
         return { title: `${title} — Problems — Jutge.org` }
@@ -64,7 +64,7 @@ export default async function ProblemPage({ params }: PageProps) {
 
     const authenticated = await isAuthenticated()
 
-    if (isQuizProblem(abstractProblem.type)) {
+    if (isQuizProblem(abstractProblem.driver_id)) {
         const preferredLanguageId = await getPreferredLanguageId()
         const variant = getPreferredProblemVariant(abstractProblem, preferredLanguageId)
         const title = variant?.title ?? problem_nm
@@ -99,7 +99,7 @@ export default async function ProblemPage({ params }: PageProps) {
     let status: Awaited<ReturnType<typeof fetchProblemStatus>> | undefined
     let defaultCompilerId: string | null | undefined
 
-    if (authenticated && !isGameProblem(abstractProblem.type)) {
+    if (authenticated && !isGameProblem(abstractProblem.driver_id)) {
         const client = await getCurrentClient()
         const [statusResult, profile] = await Promise.all([
             fetchProblemStatus(client, problem.problem_nm),

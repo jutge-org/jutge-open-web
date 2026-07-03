@@ -41,7 +41,7 @@ export function ProblemDetail({
     children,
 }: ProblemDetailProps) {
     const { problem } = data
-    const isGame = isGameProblem(problem.abstract_problem.type)
+    const isGame = isGameProblem(problem.abstract_problem.driver_id)
     const showStatus = status !== undefined && !isGame
 
     return (
@@ -68,9 +68,9 @@ export function ProblemDetail({
                                     </TooltipTrigger>
                                     <TooltipContent side="left">Open on jutge.org</TooltipContent>
                                 </Tooltip>
-                                {problem.abstract_problem.type ? (
+                                {problem.abstract_problem.driver_id ? (
                                     <ProblemTypeIcon
-                                        type={problem.abstract_problem.type}
+                                        type={problem.abstract_problem.driver_id}
                                         className="size-4 text-muted-foreground mr-2"
                                     />
                                 ) : null}

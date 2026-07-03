@@ -8,7 +8,7 @@ import {
     type SubmissionCodeMetricsData,
 } from '@/lib/codeMetrics'
 import { decodeSubmissionCodeBase64, MAKE_PRO2_COMPILER_ID } from '@/lib/makePro2SourceCode'
-import { parseProblemKey } from '@/lib/problems'
+import { isGraphicProblem, parseProblemKey } from '@/lib/problems'
 import {
     buildLastSubmissionsByProblemNm,
     buildProblemSubmissionRow,
@@ -356,7 +356,7 @@ export const fetchSubmissionTestcaseAnalysis = cache(
                 client.tables.get(),
                 fetchAbstractProblem(problem_nm),
             ])
-            const decoded = decodeTestcaseAnalysis(analysis, abstractProblem?.type === 'graphic')
+            const decoded = decodeTestcaseAnalysis(analysis, isGraphicProblem(abstractProblem?.driver_id))
             return {
                 ...decoded,
                 verdictEmoji: tables.verdicts[decoded.verdict]?.emoji,

@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { getPreferredLanguageId, getProblemsApiClient } from '@/lib/auth'
-import { parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
+import { isGraphicProblem, parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import { resolveProblemIdFromAbstract } from '@/lib/problemVariants'
 import {
     type JutgeApiClient,
@@ -157,7 +157,7 @@ export const fetchProblemDetail = cache(async (problemId: string): Promise<Probl
             shortHtmlStatement,
             templates,
             publicTestcases: [...sampleTestcases, ...publicTestcases].map((testcase) =>
-                decodeTestcase(testcase, problem.abstract_problem.type === 'graphic'),
+                decodeTestcase(testcase, isGraphicProblem(problem.abstract_problem.driver_id)),
             ),
             languageVariants,
             officialSolutions,

@@ -1,11 +1,19 @@
 'use client'
 
-import { Gamepad2Icon, ImageIcon, ListChecksIcon, PuzzleIcon, type LucideIcon } from 'lucide-react'
+import {
+    CircuitBoardIcon,
+    Gamepad2Icon,
+    ImageIcon,
+    ListChecksIcon,
+    PuzzleIcon,
+    type LucideIcon,
+} from 'lucide-react'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 const problemTypeIcons: Record<string, LucideIcon> = {
+    circuits: CircuitBoardIcon,
     game: Gamepad2Icon,
     graphic: ImageIcon,
     quiz: ListChecksIcon,

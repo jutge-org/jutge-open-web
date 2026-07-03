@@ -103,20 +103,11 @@ export function ProblemPropertiesView() {
             label: 'Author email',
             value: abstractProblem.author_email || '',
         },
-        type: {
-            type: 'free',
-            label: 'Type',
-            content: (
-                <Badge className="mt-1 px-2 py-1" variant="secondary">
-                    {abstractProblem.type}
-                </Badge>
-            ),
-        },
         driver: {
             type: 'free',
             label: 'Driver',
             content: (
-                <Badge className="mt-2 px-2 py-1" variant="secondary">
+                <Badge className="mt-1 px-2 py-1" variant="secondary">
                     {abstractProblem.driver_id}
                 </Badge>
             ),

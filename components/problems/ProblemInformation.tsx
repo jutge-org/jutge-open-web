@@ -68,8 +68,8 @@ export function ProblemInformation({ data }: ProblemInformationProps) {
                         </InfoRow>
                     ) : null}
                     <InfoRow label="Type">
-                        {problem.abstract_problem.type ? (
-                            <ProblemTypeOption type={problem.abstract_problem.type} />
+                        {problem.abstract_problem.driver_id ? (
+                            <ProblemTypeOption type={problem.abstract_problem.driver_id} />
                         ) : (
                             '—'
                         )}

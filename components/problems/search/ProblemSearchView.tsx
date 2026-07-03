@@ -1016,9 +1016,6 @@ function Result(props: ResultProps) {
                         </div>
                         <div className="w-full flex flex-row gap-2">
                             <Badge className="px-2 rounded-full" variant="secondary">
-                                {abspbm.type}
-                            </Badge>
-                            <Badge className="px-2 rounded-full" variant="secondary">
                                 {abspbm.driver_id}
                             </Badge>
                             {abspbm.compilers && (

@@ -8,7 +8,7 @@ export type ProblemRow = {
     problem_nm: string
     title: string
     language_ids: string[]
-    type: string | null
+    driver_id: string | null
     author: string | null
     created_at: string | number
     updated_at: string | number
@@ -53,7 +53,7 @@ export function abstractProblemToRow(
         problem_nm: ap.problem_nm,
         title,
         language_ids,
-        type: ap.type,
+        driver_id: ap.driver_id,
         author: ap.author,
         created_at: ap.created_at,
         updated_at: ap.updated_at,

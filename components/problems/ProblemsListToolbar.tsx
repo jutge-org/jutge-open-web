@@ -28,7 +28,7 @@ type ProblemsListToolbarProps = {
     totalCount?: number
 }
 
-const TOGGLEABLE_COLUMNS: ProblemsColumnField[] = ['problem_nm', 'title', 'author', 'language_ids', 'type']
+const TOGGLEABLE_COLUMNS: ProblemsColumnField[] = ['problem_nm', 'title', 'author', 'language_ids', 'driver_id']
 
 export function ProblemsListToolbar({
     searchQuery,

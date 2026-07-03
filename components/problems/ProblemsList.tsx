@@ -204,19 +204,19 @@ export function ProblemsList({
                 valueGetter: (params: { data: ProblemRow }) => params.data.language_ids.join(', '),
             },
             {
-                field: 'type',
+                field: 'driver_id',
                 headerName: 'Type',
                 width: 90,
                 sortable: true,
                 filter: true,
-                hide: !columnVisibility.type,
+                hide: !columnVisibility.driver_id,
                 cellRenderer: (params: { data: ProblemRow }) =>
-                    params.data.type ? (
-                        <ProblemTypeIcon type={params.data.type} className="text-muted-foreground translate-y-1" />
+                    params.data.driver_id ? (
+                        <ProblemTypeIcon type={params.data.driver_id} className="text-muted-foreground translate-y-1" />
                     ) : (
                         '—'
                     ),
-                valueGetter: (params: { data: ProblemRow }) => params.data.type ?? '',
+                valueGetter: (params: { data: ProblemRow }) => params.data.driver_id ?? '',
             },
         ],
         [columnVisibility, languages, preferredLanguageId, statuses],

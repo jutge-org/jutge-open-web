@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-06-30T19:59:23.196Z
+ * This file has been automatically generated at 2026-07-03T06:37:01.510Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -505,6 +505,17 @@ export type RunningExam = {
     problems: RunningExamProblem[]
     compilers: string[]
     documents: RunningExamDocument[]
+}
+
+export type Exam = {
+    exam_key: string
+    title: string
+    place: string
+    description: string
+    exp_time_start: string | string | string | number
+    contest: boolean
+    course: { course_nm: string; title: string }
+    owner: PublicProfile
 }
 
 export type AbstractStatus = {
@@ -2160,6 +2171,7 @@ class Module_student {
     readonly courses: Module_student_courses
     readonly lists: Module_student_lists
     readonly exam: Module_student_exam
+    readonly exams: Module_student_exams
     readonly statuses: Module_student_statuses
     readonly awards: Module_student_awards
 
@@ -2172,6 +2184,7 @@ class Module_student {
         this.courses = new Module_student_courses(root)
         this.lists = new Module_student_lists(root)
         this.exam = new Module_student_exam(root)
+        this.exams = new Module_student_exams(root)
         this.statuses = new Module_student_statuses(root)
         this.awards = new Module_student_awards(root)
     }
@@ -2880,6 +2893,68 @@ class Module_student_exam {
      */
     async getRanking(): Promise<Ranking> {
         const [output, ofiles] = await this.root.execute("student.exam.getRanking", null)
+        return output
+    }
+}
+
+/**
+ *
+ * No description yet
+ *
+ */
+class Module_student_exams {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get all exams linked to the user.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getAll(): Promise<
+        Record<
+            string,
+            {
+                exam_key: string
+                title: string
+                place: string
+                description: string
+                exp_time_start: string | string | string | number
+                contest: boolean
+                course: InstructorExamCourse
+                owner: PublicProfile
+            }
+        >
+    > {
+        const [output, ofiles] = await this.root.execute("student.exams.getAll", null)
+        return output
+    }
+
+    /**
+     * Get an exam linked to the user.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async get(
+        exam_nm: string,
+    ): Promise<{
+        exam_key: string
+        title: string
+        place: string
+        description: string
+        exp_time_start: string | string | string | number
+        contest: boolean
+        course: InstructorExamCourse
+        owner: PublicProfile
+    }> {
+        const [output, ofiles] = await this.root.execute("student.exams.get", exam_nm)
         return output
     }
 }

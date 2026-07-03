@@ -192,15 +192,15 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                     isProblemRow(params.data) ? params.data.language_ids.join(', ') : '',
             },
             {
-                field: 'type',
-                headerName: 'Type',
+                field: 'driver_id',
+                headerName: 'Driver',
                 width: 90,
                 sortable: false,
                 filter: false,
                 cellRenderer: (params: { data: CourseListItemRow }) => {
                     if (!isProblemRow(params.data)) return ''
-                    return params.data.type ? (
-                        <ProblemTypeIcon type={params.data.type} className="translate-y-1 text-muted-foreground" />
+                    return params.data.driver_id ? (
+                        <ProblemTypeIcon type={params.data.driver_id} className="translate-y-1 text-muted-foreground" />
                     ) : (
                         '—'
                     )

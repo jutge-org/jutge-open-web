@@ -23,6 +23,9 @@ import { MainBreadcrumbsInLayout } from './MainBreadcrumbsInLayout'
 export const metadata: Metadata = {
     title: 'Jutge.org',
     description: 'The Open client for Jutge.org',
+    icons: {
+        icon: '/favicon.ico',
+    },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -21,9 +21,10 @@ type CourseDetailActionsProps = {
     title: string
     ownerName: string
     status: CourseStatus
+    isOwner: boolean
 }
 
-export function CourseDetailActions({ courseKey, title, ownerName, status }: CourseDetailActionsProps) {
+export function CourseDetailActions({ courseKey, title, ownerName, status, isOwner }: CourseDetailActionsProps) {
     const router = useRouter()
     const [isPending, setIsPending] = useState(false)
     const [, startTransition] = useTransition()
@@ -103,10 +104,12 @@ export function CourseDetailActions({ courseKey, title, ownerName, status }: Cou
                     ) : null}
                     {status === 'enrolled' ? (
                         <>
-                            <DropdownMenuItem onClick={() => handleAction('unenroll')}>
-                                <LogOutIcon aria-hidden />
-                                Unenroll
-                            </DropdownMenuItem>
+                            {!isOwner ? (
+                                <DropdownMenuItem onClick={() => handleAction('unenroll')}>
+                                    <LogOutIcon aria-hidden />
+                                    Unenroll
+                                </DropdownMenuItem>
+                            ) : null}
                             <DropdownMenuItem onClick={() => handleAction('archive')}>
                                 <ArchiveIcon aria-hidden />
                                 Archive
@@ -115,10 +118,12 @@ export function CourseDetailActions({ courseKey, title, ownerName, status }: Cou
                     ) : null}
                     {status === 'archived' ? (
                         <>
-                            <DropdownMenuItem onClick={() => handleAction('unenroll')}>
-                                <LogOutIcon aria-hidden />
-                                Unenroll
-                            </DropdownMenuItem>
+                            {!isOwner ? (
+                                <DropdownMenuItem onClick={() => handleAction('unenroll')}>
+                                    <LogOutIcon aria-hidden />
+                                    Unenroll
+                                </DropdownMenuItem>
+                            ) : null}
                             <DropdownMenuItem onClick={() => handleAction('unarchive')}>
                                 <ArchiveRestoreIcon aria-hidden />
                                 Unarchive

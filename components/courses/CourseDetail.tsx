@@ -14,6 +14,7 @@ type CourseDetailProps = {
     courseKey: string
     course: Course
     status: CourseStatus
+    isOwner: boolean
     lists: CourseListData[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
@@ -24,12 +25,13 @@ export function CourseDetail({
     courseKey,
     course,
     status,
+    isOwner,
     lists,
     languages,
     statuses,
     lastSubmissions,
 }: CourseDetailProps) {
-    const row = buildCourseRow(course, status)
+    const row = buildCourseRow(course, status, courseKey, isOwner)
 
     return (
         <div className="flex flex-col gap-6">
@@ -42,6 +44,7 @@ export function CourseDetail({
                             title={row.title}
                             ownerName={row.ownerName}
                             status={status}
+                            isOwner={isOwner}
                         />
                     </div>
                     <div className="flex items-center justify-between gap-2">

@@ -1,7 +1,9 @@
 'use server'
 
 import { getCurrentClient } from '@/lib/auth'
+import { isCourseOwnedByUser } from '@/lib/courses'
 import { archiveCourse, enrollInCourse, unarchiveCourse, unenrollFromCourse } from '@/services/mutations/courses'
+import { fetchCourse } from '@/services/queries/courses'
 
 type CourseActionResult = { ok: true } | { ok: false; error: string }
 
@@ -29,6 +31,14 @@ export async function unenrollCourseAction(courseKey: string): Promise<CourseAct
 
     try {
         const client = await getCurrentClient()
+        const [result, profile] = await Promise.all([
+            fetchCourse(client, trimmed),
+            client.student.profile.get(),
+        ])
+        if (result && isCourseOwnedByUser(result.course.owner, profile)) {
+            return { ok: false, error: 'You cannot unenroll from a course you own.' }
+        }
+
         await unenrollFromCourse(client, trimmed)
         return { ok: true }
     } catch (e) {

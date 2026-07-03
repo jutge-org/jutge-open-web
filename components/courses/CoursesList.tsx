@@ -129,10 +129,12 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                                 ) : null}
                                 {tab === 'enrolled' ? (
                                     <>
-                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
-                                            <LogOutIcon aria-hidden />
-                                            Unenroll
-                                        </DropdownMenuItem>
+                                        {!course.isOwner ? (
+                                            <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                                <LogOutIcon aria-hidden />
+                                                Unenroll
+                                            </DropdownMenuItem>
+                                        ) : null}
                                         <DropdownMenuItem onClick={() => onAction(course, 'archive')}>
                                             <ArchiveIcon aria-hidden />
                                             Archive
@@ -141,10 +143,12 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                                 ) : null}
                                 {tab === 'archived' ? (
                                     <>
-                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
-                                            <LogOutIcon aria-hidden />
-                                            Unenroll
-                                        </DropdownMenuItem>
+                                        {!course.isOwner ? (
+                                            <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                                <LogOutIcon aria-hidden />
+                                                Unenroll
+                                            </DropdownMenuItem>
+                                        ) : null}
                                         <DropdownMenuItem onClick={() => onAction(course, 'unarchive')}>
                                             <ArchiveRestoreIcon aria-hidden />
                                             Unarchive

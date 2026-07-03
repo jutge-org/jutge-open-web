@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { CourseDetail } from '@/components/courses/CourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
-import { buildCourseRow, courseHref } from '@/lib/courses'
+import { buildCourseRow, courseHref, isCourseOwnedByUser } from '@/lib/courses'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
@@ -40,13 +40,17 @@ export default async function CoursePage({ params }: PageProps) {
 
     return renderAuthed(async () => {
         const client = await getCurrentClient()
-        const result = await fetchCourse(client, rawCourseKey)
+        const [result, profile] = await Promise.all([
+            fetchCourse(client, rawCourseKey),
+            client.student.profile.get(),
+        ])
         if (!result) {
             notFound()
         }
 
         const { courseKey, course, status } = result
-        const row = buildCourseRow(course, status, courseKey)
+        const isOwner = isCourseOwnedByUser(course.owner, profile)
+        const row = buildCourseRow(course, status, courseKey, isOwner)
         const href = courseHref(courseKey)
 
         const isEnrolled = status !== 'available'
@@ -82,6 +86,7 @@ export default async function CoursePage({ params }: PageProps) {
                     courseKey={courseKey}
                     course={course}
                     status={status}
+                    isOwner={isOwner}
                     lists={lists}
                     languages={languages}
                     statuses={statuses}

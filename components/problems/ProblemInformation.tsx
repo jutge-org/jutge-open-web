@@ -33,9 +33,11 @@ function ProglangIcons({ proglangs }: { proglangs: string[] }) {
                 {proglangs.map((proglang) => (
                     <Tooltip key={proglang}>
                         <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-border bg-white p-1 ">
-                                <DevIcon proglang={proglang} size={16} />
-                            </Badge>
+                            <span className="inline-flex cursor-default">
+                                <Badge variant="outline" className="border-border bg-white p-1">
+                                    <DevIcon proglang={proglang} size={16} />
+                                </Badge>
+                            </span>
                         </TooltipTrigger>
                         <TooltipContent side="top">{formatProglangName(proglang)}</TooltipContent>
                     </Tooltip>

@@ -16,7 +16,7 @@
 | ✅     | Code metrics                                        | Yes                                | Yes                                                        |
 | ✅     | Source code view/download                           | Yes                                | Yes (stronger editor UX)                                   |
 | ⚠️     | Problem health warnings (deprecated, SE, unchecked) | On page                            | Not on problem page                                        |
-| ❌     | Inline PDF in statement                             | Yes                                | No (download only)                                         |
+| ✅     | Inline PDF in statement                             | Yes                                | No (download only)                                         |
 | ⚠️     | Auto hints, CE/Valgrind/inspector panels            | Yes                                | No                                                         |
 | ⚠️     | Scored-problem breakdown                            | Yes                                | No dedicated panel                                         |
 | ❌     | Awards on submission page                           | Yes                                | No (awards live under `/awards`)                           |

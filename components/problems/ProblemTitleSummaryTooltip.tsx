@@ -36,8 +36,9 @@ function ProblemSummaryTooltipBody({
 }: ProblemSummaryTooltipBodyProps) {
     return (
         <div className="flex w-full flex-col gap-1 text-sm p-2">
-            <div className="font-bold">
-                {problem_nm} {title || 'Untitled problem'}
+            <div className="flex w-full items-baseline justify-between gap-3 font-bold">
+                <span className="min-w-0 flex-1">{title || 'Untitled problem'}</span>
+                <span className="shrink-0 tabular-nums">{problem_nm}</span>
             </div>
             {author ? (
                 <div className="flex w-full flex-row">
@@ -160,7 +161,10 @@ export function ProblemTitleSummaryTooltip({
                         solution_tags={abstractProblem.solution_tags}
                     />
                 ) : (
-                    <span className="font-bold">{title}</span>
+                    <div className="flex w-full items-baseline justify-between gap-3 font-bold">
+                        <span className="min-w-0 flex-1">{title || 'Untitled problem'}</span>
+                        <span className="shrink-0 tabular-nums">{problem_nm}</span>
+                    </div>
                 )}
             </TooltipContent>
         </Tooltip>

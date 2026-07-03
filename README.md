@@ -8,12 +8,12 @@ Students solve programming problems, submit code, take exams, and follow courses
 
 ## Features
 
-| Area | What it covers |
-|------|----------------|
-| **Students** | Problems, submissions, diffs, exams, courses, activity, awards, profile |
-| **Instructors** | Courses, lists, exams, problem authoring, semantic search, JutgeAI |
-| **Administrators** | Users, statistics, heatmaps, queue, rankings |
-| **Platform** | Auth, command palette, accessibility, theming, Monaco editor, xterm |
+| Area               | What it covers                                                          |
+| ------------------ | ----------------------------------------------------------------------- |
+| **Students**       | Problems, submissions, diffs, exams, courses, activity, awards, profile |
+| **Instructors**    | Courses, lists, exams, problem authoring, semantic search, JutgeAI      |
+| **Administrators** | Users, statistics, heatmaps, queue, rankings                            |
+| **Platform**       | Auth, command palette, accessibility, theming, Monaco editor, xterm     |
 
 ## Tech stack
 
@@ -146,7 +146,7 @@ Jutge.org has been built and maintained over many years by a large team. See [Cr
 Current maintenance:
 
 - [Jordi Petit](https://github.com/jordi-petit)
-- Salvador Roura
+- [Pau Fernández](https://github.com/pauek)
 
 ## License
 

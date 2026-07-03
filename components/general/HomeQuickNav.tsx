@@ -9,7 +9,7 @@ import {
     CrownIcon,
     GraduationCap,
     Info,
-    PuzzleIcon,
+    FileBracesCornerIcon,
     SchoolIcon,
     User,
 } from 'lucide-react'
@@ -21,7 +21,7 @@ function NavIcon({ href, className }: { href: string; className?: string }) {
     const iconClass = cn('shrink-0', 'group-hover:animate-pulse', className ?? 'size-10')
     switch (href) {
         case '/problems':
-            return <PuzzleIcon className={iconClass} aria-hidden />
+            return <FileBracesCornerIcon className={iconClass} aria-hidden />
         case '/submissions':
             return <SendIcon className={iconClass} aria-hidden />
         case '/exams':

@@ -3,7 +3,7 @@
 import { fetchAdminDashboardZombies, fetchHomepageStats } from '@/actions/administrator'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { cn } from '@/lib/utils'
-import { AlertTriangleIcon, PuzzleIcon, SendIcon, UsersIcon } from 'lucide-react'
+import { AlertTriangleIcon, FileBracesCornerIcon, SendIcon, UsersIcon } from 'lucide-react'
 import { all } from 'radash'
 import Link from 'next/link'
 import { type ReactNode, useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ const statCards = [
     {
         key: 'problems' as const,
         label: 'Problems',
-        icon: PuzzleIcon,
+        icon: FileBracesCornerIcon,
         borderAccent: 'border-t-violet-500',
         iconAccent: 'text-violet-600 dark:text-violet-400',
     },

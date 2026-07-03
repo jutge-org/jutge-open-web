@@ -20,7 +20,7 @@ import {
     type RecentProblemItem,
     type RecentSubmissionItem,
 } from '@/lib/recents'
-import { BookOpenIcon, Clock3Icon, PuzzleIcon, SendIcon, Trash2Icon } from 'lucide-react'
+import { BookOpenIcon, Clock3Icon, FileBracesCornerIcon, SendIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -91,7 +91,7 @@ export function RecentMenu() {
                 <DropdownMenuSeparator />
                 <RecentSection<RecentProblemItem>
                     label="Problems"
-                    icon={<PuzzleIcon className="size-4" aria-hidden />}
+                    icon={<FileBracesCornerIcon className="size-4" aria-hidden />}
                     items={recents.problems}
                     renderHref={recentProblemHref}
                     renderTitle={formatRecentProblemTitle}

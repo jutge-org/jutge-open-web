@@ -60,7 +60,7 @@ import {
     MegaphoneIcon,
     ScrollTextIcon,
     SendIcon,
-    PuzzleIcon,
+    FileBracesCornerIcon,
     CrownIcon,
     GraduationCap,
     House,
@@ -98,7 +98,7 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
         case '/':
             return <House aria-hidden />
         case '/problems':
-            return <PuzzleIcon aria-hidden />
+            return <FileBracesCornerIcon aria-hidden />
         case '/submissions':
             return <SendIcon aria-hidden />
         case '/exams':
@@ -139,7 +139,7 @@ function MainNavInstructorSubItemIcon({ href }: { href: string }) {
         case '/instructor/documents':
             return <FileIcon aria-hidden />
         case '/instructor/problems':
-            return <PuzzleIcon aria-hidden />
+            return <FileBracesCornerIcon aria-hidden />
         case '/instructor/search':
             return <SearchIcon aria-hidden />
         case '/instructor/jutgeai':

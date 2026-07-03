@@ -1,7 +1,7 @@
 'use client'
 
 import type { HomepageStats } from '@/lib/jutge_api_client'
-import { CodeIcon, PuzzleIcon, SchoolIcon, SendIcon, TerminalIcon, TrophyIcon, UsersIcon } from 'lucide-react'
+import { CodeIcon, FileBracesCornerIcon, SchoolIcon, SendIcon, TerminalIcon, TrophyIcon, UsersIcon } from 'lucide-react'
 import { useState } from 'react'
 
 import { HomepageStatCard } from '@/components/general/HomepageStatCard'
@@ -27,7 +27,7 @@ const statItems = [
     {
         key: 'problems' as const,
         label: 'Problems',
-        icon: PuzzleIcon,
+        icon: FileBracesCornerIcon,
         borderAccent: 'border-t-fuchsia-500',
         iconAccent: 'text-fuchsia-500 dark:text-fuchsia-400',
     },

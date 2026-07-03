@@ -9,7 +9,7 @@ import {
     CrownIcon,
     GraduationCap,
     Info,
-    PuzzleIcon,
+    FileBracesCornerIcon,
     SchoolIcon,
     User,
 } from 'lucide-react'
@@ -94,7 +94,7 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
     const iconClass = 'size-7 shrink-0'
     switch (section) {
         case '/problems':
-            return <PuzzleIcon className={iconClass} aria-hidden />
+            return <FileBracesCornerIcon className={iconClass} aria-hidden />
         case '/submissions':
             return <SendIcon className={iconClass} aria-hidden />
         case '/exams':

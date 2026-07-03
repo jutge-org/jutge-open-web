@@ -9,6 +9,7 @@ const problemTypeIcons: Record<string, LucideIcon> = {
     game: Gamepad2Icon,
     graphic: ImageIcon,
     quiz: ListChecksIcon,
+    std: PuzzleIcon,
 }
 
 export function getProblemTypeIcon(type: string): LucideIcon {

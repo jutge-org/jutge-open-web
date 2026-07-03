@@ -10,7 +10,7 @@ import {
     BarChart3Icon,
     BookOpenIcon,
     GlobeIcon,
-    PuzzleIcon,
+    FileBracesCornerIcon,
     ShieldCheckIcon,
     SignatureIcon,
     UsersIcon,
@@ -76,7 +76,7 @@ export function CourseProblemStatisticsContextCard({ data }: CourseProblemStatis
                             )}
                             aria-hidden
                         >
-                            <PuzzleIcon className="size-5" />
+                            <FileBracesCornerIcon className="size-5" />
                         </div>
                         <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Problem</p>

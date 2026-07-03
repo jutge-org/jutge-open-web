@@ -26,7 +26,7 @@ import {
 import { courseHref, filterAndSortCourses, publicCourseHref } from '@/lib/courses'
 import { filterProblems } from '@/lib/problems'
 import type { ProblemRow } from '@/services/queries/problems'
-import { BookOpenIcon, BookTextIcon, InfoIcon, PuzzleIcon, SearchIcon, TerminalIcon } from 'lucide-react'
+import { BookOpenIcon, BookTextIcon, FileBracesCornerIcon, InfoIcon, SearchIcon, TerminalIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -206,7 +206,7 @@ export function CommandPalette({ authenticated }: CommandPaletteProps) {
                                     >
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <PuzzleIcon className="size-3.5 shrink-0" aria-hidden />
+                                                <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
                                                 <span className="truncate font-medium">{problem.title}</span>
                                             </div>
                                             <span className="truncate pl-5.5 text-xs text-muted-foreground">

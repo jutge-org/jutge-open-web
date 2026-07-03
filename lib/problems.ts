@@ -1,4 +1,5 @@
 import { includesForSearch } from '@/lib/utils'
+import type { Problem } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
 
 export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'driver_id'
@@ -80,6 +81,18 @@ export function isQuizProblem(driverId: string | null | undefined): boolean {
 
 export function isGameProblem(driverId: string | null | undefined): boolean {
     return driverId === 'game'
+}
+
+export function isProblemDeprecated(problem: Pick<Problem, 'abstract_problem'>): boolean {
+    return Boolean(problem.abstract_problem.deprecation)
+}
+
+export function isProblemUnchecked(problem: Pick<Problem, 'checked'>): boolean {
+    return problem.checked === 0
+}
+
+export function hasProblemHealthIssues(problem: Pick<Problem, 'abstract_problem' | 'checked'>): boolean {
+    return isProblemDeprecated(problem) || isProblemUnchecked(problem)
 }
 
 export function isGraphicProblem(driverId: string | null | undefined): boolean {

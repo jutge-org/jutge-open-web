@@ -15,7 +15,7 @@
 | ✅     | Submission analysis + testcase diffs                | Yes                                | Yes (plus dedicated diff editor)                           |
 | ✅     | Code metrics                                        | Yes                                | Yes                                                        |
 | ✅     | Source code view/download                           | Yes                                | Yes (stronger editor UX)                                   |
-| ⚠️     | Problem health warnings (deprecated, SE, unchecked) | On page                            | Not on problem page                                        |
+| ⚠️     | Problem health warnings (deprecated, SE, unchecked) | On page                            | shows deprecated and checks failed                         |
 |        | Inline PDF in statement                             | Yes                                | Done!                                                      |
 | ⚠️     | Auto hints, CE/Valgrind/inspector panels            | Yes                                | No                                                         |
 | ⚠️     | Scored-problem breakdown                            | Yes                                | No dedicated panel                                         |

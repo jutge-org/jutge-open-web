@@ -3,6 +3,7 @@ import { ExternalLinkIcon, SignatureIcon } from 'lucide-react'
 
 import { ExternalLink } from '@/components/ExternalLink'
 import { GameProblemCompetitionsCard } from '@/components/problems/GameProblemCompetitionsCard'
+import { ProblemHealthCard } from '@/components/problems/ProblemHealthCard'
 import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { ProblemStatus } from '@/components/problems/ProblemStatus'
@@ -131,6 +132,8 @@ export function ProblemDetail({
             </Card>
 
             {children}
+
+            <ProblemHealthCard problem={problem} />
 
             {showStatement ? (
                 <ProblemStatement

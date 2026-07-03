@@ -119,6 +119,7 @@ export type ExamsSortField = 'date' | 'title' | 'course' | 'instructor'
 
 export type SearchableExamRow = Pick<
     ExamRow,
+    | 'exam_nm'
     | 'title'
     | 'courseTitle'
     | 'ownerName'
@@ -134,7 +135,9 @@ function matchesExamSearch(exam: SearchableExamRow, query: string): boolean {
         return true
     }
 
-    const haystack = [exam.title, exam.courseTitle, exam.ownerName, exam.place, exam.description].join(' ')
+    const haystack = [exam.exam_nm, exam.title, exam.courseTitle, exam.ownerName, exam.place, exam.description].join(
+        ' ',
+    )
     return includesForSearch(haystack, query)
 }
 

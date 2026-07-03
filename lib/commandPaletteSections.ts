@@ -1,8 +1,13 @@
 import { aboutIndexItems } from '@/lib/about'
 import { documentationIndexItems } from '@/lib/documentation'
+import {
+    getSiteNavLinkDescription,
+    getSiteNavLinks,
+    type SiteNavLinksContext,
+} from '@/lib/siteNavLinks'
 import { includesForSearch } from '@/lib/utils'
 
-export type CommandPaletteSectionArea = 'documentation' | 'about'
+export type CommandPaletteSectionArea = 'app' | 'documentation' | 'about'
 
 export type CommandPaletteSection = {
     label: string
@@ -40,6 +45,15 @@ export const commandPaletteSections: CommandPaletteSection[] = [
         ...('external' in item ? { external: item.external } : {}),
     })),
 ]
+
+export function getCommandPaletteAppSections(context: SiteNavLinksContext): CommandPaletteSection[] {
+    return getSiteNavLinks(context).map((link) => ({
+        label: link.label,
+        description: getSiteNavLinkDescription(link.href, context),
+        href: link.href,
+        area: 'app' as const,
+    }))
+}
 
 function buildSectionSearchHaystack(section: CommandPaletteSection): string {
     return `${section.label} ${section.description}`

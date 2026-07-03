@@ -54,7 +54,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                     enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                 />
                                                 <div className="flex items-center gap-0">
-                                                    <CommandPalette authenticated={authenticated} />
+                                                    <CommandPalette
+                                                        authenticated={authenticated}
+                                                        instructor={currentUser?.instructor ?? false}
+                                                        administrator={currentUser?.administrator ?? false}
+                                                    />
                                                     {authenticated ? <RecentMenu /> : null}
                                                     <AppearanceSettingsDialog />
                                                     <AuthToolbar

@@ -106,6 +106,32 @@ export type SiteNavLinksContext = {
     administrator?: boolean
 }
 
+export const authenticatedNavLinkDescriptions: Record<string, string> = {
+    '/problems': 'Browse and solve programming problems',
+    '/submissions': 'Track your submissions and verdicts',
+    '/exams': 'View past and upcoming exams',
+    '/courses': 'Browse your courses and assignments',
+    '/activity': 'Check your activity and progress',
+    '/awards': 'Badges and achievements you have earned',
+    '/profile': 'See and update your Jutge.org profile',
+    '/instructor': 'Manage courses, exams, and teaching tools',
+    '/administrator': 'Site administration and configuration',
+    '/documentation': 'Learn how to use Jutge.org',
+    '/about': 'What is this site and who made it?',
+}
+
+export const guestNavLinkDescriptions: Record<string, string> = {
+    '/problems': 'Browse public programming problems',
+    '/courses': 'Browse public courses',
+    '/documentation': 'Documentation for Jutge.org',
+    '/about': 'Find more about this site',
+}
+
+export function getSiteNavLinkDescription(href: string, context: SiteNavLinksContext): string {
+    const descriptions = context.authenticated ? authenticatedNavLinkDescriptions : guestNavLinkDescriptions
+    return descriptions[href] ?? ''
+}
+
 export function getSiteNavLinks(context: SiteNavLinksContext): readonly SiteNavLink[] {
     if (!context.authenticated) return links
 

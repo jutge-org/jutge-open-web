@@ -1,9 +1,11 @@
 'use server'
 
 import { getCurrentClient, getPreferredLanguageId, isAuthenticated } from '@/lib/auth'
+import type { ExamRow } from '@/lib/exams'
 import type { SearchableCourseRow } from '@/lib/courses'
 import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
 import { fetchCoursesData, fetchPublicCourses } from '@/services/queries/courses'
+import { fetchExamsData } from '@/services/queries/exams'
 import { abstractProblemsToRows, type ProblemRow } from '@/services/queries/problems'
 
 export type CommandPaletteCourse = SearchableCourseRow & {
@@ -50,4 +52,13 @@ export async function fetchCommandPaletteCourses(): Promise<CommandPaletteCourse
         description: course.description,
         isOfficial: course.isOfficial,
     }))
+}
+
+export async function fetchCommandPaletteExams(): Promise<ExamRow[]> {
+    if (!(await isAuthenticated())) {
+        return []
+    }
+
+    const client = await getCurrentClient()
+    return fetchExamsData(client)
 }

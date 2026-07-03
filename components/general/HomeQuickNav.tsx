@@ -1,4 +1,8 @@
-import { getSiteNavLinks, type SiteNavLinksContext } from '@/lib/siteNavLinks'
+import {
+    getSiteNavLinkDescription,
+    getSiteNavLinks,
+    type SiteNavLinksContext,
+} from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
 import {
     Award,
@@ -61,30 +65,8 @@ const cardAccent: Record<string, string> = {
     '/about': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
 }
 
-const authenticatedLinkDescription: Record<string, string> = {
-    '/problems': 'Browse and solve programming problems',
-    '/submissions': 'Track your submissions and verdicts',
-    '/exams': 'View past and upcoming exams',
-    '/courses': 'Browse your courses and assignments',
-    '/activity': 'Check your activity and progress',
-    '/awards': 'Badges and achievements you have earned',
-    '/profile': 'See and update your Jutge.org profile',
-    '/instructor': 'Manage courses, exams, and teaching tools',
-    '/administrator': 'Site administration and configuration',
-    '/documentation': 'Learn how to use Jutge.org',
-    '/about': 'What is this site and who made it?',
-}
-
-const guestLinkDescription: Record<string, string> = {
-    '/problems': 'Browse public programming problems',
-    '/courses': 'Browse public courses',
-    '/documentation': 'Documentation for Jutge.org',
-    '/about': 'Find more about this site',
-}
-
 export function HomeQuickNav(props: HomeQuickNavProps) {
     const links = getSiteNavLinks(props)
-    const linkDescription = props.authenticated ? authenticatedLinkDescription : guestLinkDescription
 
     return (
         <nav aria-label="Main sections" className="grid gap-4 sm:grid-cols-2">
@@ -109,7 +91,7 @@ export function HomeQuickNav(props: HomeQuickNavProps) {
                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                         <span className="text-lg font-semibold tracking-tight text-foreground">{label}</span>
                         <span className="text-sm font-normal leading-snug text-muted-foreground group-hover:text-foreground/80">
-                            {linkDescription[href] ?? ''}
+                            {getSiteNavLinkDescription(href, props)}
                         </span>
                     </span>
                 </Link>

@@ -1,5 +1,5 @@
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
-import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
+import { HomeYearsGithubCorner } from '@/components/general/HomeYearsGithubCorner'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import type { SessionUser } from '@/lib/auth'
 
@@ -10,7 +10,7 @@ type HomePageUserProps = {
 export function HomePageUser({ user }: HomePageUserProps) {
     return (
         <div className="flex flex-col gap-10">
-            <HomeYearsRibbon />
+            <HomeYearsGithubCorner />
             <MainBreadcrumbs breadcrumbs={[{ title: 'Jutge.org', url: '/' }]} />
             <div className="flex flex-col items-center space-y-4 pt-8 text-center">
                 <h1 className="inline-block bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text pb-1 text-5xl leading-[1.2] font-thin tracking-wide text-balance text-transparent sm:text-6xl">

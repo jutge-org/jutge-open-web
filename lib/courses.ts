@@ -71,6 +71,16 @@ export function buildCourseKey(owner: PublicProfile, course_nm: string): string 
     return `${displayText(owner.username)}:${course_nm}`
 }
 
+export function courseNmFromKey(courseKey: string): string | null {
+    const colonIndex = courseKey.indexOf(':')
+    return colonIndex >= 0 ? courseKey.slice(colonIndex + 1) : null
+}
+
+export function instructorCoursePropertiesHref(courseKey: string): string {
+    const courseNm = courseNmFromKey(courseKey)
+    return courseNm ? `/instructor/courses/${courseNm}/properties` : '/instructor/courses'
+}
+
 export function isCourseOwnedByUser(owner: PublicProfile, user: Pick<Profile, 'email' | 'username'>): boolean {
     if (owner.email.toLowerCase() === user.email.toLowerCase()) {
         return true
@@ -114,6 +124,10 @@ export function publicCourseHref(courseKey: string): string {
 export function listTitleFromKey(listKey: string): string {
     const colonIndex = listKey.indexOf(':')
     return colonIndex >= 0 ? listKey.slice(colonIndex + 1) : listKey
+}
+
+export function instructorListPropertiesHref(listKey: string): string {
+    return `/instructor/lists/${listTitleFromKey(listKey)}/properties`
 }
 
 export function buildGuestCourseRow(course: PublicCourse, courseKey?: string): GuestCourseRow {

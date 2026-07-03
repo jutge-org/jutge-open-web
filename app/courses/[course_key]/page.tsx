@@ -68,7 +68,7 @@ export default async function CoursePage({ params }: PageProps) {
                     fetchLastSubmissionsByProblemNm(client),
                 ])
             const problems = await fetchAllAbstractProblems(preferredLanguageId)
-            lists = await fetchCourseListsData(client, course.lists, problems)
+            lists = await fetchCourseListsData(client, course.lists, problems, profile)
             languages = languagesResult
             statuses = statusesResult
             lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)

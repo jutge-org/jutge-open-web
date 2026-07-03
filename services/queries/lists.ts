@@ -1,6 +1,7 @@
 import { cache } from 'react'
 
-import type { InstructorList, JutgeApiClient, List, ListItem } from '@/lib/jutge_api_client'
+import { isCourseOwnedByUser, listTitleFromKey } from '@/lib/courses'
+import type { InstructorList, JutgeApiClient, List, ListItem, Profile } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
 
 export async function fetchListsMany(
@@ -72,6 +73,7 @@ export type CourseListData = {
     list_nm: string
     title: string
     items: CourseListItemRow[]
+    isOwner: boolean
 }
 
 function mapListItem(item: ListItem, problemByNm: Map<string, ProblemRow>): CourseListItemRow {
@@ -103,24 +105,34 @@ function mapListToCourseListData(
     listKey: string,
     list: List | undefined,
     problemByNm: Map<string, ProblemRow>,
+    profile: Pick<Profile, 'email' | 'username'>,
 ): CourseListData {
+    const listNm = listTitleFromKey(listKey)
+
     if (!list) {
         return {
-            list_nm: listKey,
-            title: listKey,
+            list_nm: listNm,
+            title: listNm,
             items: [],
+            isOwner: false,
         }
     }
 
     return {
-        list_nm: list.list_nm,
-        title: list.title?.trim() || list.list_nm,
+        list_nm: listNm,
+        title: list.title?.trim() || listNm,
         items: list.items.map((item) => mapListItem(item, problemByNm)),
+        isOwner: isCourseOwnedByUser(list.owner, profile),
     }
 }
 
 export const fetchCourseListsData = cache(
-    async (client: JutgeApiClient, listKeys: string[], problems: ProblemRow[]): Promise<CourseListData[]> => {
+    async (
+        client: JutgeApiClient,
+        listKeys: string[],
+        problems: ProblemRow[],
+        profile: Pick<Profile, 'email' | 'username'>,
+    ): Promise<CourseListData[]> => {
         if (listKeys.length === 0) {
             return []
         }
@@ -128,6 +140,6 @@ export const fetchCourseListsData = cache(
         const problemByNm = new Map(problems.map((problem) => [problem.problem_nm, problem]))
         const listsByKey = await fetchListsMany(client, listKeys)
 
-        return listKeys.map((listKey) => mapListToCourseListData(listKey, listsByKey[listKey], problemByNm))
+        return listKeys.map((listKey) => mapListToCourseListData(listKey, listsByKey[listKey], problemByNm, profile))
     },
 )

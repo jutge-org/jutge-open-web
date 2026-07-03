@@ -6,6 +6,7 @@ import {
     ArchiveIcon,
     ArchiveRestoreIcon,
     BookOpenCheckIcon,
+    EditIcon,
     Globe,
     GraduationCap,
     GraduationCapIcon,
@@ -31,6 +32,7 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/
 import {
     courseActionSuccessMessage,
     courseHref,
+    instructorCoursePropertiesHref,
     type CourseRow,
     type CourseStudentAction,
     type CoursesInstructorFilter,
@@ -121,6 +123,14 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                                {course.isOwner ? (
+                                    <DropdownMenuItem asChild>
+                                        <Link href={instructorCoursePropertiesHref(course.course_key)}>
+                                            <EditIcon aria-hidden />
+                                            Edit
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ) : null}
                                 {tab === 'available' ? (
                                     <DropdownMenuItem onClick={() => onAction(course, 'enroll')}>
                                         <GraduationCap aria-hidden />

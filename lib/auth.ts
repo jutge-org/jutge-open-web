@@ -8,6 +8,7 @@ import { JutgeApiClient, type Profile } from '@/lib/jutge_api_client'
 export type SessionUser = {
     id: string
     name: string
+    nickname: string | null
     email: string
     instructor: boolean
     administrator: boolean
@@ -17,6 +18,7 @@ function profileToSessionUser(profile: Profile): SessionUser {
     return {
         id: profile.user_uid,
         name: profile.name,
+        nickname: profile.nickname,
         email: profile.email,
         instructor: profile.instructor !== 0,
         administrator: profile.administrator !== 0,

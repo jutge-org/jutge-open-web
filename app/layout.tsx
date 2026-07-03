@@ -66,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                         instructor={currentUser?.instructor ?? false}
                                                         administrator={currentUser?.administrator ?? false}
                                                         userName={currentUser?.name}
+                                                        userNickname={currentUser?.nickname}
                                                     />
                                                 </div>
                                             </LayoutWidthContainer>

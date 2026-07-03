@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-03T08:50:43.821Z
+ * This file has been automatically generated at 2026-07-03T09:04:13.914Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -1363,7 +1363,7 @@ export class JutgeApiClient {
     }): Promise<CredentialsOut> {
         const [credentials, _] = await this.execute("auth.loginExam", { email, password, exam, exam_password })
         if (credentials.error) throw new UnauthorizedError(credentials.error)
-        this.meta = { token: credentials.token }
+        this.meta = { token: credentials.token, user_uid: credentials.user_uid }
         return credentials
     }
 
@@ -2835,6 +2835,18 @@ class Module_student_lists {
      */
     async get(list_key: string): Promise<List> {
         const [output, ofiles] = await this.root.execute("student.lists.get", list_key)
+        return output
+    }
+
+    /**
+     * Get many lists.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     * Includes items, owner. Keys are `list_key`s.
+     */
+    async getMany(list_keys: string): Promise<Record<string, List>> {
+        const [output, ofiles] = await this.root.execute("student.lists.getMany", list_keys)
         return output
     }
 }

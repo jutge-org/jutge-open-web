@@ -32,9 +32,16 @@ type AuthToolbarProps = {
     instructor?: boolean
     administrator?: boolean
     userName?: string
+    userNickname?: string | null
 }
 
-export function AuthToolbar({ authenticated, instructor = false, administrator = false, userName }: AuthToolbarProps) {
+export function AuthToolbar({
+    authenticated,
+    instructor = false,
+    administrator = false,
+    userName,
+    userNickname,
+}: AuthToolbarProps) {
     const router = useRouter()
     const pathname = usePathname()
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -81,6 +88,9 @@ export function AuthToolbar({ authenticated, instructor = false, administrator =
                         <>
                             <DropdownMenuLabel className="text-base font-bold text-foreground">
                                 {userName}
+                                {userNickname ? (
+                                    <span className="font-normal text-muted-foreground"> ({userNickname})</span>
+                                ) : null}
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                         </>

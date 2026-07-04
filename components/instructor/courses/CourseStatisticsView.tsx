@@ -88,7 +88,7 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
                 <SubmissionsByHourOfDayCard chartData={chartData} colors={colors} />
             </div>
             <CourseSubmissionDistributionCards derived={distributionData} colors={colors} />
-            <ClassProgressHeatmapCards heatmap={heatmap} />
+            <ClassProgressHeatmapCards course_nm={course.course_nm} heatmap={heatmap} />
             <CourseStudentRankingCard course={course} profiles={profiles} lists={lists} submissions={submissions} />
             <CourseProblemRankingCard
                 course={course}

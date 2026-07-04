@@ -1,7 +1,9 @@
 'use client'
 
+import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
 import { Button } from '@/components/ui/button'
-import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
+import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -14,9 +16,11 @@ import { Slider } from '@/components/ui/slider'
 import type { HeatmapAxisItem, HeatmapSourceData } from '@/lib/instructor/courseHeatmapSourceData'
 import { parseProblemKey } from '@/lib/problems'
 import { VERDICT_COLORS } from '@/lib/statistics/colors'
+import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
+import { serializeSvgElement } from '@/lib/serializeSvgElement'
 import type { CourseSubmission } from '@/lib/jutge_api_client'
 import { ArrowLeftRightIcon, ChevronDownIcon } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { forwardRef, useMemo, useRef, useState } from 'react'
 
 type CellStatus = 'OK' | 'KO' | 'NT' | 'SC'
 type ColumnMode = 'problems' | 'lists'
@@ -318,6 +322,21 @@ function transposeMatrix(data: HeatmapData): HeatmapData {
     }
 }
 
+function isStudentAxisItem(item: AxisItem): boolean {
+    return !item.listNm && item.problemNms.length === 0
+}
+
+function withStudentEmailLabels(data: HeatmapData): HeatmapData {
+    const relabel = (item: AxisItem): AxisItem =>
+        isStudentAxisItem(item) ? { ...item, label: item.subtitle } : item
+
+    return {
+        ...data,
+        rowItems: data.rowItems.map(relabel),
+        colItems: data.colItems.map(relabel),
+    }
+}
+
 function estimateTextWidth(text: string, fontSize: number): number {
     return text.length * fontSize * 0.62
 }
@@ -417,18 +436,21 @@ function formatListProportion(proportion: number | null, problemCount: number): 
     return `${solved}/${problemCount} solved (${pct}%)`
 }
 
-function HeatmapSvg({
-    rowItems,
-    colItems,
-    cells,
-    listProportions,
-    columnMode,
-    zoomX,
-    zoomY,
-    listGroups = [],
-    bracketPosition,
-    ariaLabel,
-}: HeatmapSvgProps) {
+const HeatmapSvg = forwardRef<SVGSVGElement, HeatmapSvgProps>(function HeatmapSvg(
+    {
+        rowItems,
+        colItems,
+        cells,
+        listProportions,
+        columnMode,
+        zoomX,
+        zoomY,
+        listGroups = [],
+        bracketPosition,
+        ariaLabel,
+    },
+    ref,
+) {
     const scaleX = zoomX / 100
     const scaleY = zoomY / 100
     const cellWidth = CELL_WIDTH * scaleX
@@ -470,6 +492,7 @@ function HeatmapSvg({
 
     return (
         <svg
+            ref={ref}
             width={width}
             height={height}
             role="img"
@@ -622,7 +645,7 @@ function HeatmapSvg({
             )}
         </svg>
     )
-}
+})
 
 function StatusLegend() {
     const statuses: CellStatus[] = ['OK', 'KO', 'SC', 'NT']
@@ -745,6 +768,7 @@ type ClassProgressHeatmapCardBaseProps = {
     defaultTransposed?: boolean
     scrollAreaClassName?: string
     showListFilter?: boolean
+    saveFileName: string
 } & HeatmapSourceData
 
 function ClassProgressHeatmapCardBase({
@@ -758,6 +782,7 @@ function ClassProgressHeatmapCardBase({
     defaultTransposed = false,
     scrollAreaClassName = 'h-[min(70vh,640px)]',
     showListFilter = false,
+    saveFileName,
     submissions,
     students,
     problemColumns,
@@ -771,6 +796,7 @@ function ClassProgressHeatmapCardBase({
     const [listFilter, setListFilter] = useState<string[] | null>(null)
     const [zoomX, setZoomX] = useState(DEFAULT_ZOOM)
     const [zoomY, setZoomY] = useState(DEFAULT_ZOOM)
+    const exportSvgRef = useRef<SVGSVGElement>(null)
 
     const listFilterOptions = useMemo(
         () => (showListFilter ? buildListFilterOptions(listColumns) : []),
@@ -806,12 +832,37 @@ function ClassProgressHeatmapCardBase({
     }, [showListBrackets, transposed, sortedData.rowItems, sortedData.colItems])
     const bracketPosition = transposed ? 'left' : 'top'
 
+    const exportData = useMemo(() => withStudentEmailLabels(sortedData), [sortedData])
+
     const isEmpty = sortedData.rowItems.length === 0 || sortedData.colItems.length === 0
+
+    async function saveSvgHandle() {
+        const svg = exportSvgRef.current
+        if (!svg) return
+
+        const svgText = serializeSvgElement(svg)
+        const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' })
+        await saveFileWithDialog({
+            blob,
+            suggestedName: saveFileName,
+            types: [{ description: 'SVG image', accept: { 'image/svg+xml': ['.svg'] } }],
+        })
+    }
 
     return (
         <ResizableCard defaultHeight={420}>
             <CardHeader className="gap-4">
                 <CardTitle>{title}</CardTitle>
+                <CardAction>
+                    <TooltipProvider>
+                        <SaveFileIconButton
+                            onClick={saveSvgHandle}
+                            disabled={isEmpty}
+                            tooltip="Save heatmap as SVG"
+                            aria-label="Save heatmap as SVG"
+                        />
+                    </TooltipProvider>
+                </CardAction>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
                         type="button"
@@ -920,6 +971,21 @@ function ClassProgressHeatmapCardBase({
                             bracketPosition={showListBrackets ? bracketPosition : undefined}
                             ariaLabel={ariaLabel}
                         />
+                        <div aria-hidden className="pointer-events-none fixed -left-[10000px] top-0 opacity-0">
+                            <HeatmapSvg
+                                ref={exportSvgRef}
+                                rowItems={exportData.rowItems}
+                                colItems={exportData.colItems}
+                                cells={exportData.cells}
+                                listProportions={exportData.listProportions}
+                                columnMode={columnMode}
+                                zoomX={zoomX}
+                                zoomY={zoomY}
+                                listGroups={listGroups}
+                                bracketPosition={showListBrackets ? bracketPosition : undefined}
+                                ariaLabel={ariaLabel}
+                            />
+                        </div>
                     </div>
                 )}
             </CardContent>
@@ -928,10 +994,11 @@ function ClassProgressHeatmapCardBase({
 }
 
 type ClassProgressHeatmapCardsProps = {
+    course_nm: string
     heatmap: HeatmapSourceData
 }
 
-export function ClassProgressHeatmapCards({ heatmap }: ClassProgressHeatmapCardsProps) {
+export function ClassProgressHeatmapCards({ course_nm, heatmap }: ClassProgressHeatmapCardsProps) {
     return (
         <>
             <ClassProgressHeatmapCardBase
@@ -942,6 +1009,7 @@ export function ClassProgressHeatmapCards({ heatmap }: ClassProgressHeatmapCards
                 columnSortAriaLabel="Sort problems"
                 nameSortLabel="Name (problem_nm)"
                 showListFilter
+                saveFileName={`${course_nm}-class-progress-by-problems.svg`}
                 {...heatmap}
             />
             <ClassProgressHeatmapCardBase
@@ -954,6 +1022,7 @@ export function ClassProgressHeatmapCards({ heatmap }: ClassProgressHeatmapCards
                 defaultColumnSort="course"
                 defaultTransposed
                 scrollAreaClassName="h-[min(35vh,240px)]"
+                saveFileName={`${course_nm}-class-progress-by-lists.svg`}
                 {...heatmap}
             />
         </>

@@ -1,12 +1,15 @@
 'use client'
 
+import { array2csv } from '@/actions/instructor/csv'
 import { AgTable } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
-import { CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
+import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
+import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { deriveCourseProblemRanking } from '@/lib/instructor/courseProblemRanking'
 import type { Dict } from '@/lib/instructor/utils'
+import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type {
     AbstractProblem,
     CourseSubmission,
@@ -17,6 +20,7 @@ import type { ICellRendererParams } from 'ag-grid-community'
 import { BarChart3Icon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
+import { toast } from 'sonner'
 
 type CourseProblemRankingCardProps = {
     course: InstructorCourse
@@ -129,10 +133,46 @@ export function CourseProblemRankingCard({
         [course, lists, submissions, abstractProblems],
     )
 
+    async function saveCsvHandle() {
+        const data = rows.map((row) => ({
+            Id: row.problem_nm,
+            title: row.title,
+            '#OK': row.ok,
+            '#KO': row.ko,
+            '#SC': row.sc,
+            '#NT': row.nt,
+            '#Sub': row.totalSubmissions,
+            'Avg #Sub/std': Number.isFinite(row.avgSubmissionsPerStudent)
+                ? row.avgSubmissionsPerStudent.toFixed(1)
+                : '',
+        }))
+        const csv = await array2csv(data)
+        if (!csv) {
+            toast.error('Error preparing CSV data')
+            return
+        }
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+        await saveFileWithDialog({
+            blob,
+            suggestedName: `${course.course_nm}-problems.csv`,
+            types: [{ description: 'CSV file', accept: { 'text/csv': ['.csv'] } }],
+        })
+    }
+
     return (
         <ResizableCard className="w-full" defaultHeight={480}>
             <CardHeader className="p-4">
                 <CardTitle>Problems</CardTitle>
+                <CardAction>
+                    <TooltipProvider>
+                        <SaveFileIconButton
+                            onClick={saveCsvHandle}
+                            disabled={rows.length === 0}
+                            tooltip="Save table as CSV"
+                            aria-label="Save table as CSV"
+                        />
+                    </TooltipProvider>
+                </CardAction>
             </CardHeader>
             <CardContent className="flex min-h-0 flex-1 flex-col px-4 pb-4">
                 {rows.length === 0 ? (

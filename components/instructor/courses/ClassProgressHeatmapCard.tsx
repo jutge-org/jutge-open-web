@@ -3,7 +3,7 @@
 import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
 import { Button } from '@/components/ui/button'
 import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -19,7 +19,7 @@ import { VERDICT_COLORS } from '@/lib/statistics/colors'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import { serializeSvgElement } from '@/lib/serializeSvgElement'
 import type { CourseSubmission } from '@/lib/jutge_api_client'
-import { ArrowLeftRightIcon, ChevronDownIcon, ImageDownIcon } from 'lucide-react'
+import { ChevronDownIcon, CornerUpRightIcon, ImageDownIcon } from 'lucide-react'
 import { forwardRef, useMemo, useRef, useState } from 'react'
 
 type CellStatus = 'OK' | 'KO' | 'NT' | 'SC'
@@ -865,16 +865,23 @@ function ClassProgressHeatmapCardBase({
                     </TooltipProvider>
                 </CardAction>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setTransposed((value) => !value)}
-                        title="Transpose matrix"
-                    >
-                        <ArrowLeftRightIcon className="size-4" aria-hidden />
-                        Transpose
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    className="size-8"
+                                    onClick={() => setTransposed((value) => !value)}
+                                    aria-label="Transpose matrix"
+                                >
+                                    <CornerUpRightIcon className="size-4" aria-hidden />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Transpose matrix</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">Sort students</span>
                         <Select

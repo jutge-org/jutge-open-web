@@ -1,4 +1,5 @@
 import { AuthToolbar } from '@/components/AuthToolbar'
+import { ReportIssueButton } from '@/components/ReportIssueButton'
 import { CommandPalette } from '@/components/CommandPalette'
 import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
 import { RecentMenu } from '@/components/RecentMenu'
@@ -57,6 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                     enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                 />
                                                 <div className="flex items-center gap-0">
+                                                    {authenticated ? <ReportIssueButton /> : null}
                                                     <CommandPalette
                                                         authenticated={authenticated}
                                                         instructor={currentUser?.instructor ?? false}

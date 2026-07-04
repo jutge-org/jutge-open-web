@@ -4,12 +4,10 @@ import { ExternalLink } from '@/components/ExternalLink'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
+import { GITHUB_ISSUES_URL, GITHUB_REPO_URL } from '@/lib/github'
 import '@/styles/years-github-corner.css'
 import { CircleDotIcon } from 'lucide-react'
 import { GithubIcon } from '../GithubIcon'
-
-const GITHUB_REPO_URL = 'https://github.com/jutge-org/jutge-open-web'
-const GITHUB_ISSUES_URL = `${GITHUB_REPO_URL}/issues`
 
 const octIconClass = 'size-4 shrink-0'
 

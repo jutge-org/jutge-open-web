@@ -28,11 +28,13 @@ function readStoredLayoutWidth(): LayoutWidth {
 }
 
 export function LayoutWidthProvider({ children }: { children: ReactNode }) {
-    const [layoutWidth, setLayoutWidthState] = useState<LayoutWidth>(readStoredLayoutWidth)
+    const [layoutWidth, setLayoutWidthState] = useState<LayoutWidth>(DEFAULT_LAYOUT_WIDTH)
 
     useEffect(() => {
-        syncLayoutWidthDataset(layoutWidth)
-    }, [layoutWidth])
+        const stored = readStoredLayoutWidth()
+        setLayoutWidthState(stored)
+        syncLayoutWidthDataset(stored)
+    }, [])
 
     function setLayoutWidth(next: LayoutWidth) {
         setLayoutWidthState(next)

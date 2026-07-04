@@ -107,15 +107,21 @@ function readStoredSoundEffects(): SoundEffectsPreference {
 export function AppearancePreferencesProvider({ children }: { children: ReactNode }) {
     const { setTheme } = useTheme()
     const { setLayoutWidth } = useLayoutWidth()
-    const [monacoTheme, setMonacoThemeState] = useState<MonacoThemeSelection>(readStoredMonacoTheme)
-    const [hljsTheme, setHljsThemeState] = useState<HljsThemeSelection>(readStoredHljsTheme)
-    const [fontScales, setFontScalesState] = useState<FontScales>(readStoredFontScales)
-    const [reducedMotion, setReducedMotionState] = useState<ReducedMotionPreference>(readStoredReducedMotion)
-    const [soundEffects, setSoundEffectsState] = useState<SoundEffectsPreference>(readStoredSoundEffects)
+    const [monacoTheme, setMonacoThemeState] = useState<MonacoThemeSelection>(DEFAULT_MONACO_THEME)
+    const [hljsTheme, setHljsThemeState] = useState<HljsThemeSelection>(DEFAULT_HLJS_THEME)
+    const [fontScales, setFontScalesState] = useState<FontScales>(createDefaultFontScales)
+    const [reducedMotion, setReducedMotionState] = useState<ReducedMotionPreference>(DEFAULT_REDUCED_MOTION)
+    const [soundEffects, setSoundEffectsState] = useState<SoundEffectsPreference>(DEFAULT_SOUND_EFFECTS)
 
     useEffect(() => {
-        syncReducedMotionDataset(reducedMotion)
-    }, [reducedMotion])
+        setMonacoThemeState(readStoredMonacoTheme())
+        setHljsThemeState(readStoredHljsTheme())
+        setFontScalesState(readStoredFontScales())
+        const storedReducedMotion = readStoredReducedMotion()
+        setReducedMotionState(storedReducedMotion)
+        syncReducedMotionDataset(storedReducedMotion)
+        setSoundEffectsState(readStoredSoundEffects())
+    }, [])
 
     function setMonacoTheme(theme: MonacoThemeSelection) {
         setMonacoThemeState(theme)

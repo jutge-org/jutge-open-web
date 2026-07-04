@@ -2,16 +2,23 @@
 
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { SaveIcon } from 'lucide-react'
+import { SaveIcon, type LucideIcon } from 'lucide-react'
 
 type SaveFileIconButtonProps = {
     onClick: () => void | Promise<void>
     disabled?: boolean
     tooltip: string
     'aria-label': string
+    icon?: LucideIcon
 }
 
-export function SaveFileIconButton({ onClick, disabled, tooltip, 'aria-label': ariaLabel }: SaveFileIconButtonProps) {
+export function SaveFileIconButton({
+    onClick,
+    disabled,
+    tooltip,
+    'aria-label': ariaLabel,
+    icon: Icon = SaveIcon,
+}: SaveFileIconButtonProps) {
     return (
         <Tooltip>
             <TooltipTrigger asChild>
@@ -24,7 +31,7 @@ export function SaveFileIconButton({ onClick, disabled, tooltip, 'aria-label': a
                     onClick={() => void onClick()}
                     aria-label={ariaLabel}
                 >
-                    <SaveIcon className="size-4" aria-hidden />
+                    <Icon className="size-4" aria-hidden />
                 </Button>
             </TooltipTrigger>
             <TooltipContent>{tooltip}</TooltipContent>

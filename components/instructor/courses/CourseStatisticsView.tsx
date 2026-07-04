@@ -75,6 +75,7 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
                     submissions={submissions}
                 />
                 <SubmissionsOverTimeCard
+                    courseNm={course.course_nm}
                     submissions={filteredSubmissions}
                     startDate={startDate}
                     endDate={endDate}
@@ -83,11 +84,11 @@ export function CourseStatisticsView({ data }: CourseStatisticsViewProps) {
                 <SubmissionsByDayCard chartData={chartData} />
             </div>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <SubmissionsByMonthOfYearCard chartData={chartData} colors={colors} />
-                <SubmissionsByDayOfWeekCard chartData={chartData} colors={colors} />
-                <SubmissionsByHourOfDayCard chartData={chartData} colors={colors} />
+                <SubmissionsByMonthOfYearCard courseNm={course.course_nm} chartData={chartData} colors={colors} />
+                <SubmissionsByDayOfWeekCard courseNm={course.course_nm} chartData={chartData} colors={colors} />
+                <SubmissionsByHourOfDayCard courseNm={course.course_nm} chartData={chartData} colors={colors} />
             </div>
-            <CourseSubmissionDistributionCards derived={distributionData} colors={colors} />
+            <CourseSubmissionDistributionCards courseNm={course.course_nm} derived={distributionData} colors={colors} />
             <ClassProgressHeatmapCards course_nm={course.course_nm} heatmap={heatmap} />
             <CourseStudentRankingCard course={course} profiles={profiles} lists={lists} submissions={submissions} />
             <CourseProblemRankingCard

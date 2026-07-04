@@ -19,7 +19,7 @@ import { VERDICT_COLORS } from '@/lib/statistics/colors'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import { serializeSvgElement } from '@/lib/serializeSvgElement'
 import type { CourseSubmission } from '@/lib/jutge_api_client'
-import { ArrowLeftRightIcon, ChevronDownIcon } from 'lucide-react'
+import { ArrowLeftRightIcon, ChevronDownIcon, ImageDownIcon } from 'lucide-react'
 import { forwardRef, useMemo, useRef, useState } from 'react'
 
 type CellStatus = 'OK' | 'KO' | 'NT' | 'SC'
@@ -860,6 +860,7 @@ function ClassProgressHeatmapCardBase({
                             disabled={isEmpty}
                             tooltip="Save heatmap as SVG"
                             aria-label="Save heatmap as SVG"
+                            icon={ImageDownIcon}
                         />
                     </TooltipProvider>
                 </CardAction>

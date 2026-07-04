@@ -6,30 +6,56 @@ import type { SubmissionChartData } from '@/lib/instructor/submissionStatistics'
 import type { ColorMapping } from '@/lib/jutge_api_client'
 
 type CourseSubmissionDistributionCardsProps = {
+    courseNm: string
     derived: Pick<SubmissionChartData, 'usersOkKo' | 'submissionsOkKo' | 'verdicts' | 'compilers' | 'proglangs'>
     colors: ColorMapping
 }
 
-export function CourseSubmissionDistributionCards({ derived, colors }: CourseSubmissionDistributionCardsProps) {
+export function CourseSubmissionDistributionCards({ courseNm, derived, colors }: CourseSubmissionDistributionCardsProps) {
     return (
         <>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
                 <StatisticsStatCard title="User statuses">
-                    <DistributionPieChart data={derived.usersOkKo} category="statuses" colors={colors} />
+                    <DistributionPieChart
+                        data={derived.usersOkKo}
+                        category="statuses"
+                        colors={colors}
+                        exportFileName={`${courseNm}-user-statuses`}
+                    />
                 </StatisticsStatCard>
                 <StatisticsStatCard title="Submission statuses">
-                    <DistributionPieChart data={derived.submissionsOkKo} category="statuses" colors={colors} />
+                    <DistributionPieChart
+                        data={derived.submissionsOkKo}
+                        category="statuses"
+                        colors={colors}
+                        exportFileName={`${courseNm}-submission-statuses`}
+                    />
                 </StatisticsStatCard>
                 <StatisticsStatCard title="Submissions by verdict">
-                    <DistributionPieChart data={derived.verdicts} category="verdicts" colors={colors} />
+                    <DistributionPieChart
+                        data={derived.verdicts}
+                        category="verdicts"
+                        colors={colors}
+                        exportFileName={`${courseNm}-verdicts`}
+                    />
                 </StatisticsStatCard>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
                 <StatisticsStatCard title="Compilers">
-                    <DistributionPieChart data={derived.compilers} category="compilers" colors={colors} />
+                    <DistributionPieChart
+                        data={derived.compilers}
+                        category="compilers"
+                        colors={colors}
+                        exportFileName={`${courseNm}-compilers`}
+                    />
                 </StatisticsStatCard>
                 <StatisticsStatCard title="Programming languages">
-                    <DistributionPieChart data={derived.proglangs} category="proglangs" colors={colors} />
+                    <DistributionPieChart
+                        data={derived.proglangs}
+                        category="proglangs"
+                        colors={colors}
+                        exportFileName={`${courseNm}-programming-languages`}
+                    />
                 </StatisticsStatCard>
             </div>
         </>

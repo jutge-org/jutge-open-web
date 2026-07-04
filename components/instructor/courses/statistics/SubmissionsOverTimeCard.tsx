@@ -13,13 +13,20 @@ import type { CourseSubmission, ColorMapping } from '@/lib/jutge_api_client'
 import { useMemo, useState } from 'react'
 
 type SubmissionsOverTimeCardProps = {
+    courseNm: string
     submissions: CourseSubmission[]
     startDate: Date
     endDate: Date
     colors: ColorMapping
 }
 
-export function SubmissionsOverTimeCard({ submissions, startDate, endDate, colors }: SubmissionsOverTimeCardProps) {
+export function SubmissionsOverTimeCard({
+    courseNm,
+    submissions,
+    startDate,
+    endDate,
+    colors,
+}: SubmissionsOverTimeCardProps) {
     const [bucketSize, setBucketSize] = useState(SUBMISSION_VOLUME_BUCKET_SIZE_DEFAULT)
 
     const chartData = useMemo(
@@ -52,7 +59,11 @@ export function SubmissionsOverTimeCard({ submissions, startDate, endDate, color
                 </CardAction>
             </CardHeader>
             <CardContent className="px-4 pb-4">
-                <SubmissionVolumeAreaChart data={chartData} colors={colors} />
+                <SubmissionVolumeAreaChart
+                    data={chartData}
+                    colors={colors}
+                    exportFileName={`${courseNm}-submissions-over-time`}
+                />
             </CardContent>
         </ResizableCard>
     )

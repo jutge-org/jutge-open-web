@@ -1,5 +1,6 @@
 'use client'
 
+import { StatisticsSaveButtonGroup } from '@/components/instructor/statistics/StatisticsSaveButtonGroup'
 import {
     ChartContainer,
     ChartTooltip,
@@ -7,11 +8,14 @@ import {
 } from '@/components/ui/chart'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Toggle } from '@/components/ui/toggle'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { getCategoryColor } from '@/lib/instructor/courseSubmissionStatistics'
 import type { ColorMapping, Distribution } from '@/lib/jutge_api_client'
+import { saveStatisticsCsv, saveStatisticsSvg } from '@/lib/saveStatisticsExport'
+import { cn } from '@/lib/utils'
 import { ChartPieIcon, TableIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { LabelList, Pie, PieChart } from 'recharts'
 
 /** Pie chart: slices below this percentage are grouped into "Others". */
@@ -21,11 +25,13 @@ type DistributionPieChartProps = {
     data: Distribution
     category: string
     colors: ColorMapping
+    exportFileName: string
 }
 
 /** Pie/table toggle; small slices (< MIN_PERCENT_FOR_PIE_LABEL) are grouped as "Others". */
-export function DistributionPieChart({ data, category, colors }: DistributionPieChartProps) {
+export function DistributionPieChart({ data, category, colors, exportFileName }: DistributionPieChartProps) {
     const [chartVisible, setChartVisible] = useState(true)
+    const chartContainerRef = useRef<HTMLDivElement>(null)
     const dataClone = structuredClone(data)
     const total = Math.max(
         1,
@@ -71,27 +77,51 @@ export function DistributionPieChart({ data, category, colors }: DistributionPie
         chartConfig[label] = { label, color: 'hsl(var(--chart-5))' }
     }
 
-    const chart = (
-        <ChartContainer
-            config={chartConfig}
-            className="mx-auto aspect-square max-h-[300px] [&_.recharts-text]:fill-background"
-        >
-            <PieChart>
-                <ChartTooltip content={<ChartTooltipContent nameKey="label" hideLabel />} />
-                <Pie data={chartData} dataKey="value" innerRadius={60}>
-                    <LabelList
-                        dataKey="label"
-                        className="fill-background"
-                        stroke="none"
-                        fontSize={11}
-                        formatter={(value) => chartConfig[String(value)]?.label}
-                    />
-                </Pie>
-            </PieChart>
-        </ChartContainer>
+    const tableTotal = Object.values(data).reduce((s, n) => s + n, 0)
+    const hasData = tableTotal > 0
+
+    const csvRecords = useMemo(
+        () =>
+            Object.entries(data)
+                .sort((a, b) => b[1] - a[1])
+                .map(([key, value]) => ({
+                    Label: key,
+                    Count: value,
+                    Percentage: tableTotal > 0 ? `${((value / tableTotal) * 100).toFixed(1)}%` : '0%',
+                })),
+        [data, tableTotal],
     )
 
-    const tableTotal = Object.values(data).reduce((s, n) => s + n, 0)
+    async function saveSvgHandle() {
+        const svg = chartContainerRef.current?.querySelector('svg')
+        await saveStatisticsSvg(svg, `${exportFileName}.svg`)
+    }
+
+    async function saveCsvHandle() {
+        await saveStatisticsCsv(csvRecords, `${exportFileName}.csv`)
+    }
+
+    const chart = (
+        <div ref={chartContainerRef}>
+            <ChartContainer
+                config={chartConfig}
+                className="mx-auto aspect-square max-h-[300px] [&_.recharts-text]:fill-background"
+            >
+                <PieChart>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="label" hideLabel />} />
+                    <Pie data={chartData} dataKey="value" innerRadius={60}>
+                        <LabelList
+                            dataKey="label"
+                            className="fill-background"
+                            stroke="none"
+                            fontSize={11}
+                            formatter={(value) => chartConfig[String(value)]?.label}
+                        />
+                    </Pie>
+                </PieChart>
+            </ChartContainer>
+        </div>
+    )
     const table = (
         <ScrollArea className="h-[300px] w-full">
             <Table>
@@ -114,20 +144,43 @@ export function DistributionPieChart({ data, category, colors }: DistributionPie
 
     return (
         <>
-            {chartVisible ? chart : table}
-            <ToggleGroup
-                type="single"
-                onValueChange={(value) => setChartVisible(value === 'pie')}
-                className="mb-2"
-                defaultValue="pie"
+            <div
+                className={cn(
+                    !chartVisible &&
+                        'pointer-events-none fixed top-0 left-[-9999px] size-[300px] overflow-hidden opacity-0',
+                )}
+                aria-hidden={!chartVisible}
             >
-                <ToggleGroupItem value="pie" aria-label="Pie chart">
-                    <ChartPieIcon className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="table" aria-label="Table">
-                    <TableIcon className="h-4 w-4" />
-                </ToggleGroupItem>
-            </ToggleGroup>
+                {chart}
+            </div>
+            <div className={cn(chartVisible && 'hidden')}>{table}</div>
+            <TooltipProvider>
+                <div className="mb-2 flex items-center justify-center gap-2">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Toggle
+                                variant="outline"
+                                className="size-8"
+                                pressed={!chartVisible}
+                                onPressedChange={(pressed) => setChartVisible(!pressed)}
+                                aria-label={chartVisible ? 'Show table' : 'Show pie chart'}
+                            >
+                                {chartVisible ? (
+                                    <ChartPieIcon className="size-4" aria-hidden />
+                                ) : (
+                                    <TableIcon className="size-4" aria-hidden />
+                                )}
+                            </Toggle>
+                        </TooltipTrigger>
+                        <TooltipContent>{chartVisible ? 'Show table' : 'Show pie chart'}</TooltipContent>
+                    </Tooltip>
+                    <StatisticsSaveButtonGroup
+                        onSaveSvg={saveSvgHandle}
+                        onSaveCsv={saveCsvHandle}
+                        disabled={!hasData}
+                    />
+                </div>
+            </TooltipProvider>
         </>
     )
 }

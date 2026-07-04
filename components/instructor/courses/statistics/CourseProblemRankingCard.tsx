@@ -17,7 +17,7 @@ import type {
     InstructorList,
 } from '@/lib/jutge_api_client'
 import type { ICellRendererParams } from 'ag-grid-community'
-import { BarChart3Icon } from 'lucide-react'
+import { BarChart3Icon, FileDownIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
 import { toast } from 'sonner'
@@ -170,6 +170,7 @@ export function CourseProblemRankingCard({
                             disabled={rows.length === 0}
                             tooltip="Save table as CSV"
                             aria-label="Save table as CSV"
+                            icon={FileDownIcon}
                         />
                     </TooltipProvider>
                 </CardAction>

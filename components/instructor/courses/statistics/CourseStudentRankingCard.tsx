@@ -11,7 +11,7 @@ import { deriveCourseStudentRanking } from '@/lib/instructor/courseStudentRankin
 import type { Dict } from '@/lib/instructor/utils'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type { CourseSubmission, InstructorCourse, InstructorList, StudentProfile } from '@/lib/jutge_api_client'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { EyeIcon, EyeOffIcon, FileDownIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -154,6 +154,7 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
                                 disabled={rows.length === 0}
                                 tooltip="Save table as CSV"
                                 aria-label="Save table as CSV"
+                                icon={FileDownIcon}
                             />
                         </div>
                     </TooltipProvider>

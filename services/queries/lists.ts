@@ -1,6 +1,7 @@
 import { cache } from 'react'
 
 import { isCourseOwnedByUser, listTitleFromKey } from '@/lib/courses'
+import { withInstructorClient } from '@/lib/instructor/with-instructor-client'
 import type { InstructorList, JutgeApiClient, List, ListItem, Profile } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
 
@@ -33,29 +34,14 @@ export function studentListToInstructorList(list: List): InstructorList {
     }
 }
 
-function placeholderInstructorList(list_nm: string): InstructorList {
-    return {
-        list_nm,
-        title: list_nm,
-        description: '',
-        annotation: '',
-        official: 0,
-        public: 0,
-        created_at: '',
-        updated_at: '',
-        items: [],
+export async function fetchInstructorListsMany(listNms: string[]): Promise<InstructorList[]> {
+    if (listNms.length === 0) {
+        return []
     }
-}
 
-export async function fetchInstructorListsMany(
-    client: JutgeApiClient,
-    listNms: string[],
-): Promise<InstructorList[]> {
-    const listsByKey = await fetchListsMany(client, listNms)
-    return listNms.map((list_nm) => {
-        const list = listsByKey[list_nm]
-        return list ? studentListToInstructorList(list) : placeholderInstructorList(list_nm)
-    })
+    return withInstructorClient((client) =>
+        Promise.all(listNms.map((list_nm) => client.instructor.lists.get(list_nm))),
+    )
 }
 
 export type CourseListSeparatorRow = {

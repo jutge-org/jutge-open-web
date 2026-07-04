@@ -327,8 +327,7 @@ function isStudentAxisItem(item: AxisItem): boolean {
 }
 
 function withStudentEmailLabels(data: HeatmapData): HeatmapData {
-    const relabel = (item: AxisItem): AxisItem =>
-        isStudentAxisItem(item) ? { ...item, label: item.subtitle } : item
+    const relabel = (item: AxisItem): AxisItem => (isStudentAxisItem(item) ? { ...item, label: item.subtitle } : item)
 
     return {
         ...data,
@@ -865,23 +864,6 @@ function ClassProgressHeatmapCardBase({
                     </TooltipProvider>
                 </CardAction>
                 <div className="flex flex-wrap items-center gap-3">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="icon"
-                                    className="size-8"
-                                    onClick={() => setTransposed((value) => !value)}
-                                    aria-label="Transpose matrix"
-                                >
-                                    <CornerUpRightIcon className="size-4" aria-hidden />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Transpose matrix</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">Sort students</span>
                         <Select
@@ -926,7 +908,25 @@ function ClassProgressHeatmapCardBase({
                         </div>
                     ) : null}
                 </div>
-                <div className="flex w-full flex-col gap-2 sm:flex-row sm:gap-6">
+                <div className="flex w-full flex-wrap items-center gap-2 pb-2 sm:gap-4">
+                    <span className="shrink-0 text-xs text-muted-foreground -mr-4">transpose</span>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8"
+                                    onClick={() => setTransposed((value) => !value)}
+                                    aria-label="Transpose matrix"
+                                >
+                                    <CornerUpRightIcon className="size-4" aria-hidden />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Transpose matrix</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     <div className="flex items-center gap-2">
                         <span className="shrink-0 text-xs text-muted-foreground">h-zoom</span>
                         <Slider

@@ -1,6 +1,7 @@
 'use client'
 
 import { HljsThemeSelect } from '@/components/appearance/HljsThemeSelect'
+import { APPEARANCE_SETTINGS_OPEN_EVENT } from '@/lib/appearanceSettings'
 import { MonacoThemeSelect } from '@/components/appearance/MonacoThemeSelect'
 import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
@@ -120,6 +121,15 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
 
     useEffect(() => {
         queueMicrotask(() => setMounted(true))
+    }, [])
+
+    useEffect(() => {
+        function onOpenRequest() {
+            setOpen(true)
+        }
+
+        window.addEventListener(APPEARANCE_SETTINGS_OPEN_EVENT, onOpenRequest)
+        return () => window.removeEventListener(APPEARANCE_SETTINGS_OPEN_EVENT, onOpenRequest)
     }, [])
 
     function handleResetDefaults() {

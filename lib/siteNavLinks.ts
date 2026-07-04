@@ -107,6 +107,7 @@ export type SiteNavLinksContext = {
 }
 
 export const authenticatedNavLinkDescriptions: Record<string, string> = {
+    '/': 'Return to the home page',
     '/problems': 'Browse and solve programming problems',
     '/submissions': 'Track your submissions and verdicts',
     '/exams': 'View past and upcoming exams',
@@ -121,6 +122,7 @@ export const authenticatedNavLinkDescriptions: Record<string, string> = {
 }
 
 export const guestNavLinkDescriptions: Record<string, string> = {
+    '/': 'Return to the home page',
     '/problems': 'Browse public programming problems',
     '/courses': 'Browse public courses',
     '/documentation': 'Documentation for Jutge.org',

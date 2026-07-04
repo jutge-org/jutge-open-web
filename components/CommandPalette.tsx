@@ -1,5 +1,6 @@
 'use client'
 
+import { signOutAction } from '@/actions/auth'
 import {
     fetchCommandPaletteCourses,
     fetchCommandPaletteExams,
@@ -7,6 +8,9 @@ import {
     type CommandPaletteCourse,
 } from '@/actions/commandPalette'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
+import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
+import { useRecents } from '@/components/RecentsProvider'
+import { SignInDialog } from '@/components/SignInDialog'
 import { Button } from '@/components/ui/button'
 import {
     Command,
@@ -23,24 +27,41 @@ import {
     commandPaletteSections,
     filterCommandPaletteSections,
     getCommandPaletteAppSections,
+    getCommandPaletteCommands,
+    getCommandPaletteProfileSections,
     type CommandPaletteSection,
 } from '@/lib/commandPaletteSections'
+import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { courseHref, filterAndSortCourses, publicCourseHref } from '@/lib/courses'
 import { filterAndSortExams, type ExamRow } from '@/lib/exams'
+import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
 import { filterProblems } from '@/lib/problems'
+import { filterCommandPaletteRecents, type CommandPaletteRecentItem } from '@/lib/recents'
 import type { SiteNavLinksContext } from '@/lib/siteNavLinks'
 import type { ProblemRow } from '@/services/queries/problems'
 import {
     BookOpenIcon,
     BookTextIcon,
+    CircleDotIcon,
     FileBracesCornerIcon,
     InfoIcon,
     LayoutGridIcon,
+    LogInIcon,
+    LogOutIcon,
+    RectangleHorizontalIcon,
     SchoolIcon,
+    SendIcon,
+    Settings2Icon,
+    SquareIcon,
+    StretchHorizontalIcon,
+    SunMoonIcon,
     TerminalIcon,
+    UserIcon,
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTheme } from 'next-themes'
+import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 const RESULTS_LIMIT = 10
 
@@ -64,7 +85,13 @@ type CommandPaletteProps = SiteNavLinksContext
 
 export function CommandPalette({ authenticated, instructor = false, administrator = false }: CommandPaletteProps) {
     const router = useRouter()
+    const pathname = usePathname()
+    const { resolvedTheme, setTheme } = useTheme()
+    const { setLayoutWidth } = useLayoutWidth()
+    const { recents } = useRecents()
     const [open, setOpen] = useState(false)
+    const [signInOpen, setSignInOpen] = useState(false)
+    const [signOutPending, startSignOut] = useTransition()
     const [query, setQuery] = useState('')
     const [problems, setProblems] = useState<ProblemRow[]>([])
     const [courses, setCourses] = useState<CommandPaletteCourse[]>([])
@@ -141,19 +168,36 @@ export function CommandPalette({ authenticated, instructor = false, administrato
         return filterAndSortExams(exams, trimmedQuery, 'all', 'all', 'title').slice(0, RESULTS_LIMIT)
     }, [authenticated, exams, trimmedQuery])
 
+    const filteredRecents = useMemo(() => {
+        if (!trimmedQuery || !authenticated) {
+            return []
+        }
+        return filterCommandPaletteRecents(recents, trimmedQuery, RESULTS_LIMIT)
+    }, [authenticated, recents, trimmedQuery])
+
     const filteredSections = useMemo(() => {
         if (!trimmedQuery) {
-            return { app: [], documentation: [], about: [] }
+            return { app: [], command: [], profile: [], documentation: [], about: [] }
         }
 
         const appSections = filterCommandPaletteSections(getCommandPaletteAppSections(navContext), trimmedQuery).slice(
             0,
             RESULTS_LIMIT,
         )
+        const commandSections = filterCommandPaletteSections(getCommandPaletteCommands(navContext), trimmedQuery).slice(
+            0,
+            RESULTS_LIMIT,
+        )
+        const profileSections = filterCommandPaletteSections(
+            getCommandPaletteProfileSections(navContext),
+            trimmedQuery,
+        ).slice(0, RESULTS_LIMIT)
         const staticSections = filterCommandPaletteSections(commandPaletteSections, trimmedQuery)
 
         return {
             app: appSections,
+            command: commandSections,
+            profile: profileSections,
             documentation: staticSections.filter((section) => section.area === 'documentation').slice(0, RESULTS_LIMIT),
             about: staticSections.filter((section) => section.area === 'about').slice(0, RESULTS_LIMIT),
         }
@@ -163,13 +207,28 @@ export function CommandPalette({ authenticated, instructor = false, administrato
         filteredProblems.length > 0 ||
         filteredCourses.length > 0 ||
         filteredExams.length > 0 ||
+        filteredRecents.length > 0 ||
         filteredSections.app.length > 0 ||
+        filteredSections.command.length > 0 ||
+        filteredSections.profile.length > 0 ||
         filteredSections.documentation.length > 0 ||
         filteredSections.about.length > 0
 
     function navigate(href: string) {
         setOpen(false)
         router.push(href)
+    }
+
+    function handleSignOut() {
+        startSignOut(async () => {
+            await signOutAction()
+            toast.success('Signed out')
+            if (pathname === '/') {
+                router.refresh()
+            } else {
+                router.push('/')
+            }
+        })
     }
 
     function navigateToSection(section: CommandPaletteSection) {
@@ -181,9 +240,84 @@ export function CommandPalette({ authenticated, instructor = false, administrato
         router.push(section.href)
     }
 
+    function runCommand(section: CommandPaletteSection) {
+        setOpen(false)
+        switch (section.action) {
+            case 'login':
+                setSignInOpen(true)
+                return
+            case 'logout':
+                handleSignOut()
+                return
+            case 'open-settings':
+                dispatchOpenAppearanceSettings()
+                return
+            case 'toggle-theme':
+                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+                return
+            case 'set-layout-width':
+                if (section.layoutWidth) {
+                    setLayoutWidth(section.layoutWidth)
+                }
+                return
+            default:
+                navigateToSection(section)
+        }
+    }
+
+    function commandIcon(section: CommandPaletteSection) {
+        if (section.external) {
+            return CircleDotIcon
+        }
+        switch (section.action) {
+            case 'login':
+                return LogInIcon
+            case 'logout':
+                return LogOutIcon
+            case 'open-settings':
+                return Settings2Icon
+            case 'toggle-theme':
+                return SunMoonIcon
+            case 'set-layout-width':
+                switch (section.layoutWidth) {
+                    case LAYOUT_WIDTH_CONSTRAINED:
+                        return SquareIcon
+                    case LAYOUT_WIDTH_WIDE:
+                        return RectangleHorizontalIcon
+                    case LAYOUT_WIDTH_FULL:
+                        return StretchHorizontalIcon
+                    default:
+                        return SquareIcon
+                }
+            default:
+                return TerminalIcon
+        }
+    }
+
+    function recentIcon(item: CommandPaletteRecentItem) {
+        switch (item.kind) {
+            case 'course':
+                return BookOpenIcon
+            case 'problem':
+                return FileBracesCornerIcon
+            case 'submission':
+                return SendIcon
+        }
+    }
+
+    const hasCommands = filteredSections.command.length > 0
+    const hasProblems = filteredProblems.length > 0
+    const hasCourses = filteredCourses.length > 0
+    const hasExams = filteredExams.length > 0
+    const hasRecents = filteredRecents.length > 0
+    const hasSections = filteredSections.app.length > 0
+    const hasProfile = filteredSections.profile.length > 0
+    const hasDocumentation = filteredSections.documentation.length > 0
+    const hasAbout = filteredSections.about.length > 0
+
     const searchHint = authenticated
-        ? 'Type to search problems, courses, exams, sections, and documentation.'
-        : 'Type to search problems, courses, sections, and documentation.'
+        ? 'Type to search commands, problems, courses, exams, sections, and documentation.'
+        : 'Type to search commands, problems, courses, sections, and documentation.'
 
     return (
         <>
@@ -230,6 +364,32 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                         {!loading && trimmedQuery && !hasResults ? (
                             <CommandEmpty>No results found.</CommandEmpty>
                         ) : null}
+                        {!loading && hasCommands ? (
+                            <CommandGroup heading="Commands">
+                                {filteredSections.command.map((section) => {
+                                    const Icon = commandIcon(section)
+                                    return (
+                                        <CommandItem
+                                            key={section.layoutWidth ?? section.action ?? section.label}
+                                            value={section.label}
+                                            disabled={section.action === 'logout' && signOutPending}
+                                            onSelect={() => runCommand(section)}
+                                        >
+                                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                                <div className="flex min-w-0 items-center gap-2">
+                                                    <Icon className="size-3.5 shrink-0" aria-hidden />
+                                                    <span className="truncate font-medium">{section.label}</span>
+                                                </div>
+                                                <span className="truncate pl-5.5 text-xs text-muted-foreground">
+                                                    {section.description}
+                                                </span>
+                                            </div>
+                                        </CommandItem>
+                                    )
+                                })}
+                            </CommandGroup>
+                        ) : null}
+                        {!loading && hasCommands && hasProblems ? <CommandSeparator /> : null}
                         {!loading && filteredProblems.length > 0 ? (
                             <CommandGroup heading="Problems">
                                 {filteredProblems.map((problem) => (
@@ -252,9 +412,7 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                                 ))}
                             </CommandGroup>
                         ) : null}
-                        {!loading && filteredProblems.length > 0 && filteredCourses.length > 0 ? (
-                            <CommandSeparator />
-                        ) : null}
+                        {!loading && (hasCommands || hasProblems) && hasCourses ? <CommandSeparator /> : null}
                         {!loading && filteredCourses.length > 0 ? (
                             <CommandGroup heading="Courses">
                                 {filteredCourses.map((course) => (
@@ -282,9 +440,7 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                                 ))}
                             </CommandGroup>
                         ) : null}
-                        {!loading &&
-                        (filteredProblems.length > 0 || filteredCourses.length > 0) &&
-                        filteredExams.length > 0 ? (
+                        {!loading && (hasCommands || hasProblems || hasCourses) && hasExams ? (
                             <CommandSeparator />
                         ) : null}
                         {!loading && filteredExams.length > 0 ? (
@@ -308,9 +464,32 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                                 ))}
                             </CommandGroup>
                         ) : null}
+                        {!loading && (hasCommands || hasProblems || hasCourses || hasExams) && hasRecents ? (
+                            <CommandSeparator />
+                        ) : null}
+                        {!loading && filteredRecents.length > 0 ? (
+                            <CommandGroup heading="Recent">
+                                {filteredRecents.map((item) => {
+                                    const Icon = recentIcon(item)
+                                    return (
+                                        <CommandItem key={item.id} value={item.id} onSelect={() => navigate(item.href)}>
+                                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                                <div className="flex min-w-0 items-center gap-2">
+                                                    <Icon className="size-3.5 shrink-0" aria-hidden />
+                                                    <span className="truncate font-medium">{item.label}</span>
+                                                </div>
+                                                <span className="truncate pl-5.5 text-xs text-muted-foreground">
+                                                    {item.description}
+                                                </span>
+                                            </div>
+                                        </CommandItem>
+                                    )
+                                })}
+                            </CommandGroup>
+                        ) : null}
                         {!loading &&
-                        (filteredProblems.length > 0 || filteredCourses.length > 0 || filteredExams.length > 0) &&
-                        filteredSections.app.length > 0 ? (
+                        (hasCommands || hasProblems || hasCourses || hasExams || hasRecents) &&
+                        hasSections ? (
                             <CommandSeparator />
                         ) : null}
                         {!loading && filteredSections.app.length > 0 ? (
@@ -335,11 +514,40 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                             </CommandGroup>
                         ) : null}
                         {!loading &&
-                        (filteredProblems.length > 0 ||
-                            filteredCourses.length > 0 ||
-                            filteredExams.length > 0 ||
-                            filteredSections.app.length > 0) &&
-                        filteredSections.documentation.length > 0 ? (
+                        (hasCommands || hasProblems || hasCourses || hasExams || hasRecents || hasSections) &&
+                        hasProfile ? (
+                            <CommandSeparator />
+                        ) : null}
+                        {!loading && filteredSections.profile.length > 0 ? (
+                            <CommandGroup heading="Profile">
+                                {filteredSections.profile.map((section) => (
+                                    <CommandItem
+                                        key={section.href}
+                                        value={section.href}
+                                        onSelect={() => navigateToSection(section)}
+                                    >
+                                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                            <div className="flex min-w-0 items-center gap-2">
+                                                <UserIcon className="size-3.5 shrink-0" aria-hidden />
+                                                <span className="truncate font-medium">{section.label}</span>
+                                            </div>
+                                            <span className="truncate pl-5.5 text-xs text-muted-foreground">
+                                                {section.description}
+                                            </span>
+                                        </div>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        ) : null}
+                        {!loading &&
+                        (hasCommands ||
+                            hasProblems ||
+                            hasCourses ||
+                            hasExams ||
+                            hasRecents ||
+                            hasSections ||
+                            hasProfile) &&
+                        hasDocumentation ? (
                             <CommandSeparator />
                         ) : null}
                         {!loading && filteredSections.documentation.length > 0 ? (
@@ -364,12 +572,15 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                             </CommandGroup>
                         ) : null}
                         {!loading &&
-                        (filteredProblems.length > 0 ||
-                            filteredCourses.length > 0 ||
-                            filteredExams.length > 0 ||
-                            filteredSections.app.length > 0 ||
-                            filteredSections.documentation.length > 0) &&
-                        filteredSections.about.length > 0 ? (
+                        (hasCommands ||
+                            hasProblems ||
+                            hasCourses ||
+                            hasExams ||
+                            hasRecents ||
+                            hasSections ||
+                            hasProfile ||
+                            hasDocumentation) &&
+                        hasAbout ? (
                             <CommandSeparator />
                         ) : null}
                         {!loading && filteredSections.about.length > 0 ? (
@@ -396,6 +607,16 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                     </CommandList>
                 </Command>
             </CommandDialog>
+
+            {!authenticated ? (
+                <SignInDialog
+                    open={signInOpen}
+                    onOpenChange={setSignInOpen}
+                    onSignedIn={() => {
+                        window.location.assign(pathname)
+                    }}
+                />
+            ) : null}
         </>
     )
 }

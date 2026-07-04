@@ -1,5 +1,6 @@
 import { courseHref } from '@/lib/courses'
 import { parseProblemKey } from '@/lib/problems'
+import { includesForSearch } from '@/lib/utils'
 
 export const MAX_RECENTS_ITEMS = 6
 
@@ -191,6 +192,61 @@ export function formatRecentProblemTitle(item: RecentProblemItem): string {
 
 export function recentSubmissionHref(item: RecentSubmissionItem): string {
     return `/problems/${item.problemNm}/submissions/${item.submissionId}`
+}
+
+export type CommandPaletteRecentItem = {
+    id: string
+    kind: 'course' | 'problem' | 'submission'
+    label: string
+    description: string
+    href: string
+    accessedAt: number
+}
+
+export function commandPaletteRecentItems(recents: RecentsData): CommandPaletteRecentItem[] {
+    const items: CommandPaletteRecentItem[] = [
+        ...recents.courses.map((item) => ({
+            id: `course:${item.courseKey}`,
+            kind: 'course' as const,
+            label: item.title,
+            description: item.courseKey,
+            href: recentCourseHref(item),
+            accessedAt: item.accessedAt,
+        })),
+        ...recents.problems.map((item) => ({
+            id: `problem:${item.problemNm}`,
+            kind: 'problem' as const,
+            label: formatRecentProblemTitle(item),
+            description: item.problemNm,
+            href: recentProblemHref(item),
+            accessedAt: item.accessedAt,
+        })),
+        ...recents.submissions.map((item) => ({
+            id: `submission:${item.submissionId}`,
+            kind: 'submission' as const,
+            label: item.title,
+            description: `${item.problemNm} · ${item.submissionId}`,
+            href: recentSubmissionHref(item),
+            accessedAt: item.accessedAt,
+        })),
+    ]
+
+    return items.sort((a, b) => b.accessedAt - a.accessedAt)
+}
+
+export function filterCommandPaletteRecents(recents: RecentsData, query: string, limit = 10): CommandPaletteRecentItem[] {
+    const trimmedQuery = query.trim()
+    if (!trimmedQuery) {
+        return []
+    }
+
+    const items = commandPaletteRecentItems(recents)
+    const showAll = includesForSearch('recent recents history', trimmedQuery)
+    const filtered = showAll
+        ? items
+        : items.filter((item) => includesForSearch(`${item.label} ${item.description}`, trimmedQuery))
+
+    return filtered.slice(0, limit)
 }
 
 const RECENT_VERDICT_EMOJI_SELECTOR = '[data-recent-verdict-emoji]'

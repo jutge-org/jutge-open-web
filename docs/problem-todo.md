@@ -21,7 +21,7 @@
 | ✅     | Scored-problem breakdown                            | Yes                                | Done!                                                      |
 | ✅     | Awards on submission page                           | Yes                                | Done!                                                      |
 | ⚠️     | Solutions / all testcases / distiller tabs          | On problem page (admin/instructor) | Not on `/problems/[key]` (instructor tooling is elsewhere) |
-| ⚠️     | Admin YAML/correction debug panels                  | On page                            | Not on student problem pages                               |
+| ✅     | Admin YAML/correction debug panels                  | On page                            | Done!                                                      |
 | ✅     | Guest can read statement                            | Yes                                | Yes                                                        |
 
 ### Status legend

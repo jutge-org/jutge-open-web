@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
 
+import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
 import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
@@ -114,6 +115,10 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                         </dl>
                     </CardContent>
                 </Card>
+
+                {data.verdict === 'CE' && data.compilationErrors ? (
+                    <CompilationErrorsCard data={data.compilationErrors} compilerId={submission.compiler_id} />
+                ) : null}
 
                 {data.awards.length > 0 ? <SubmissionAwardsCard awards={data.awards} /> : null}
 

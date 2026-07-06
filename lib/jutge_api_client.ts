@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-03T09:04:13.914Z
+ * This file has been automatically generated at 2026-07-06T06:54:25.304Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -113,6 +113,10 @@ export type Verdict = {
 
 export type Proglang = {
     proglang_id: string
+}
+
+export type Timezone = {
+    timezone_id: string
 }
 
 export type AllTables = {
@@ -346,6 +350,13 @@ export type NewSubmissionIn = {
 
 export type NewSubmissionOut = {
     submission_id: string
+}
+
+export type CompilationErrors = {
+    compilation1: string | null
+    compilation2: string | null
+    linkage: string | null
+    interface: string | null
 }
 
 export type SubmissionAnalysis = {
@@ -1432,13 +1443,14 @@ export class JutgeApiClient {
         this.clientTTLs.set("misc.getAvatarPacks", 3600)
         this.clientTTLs.set("misc.getExamIcons", 3600)
         this.clientTTLs.set("misc.getDemosForCompiler", 3600)
-        this.clientTTLs.set("tables.get", 300)
-        this.clientTTLs.set("tables.getLanguages", 300)
-        this.clientTTLs.set("tables.getCountries", 300)
-        this.clientTTLs.set("tables.getCompilers", 300)
-        this.clientTTLs.set("tables.getDrivers", 300)
-        this.clientTTLs.set("tables.getVerdicts", 300)
-        this.clientTTLs.set("tables.getProglangs", 300)
+        this.clientTTLs.set("tables.get", 3600)
+        this.clientTTLs.set("tables.getLanguages", 3600)
+        this.clientTTLs.set("tables.getCountries", 3600)
+        this.clientTTLs.set("tables.getCompilers", 3600)
+        this.clientTTLs.set("tables.getDrivers", 3600)
+        this.clientTTLs.set("tables.getVerdicts", 3600)
+        this.clientTTLs.set("tables.getProglangs", 3600)
+        this.clientTTLs.set("tables.getTimezones", 3600)
         this.clientTTLs.set("courses.indexPublic", 300)
         this.clientTTLs.set("problems.getAllAbstractProblems", 3600)
     }
@@ -1840,6 +1852,18 @@ class Module_tables {
      */
     async getProglangs(): Promise<Record<string, Proglang>> {
         const [output, ofiles] = await this.root.execute("tables.getProglangs", null)
+        return output
+    }
+
+    /**
+     * Returns all timezones.
+     *
+     * 🔐 Authentication: any
+     * No warnings
+     * Returns all timezones as a dictionary of objects, indexed by id.
+     */
+    async getTimezones(): Promise<Record<string, Timezone>> {
+        const [output, ofiles] = await this.root.execute("tables.getTimezones", null)
         return output
     }
 }
@@ -2601,6 +2625,18 @@ class Module_student_submissions {
      */
     async getCodeAsB64(data: GetGameResultIn): Promise<string> {
         const [output, ofiles] = await this.root.execute("student.submissions.getCodeAsB64", data)
+        return output
+    }
+
+    /**
+     * Get compilation errors for a submission.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getCompilationErrors(data: GetGameResultIn): Promise<CompilationErrors> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getCompilationErrors", data)
         return output
     }
 

@@ -20,7 +20,13 @@ import {
     type SubmissionRow,
 } from '@/lib/submissions'
 import type { AwardRow } from '@/lib/awards'
-import type { JutgeApiClient, Submission, SubmissionAnalysis, TestcaseAnalysis } from '@/lib/jutge_api_client'
+import type {
+    CompilationErrors,
+    JutgeApiClient,
+    Submission,
+    SubmissionAnalysis,
+    TestcaseAnalysis,
+} from '@/lib/jutge_api_client'
 
 import { abstractProblemsToTitleMap } from './problems'
 import { fetchSubmissionAwards } from './awards'
@@ -100,6 +106,7 @@ export type SubmissionDetailData = {
     codeFilename: string | null
     analysis: SubmissionAnalysisRow[]
     codeMetrics: SubmissionCodeMetricsData | null
+    compilationErrors: CompilationErrors | null
     awards: AwardRow[]
 }
 
@@ -299,14 +306,21 @@ export const fetchSubmissionDetail = cache(
             ? decodeSubmissionCodeBase64(codeB64, submission.compiler_id, defaultExtension)
             : null
 
-        const codeMetrics = shouldShowCodeMetrics({
-            submission,
-            verdict,
-            isAdministrator: options?.isAdministrator ?? false,
-            isExamOrContest: options?.isExamOrContest ?? false,
-        })
-            ? await fetchSubmissionCodeMetrics(client, submission)
-            : null
+        const [codeMetrics, compilationErrors] = await Promise.all([
+            shouldShowCodeMetrics({
+                submission,
+                verdict,
+                isAdministrator: options?.isAdministrator ?? false,
+                isExamOrContest: options?.isExamOrContest ?? false,
+            })
+                ? fetchSubmissionCodeMetrics(client, submission)
+                : Promise.resolve(null),
+            verdict === 'CE' && submission.state === 'done'
+                ? client.student.submissions
+                      .getCompilationErrors({ problem_id: submission.problem_id, submission_id })
+                      .catch(() => null)
+                : Promise.resolve(null),
+        ])
 
         return {
             submission,
@@ -324,6 +338,7 @@ export const fetchSubmissionDetail = cache(
                 verdictEmoji: tables.verdicts[row.verdict]?.emoji,
             })),
             codeMetrics,
+            compilationErrors,
             awards,
         }
     },

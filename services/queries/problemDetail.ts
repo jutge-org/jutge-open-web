@@ -42,7 +42,7 @@ export type ProblemDetailData = {
     compilers: Compiler[]
 }
 
-function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTestcase {
+export function decodeTestcase(testcase: Testcase, outputAsImage: boolean): DecodedTestcase {
     const decoded: DecodedTestcase = {
         name: testcase.name,
         input: Buffer.from(testcase.input_b64, 'base64').toString('utf-8'),

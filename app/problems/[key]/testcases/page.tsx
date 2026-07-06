@@ -1,6 +1,6 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
-import { ProblemStubCard } from '@/components/problems/ProblemStubCard'
+import { ProblemTestcases } from '@/components/problems/ProblemTestcases'
 import { getCurrentClient } from '@/lib/auth'
 import { isGameProblem, parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
@@ -10,6 +10,7 @@ import {
     fetchProblemStatus,
     resolveProblemId,
 } from '@/services/queries/problemDetail'
+import { fetchAllProblemTestcases } from '@/services/queries/problemTestcases'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -60,10 +61,20 @@ export default async function ProblemTestcasesPage({ params }: PageProps) {
         }
 
         const client = await getCurrentClient()
-        const [status, profile] = await Promise.all([
+        const [status, profile, testcases] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
+            fetchAllProblemTestcases(
+                client,
+                problemId,
+                problem_nm,
+                data.problem.abstract_problem.driver_id,
+            ),
         ])
+
+        if (!testcases) {
+            notFound()
+        }
 
         return (
             <div className="flex flex-col gap-6">
@@ -86,10 +97,7 @@ export default async function ProblemTestcasesPage({ params }: PageProps) {
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <ProblemStubCard
-                        title="Test cases"
-                        description="Browse and manage all test cases for this problem."
-                    />
+                    <ProblemTestcases testcases={testcases} />
                 </ProblemDetail>
             </div>
         )

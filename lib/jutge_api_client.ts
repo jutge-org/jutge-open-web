@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-06T14:35:43.075Z
+ * This file has been automatically generated at 2026-07-06T15:25:26.732Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -3991,6 +3991,18 @@ class Module_instructor_problems {
     async download(problem_nm: string): Promise<Download> {
         const [output, ofiles] = await this.root.execute("instructor.problems.download", problem_nm)
         return ofiles[0]
+    }
+
+    /**
+     * Get all testcases of a problem.
+     *
+     * 🔐 Authentication: instructorOrAdmin
+     * No warnings
+     * Permission is granted to admins, the problem owner, or any instructor if testcases are shared.
+     */
+    async getAllTestcases(problem_id: string): Promise<Testcase[]> {
+        const [output, ofiles] = await this.root.execute("instructor.problems.getAllTestcases", problem_id)
+        return output
     }
 
     /**

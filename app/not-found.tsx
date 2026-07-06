@@ -11,7 +11,7 @@ export default function NotFound() {
             <div className="flex flex-col gap-2">
                 <h1 className="text-lg font-semibold tracking-tight text-foreground">Page not found</h1>
                 <p className="text-sm text-muted-foreground">
-                    The page you requested does not exist or may have been moved.
+                    The page you requested does not exist or you may not have access to it.
                 </p>
             </div>
             <nav aria-label="Helpful links" className="flex flex-wrap items-center justify-center gap-2">

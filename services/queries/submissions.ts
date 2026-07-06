@@ -22,6 +22,7 @@ import {
 import type { AwardRow } from '@/lib/awards'
 import type {
     CompilationErrors,
+    DebugInformation,
     JutgeApiClient,
     Scoring,
     ScoringPart,
@@ -117,6 +118,7 @@ export type SubmissionDetailData = {
     codeMetrics: SubmissionCodeMetricsData | null
     compilationErrors: CompilationErrors | null
     awards: AwardRow[]
+    debugInformation: DebugInformation | null
 }
 
 export type SubmissionCodeData = {
@@ -274,7 +276,7 @@ export const fetchSubmissionDetail = cache(
             return null
         }
 
-        const [tables, codeB64, analysis, scoring, awards] = await Promise.all([
+        const [tables, codeB64, analysis, scoring, awards, debugInformation] = await Promise.all([
             client.tables.get(),
             submission.state === 'done'
                 ? client.student.submissions
@@ -294,6 +296,11 @@ export const fetchSubmissionDetail = cache(
             submission.state === 'done'
                 ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
                 : Promise.resolve([] as AwardRow[]),
+            submission.state === 'done'
+                ? client.student.submissions
+                      .getDebugInformation({ problem_id: submission.problem_id, submission_id })
+                      .catch(() => null)
+                : Promise.resolve(null as DebugInformation | null),
         ])
 
         const parsed = parseProblemKey(submission.problem_id)
@@ -362,6 +369,7 @@ export const fetchSubmissionDetail = cache(
             codeMetrics,
             compilationErrors,
             awards,
+            debugInformation,
         }
     },
 )

@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
 
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
+import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
 import { ScoringCard } from '@/components/submissions/ScoringCard'
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
 import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
@@ -12,6 +13,7 @@ import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSou
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { hasDebugInformation } from '@/lib/debugInformation'
 import { parseSubmissionTime, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 import type { ScoringRow, SubmissionDetailData } from '@/services/queries/submissions'
@@ -163,6 +165,10 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                             codeHref={codeHref}
                         />
                     </>
+                ) : null}
+
+                {hasDebugInformation(data.debugInformation) && data.debugInformation ? (
+                    <DebugInformationCard data={data.debugInformation} />
                 ) : null}
             </div>
         </TooltipProvider>

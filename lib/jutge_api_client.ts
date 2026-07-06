@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-06T09:21:36.897Z
+ * This file has been automatically generated at 2026-07-06T09:56:48.121Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -449,6 +449,21 @@ export type ScoringPart = {
 }
 
 export type Scoring = ScoringPart[] | null
+
+export type DebugDirectories = {
+    problem: string
+    submission: string
+    correction: string
+    submission_uid: string
+}
+
+export type DebugInformation = {
+    correction: any
+    solution: any
+    stderr: string | null
+    stdout: string | null
+    directories: DebugDirectories | null
+}
 
 export type BriefCourse = {
     course_nm: string
@@ -2735,6 +2750,18 @@ class Module_student_submissions {
      */
     async getGameOutput(data: GetGameOutputIn): Promise<string> {
         const [output, ofiles] = await this.root.execute("student.submissions.getGameOutput", data)
+        return output
+    }
+
+    /**
+     * Get debug information for a submission.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getDebugInformation(data: GetGameResultIn): Promise<DebugInformation | null> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getDebugInformation", data)
         return output
     }
 }

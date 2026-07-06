@@ -15,10 +15,10 @@
 | ✅     | Submission analysis + testcase diffs                | Yes                                | Yes (plus dedicated diff editor)                           |
 | ✅     | Code metrics                                        | Yes                                | Yes                                                        |
 | ✅     | Source code view/download                           | Yes                                | Yes (stronger editor UX)                                   |
-| ⚠️     | Problem health warnings (deprecated, SE, unchecked) | On page                            | shows deprecated and checks failed                         |
+| ✅     | Problem health warnings (deprecated, SE, unchecked) | On page                            | Done!                                                      |
 |        | Inline PDF in statement                             | Yes                                | Done!                                                      |
-| ⚠️     | Auto hints, CE/Valgrind/inspector panels            | Yes                                | No                                                         |
-| ⚠️     | Scored-problem breakdown                            | Yes                                | No dedicated panel                                         |
+| ✅     | Auto hints, CE/Valgrind/inspector panels            | Yes                                | Done!                                                      |
+| ✅     | Scored-problem breakdown                            | Yes                                | Done!                                                      |
 | ✅     | Awards on submission page                           | Yes                                | Done!                                                      |
 | ⚠️     | Solutions / all testcases / distiller tabs          | On problem page (admin/instructor) | Not on `/problems/[key]` (instructor tooling is elsewhere) |
 | ⚠️     | Admin YAML/correction debug panels                  | On page                            | Not on student problem pages                               |

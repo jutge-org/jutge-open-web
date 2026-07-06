@@ -17,7 +17,7 @@ export function HomePageUser({ user }: HomePageUserProps) {
                     Jutge.org
                 </h1>
                 <p className="max-w-2xl text-xl text-pretty font-thin text-muted-foreground italic sm:text-2xl">
-                    {`Welcome back, ${user?.name ?? 'user'}`}
+                    {`Welcome back, ${user?.nickname ?? user?.name ?? 'user'}`}
                 </p>
             </div>
 

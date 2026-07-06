@@ -149,6 +149,9 @@ export function highlightLanguageForExtension(extension: string | null): string 
 const EXTENSION_TO_MONACO: Record<string, string> = {
     quiz: 'plaintext',
     zig: 'zig',
+    yml: 'yaml',
+    yaml: 'yaml',
+    txt: 'plaintext',
 }
 
 const HLJS_TO_MONACO: Record<string, string> = {

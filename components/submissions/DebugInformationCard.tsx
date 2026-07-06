@@ -1,6 +1,7 @@
 'use client'
 
-import { AArrowDownIcon, AArrowUpIcon } from 'lucide-react'
+import { AArrowDownIcon, AArrowUpIcon, Maximize2Icon } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { useTheme } from 'next-themes'
 
@@ -10,32 +11,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { useHljsThemeStyles } from '@/hooks/use-hljs-theme-styles'
 import { useHljsThemePreference } from '@/hooks/use-hljs-theme-preference'
-import {
-    FONT_SCALE_STEP,
-    MAX_FONT_SCALE,
-    MIN_FONT_SCALE,
-    SOURCE_CODE_FONT_SCALE_KEY,
-} from '@/lib/fontScale'
-import { highlightYamlObject } from '@/lib/highlightYaml'
+import { getDebugInformationFields } from '@/lib/debugInformation'
+import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, SOURCE_CODE_FONT_SCALE_KEY } from '@/lib/fontScale'
+import { highlightYaml } from '@/lib/highlightYaml'
 import type { DebugInformation } from '@/lib/jutge_api_client'
 
 import '@/styles/submission-hljs.css'
 
 type DebugInformationCardProps = {
     data: DebugInformation
+    debugHref: string
 }
-
-type DebugField =
-    | { key: 'correction' | 'solution' | 'directories'; label: string; kind: 'yaml'; value: unknown }
-    | { key: 'stderr' | 'stdout'; label: string; kind: 'text'; value: string }
-
-const DEBUG_FIELDS: { key: keyof DebugInformation; label: string; kind: 'yaml' | 'text' }[] = [
-    { key: 'correction', label: 'Correction', kind: 'yaml' },
-    { key: 'solution', label: 'Solution', kind: 'yaml' },
-    { key: 'stderr', label: 'stderr', kind: 'text' },
-    { key: 'stdout', label: 'stdout', kind: 'text' },
-    { key: 'directories', label: 'Directories', kind: 'yaml' },
-]
 
 function FontScaleButtons({
     fontScale,
@@ -82,10 +68,9 @@ function FontScaleButtons({
     )
 }
 
-const DEBUG_BOX_CONTENT_CLASS =
-    'max-h-96 overflow-auto p-4 font-mono leading-relaxed whitespace-pre text-foreground'
+const DEBUG_BOX_CONTENT_CLASS = 'max-h-64 overflow-auto p-4 font-mono leading-relaxed whitespace-pre text-foreground'
 
-function HighlightedYamlBlock({ value, fontScale }: { value: unknown; fontScale: number }) {
+function HighlightedYamlBlock({ content, fontScale }: { content: string; fontScale: number }) {
     const [highlightTheme] = useHljsThemePreference()
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
@@ -96,7 +81,7 @@ function HighlightedYamlBlock({ value, fontScale }: { value: unknown; fontScale:
 
     useHljsThemeStyles(highlightTheme)
 
-    const highlightedYaml = useMemo(() => highlightYamlObject(value), [value])
+    const highlightedYaml = useMemo(() => highlightYaml(content), [content])
     const usesAutoTheme = highlightTheme === 'auto'
     const theme = mounted && resolvedTheme === 'dark' ? 'dark' : 'light'
 
@@ -122,37 +107,10 @@ function TextBlock({ value, fontScale }: { value: string; fontScale: number }) {
     )
 }
 
-export function DebugInformationCard({ data }: DebugInformationCardProps) {
+export function DebugInformationCard({ data, debugHref }: DebugInformationCardProps) {
     const [fontScale, setFontScale] = useFontScalePreference(SOURCE_CODE_FONT_SCALE_KEY)
 
-    const fields = useMemo((): DebugField[] => {
-        const items: DebugField[] = []
-
-        for (const field of DEBUG_FIELDS) {
-            const value = data[field.key]
-            if (value == null) {
-                continue
-            }
-
-            if (field.kind === 'text') {
-                items.push({
-                    key: field.key as 'stderr' | 'stdout',
-                    label: field.label,
-                    kind: 'text',
-                    value: value as string,
-                })
-            } else {
-                items.push({
-                    key: field.key as 'correction' | 'solution' | 'directories',
-                    label: field.label,
-                    kind: 'yaml',
-                    value,
-                })
-            }
-        }
-
-        return items
-    }, [data])
+    const fields = useMemo(() => getDebugInformationFields(data), [data])
 
     if (fields.length === 0) {
         return null
@@ -164,7 +122,24 @@ export function DebugInformationCard({ data }: DebugInformationCardProps) {
                 <CardHeader className="border-b border-border">
                     <CardTitle className="text-lg font-semibold">Debug information</CardTitle>
                     <CardAction>
-                        <FontScaleButtons fontScale={fontScale} setFontScale={setFontScale} />
+                        <div className="inline-flex items-center gap-2">
+                            <FontScaleButtons fontScale={fontScale} setFontScale={setFontScale} />
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        size="icon-sm"
+                                        aria-label="Show debug information in full screen (opens in new window)"
+                                    >
+                                        <Link href={debugHref} target="_blank" rel="noopener noreferrer">
+                                            <Maximize2Icon />
+                                        </Link>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">Show in full screen</TooltipContent>
+                            </Tooltip>
+                        </div>
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4 px-6 py-6">
@@ -174,9 +149,9 @@ export function DebugInformationCard({ data }: DebugInformationCardProps) {
                                 {field.label}
                             </p>
                             {field.kind === 'yaml' ? (
-                                <HighlightedYamlBlock value={field.value} fontScale={fontScale} />
+                                <HighlightedYamlBlock content={field.content} fontScale={fontScale} />
                             ) : (
-                                <TextBlock value={field.value} fontScale={fontScale} />
+                                <TextBlock value={field.content} fontScale={fontScale} />
                             )}
                         </div>
                     ))}

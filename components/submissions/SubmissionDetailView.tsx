@@ -34,6 +34,7 @@ function scoringTotals(scoring: ScoringRow[]): { obtained: number; total: number
 type SubmissionDetailViewProps = {
     data: SubmissionDetailData
     codeHref: string
+    debugHref: string
     problemKey: string
     navigation?: SubmissionNavLinks | null
 }
@@ -47,7 +48,7 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
     )
 }
 
-export function SubmissionDetailView({ data, codeHref, problemKey, navigation }: SubmissionDetailViewProps) {
+export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, navigation }: SubmissionDetailViewProps) {
     const { submission } = data
     const isPending = submission.state !== 'done'
     const submittedAt = dayjs(parseSubmissionTime(submission.time_in))
@@ -168,7 +169,7 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                 ) : null}
 
                 {hasDebugInformation(data.debugInformation) && data.debugInformation ? (
-                    <DebugInformationCard data={data.debugInformation} />
+                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
                 ) : null}
             </div>
         </TooltipProvider>

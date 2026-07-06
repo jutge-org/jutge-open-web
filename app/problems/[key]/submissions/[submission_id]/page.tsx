@@ -48,6 +48,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
     const codeHref = `${submissionHref}/code`
+    const debugHref = `${submissionHref}/debug/view`
 
     return renderAuthed(async (user) => {
         const client = await getCurrentClient()
@@ -94,6 +95,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                     <SubmissionDetailView
                         data={submissionDetail}
                         codeHref={codeHref}
+                        debugHref={debugHref}
                         problemKey={key}
                         navigation={buildSubmissionNavLinks(problemSubmissions, submission_id, key)}
                     />

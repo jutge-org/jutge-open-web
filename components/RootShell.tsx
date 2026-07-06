@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 const SUBMISSION_CODE_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/code(\/view)?$/
 const SUBMISSION_TESTCASE_DIFF_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff(\/view)?$/
+const SUBMISSION_DEBUG_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/debug\/view$/
 
 type RootShellProps = {
     children: ReactNode
@@ -16,7 +17,11 @@ type RootShellProps = {
 export function RootShell({ children, header, footer }: RootShellProps) {
     const pathname = usePathname() ?? ''
 
-    if (SUBMISSION_CODE_EDITOR_PATH.test(pathname) || SUBMISSION_TESTCASE_DIFF_EDITOR_PATH.test(pathname)) {
+    if (
+        SUBMISSION_CODE_EDITOR_PATH.test(pathname) ||
+        SUBMISSION_TESTCASE_DIFF_EDITOR_PATH.test(pathname) ||
+        SUBMISSION_DEBUG_EDITOR_PATH.test(pathname)
+    ) {
         return children
     }
 

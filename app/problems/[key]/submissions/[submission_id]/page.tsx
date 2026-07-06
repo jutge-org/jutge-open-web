@@ -6,7 +6,7 @@ import { getCurrentClient } from '@/lib/auth'
 import { parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { buildSubmissionNavLinks } from '@/lib/submissions'
-import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
+import { fetchProblemDetail, fetchInstructorOwnsProblem, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
 import { fetchSubmissionDetail } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -52,7 +52,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
 
     return renderAuthed(async (user) => {
         const client = await getCurrentClient()
-        const [status, profile, isExamOrContest, problemSubmissions] = await Promise.all([
+        const [status, profile, isExamOrContest, problemSubmissions, isInstructorOwner] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
             client.student.exam.get().then(
@@ -60,6 +60,7 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                 () => false,
             ),
             client.student.submissions.getForAbstractProblems(problem_nm),
+            fetchInstructorOwnsProblem(problem_nm),
         ])
 
         const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
@@ -87,6 +88,8 @@ export default async function ProblemSubmissionDetailPage({ params }: PageProps)
                     data={data}
                     status={status}
                     defaultCompilerId={profile.compiler_id}
+                    isInstructorOwner={isInstructorOwner}
+                    isAdministrator={user.administrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}

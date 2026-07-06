@@ -102,16 +102,16 @@ export function SubmissionDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-md p-6">
-                <DialogHeader>
+            <DialogContent className="w-full min-w-0 overflow-hidden p-6 sm:max-w-md">
+                <DialogHeader className="min-w-0">
                     <DialogTitle>New submission</DialogTitle>
                     <DialogDescription>
                         Submit a solution for <ProblemIdLabel problemId={problemId} />.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-col gap-4">
-                    <div className="grid gap-1.5">
+                <div className="flex min-w-0 flex-col gap-4">
+                    <div className="grid min-w-0 gap-1.5">
                         <Label>Source file</Label>
                         <Dropzone
                             onDrop={(addedFiles: File[]) => {
@@ -131,8 +131,8 @@ export function SubmissionDialog({
                             )}
                         </Dropzone>
                         {file ? (
-                            <div className="mt-1 flex flex-row items-center gap-2 rounded border p-1 text-sm">
-                                <Badge variant="secondary" className="min-w-24 justify-center">
+                            <div className="mt-1 flex min-w-0 flex-row items-center gap-2 overflow-hidden rounded border p-1 text-sm">
+                                <Badge variant="secondary" className="min-w-0 truncate">
                                     {file.name}
                                 </Badge>
                                 <Badge variant="secondary">{file.type || 'unknown'}</Badge>
@@ -151,7 +151,7 @@ export function SubmissionDialog({
                         ) : null}
                     </div>
 
-                    <div className="grid gap-1.5">
+                    <div className="grid min-w-0 gap-1.5">
                         <Label htmlFor="submission-annotation">Annotation</Label>
                         <Input
                             id="submission-annotation"
@@ -161,10 +161,10 @@ export function SubmissionDialog({
                         />
                     </div>
 
-                    <div className="grid gap-1.5">
+                    <div className="grid min-w-0 gap-1.5">
                         <Label htmlFor="submission-compiler">Compiler</Label>
                         <Select value={compilerId} onValueChange={setCompilerId}>
-                            <SelectTrigger id="submission-compiler" className="w-full">
+                            <SelectTrigger id="submission-compiler" className="w-full min-w-0">
                                 <SelectValue placeholder="Select a compiler" />
                             </SelectTrigger>
                             <SelectContent>
@@ -180,7 +180,12 @@ export function SubmissionDialog({
                     {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
                 </div>
 
-                <Button type="button" onClick={handleSubmit} disabled={pending || !file} className="mt-4 w-full gap-2">
+                <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={pending || !file}
+                    className="mt-4 w-full min-w-0 gap-2"
+                >
                     <SendIcon className="size-4" />
                     {pending ? 'Submitting…' : 'Submit'}
                 </Button>

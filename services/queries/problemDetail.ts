@@ -1,6 +1,6 @@
 import { cache } from 'react'
 
-import { getPreferredLanguageId, getProblemsApiClient } from '@/lib/auth'
+import { getCurrentClient, getPreferredLanguageId, getProblemsApiClient, tryGetCurrentUser } from '@/lib/auth'
 import { isGraphicProblem, parseProblemCompilerIds, parseProblemKey } from '@/lib/problems'
 import { resolveProblemIdFromAbstract } from '@/lib/problemVariants'
 import {
@@ -96,6 +96,21 @@ export const fetchProblemStatus = cache(
         }
     },
 )
+
+export const fetchInstructorOwnsProblem = cache(async (problem_nm: string): Promise<boolean> => {
+    const user = await tryGetCurrentUser()
+    if (!user?.instructor) {
+        return false
+    }
+
+    try {
+        const client = await getCurrentClient()
+        const ownProblems = await client.instructor.problems.getOwnProblems()
+        return ownProblems.includes(problem_nm)
+    } catch {
+        return false
+    }
+})
 
 export const fetchProblemDetail = cache(async (problemId: string): Promise<ProblemDetailData | null> => {
     try {

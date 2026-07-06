@@ -5,7 +5,7 @@ import { SubmissionTestcaseAnalysisCard } from '@/components/submissions/Submiss
 import { getCurrentClient } from '@/lib/auth'
 import { parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchProblemDetail, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
+import { fetchProblemDetail, fetchInstructorOwnsProblem, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
 import { fetchSubmissionDetail, fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -51,7 +51,7 @@ export default async function ProblemSubmissionTestcaseAnalysisPage({ params }: 
 
     return renderAuthed(async (user) => {
         const client = await getCurrentClient()
-        const [status, profile, isExamOrContest, testcaseAnalysis] = await Promise.all([
+        const [status, profile, isExamOrContest, testcaseAnalysis, isInstructorOwner] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
             client.student.exam.get().then(
@@ -59,6 +59,7 @@ export default async function ProblemSubmissionTestcaseAnalysisPage({ params }: 
                 () => false,
             ),
             fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase),
+            fetchInstructorOwnsProblem(problem_nm),
         ])
 
         const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
@@ -87,6 +88,8 @@ export default async function ProblemSubmissionTestcaseAnalysisPage({ params }: 
                     data={data}
                     status={status}
                     defaultCompilerId={profile.compiler_id}
+                    isInstructorOwner={isInstructorOwner}
+                    isAdministrator={user.administrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ChevronUpIcon } from 'lucide-react'
 
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
 import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
@@ -75,6 +75,9 @@ export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, na
                         {navigation ? (
                             <CardAction>
                                 <ButtonGroup>
+                                    <SubmissionNavButton href={navigation.listHref} label="Submissions list">
+                                        <ChevronUpIcon />
+                                    </SubmissionNavButton>
                                     <SubmissionNavButton href={navigation.previousHref} label="Previous submission">
                                         <ChevronLeftIcon />
                                     </SubmissionNavButton>

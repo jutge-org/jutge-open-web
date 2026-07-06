@@ -159,6 +159,7 @@ export function buildSubmissionTestcaseHref(
 
 export type SubmissionNavLinks = {
     previousHref: string | null
+    listHref: string
     nextHref: string | null
     lastHref: string | null
 }
@@ -181,6 +182,7 @@ export function buildSubmissionNavLinks(
 
     return {
         previousHref: index < sorted.length - 1 ? href(sorted[index + 1].submission_id) : null,
+        listHref: `/problems/${pageKey}/submissions`,
         nextHref: index > 0 ? href(sorted[index - 1].submission_id) : null,
         lastHref: index > 0 ? href(sorted[0].submission_id) : null,
     }

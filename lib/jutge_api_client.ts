@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-06T09:56:48.121Z
+ * This file has been automatically generated at 2026-07-06T14:35:43.075Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -2206,18 +2206,6 @@ class Module_problems {
         const [output, ofiles] = await this.root.execute("problems.fullTextSearch", data)
         return output
     }
-
-    /**
-     * Get solutions for a problem.
-     *
-     * 🔐 Authentication: instructor
-     * No warnings
-     * The keys are the proglangs and the values are the solutions in base64. Pemission is granted to admin, ownerof the problem and instructor when shared solutions are enabled.
-     */
-    async getSolutions(problem_id: string): Promise<Record<string, string>> {
-        const [output, ofiles] = await this.root.execute("problems.getSolutions", problem_id)
-        return output
-    }
 }
 
 /**
@@ -4006,6 +3994,42 @@ class Module_instructor_problems {
     }
 
     /**
+     * Get list of proglangs for which the problem has an official solution.
+     *
+     * 🔐 Authentication: instructorOrAdmin
+     * No warnings
+     * Permission is granted to admins and instructors who own the problem.
+     */
+    async getSolutions(problem_id: string): Promise<string[]> {
+        const [output, ofiles] = await this.root.execute("instructor.problems.getSolutions", problem_id)
+        return output
+    }
+
+    /**
+     * Get official solution for a problem in proglang as a string in base64.
+     *
+     * 🔐 Authentication: instructorOrAdmin
+     * No warnings
+     * Permission is granted to admins and instructors who own the problem.
+     */
+    async getSolutionAsB64(data: { problem_id: string; proglang: string }): Promise<string> {
+        const [output, ofiles] = await this.root.execute("instructor.problems.getSolutionAsB64", data)
+        return output
+    }
+
+    /**
+     * Get official solution for a problem in proglang as a file.
+     *
+     * 🔐 Authentication: instructorOrAdmin
+     * No warnings
+     * Permission is granted to admins and instructors who own the problem.
+     */
+    async getSolutionAsFile(data: { problem_id: string; proglang: string }): Promise<Download> {
+        const [output, ofiles] = await this.root.execute("instructor.problems.getSolutionAsFile", data)
+        return ofiles[0]
+    }
+
+    /**
      * Create a problem from a ZIP archive.
      *
      * 🔐 Authentication: instructor
@@ -4996,42 +5020,6 @@ class Module_admin_problems {
 
     constructor(root: JutgeApiClient) {
         this.root = root
-    }
-
-    /**
-     * Get list of proglangs for which the problem has an official solution.
-     *
-     * 🔐 Authentication: admin
-     * No warnings
-     *
-     */
-    async getSolutions(problem_id: string): Promise<string[]> {
-        const [output, ofiles] = await this.root.execute("admin.problems.getSolutions", problem_id)
-        return output
-    }
-
-    /**
-     * Get official solution for a problem in proglang as a string in base64.
-     *
-     * 🔐 Authentication: admin
-     * No warnings
-     *
-     */
-    async getSolutionAsB64(data: { problem_id: string; proglang: string }): Promise<string> {
-        const [output, ofiles] = await this.root.execute("admin.problems.getSolutionAsB64", data)
-        return output
-    }
-
-    /**
-     * Get official solution for a problem in proglang as a file.
-     *
-     * 🔐 Authentication: admin
-     * No warnings
-     *
-     */
-    async getSolutionAsFile(data: { problem_id: string; proglang: string }): Promise<Download> {
-        const [output, ofiles] = await this.root.execute("admin.problems.getSolutionAsFile", data)
-        return ofiles[0]
     }
 
     /**

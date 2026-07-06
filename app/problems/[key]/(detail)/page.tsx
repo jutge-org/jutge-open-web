@@ -2,11 +2,12 @@ import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { QuizProblemUnsupportedCard } from '@/components/problems/QuizProblemUnsupportedCard'
-import { getCurrentClient, getPreferredLanguageId, isAuthenticated } from '@/lib/auth'
+import { getCurrentClient, getPreferredLanguageId, isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import { isGameProblem, isQuizProblem, parseProblemKey } from '@/lib/problems'
 import {
     fetchAbstractProblem,
+    fetchInstructorOwnsProblem,
     fetchProblemDetail,
     fetchProblemStatus,
     resolveProblemId,
@@ -98,15 +99,25 @@ export default async function ProblemPage({ params }: PageProps) {
 
     let status: Awaited<ReturnType<typeof fetchProblemStatus>> | undefined
     let defaultCompilerId: string | null | undefined
+    let isInstructorOwner = false
+    let isAdministrator = false
 
     if (authenticated && !isGameProblem(abstractProblem.driver_id)) {
         const client = await getCurrentClient()
-        const [statusResult, profile] = await Promise.all([
+        const [statusResult, profile, ownsProblem, user] = await Promise.all([
             fetchProblemStatus(client, problem.problem_nm),
             client.student.profile.get(),
+            fetchInstructorOwnsProblem(problem.problem_nm),
+            tryGetCurrentUser(),
         ])
         status = statusResult
         defaultCompilerId = profile.compiler_id
+        isInstructorOwner = ownsProblem
+        isAdministrator = user?.administrator ?? false
+    } else {
+        const user = authenticated ? await tryGetCurrentUser() : null
+        isInstructorOwner = await fetchInstructorOwnsProblem(problem.problem_nm)
+        isAdministrator = user?.administrator ?? false
     }
 
     return (
@@ -119,7 +130,15 @@ export default async function ProblemPage({ params }: PageProps) {
                 ]}
             />
             {!authenticated ? <PageTitle section="/problems" authenticated={false} hidden={false} /> : null}
-            <ProblemDetail pageKey={key} data={data} status={status} defaultCompilerId={defaultCompilerId} />
+            <ProblemDetail
+                pageKey={key}
+                data={data}
+                status={status}
+                defaultCompilerId={defaultCompilerId}
+                isInstructorOwner={isInstructorOwner}
+                isAdministrator={isAdministrator}
+                showNav={authenticated}
+            />
         </div>
     )
 }

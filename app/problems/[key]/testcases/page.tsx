@@ -1,11 +1,15 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
-import { SubmissionsList } from '@/components/submissions/SubmissionsList'
+import { ProblemStubCard } from '@/components/problems/ProblemStubCard'
 import { getCurrentClient } from '@/lib/auth'
 import { isGameProblem, parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchProblemDetail, fetchInstructorOwnsProblem, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchProblemSubmissionsData } from '@/services/queries/submissions'
+import {
+    fetchInstructorOwnsProblem,
+    fetchProblemDetail,
+    fetchProblemStatus,
+    resolveProblemId,
+} from '@/services/queries/problemDetail'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -19,18 +23,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { key } = await params
     const problemId = await resolveProblemId(key)
     if (!problemId) {
-        return { title: 'Submissions — Jutge.org' }
+        return { title: 'Test cases — Jutge.org' }
     }
 
     const data = await fetchProblemDetail(problemId)
     if (!data) {
-        return { title: 'Submissions — Jutge.org' }
+        return { title: 'Test cases — Jutge.org' }
     }
 
-    return { title: `Submissions — ${data.problem.title} — Jutge.org` }
+    return { title: `Test cases — ${data.problem.title} — Jutge.org` }
 }
 
-export default async function ProblemSubmissionsPage({ params }: PageProps) {
+export default async function ProblemTestcasesPage({ params }: PageProps) {
     const { key } = await params
     const problemId = await resolveProblemId(key)
     if (!problemId) {
@@ -50,13 +54,15 @@ export default async function ProblemSubmissionsPage({ params }: PageProps) {
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
 
     return renderAuthed(async (user) => {
+        const isInstructorOwner = await fetchInstructorOwnsProblem(problem_nm)
+        if (!isInstructorOwner && !user.administrator) {
+            notFound()
+        }
+
         const client = await getCurrentClient()
-        const languageTitles = new Map(data.languageVariants.map((variant) => [variant.problem_id, variant.title]))
-        const [status, profile, rows, isInstructorOwner] = await Promise.all([
+        const [status, profile] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
-            fetchProblemSubmissionsData(client, problem_nm, languageTitles),
-            fetchInstructorOwnsProblem(problem_nm),
         ])
 
         return (
@@ -66,7 +72,7 @@ export default async function ProblemSubmissionsPage({ params }: PageProps) {
                         { title: 'Problems', url: '/problems' },
                         { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
                         { title: data.problem.title, url: `/problems/${key}` },
-                        { title: 'Submissions', url: `/problems/${key}/submissions` },
+                        { title: 'Test cases', url: `/problems/${key}/testcases` },
                     ]}
                 />
                 <ProblemDetail
@@ -80,7 +86,10 @@ export default async function ProblemSubmissionsPage({ params }: PageProps) {
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <SubmissionsList rows={rows} variant="problem" problemNm={problem_nm} />
+                    <ProblemStubCard
+                        title="Test cases"
+                        description="Browse and manage all test cases for this problem."
+                    />
                 </ProblemDetail>
             </div>
         )

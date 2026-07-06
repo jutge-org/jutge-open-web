@@ -15,22 +15,10 @@ export default function NotFound() {
                 </p>
             </div>
             <nav aria-label="Helpful links" className="flex flex-wrap items-center justify-center gap-2">
-                <Button asChild>
+                <Button asChild className="w-32">
                     <Link href="/">
                         <HomeIcon aria-hidden />
                         Home
-                    </Link>
-                </Button>
-                <Button asChild variant="outline">
-                    <Link href="/problems/public">
-                        <ListIcon aria-hidden />
-                        Public problems
-                    </Link>
-                </Button>
-                <Button asChild variant="outline">
-                    <Link href="/documentation">
-                        <BookTextIcon aria-hidden />
-                        Documentation
                     </Link>
                 </Button>
             </nav>

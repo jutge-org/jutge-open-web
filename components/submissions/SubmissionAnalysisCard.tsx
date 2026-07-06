@@ -1,10 +1,8 @@
-'use client'
-
 import Link from 'next/link'
-import { useMemo } from 'react'
 
-import { AgTableAutoHeight } from '@/components/administrator/AgTable'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { buildSubmissionTestcaseHref } from '@/lib/submissions'
 import type { SubmissionAnalysisRow } from '@/services/queries/submissions'
 
@@ -15,72 +13,59 @@ type SubmissionAnalysisCardProps = {
 }
 
 export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: SubmissionAnalysisCardProps) {
-    const colDefs = useMemo(
-        () => [
-            {
-                field: 'testcase',
-                headerName: 'Test case',
-                width: 200,
-                sortable: true,
-                cellRenderer: (params: { data: SubmissionAnalysisRow }) => {
-                    const href = buildSubmissionTestcaseHref(problemKey, submissionId, params.data.testcase)
-                    return href ? (
-                        <Link href={href} className="text-primary hover:underline">
-                            {params.data.testcase}
-                        </Link>
-                    ) : (
-                        params.data.testcase
-                    )
-                },
-                valueGetter: (params: { data: SubmissionAnalysisRow }) => params.data.testcase,
-            },
-            {
-                field: 'execution',
-                headerName: 'Execution',
-                width: 120,
-                sortable: true,
-                cellRenderer: (params: { data: SubmissionAnalysisRow }) => (
-                    <span className="inline-flex items-center gap-2">
-                        <span aria-hidden>{params.data.execution === 'OK' ? '✅' : '❌'}</span>
-                        {params.data.execution}
-                    </span>
-                ),
-                valueGetter: (params: { data: SubmissionAnalysisRow }) => params.data.execution,
-            },
-            {
-                field: 'verdict',
-                headerName: 'Verdict',
-                flex: 1,
-                sortable: true,
-                cellRenderer: (params: { data: SubmissionAnalysisRow }) => (
-                    <span className="inline-flex items-center gap-2">
-                        {params.data.verdictEmoji ? <span aria-hidden>{params.data.verdictEmoji}</span> : null}
-                        {params.data.verdict}
-                    </span>
-                ),
-                valueGetter: (params: { data: SubmissionAnalysisRow }) => params.data.verdict,
-            },
-        ],
-        [problemKey, submissionId],
-    )
-
     return (
         <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
             <CardHeader className="border-b border-border px-4 py-2">
                 <CardTitle className="text-lg font-semibold">Analysis</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <AgTableAutoHeight
-                    rowData={analysis}
-                    columnDefs={colDefs}
-                    rowHeight={36}
-                    wrapperBorder={false}
-                    themeParams={{
-                        backgroundColor: 'var(--card)',
-                        oddRowBackgroundColor: 'var(--card)',
-                        chromeBackgroundColor: 'var(--card)',
-                    }}
-                />
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent">
+                            <TableHead className="px-4">Test case</TableHead>
+                            <TableHead className="px-4">Execution</TableHead>
+                            <TableHead className="px-4">Verdict</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {analysis.map((row) => {
+                            const href = buildSubmissionTestcaseHref(problemKey, submissionId, row.testcase)
+
+                            return (
+                                <TableRow key={row.testcase}>
+                                    <TableCell className="px-4">
+                                        {href ? (
+                                            <Link href={href} className="text-primary hover:underline">
+                                                {row.testcase}
+                                            </Link>
+                                        ) : (
+                                            row.testcase
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="px-4">
+                                        <span className="inline-flex items-center gap-2">
+                                            <span aria-hidden>{row.execution === 'OK' ? '✅' : '❌'}</span>
+                                            {row.execution}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell className="px-4">
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div className="flex items-center gap-2">
+                                                    {row.verdictEmoji ? (
+                                                        <span aria-hidden>{row.verdictEmoji}</span>
+                                                    ) : null}
+                                                    <span>{row.verdict}</span>
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top">{row.verdictFullName}</TooltipContent>
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
             </CardContent>
         </Card>
     )

@@ -23,6 +23,8 @@ import type { AwardRow } from '@/lib/awards'
 import type {
     CompilationErrors,
     JutgeApiClient,
+    Scoring,
+    ScoringPart,
     Submission,
     SubmissionAnalysis,
     TestcaseAnalysis,
@@ -91,6 +93,12 @@ export const fetchProblemSubmissionsData = cache(
 
 export type SubmissionAnalysisRow = SubmissionAnalysis & {
     verdictEmoji?: string
+    verdictFullName: string
+}
+
+export type ScoringRow = ScoringPart & {
+    verdictEmoji?: string
+    verdictFullName: string
 }
 
 export type SubmissionDetailData = {
@@ -105,6 +113,7 @@ export type SubmissionDetailData = {
     codeExtension: string | null
     codeFilename: string | null
     analysis: SubmissionAnalysisRow[]
+    scoring: ScoringRow[] | null
     codeMetrics: SubmissionCodeMetricsData | null
     compilationErrors: CompilationErrors | null
     awards: AwardRow[]
@@ -265,7 +274,7 @@ export const fetchSubmissionDetail = cache(
             return null
         }
 
-        const [tables, codeB64, analysis, awards] = await Promise.all([
+        const [tables, codeB64, analysis, scoring, awards] = await Promise.all([
             client.tables.get(),
             submission.state === 'done'
                 ? client.student.submissions
@@ -277,6 +286,11 @@ export const fetchSubmissionDetail = cache(
                       .getAnalysis({ problem_id: submission.problem_id, submission_id })
                       .catch(() => [] as SubmissionAnalysis[])
                 : Promise.resolve([] as SubmissionAnalysis[]),
+            submission.state === 'done'
+                ? client.student.submissions
+                      .getScoring({ problem_id: submission.problem_id, submission_id })
+                      .catch(() => null)
+                : Promise.resolve(null as Scoring),
             submission.state === 'done'
                 ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
                 : Promise.resolve([] as AwardRow[]),
@@ -336,7 +350,15 @@ export const fetchSubmissionDetail = cache(
             analysis: analysis.map((row) => ({
                 ...row,
                 verdictEmoji: tables.verdicts[row.verdict]?.emoji,
+                verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
             })),
+            scoring: scoring
+                ? scoring.map((row) => ({
+                      ...row,
+                      verdictEmoji: tables.verdicts[row.verdict]?.emoji,
+                      verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
+                  }))
+                : null,
             codeMetrics,
             compilationErrors,
             awards,

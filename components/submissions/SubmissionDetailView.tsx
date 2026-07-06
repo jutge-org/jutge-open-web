@@ -3,6 +3,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from 'lucide-react'
 
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
+import { ScoringCard } from '@/components/submissions/ScoringCard'
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
 import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
@@ -13,10 +14,20 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/componen
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { parseSubmissionTime, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
-import type { SubmissionDetailData } from '@/services/queries/submissions'
+import type { ScoringRow, SubmissionDetailData } from '@/services/queries/submissions'
 import type { ReactNode } from 'react'
 
 dayjs.extend(relativeTime)
+
+function scoringTotals(scoring: ScoringRow[]): { obtained: number; total: number } {
+    return scoring.reduce(
+        (totals, row) => ({
+            obtained: totals.obtained + row.points,
+            total: totals.total + row.correct_points,
+        }),
+        { obtained: 0, total: 0 },
+    )
+}
 
 type SubmissionDetailViewProps = {
     data: SubmissionDetailData
@@ -39,6 +50,7 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
     const isPending = submission.state !== 'done'
     const submittedAt = dayjs(parseSubmissionTime(submission.time_in))
     const submittedAtLabel = `${submittedAt.isSame(dayjs(), 'day') ? submittedAt.format('HH:mm:ss') : submittedAt.format('YYYY-MM-DD HH:mm:ss')} (${submittedAt.fromNow()})`
+    const scoringSummary = data.verdict === 'SC' && data.scoring ? scoringTotals(data.scoring) : null
 
     return (
         <TooltipProvider>
@@ -86,6 +98,14 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                                         >
                                             {data.verdictEmoji ? <span aria-hidden>{data.verdictEmoji}</span> : null}
                                             {data.verdict}
+                                            {scoringSummary ? (
+                                                <span
+                                                    className="tabular-nums text-foreground"
+                                                    aria-label={`${scoringSummary.obtained} of ${scoringSummary.total} points`}
+                                                >
+                                                    {scoringSummary.obtained}/{scoringSummary.total}
+                                                </span>
+                                            ) : null}
                                         </span>
                                     </TooltipTrigger>
                                     <TooltipContent side="top">{data.verdictFullName}</TooltipContent>
@@ -121,6 +141,8 @@ export function SubmissionDetailView({ data, codeHref, problemKey, navigation }:
                 ) : null}
 
                 {data.awards.length > 0 ? <SubmissionAwardsCard awards={data.awards} /> : null}
+
+                {data.scoring ? <ScoringCard scoring={data.scoring} /> : null}
 
                 {data.analysis.length > 0 ? (
                     <SubmissionAnalysisCard

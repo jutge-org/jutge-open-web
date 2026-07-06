@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-06T06:54:25.304Z
+ * This file has been automatically generated at 2026-07-06T09:18:51.503Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -439,6 +439,16 @@ export type CodeMetrics = {
     tiobe_security: number
     tiobe_standard: number
 }
+
+export type ScoringPart = {
+    testcase: string
+    verdict: string
+    verdict_info: string | null
+    points: number
+    correct_points: number
+}
+
+export type Scoring = ScoringPart[] | null
 
 export type BriefCourse = {
     course_nm: string
@@ -2649,6 +2659,18 @@ class Module_student_submissions {
      */
     async getCodeMetrics(data: GetGameResultIn): Promise<CodeMetrics | null> {
         const [output, ofiles] = await this.root.execute("student.submissions.getCodeMetrics", data)
+        return output
+    }
+
+    /**
+     * Get partial scoring for a submission.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getScoring(data: GetGameResultIn): Promise<Scoring> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getScoring", data)
         return output
     }
 

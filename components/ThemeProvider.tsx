@@ -20,7 +20,7 @@ function ThemeColorModeSync() {
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     return (
-        <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem {...props}>
+        <NextThemesProvider attribute="class" defaultTheme="system" enableSystem {...props}>
             <ThemeColorModeSync />
             {children}
         </NextThemesProvider>

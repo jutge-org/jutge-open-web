@@ -169,7 +169,7 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                             type="single"
                             variant="outline"
                             spacing={0}
-                            value={theme ?? 'dark'}
+                            value={theme ?? 'system'}
                             onValueChange={(value) => value && setTheme(value)}
                             className="grid w-full grid-cols-3"
                         >

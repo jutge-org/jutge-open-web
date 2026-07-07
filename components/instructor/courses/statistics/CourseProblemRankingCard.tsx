@@ -10,12 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { deriveCourseProblemRanking } from '@/lib/instructor/courseProblemRanking'
 import type { Dict } from '@/lib/instructor/utils'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
-import type {
-    AbstractProblem,
-    CourseSubmission,
-    InstructorCourse,
-    InstructorList,
-} from '@/lib/jutge_api_client'
+import type { AbstractProblem, CourseSubmission, InstructorCourse, InstructorList } from '@/lib/jutge_api_client'
 import type { ICellRendererParams } from 'ag-grid-community'
 import { BarChart3Icon, FileDownIcon } from 'lucide-react'
 import Link from 'next/link'

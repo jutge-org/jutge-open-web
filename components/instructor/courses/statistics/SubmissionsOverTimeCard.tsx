@@ -46,9 +46,7 @@ export function SubmissionsOverTimeCard({
                             max={SUBMISSION_VOLUME_BUCKET_SIZE_MAX}
                             step={1}
                             value={[bucketSize]}
-                            onValueChange={(value) =>
-                                setBucketSize(value[0] ?? SUBMISSION_VOLUME_BUCKET_SIZE_DEFAULT)
-                            }
+                            onValueChange={(value) => setBucketSize(value[0] ?? SUBMISSION_VOLUME_BUCKET_SIZE_DEFAULT)}
                             aria-label="Bucket size"
                             className="w-18"
                         />

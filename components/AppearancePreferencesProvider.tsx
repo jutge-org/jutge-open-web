@@ -16,11 +16,7 @@ import {
     parseMonacoThemeSelection,
     type MonacoThemeSelection,
 } from '@/lib/monaco/themes'
-import {
-    createDefaultFontScales,
-    READING_FONT_SCALE_KEYS,
-    type ReadingFontScaleKey,
-} from '@/lib/readingFontScale'
+import { createDefaultFontScales, READING_FONT_SCALE_KEYS, type ReadingFontScaleKey } from '@/lib/readingFontScale'
 import {
     DEFAULT_REDUCED_MOTION,
     parseReducedMotion,

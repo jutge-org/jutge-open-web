@@ -4,11 +4,7 @@ export const REDUCED_MOTION_SYSTEM = 'system' as const
 export const REDUCED_MOTION_REDUCE = 'reduce' as const
 export const REDUCED_MOTION_FULL = 'full' as const
 
-export const REDUCED_MOTION_OPTIONS = [
-    REDUCED_MOTION_SYSTEM,
-    REDUCED_MOTION_REDUCE,
-    REDUCED_MOTION_FULL,
-] as const
+export const REDUCED_MOTION_OPTIONS = [REDUCED_MOTION_SYSTEM, REDUCED_MOTION_REDUCE, REDUCED_MOTION_FULL] as const
 
 export type ReducedMotionPreference = (typeof REDUCED_MOTION_OPTIONS)[number]
 

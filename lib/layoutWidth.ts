@@ -4,11 +4,7 @@ export const LAYOUT_WIDTH_CONSTRAINED = 'constrained' as const
 export const LAYOUT_WIDTH_WIDE = 'wide' as const
 export const LAYOUT_WIDTH_FULL = 'full' as const
 
-export const LAYOUT_WIDTH_OPTIONS = [
-    LAYOUT_WIDTH_CONSTRAINED,
-    LAYOUT_WIDTH_WIDE,
-    LAYOUT_WIDTH_FULL,
-] as const
+export const LAYOUT_WIDTH_OPTIONS = [LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_WIDE, LAYOUT_WIDTH_FULL] as const
 
 export type LayoutWidth = (typeof LAYOUT_WIDTH_OPTIONS)[number]
 

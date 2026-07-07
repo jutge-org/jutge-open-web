@@ -26,7 +26,10 @@ function ResizableCard({
 
     const updateHeight = useCallback(
         (nextHeight: number) => {
-            const clampedHeight = Math.max(minHeight, maxHeight !== undefined ? Math.min(maxHeight, nextHeight) : nextHeight)
+            const clampedHeight = Math.max(
+                minHeight,
+                maxHeight !== undefined ? Math.min(maxHeight, nextHeight) : nextHeight,
+            )
             setHeight(clampedHeight)
             onHeightChange?.(clampedHeight)
         },
@@ -60,11 +63,7 @@ function ResizableCard({
     }, [])
 
     return (
-        <Card
-            className={cn('relative min-h-0', className)}
-            style={{ height, ...style }}
-            {...props}
-        >
+        <Card className={cn('relative min-h-0', className)} style={{ height, ...style }} {...props}>
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
             <div
                 role="separator"
@@ -88,12 +87,4 @@ function ResizableCard({
     )
 }
 
-export {
-    CardAction,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-    ResizableCard,
-}
+export { CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, ResizableCard }

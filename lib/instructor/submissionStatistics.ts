@@ -12,9 +12,7 @@ export type StatisticsSubmission = {
     proglang: string
 }
 
-export function toStatisticsSubmissionFromAnonymous(
-    submission: ProblemAnonymousSubmission,
-): StatisticsSubmission {
+export function toStatisticsSubmissionFromAnonymous(submission: ProblemAnonymousSubmission): StatisticsSubmission {
     return {
         time: submission.time,
         user_id: submission.anonymous_user_id,

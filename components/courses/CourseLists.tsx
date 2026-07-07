@@ -165,9 +165,15 @@ export function CourseLists({ courseKey, lists, languages, statuses, lastSubmiss
                                     >
                                         <ListProblemCountBadges counts={counts} />
                                         {isOpen ? (
-                                            <ChevronUpIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                            <ChevronUpIcon
+                                                className="size-4 shrink-0 text-muted-foreground"
+                                                aria-hidden
+                                            />
                                         ) : (
-                                            <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                            <ChevronDownIcon
+                                                className="size-4 shrink-0 text-muted-foreground"
+                                                aria-hidden
+                                            />
                                         )}
                                     </button>
                                 </div>

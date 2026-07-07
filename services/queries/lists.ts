@@ -5,10 +5,7 @@ import { withInstructorClient } from '@/lib/instructor/with-instructor-client'
 import type { InstructorList, JutgeApiClient, List, ListItem, Profile } from '@/lib/jutge_api_client'
 import type { ProblemRow } from '@/services/queries/problems'
 
-export async function fetchListsMany(
-    client: JutgeApiClient,
-    listKeys: string[],
-): Promise<Record<string, List>> {
+export async function fetchListsMany(client: JutgeApiClient, listKeys: string[]): Promise<Record<string, List>> {
     if (listKeys.length === 0) {
         return {}
     }
@@ -39,9 +36,7 @@ export async function fetchInstructorListsMany(listNms: string[]): Promise<Instr
         return []
     }
 
-    return withInstructorClient((client) =>
-        Promise.all(listNms.map((list_nm) => client.instructor.lists.get(list_nm))),
-    )
+    return withInstructorClient((client) => Promise.all(listNms.map((list_nm) => client.instructor.lists.get(list_nm))))
 }
 
 export type CourseListSeparatorRow = {

@@ -53,8 +53,8 @@ export function SubmissionsHelpDialog() {
                 <div className="space-y-6 overflow-y-auto px-6 py-6">
                     <HelpSection title="What are submissions?">
                         <p>
-                            A submission is a solution you send to the judge for a programming problem. Each row in
-                            this list is one submission, with its problem, compiler, verdict, and submission time.
+                            A submission is a solution you send to the judge for a programming problem. Each row in this
+                            list is one submission, with its problem, compiler, verdict, and submission time.
                         </p>
                     </HelpSection>
 
@@ -97,9 +97,7 @@ export function SubmissionsHelpDialog() {
                                 <strong className="font-medium text-foreground">Open</strong> a submission to review its
                                 source code, analysis, and test case results.
                             </li>
-                            <li>
-                                Hover problem ids, compilers, and verdicts for additional details.
-                            </li>
+                            <li>Hover problem ids, compilers, and verdicts for additional details.</li>
                         </ul>
                     </HelpSection>
                 </div>

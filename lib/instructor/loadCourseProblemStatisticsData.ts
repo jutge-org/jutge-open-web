@@ -27,15 +27,10 @@ export type CourseProblemStatisticsPageData = {
     languagesTable: Record<string, Language>
 }
 
-function filterCourseSubmissionsByProblem(
-    submissions: CourseSubmission[],
-    problem_nm: string,
-): CourseSubmission[] {
+function filterCourseSubmissionsByProblem(submissions: CourseSubmission[], problem_nm: string): CourseSubmission[] {
     return submissions.filter((submission) => {
         const parsed = parseProblemKey(submission.problem_id)
-        return (
-            (parsed.kind === 'problem_id' || parsed.kind === 'problem_nm') && parsed.problem_nm === problem_nm
-        )
+        return (parsed.kind === 'problem_id' || parsed.kind === 'problem_nm') && parsed.problem_nm === problem_nm
     })
 }
 

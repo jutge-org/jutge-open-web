@@ -21,9 +21,7 @@ export async function UserProfileView({ user }: UserProfileViewProps) {
     const client = await getCurrentClient()
     const { profile, countries, languageName, compilerName, avatarDataUrl } = await fetchProfilePageData(client)
 
-    const country = profile.country_id
-        ? countries.find((entry) => entry.country_id === profile.country_id)
-        : null
+    const country = profile.country_id ? countries.find((entry) => entry.country_id === profile.country_id) : null
     const countryName = country?.eng_name ?? '—'
 
     const description = profile.description?.trim()

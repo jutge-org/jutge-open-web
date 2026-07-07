@@ -175,9 +175,7 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
-                {course.description ? (
-                    <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
-                ) : null}
+                {course.description ? <MarkdownText className="line-clamp-4">{course.description}</MarkdownText> : null}
                 <div className="mt-auto">
                     <CourseBadges course={course} />
                 </div>

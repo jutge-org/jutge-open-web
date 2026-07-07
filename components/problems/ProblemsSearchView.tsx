@@ -12,10 +12,7 @@ import {
     problemsFullTextSearch,
     problemsSemanticSearch,
 } from '@/actions/problems'
-import {
-    ProblemSearchView,
-    type ProblemSearchActions,
-} from '@/components/problems/search/ProblemSearchView'
+import { ProblemSearchView, type ProblemSearchActions } from '@/components/problems/search/ProblemSearchView'
 
 const problemsSearchActions: ProblemSearchActions = {
     fetchCatalog: fetchProblemsSearchCatalog,

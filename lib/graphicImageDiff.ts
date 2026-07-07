@@ -48,10 +48,7 @@ export function formatGraphicImageDifference(value: number): string {
     return value.toFixed(7).replace(/\.?0+$/, '')
 }
 
-export async function computeGraphicImageDiff(
-    outputSrc: string,
-    expectedSrc: string,
-): Promise<GraphicImageDiffResult> {
+export async function computeGraphicImageDiff(outputSrc: string, expectedSrc: string): Promise<GraphicImageDiffResult> {
     const [outputImage, expectedImage] = await Promise.all([loadImage(outputSrc), loadImage(expectedSrc)])
 
     const width = Math.max(outputImage.naturalWidth, expectedImage.naturalWidth)

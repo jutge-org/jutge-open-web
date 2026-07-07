@@ -273,9 +273,7 @@ export function parseCourseListAccordionOpenItems(
         }
 
         const validSet = new Set(validListNames)
-        const filtered = parsed.filter(
-            (item): item is string => typeof item === 'string' && validSet.has(item),
-        )
+        const filtered = parsed.filter((item): item is string => typeof item === 'string' && validSet.has(item))
         if (parsed.length === 0) {
             return []
         }

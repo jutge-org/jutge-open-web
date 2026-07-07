@@ -83,7 +83,8 @@ export function filterSubmissions<T extends SubmissionRow>(
     const query = searchQuery.trim()
 
     return rows.filter(
-        (row) => matchesSubmissionVerdictFilter(row.verdict, verdictFilter) && includesForSearch(buildHaystack(row), query),
+        (row) =>
+            matchesSubmissionVerdictFilter(row.verdict, verdictFilter) && includesForSearch(buildHaystack(row), query),
     )
 }
 

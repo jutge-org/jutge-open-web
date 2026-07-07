@@ -162,7 +162,9 @@ async function loadPublicCoursesIndex(): Promise<PublicCourses> {
 
 export const fetchPublicCoursesIndex = cache(loadPublicCoursesIndex)
 
-async function resolvePublicCourse(courseKeyParam: string): Promise<{ courseKey: string; course: PublicCourse } | null> {
+async function resolvePublicCourse(
+    courseKeyParam: string,
+): Promise<{ courseKey: string; course: PublicCourse } | null> {
     const normalized = normalizeCourseKeyParam(courseKeyParam)
     const courses = await loadPublicCoursesIndex()
 

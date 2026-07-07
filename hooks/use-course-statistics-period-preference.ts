@@ -9,11 +9,7 @@ import {
     type CourseStatisticsPeriod,
 } from '@/lib/instructor/courseStatisticsPeriod'
 
-export function useCourseStatisticsPeriodPreference(
-    courseKey: string,
-    defaultStartDate: Date,
-    defaultEndDate: Date,
-) {
+export function useCourseStatisticsPeriodPreference(courseKey: string, defaultStartDate: Date, defaultEndDate: Date) {
     const fallback: CourseStatisticsPeriod = { startDate: defaultStartDate, endDate: defaultEndDate }
     const [period, setPeriodState] = useState<CourseStatisticsPeriod>(fallback)
 

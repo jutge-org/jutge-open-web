@@ -80,4 +80,3 @@ export function ProblemStatusIcon({ status, className }: ProblemStatusIconProps)
         </Tooltip>
     )
 }
-

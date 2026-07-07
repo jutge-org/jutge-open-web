@@ -64,12 +64,7 @@ export default async function ProblemTestcasesPage({ params }: PageProps) {
         const [status, profile, testcases] = await Promise.all([
             fetchProblemStatus(client, problem_nm),
             client.student.profile.get(),
-            fetchAllProblemTestcases(
-                client,
-                problemId,
-                problem_nm,
-                data.problem.abstract_problem.driver_id,
-            ),
+            fetchAllProblemTestcases(client, problemId, problem_nm, data.problem.abstract_problem.driver_id),
         ])
 
         if (!testcases) {

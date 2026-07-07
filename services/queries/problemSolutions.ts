@@ -26,10 +26,7 @@ async function canAccessProblemSolutions(problem_nm: string): Promise<boolean> {
     return fetchInstructorOwnsProblem(problem_nm)
 }
 
-export async function fetchProblemSolutionProglangs(
-    client: JutgeApiClient,
-    problem_id: string,
-): Promise<string[]> {
+export async function fetchProblemSolutionProglangs(client: JutgeApiClient, problem_id: string): Promise<string[]> {
     const proglangs = await client.instructor.problems.getSolutions(problem_id)
     return [...proglangs].sort((a, b) => a.localeCompare(b))
 }

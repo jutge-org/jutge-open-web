@@ -1,11 +1,7 @@
 'use client'
 
 import { StatisticsSaveButtonGroup } from '@/components/instructor/statistics/StatisticsSaveButtonGroup'
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Toggle } from '@/components/ui/toggle'

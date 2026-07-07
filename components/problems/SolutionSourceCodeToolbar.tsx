@@ -3,14 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { saveAs } from 'file-saver'
-import {
-    AArrowDownIcon,
-    AArrowUpIcon,
-    ClipboardIcon,
-    DownloadIcon,
-    Maximize2Icon,
-    PaletteIcon,
-} from 'lucide-react'
+import { AArrowDownIcon, AArrowUpIcon, ClipboardIcon, DownloadIcon, Maximize2Icon, PaletteIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'

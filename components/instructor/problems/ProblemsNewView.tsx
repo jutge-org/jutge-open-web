@@ -24,10 +24,8 @@ export function ProblemsNewView() {
                     <p>
                         Create a new problem by uploading a ZIP archive with its content. Please read the documentation
                         in the{' '}
-                        <ExternalLink href="https://github.com/jutge-org/jutge-toolkit">
-                            Jutge Toolkit
-                        </ExternalLink>{' '}
-                        for more information about the format of the ZIP archive.
+                        <ExternalLink href="https://github.com/jutge-org/jutge-toolkit">Jutge Toolkit</ExternalLink> for
+                        more information about the format of the ZIP archive.
                     </p>
                     <p>Passcode is mandatory to create a new problem, you can remove it latter.</p>
                 </div>

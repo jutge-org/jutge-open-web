@@ -1,7 +1,15 @@
 'use client'
 
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 import {
     DEFAULT_MONACO_THEME,
     formatMonacoThemeLabel,

@@ -5,10 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { courseListAccordionStorageKey, parseCourseListAccordionOpenItems } from '@/lib/courses'
 
 export function useCourseListAccordionPreference(courseKey: string, listNames: string[]) {
-    const defaultOpen = useMemo(
-        () => (listNames.length > 0 ? [listNames[0]] : []),
-        [listNames],
-    )
+    const defaultOpen = useMemo(() => (listNames.length > 0 ? [listNames[0]] : []), [listNames])
 
     const [openItems, setOpenItemsState] = useState<string[]>(defaultOpen)
 

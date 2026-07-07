@@ -136,7 +136,9 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
                                         className="size-8"
                                         pressed={blurPersonalData}
                                         onPressedChange={setBlurPersonalData}
-                                        aria-label={blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
+                                        aria-label={
+                                            blurPersonalData ? 'Show names and emails' : 'Blur names and emails'
+                                        }
                                     >
                                         {blurPersonalData ? (
                                             <EyeOffIcon className="size-4" aria-hidden />

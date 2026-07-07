@@ -93,10 +93,7 @@ export const fetchAbstractProblemsDict = cache(loadAbstractProblemsDict)
 export const fetchLanguages = cache(loadLanguages)
 
 export const fetchAllAbstractProblems = cache(
-    async (
-        preferredLanguageId?: string | null,
-        options?: AbstractProblemRowOptions,
-    ): Promise<ProblemRow[]> => {
+    async (preferredLanguageId?: string | null, options?: AbstractProblemRowOptions): Promise<ProblemRow[]> => {
         const abstractProblems = await fetchAbstractProblemsDict()
         return abstractProblemsToRows(abstractProblems, preferredLanguageId, options)
     },

@@ -41,13 +41,7 @@ type TestcaseFieldProps = {
     fontScale: number
 }
 
-export function TestcaseField({
-    label,
-    text,
-    imageSrc,
-    showWhitespace,
-    fontScale,
-}: TestcaseFieldProps) {
+export function TestcaseField({ label, text, imageSrc, showWhitespace, fontScale }: TestcaseFieldProps) {
     const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null)
 
     useEffect(() => {

@@ -1,54 +1,54 @@
 name: Accessibility issue
 description: Report a barrier that affects people using assistive technology or accessibility features
-title: "[A11y]: "
-labels: ["accessibility"]
+title: '[A11y]: '
+labels: ['accessibility']
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Accessibility improvements are welcome. See the [accessibility statement](https://jutge.org/about/accessibility) for context.
+    - type: markdown
+      attributes:
+          value: |
+              Accessibility improvements are welcome. See the [accessibility statement](https://jutge.org/about/accessibility) for context.
 
-  - type: textarea
-    id: barrier
-    attributes:
-      label: Accessibility barrier
-      description: What prevents access or makes the experience difficult?
-      placeholder: The exam timer is not announced to screen readers when it updates.
-    validations:
-      required: true
+    - type: textarea
+      id: barrier
+      attributes:
+          label: Accessibility barrier
+          description: What prevents access or makes the experience difficult?
+          placeholder: The exam timer is not announced to screen readers when it updates.
+      validations:
+          required: true
 
-  - type: input
-    id: page
-    attributes:
-      label: Page or route
-      placeholder: /exams/example-exam
-    validations:
-      required: true
+    - type: input
+      id: page
+      attributes:
+          label: Page or route
+          placeholder: /exams/example-exam
+      validations:
+          required: true
 
-  - type: textarea
-    id: assistive
-    attributes:
-      label: Assistive technology or setting
-      description: Screen reader, keyboard-only navigation, high contrast, reduced motion, etc.
-      placeholder: VoiceOver on Safari, keyboard only
-    validations:
-      required: true
+    - type: textarea
+      id: assistive
+      attributes:
+          label: Assistive technology or setting
+          description: Screen reader, keyboard-only navigation, high contrast, reduced motion, etc.
+          placeholder: VoiceOver on Safari, keyboard only
+      validations:
+          required: true
 
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected accessible behavior
-    validations:
-      required: true
+    - type: textarea
+      id: expected
+      attributes:
+          label: Expected accessible behavior
+      validations:
+          required: true
 
-  - type: textarea
-    id: wcag
-    attributes:
-      label: WCAG criterion (if known)
-      description: For example, 2.4.7 Focus Visible or 4.1.2 Name, Role, Value.
-      placeholder: 2.4.3 Focus Order
+    - type: textarea
+      id: wcag
+      attributes:
+          label: WCAG criterion (if known)
+          description: For example, 2.4.7 Focus Visible or 4.1.2 Name, Role, Value.
+          placeholder: 2.4.3 Focus Order
 
-  - type: textarea
-    id: extra
-    attributes:
-      label: Additional context
+    - type: textarea
+      id: extra
+      attributes:
+          label: Additional context

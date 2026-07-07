@@ -86,10 +86,7 @@ export function SubmissionTestcaseDiffEditor({
                         </div>
                     </>
                 ) : (
-                    <GraphicTestcaseDiffView
-                        outputImageSrc={outputImageSrc!}
-                        expectedImageSrc={expectedImageSrc!}
-                    />
+                    <GraphicTestcaseDiffView outputImageSrc={outputImageSrc!} expectedImageSrc={expectedImageSrc!} />
                 )}
             </ResizablePanel>
             <ResizableHandle withHandle />

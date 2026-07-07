@@ -28,7 +28,6 @@ type SubmissionTestcaseAnalysisCardProps = {
     diffHref: string
 }
 
-
 export function SubmissionTestcaseAnalysisCard({ data, diffHref }: SubmissionTestcaseAnalysisCardProps) {
     const [showWhitespace, setShowWhitespace] = useState(false)
     const [sideways, setSideways] = useState(true)

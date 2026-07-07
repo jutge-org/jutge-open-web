@@ -157,188 +157,194 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
             </TooltipProvider>
             {mounted ? (
                 <DialogContent className="flex max-h-[75vh] w-full max-w-lg flex-col gap-0 overflow-hidden p-0">
-                <DialogHeader className="shrink-0 px-6 pt-6">
-                    <DialogTitle>Appearance</DialogTitle>
-                    <DialogDescription>
-                        Customize the appearance of Jutge.org to your needs and liking.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-6 overflow-y-auto px-6 py-6">
-                    <SettingSection title="Theme" description="Choose a color theme for the interface.">
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            spacing={0}
-                            value={theme ?? 'system'}
-                            onValueChange={(value) => value && setTheme(value)}
-                            className="grid w-full grid-cols-3"
-                        >
-                            <SegmentedOption
-                                value="system"
-                                label="System"
-                                icon={<MonitorIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value="light"
-                                label="Light"
-                                icon={<SunIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value="dark"
-                                label="Dark"
-                                icon={<MoonIcon className="size-4" aria-hidden />}
-                            />
-                        </ToggleGroup>
-                    </SettingSection>
-                    <SettingSection title="Page width" description="Choose how wide the main content area should be.">
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            spacing={0}
-                            value={layoutWidth}
-                            onValueChange={(value) => value && setLayoutWidth(value as LayoutWidth)}
-                            className="grid w-full grid-cols-3"
-                        >
-                            <SegmentedOption
-                                value={LAYOUT_WIDTH_CONSTRAINED}
-                                label="Comfortable"
-                                icon={<SquareIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value={LAYOUT_WIDTH_WIDE}
-                                label="Wide"
-                                icon={<RectangleHorizontalIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value={LAYOUT_WIDTH_FULL}
-                                label="Full"
-                                icon={<StretchHorizontalIcon className="size-4" aria-hidden />}
-                            />
-                        </ToggleGroup>
-                    </SettingSection>
-                    <SettingSection
-                        title="Reading text size"
-                        description="Adjust text size for problem statements, test cases, and source code."
-                    >
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            spacing={0}
-                            value={readingFontScalePreset ?? ''}
-                            onValueChange={(value) => {
-                                if (!value) {
-                                    return
-                                }
-
-                                const preset = READING_FONT_SCALE_PRESETS.find((option) => option.value === value)
-                                if (preset) {
-                                    setReadingFontScalePreset(preset.scale)
-                                }
-                            }}
-                            className="grid w-full grid-cols-4"
-                        >
-                            {READING_FONT_SCALE_PRESETS.map((preset) => (
+                    <DialogHeader className="shrink-0 px-6 pt-6">
+                        <DialogTitle>Appearance</DialogTitle>
+                        <DialogDescription>
+                            Customize the appearance of Jutge.org to your needs and liking.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 overflow-y-auto px-6 py-6">
+                        <SettingSection title="Theme" description="Choose a color theme for the interface.">
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={theme ?? 'system'}
+                                onValueChange={(value) => value && setTheme(value)}
+                                className="grid w-full grid-cols-3"
+                            >
                                 <SegmentedOption
-                                    key={preset.value}
-                                    value={preset.value}
-                                    label={preset.label}
-                                    icon={readingFontScalePresetIcon(preset.value)}
-                                    className="min-h-14"
+                                    value="system"
+                                    label="System"
+                                    icon={<MonitorIcon className="size-4" aria-hidden />}
                                 />
-                            ))}
-                        </ToggleGroup>
-                        {!readingFontScalePreset ? (
-                            <p className="text-xs text-muted-foreground">
-                                Custom sizes are set per page. Choose a preset to apply the same size everywhere.
-                            </p>
-                        ) : null}
-                    </SettingSection>
-                    <SettingSection
-                        title="Sound effects"
-                        description="Play sounds for celebratory moments and feedback."
-                    >
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            spacing={0}
-                            value={soundEffects}
-                            onValueChange={(value) => value && setSoundEffects(value as SoundEffectsPreference)}
-                            className="grid w-full grid-cols-2"
+                                <SegmentedOption
+                                    value="light"
+                                    label="Light"
+                                    icon={<SunIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value="dark"
+                                    label="Dark"
+                                    icon={<MoonIcon className="size-4" aria-hidden />}
+                                />
+                            </ToggleGroup>
+                        </SettingSection>
+                        <SettingSection
+                            title="Page width"
+                            description="Choose how wide the main content area should be."
                         >
-                            <SegmentedOption
-                                value={SOUND_EFFECTS_ON}
-                                label="On"
-                                icon={<Volume2Icon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value={SOUND_EFFECTS_OFF}
-                                label="Off"
-                                icon={<VolumeXIcon className="size-4" aria-hidden />}
-                            />
-                        </ToggleGroup>
-                    </SettingSection>
-                    <SettingSection title="Motion" description="Control animations and transitions.">
-                        <ToggleGroup
-                            type="single"
-                            variant="outline"
-                            spacing={0}
-                            value={reducedMotion}
-                            onValueChange={(value) =>
-                                value &&
-                                setReducedMotion(
-                                    value as
-                                        | typeof REDUCED_MOTION_SYSTEM
-                                        | typeof REDUCED_MOTION_REDUCE
-                                        | typeof REDUCED_MOTION_FULL,
-                                )
-                            }
-                            className="grid w-full grid-cols-3"
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={layoutWidth}
+                                onValueChange={(value) => value && setLayoutWidth(value as LayoutWidth)}
+                                className="grid w-full grid-cols-3"
+                            >
+                                <SegmentedOption
+                                    value={LAYOUT_WIDTH_CONSTRAINED}
+                                    label="Comfortable"
+                                    icon={<SquareIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={LAYOUT_WIDTH_WIDE}
+                                    label="Wide"
+                                    icon={<RectangleHorizontalIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={LAYOUT_WIDTH_FULL}
+                                    label="Full"
+                                    icon={<StretchHorizontalIcon className="size-4" aria-hidden />}
+                                />
+                            </ToggleGroup>
+                        </SettingSection>
+                        <SettingSection
+                            title="Reading text size"
+                            description="Adjust text size for problem statements, test cases, and source code."
                         >
-                            <SegmentedOption
-                                value={REDUCED_MOTION_SYSTEM}
-                                label="System"
-                                icon={<MonitorIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value={REDUCED_MOTION_REDUCE}
-                                label="Reduce"
-                                icon={<AccessibilityIcon className="size-4" aria-hidden />}
-                            />
-                            <SegmentedOption
-                                value={REDUCED_MOTION_FULL}
-                                label="Full"
-                                icon={<ZapIcon className="size-4" aria-hidden />}
-                            />
-                        </ToggleGroup>
-                    </SettingSection>
-                    <SettingSection title="Code syntax" description="Choose themes for highlighted and editable code.">
-                        <div className="space-y-4">
-                            <HljsThemeSelect
-                                id="appearance-hljs-theme"
-                                value={hljsTheme}
-                                onValueChange={setHljsTheme}
-                            />
-                            <MonacoThemeSelect
-                                id="appearance-monaco-theme"
-                                value={monacoTheme}
-                                onValueChange={setMonacoTheme}
-                            />
-                        </div>
-                    </SettingSection>
-                </div>
-                <div className="shrink-0 border-t border-border px-6 py-4">
-                    <div className="w-full flex flex-row gap-2">
-                        <Button type="button" variant="outline" className="flex-1" onClick={handleResetDefaults}>
-                            <RotateCcwIcon className="size-4" aria-hidden />
-                            Reset to defaults
-                        </Button>
-                        <Button type="button" className="flex-1" onClick={closeDialog}>
-                            <XIcon className="size-4" aria-hidden />
-                            Close
-                        </Button>
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={readingFontScalePreset ?? ''}
+                                onValueChange={(value) => {
+                                    if (!value) {
+                                        return
+                                    }
+
+                                    const preset = READING_FONT_SCALE_PRESETS.find((option) => option.value === value)
+                                    if (preset) {
+                                        setReadingFontScalePreset(preset.scale)
+                                    }
+                                }}
+                                className="grid w-full grid-cols-4"
+                            >
+                                {READING_FONT_SCALE_PRESETS.map((preset) => (
+                                    <SegmentedOption
+                                        key={preset.value}
+                                        value={preset.value}
+                                        label={preset.label}
+                                        icon={readingFontScalePresetIcon(preset.value)}
+                                        className="min-h-14"
+                                    />
+                                ))}
+                            </ToggleGroup>
+                            {!readingFontScalePreset ? (
+                                <p className="text-xs text-muted-foreground">
+                                    Custom sizes are set per page. Choose a preset to apply the same size everywhere.
+                                </p>
+                            ) : null}
+                        </SettingSection>
+                        <SettingSection
+                            title="Sound effects"
+                            description="Play sounds for celebratory moments and feedback."
+                        >
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={soundEffects}
+                                onValueChange={(value) => value && setSoundEffects(value as SoundEffectsPreference)}
+                                className="grid w-full grid-cols-2"
+                            >
+                                <SegmentedOption
+                                    value={SOUND_EFFECTS_ON}
+                                    label="On"
+                                    icon={<Volume2Icon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={SOUND_EFFECTS_OFF}
+                                    label="Off"
+                                    icon={<VolumeXIcon className="size-4" aria-hidden />}
+                                />
+                            </ToggleGroup>
+                        </SettingSection>
+                        <SettingSection title="Motion" description="Control animations and transitions.">
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={reducedMotion}
+                                onValueChange={(value) =>
+                                    value &&
+                                    setReducedMotion(
+                                        value as
+                                            | typeof REDUCED_MOTION_SYSTEM
+                                            | typeof REDUCED_MOTION_REDUCE
+                                            | typeof REDUCED_MOTION_FULL,
+                                    )
+                                }
+                                className="grid w-full grid-cols-3"
+                            >
+                                <SegmentedOption
+                                    value={REDUCED_MOTION_SYSTEM}
+                                    label="System"
+                                    icon={<MonitorIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={REDUCED_MOTION_REDUCE}
+                                    label="Reduce"
+                                    icon={<AccessibilityIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={REDUCED_MOTION_FULL}
+                                    label="Full"
+                                    icon={<ZapIcon className="size-4" aria-hidden />}
+                                />
+                            </ToggleGroup>
+                        </SettingSection>
+                        <SettingSection
+                            title="Code syntax"
+                            description="Choose themes for highlighted and editable code."
+                        >
+                            <div className="space-y-4">
+                                <HljsThemeSelect
+                                    id="appearance-hljs-theme"
+                                    value={hljsTheme}
+                                    onValueChange={setHljsTheme}
+                                />
+                                <MonacoThemeSelect
+                                    id="appearance-monaco-theme"
+                                    value={monacoTheme}
+                                    onValueChange={setMonacoTheme}
+                                />
+                            </div>
+                        </SettingSection>
                     </div>
-                </div>
-            </DialogContent>
+                    <div className="shrink-0 border-t border-border px-6 py-4">
+                        <div className="w-full flex flex-row gap-2">
+                            <Button type="button" variant="outline" className="flex-1" onClick={handleResetDefaults}>
+                                <RotateCcwIcon className="size-4" aria-hidden />
+                                Reset to defaults
+                            </Button>
+                            <Button type="button" className="flex-1" onClick={closeDialog}>
+                                <XIcon className="size-4" aria-hidden />
+                                Close
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
             ) : null}
         </Dialog>
     )

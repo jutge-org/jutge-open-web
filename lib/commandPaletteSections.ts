@@ -1,29 +1,14 @@
 import { aboutIndexItems } from '@/lib/about'
 import { documentationIndexItems } from '@/lib/documentation'
 import { GITHUB_ISSUES_URL } from '@/lib/github'
-import {
-    LAYOUT_WIDTH_CONSTRAINED,
-    LAYOUT_WIDTH_FULL,
-    LAYOUT_WIDTH_WIDE,
-    type LayoutWidth,
-} from '@/lib/layoutWidth'
+import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type LayoutWidth } from '@/lib/layoutWidth'
 import { profileNavItems } from '@/lib/profile'
-import {
-    getSiteNavLinkDescription,
-    getSiteNavLinks,
-    homeLink,
-    type SiteNavLinksContext,
-} from '@/lib/siteNavLinks'
+import { getSiteNavLinkDescription, getSiteNavLinks, homeLink, type SiteNavLinksContext } from '@/lib/siteNavLinks'
 import { includesForSearch } from '@/lib/utils'
 
 export type CommandPaletteSectionArea = 'app' | 'command' | 'profile' | 'documentation' | 'about'
 
-export type CommandPaletteSectionAction =
-    | 'login'
-    | 'logout'
-    | 'open-settings'
-    | 'toggle-theme'
-    | 'set-layout-width'
+export type CommandPaletteSectionAction = 'login' | 'logout' | 'open-settings' | 'toggle-theme' | 'set-layout-width'
 
 export type CommandPaletteSection = {
     label: string

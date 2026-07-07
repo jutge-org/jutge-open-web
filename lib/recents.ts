@@ -108,16 +108,10 @@ export function serializeRecentsData(data: RecentsData): string {
     return JSON.stringify(data)
 }
 
-function upsertByKey<T extends { accessedAt: number }>(
-    items: T[],
-    item: T,
-    keyOf: (entry: T) => string,
-): T[] {
+function upsertByKey<T extends { accessedAt: number }>(items: T[], item: T, keyOf: (entry: T) => string): T[] {
     const key = keyOf(item)
     const filtered = items.filter((entry) => keyOf(entry) !== key)
-    return [item, ...filtered]
-        .sort((a, b) => b.accessedAt - a.accessedAt)
-        .slice(0, MAX_RECENTS_ITEMS)
+    return [item, ...filtered].sort((a, b) => b.accessedAt - a.accessedAt).slice(0, MAX_RECENTS_ITEMS)
 }
 
 export function addRecentCourse(data: RecentsData, item: RecentCourseItem): RecentsData {
@@ -234,7 +228,11 @@ export function commandPaletteRecentItems(recents: RecentsData): CommandPaletteR
     return items.sort((a, b) => b.accessedAt - a.accessedAt)
 }
 
-export function filterCommandPaletteRecents(recents: RecentsData, query: string, limit = 10): CommandPaletteRecentItem[] {
+export function filterCommandPaletteRecents(
+    recents: RecentsData,
+    query: string,
+    limit = 10,
+): CommandPaletteRecentItem[] {
     const trimmedQuery = query.trim()
     if (!trimmedQuery) {
         return []

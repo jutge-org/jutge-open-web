@@ -53,9 +53,7 @@ function GuestCourseCard({ course }: { course: GuestCourseRow }) {
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
-                {course.description ? (
-                    <MarkdownText className="line-clamp-4">{course.description}</MarkdownText>
-                ) : null}
+                {course.description ? <MarkdownText className="line-clamp-4">{course.description}</MarkdownText> : null}
                 <div className="mt-auto">
                     <GuestCourseBadges course={course} />
                 </div>

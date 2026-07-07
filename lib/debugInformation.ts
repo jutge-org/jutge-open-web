@@ -40,8 +40,7 @@ export function getDebugInformationFields(data: DebugInformation): DebugInformat
             continue
         }
 
-        const content =
-            field.kind === 'yaml' ? objectToYaml(value) : typeof value === 'string' ? value : String(value)
+        const content = field.kind === 'yaml' ? objectToYaml(value) : typeof value === 'string' ? value : String(value)
 
         fields.push({
             key: field.key,

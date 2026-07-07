@@ -47,9 +47,9 @@ This requires the global `@jutge.org/cli` package (see README).
 2. **Describe** — explain what changed and why. Link related issues.
 3. **Check** — run before pushing:
 
-   ```bash
-   bun run format && bun run lint && bun run build
-   ```
+    ```bash
+    bun run format && bun run lint && bun run build
+    ```
 
 4. **Discuss first** — open an issue before large refactors or architectural changes.
 

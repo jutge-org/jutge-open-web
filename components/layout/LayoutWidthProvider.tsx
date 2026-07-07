@@ -1,11 +1,6 @@
 'use client'
 
-import {
-    DEFAULT_LAYOUT_WIDTH,
-    LAYOUT_WIDTH_STORAGE_KEY,
-    parseLayoutWidth,
-    type LayoutWidth,
-} from '@/lib/layoutWidth'
+import { DEFAULT_LAYOUT_WIDTH, LAYOUT_WIDTH_STORAGE_KEY, parseLayoutWidth, type LayoutWidth } from '@/lib/layoutWidth'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
 type LayoutWidthContextValue = {
@@ -42,11 +37,7 @@ export function LayoutWidthProvider({ children }: { children: ReactNode }) {
         syncLayoutWidthDataset(next)
     }
 
-    return (
-        <LayoutWidthContext.Provider value={{ layoutWidth, setLayoutWidth }}>
-            {children}
-        </LayoutWidthContext.Provider>
-    )
+    return <LayoutWidthContext.Provider value={{ layoutWidth, setLayoutWidth }}>{children}</LayoutWidthContext.Provider>
 }
 
 export function useLayoutWidth() {

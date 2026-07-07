@@ -85,8 +85,7 @@ function colorizeQuotedStrings(text: string): string {
         const closeQuote = quoted[quoted.length - 1]
         const content = quoted.slice(1, -1)
 
-        result +=
-            escapeHtml(openQuote) + wrapSpan(GCC_STYLES.quoted, escapeHtml(content)) + escapeHtml(closeQuote)
+        result += escapeHtml(openQuote) + wrapSpan(GCC_STYLES.quoted, escapeHtml(content)) + escapeHtml(closeQuote)
         lastIndex = index + quoted.length
     }
 
@@ -106,8 +105,7 @@ function colorizeGccCompilationLine(line: string): string {
 
         if (/\s+warning:.*/.test(message)) {
             return (
-                wrapSpan(GCC_STYLES.warningWhere, location) +
-                wrapSpan(GCC_STYLES.warningMessage, escapeHtml(message))
+                wrapSpan(GCC_STYLES.warningWhere, location) + wrapSpan(GCC_STYLES.warningMessage, escapeHtml(message))
             )
         }
 
@@ -205,9 +203,7 @@ export function shouldColorizeCompilationField(
     return compilationErrorColorization(compilerId)
 }
 
-export type CompilationErrorContent =
-    | { type: 'html'; html: string }
-    | { type: 'plain'; text: string }
+export type CompilationErrorContent = { type: 'html'; html: string } | { type: 'plain'; text: string }
 
 export function formatCompilationErrorContent(
     text: string,

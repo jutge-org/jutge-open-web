@@ -40,10 +40,7 @@ export default async function CoursePage({ params }: PageProps) {
 
     return renderAuthed(async () => {
         const client = await getCurrentClient()
-        const [result, profile] = await Promise.all([
-            fetchCourse(client, rawCourseKey),
-            client.student.profile.get(),
-        ])
+        const [result, profile] = await Promise.all([fetchCourse(client, rawCourseKey), client.student.profile.get()])
         if (!result) {
             notFound()
         }

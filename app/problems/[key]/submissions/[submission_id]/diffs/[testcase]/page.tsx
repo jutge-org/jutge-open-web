@@ -5,7 +5,12 @@ import { SubmissionTestcaseAnalysisCard } from '@/components/submissions/Submiss
 import { getCurrentClient } from '@/lib/auth'
 import { parseProblemKey } from '@/lib/problems'
 import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchProblemDetail, fetchInstructorOwnsProblem, fetchProblemStatus, resolveProblemId } from '@/services/queries/problemDetail'
+import {
+    fetchProblemDetail,
+    fetchInstructorOwnsProblem,
+    fetchProblemStatus,
+    resolveProblemId,
+} from '@/services/queries/problemDetail'
 import { fetchSubmissionDetail, fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'

@@ -122,8 +122,8 @@ export function ExamsHelpDialog() {
                                 contest) and by status (upcoming, in progress, or finished).
                             </li>
                             <li>
-                                <strong className="font-medium text-foreground">Sort</strong> by date, title, course,
-                                or instructor.
+                                <strong className="font-medium text-foreground">Sort</strong> by date, title, course, or
+                                instructor.
                             </li>
                             <li>
                                 <strong className="font-medium text-foreground">Open</strong> an entry to view its full

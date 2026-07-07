@@ -89,7 +89,9 @@ export function CoursesListToolbar({
                                     >
                                         <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
                                         <DropdownMenuRadioItem value="instructor">Instructor</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="non-instructor">Non-instructor</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="non-instructor">
+                                            Non-instructor
+                                        </DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </>
                             ) : null}

@@ -55,9 +55,10 @@ export function useSpeechRecognition(onTranscript: (transcript: string) => void)
         recognition.interimResults = true
 
         recognition.onresult = (event) => {
-            const transcript = Array.from({ length: event.results.length }, (_, index) => event.results[index][0].transcript).join(
-                '',
-            )
+            const transcript = Array.from(
+                { length: event.results.length },
+                (_, index) => event.results[index][0].transcript,
+            ).join('')
             onTranscriptRef.current(transcript)
         }
 

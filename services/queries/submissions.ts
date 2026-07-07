@@ -139,10 +139,7 @@ export type SubmissionTestcaseAnalysisData = {
     expectedImageSrc?: string
 }
 
-function decodeTestcaseAnalysis(
-    analysis: TestcaseAnalysis,
-    outputAsImage: boolean,
-): SubmissionTestcaseAnalysisData {
+function decodeTestcaseAnalysis(analysis: TestcaseAnalysis, outputAsImage: boolean): SubmissionTestcaseAnalysisData {
     const decoded: SubmissionTestcaseAnalysisData = {
         testcase: analysis.testcase,
         execution: analysis.execution,
@@ -235,9 +232,7 @@ export const fetchSubmissionCode = cache(
         return {
             body: Buffer.from(codeB64, 'base64'),
             contentType:
-                submission.compiler_id === MAKE_PRO2_COMPILER_ID
-                    ? 'application/x-tar'
-                    : 'text/plain; charset=utf-8',
+                submission.compiler_id === MAKE_PRO2_COMPILER_ID ? 'application/x-tar' : 'text/plain; charset=utf-8',
             filename: `${submission_id}.${defaultExtension}`,
         }
     },

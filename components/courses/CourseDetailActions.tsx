@@ -3,14 +3,27 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { ArchiveIcon, ArchiveRestoreIcon, EditIcon, GraduationCap, Loader2, LogOutIcon, EllipsisVerticalIcon } from 'lucide-react'
+import {
+    ArchiveIcon,
+    ArchiveRestoreIcon,
+    EditIcon,
+    GraduationCap,
+    Loader2,
+    LogOutIcon,
+    EllipsisVerticalIcon,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { courseActionSuccessMessage, instructorCoursePropertiesHref, type CourseStatus, type CourseStudentAction } from '@/lib/courses'
+import {
+    courseActionSuccessMessage,
+    instructorCoursePropertiesHref,
+    type CourseStatus,
+    type CourseStudentAction,
+} from '@/lib/courses'
 
 const UNENROLL_CONFIRMATION =
     'Please take into account that, after unenrolling from it, your instructor will not be able to see your progress. This could have strong consequences in the event your grade depends on it. You can enroll it again at any time.'

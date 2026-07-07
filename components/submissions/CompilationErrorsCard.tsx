@@ -7,16 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
-import {
-    formatCompilationErrorContent,
-    type CompilationErrorField,
-} from '@/lib/compilationErrors'
-import {
-    FONT_SCALE_STEP,
-    MAX_FONT_SCALE,
-    MIN_FONT_SCALE,
-    SOURCE_CODE_FONT_SCALE_KEY,
-} from '@/lib/fontScale'
+import { formatCompilationErrorContent, type CompilationErrorField } from '@/lib/compilationErrors'
+import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, SOURCE_CODE_FONT_SCALE_KEY } from '@/lib/fontScale'
 import type { CompilationErrors } from '@/lib/jutge_api_client'
 
 type CompilationErrorsCardProps = {
@@ -88,10 +80,7 @@ function CompilationErrorBlock({
     fontScale: number
     className?: string
 }) {
-    const content = useMemo(
-        () => formatCompilationErrorContent(text, compilerId, field),
-        [text, compilerId, field],
-    )
+    const content = useMemo(() => formatCompilationErrorContent(text, compilerId, field), [text, compilerId, field])
 
     return (
         <pre

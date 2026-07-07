@@ -11,10 +11,7 @@ type CourseProblemStatisticsViewProps = {
 }
 
 export function CourseProblemStatisticsView({ data }: CourseProblemStatisticsViewProps) {
-    const submissions = useMemo(
-        () => data.submissions.map(toStatisticsSubmissionFromCourse),
-        [data.submissions],
-    )
+    const submissions = useMemo(() => data.submissions.map(toStatisticsSubmissionFromCourse), [data.submissions])
 
     return (
         <div className="flex w-full flex-col gap-4">

@@ -31,10 +31,7 @@ export async function unenrollCourseAction(courseKey: string): Promise<CourseAct
 
     try {
         const client = await getCurrentClient()
-        const [result, profile] = await Promise.all([
-            fetchCourse(client, trimmed),
-            client.student.profile.get(),
-        ])
+        const [result, profile] = await Promise.all([fetchCourse(client, trimmed), client.student.profile.get()])
         if (result && isCourseOwnedByUser(result.course.owner, profile)) {
             return { ok: false, error: 'You cannot unenroll from a course you own.' }
         }

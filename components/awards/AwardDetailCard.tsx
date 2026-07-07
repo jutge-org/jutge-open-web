@@ -108,7 +108,10 @@ export function AwardDetailCard({ award }: AwardDetailCardProps) {
                                     <div>
                                         <dt className="text-muted-foreground">Problem</dt>
                                         <dd>
-                                            <Link href={submission.problemHref} className="text-primary hover:underline">
+                                            <Link
+                                                href={submission.problemHref}
+                                                className="text-primary hover:underline"
+                                            >
                                                 {submission.problemTitle}
                                             </Link>
                                         </dd>

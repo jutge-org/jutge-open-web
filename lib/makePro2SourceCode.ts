@@ -13,7 +13,10 @@ type TreeNode = {
 }
 
 function readTarString(header: Buffer, offset: number, length: number): string {
-    return header.toString('utf-8', offset, offset + length).replace(/\0.*$/, '').trim()
+    return header
+        .toString('utf-8', offset, offset + length)
+        .replace(/\0.*$/, '')
+        .trim()
 }
 
 function normalizeTarPath(path: string): string {
@@ -161,14 +164,18 @@ export function makePro2TarToFakeCpp(tarBuffer: Buffer): string {
     ]
 
     for (const entry of fileEntries) {
-        sections.push('', `
+        sections.push(
+            '',
+            `
 /* 
 ────────────────────────────────────────────────────────────────────────────────────
 ${entry.path}
 ──────────────────────────────────────────────────────────────────────────────────── 
 */
 
-`, decodeFileContent(entry.content!))
+`,
+            decodeFileContent(entry.content!),
+        )
     }
 
     return sections.join('\n')

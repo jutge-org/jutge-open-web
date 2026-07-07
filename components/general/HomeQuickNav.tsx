@@ -1,8 +1,4 @@
-import {
-    getSiteNavLinkDescription,
-    getSiteNavLinks,
-    type SiteNavLinksContext,
-} from '@/lib/siteNavLinks'
+import { getSiteNavLinkDescription, getSiteNavLinks, type SiteNavLinksContext } from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
 import {
     Award,

@@ -37,9 +37,7 @@ export async function fetchProfilePageData(client: JutgeApiClient): Promise<Prof
             ? languagesRecord[profile.language_id].eng_name
             : null
     const compilerName =
-        profile.compiler_id && compilersRecord[profile.compiler_id]
-            ? compilersRecord[profile.compiler_id].name
-            : null
+        profile.compiler_id && compilersRecord[profile.compiler_id] ? compilersRecord[profile.compiler_id].name : null
 
     return { profile, countries, languageName, compilerName, avatarDataUrl }
 }

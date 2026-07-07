@@ -37,8 +37,7 @@ const problemTypes = [
     },
     {
         type: 'graphic',
-        description:
-            'Graphic output problem. Your program output is compared as an image rather than plain text.',
+        description: 'Graphic output problem. Your program output is compared as an image rather than plain text.',
     },
     {
         type: 'game',
@@ -102,8 +101,8 @@ export function ProblemsHelpDialog() {
                 <div className="space-y-6 overflow-y-auto px-6 py-6">
                     <HelpSection title="What are problems?">
                         <p>
-                            Problems on Jutge.org are programming exercises with a statement, public test cases, and
-                            one or more supported compilers. Each problem has a unique identifier (for example,{' '}
+                            Problems on Jutge.org are programming exercises with a statement, public test cases, and one
+                            or more supported compilers. Each problem has a unique identifier (for example,{' '}
                             <strong className="font-medium text-foreground">P12345</strong>) and may be available in
                             several languages.
                         </p>
@@ -122,9 +121,7 @@ export function ProblemsHelpDialog() {
                                 The <strong className="font-medium text-foreground">Languages</strong> column shows
                                 which variants exist for each problem. Hover a badge to see the full language name.
                             </li>
-                            <li>
-                                Titles in the list follow your preferred language when a translation is available.
-                            </li>
+                            <li>Titles in the list follow your preferred language when a translation is available.</li>
                             <li>
                                 Open a problem to switch between language variants using the language badges on the
                                 detail page.
@@ -185,9 +182,7 @@ export function ProblemsHelpDialog() {
                                 <strong className="font-medium text-foreground">Open</strong> a problem to read its
                                 statement, view test cases, and submit solutions.
                             </li>
-                            <li>
-                                Hover a problem id or title for a quick summary with author, translator, and tags.
-                            </li>
+                            <li>Hover a problem id or title for a quick summary with author, translator, and tags.</li>
                         </ul>
                     </HelpSection>
                 </div>

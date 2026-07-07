@@ -10,10 +10,7 @@ import {
     instructorFullTextSearch,
     instructorSemanticSearch,
 } from '@/actions/instructor'
-import {
-    ProblemSearchView,
-    type ProblemSearchActions,
-} from '@/components/problems/search/ProblemSearchView'
+import { ProblemSearchView, type ProblemSearchActions } from '@/components/problems/search/ProblemSearchView'
 
 const instructorSearchActions: ProblemSearchActions = {
     fetchCatalog: fetchAllAbstractProblems,

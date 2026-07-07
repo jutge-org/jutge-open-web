@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { AArrowDownIcon, AArrowUpIcon, Columns2Icon, EyeIcon, EyeOffIcon, Rows2Icon } from 'lucide-react'
 
-
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -16,7 +15,6 @@ import type { DecodedTestcase } from '@/services/queries/problemDetail'
 type PublicTestcasesProps = {
     testcases: DecodedTestcase[]
 }
-
 
 export function PublicTestcases({ testcases }: PublicTestcasesProps) {
     const [showWhitespace, setShowWhitespace] = useState(false)

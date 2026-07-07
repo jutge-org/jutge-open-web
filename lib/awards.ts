@@ -1,11 +1,6 @@
 import { parseProblemKey } from '@/lib/problems'
 import type { AllTables, Award, BriefAward, Submission } from '@/lib/jutge_api_client'
-import {
-    buildSubmissionHref,
-    formatSubmissionTime,
-    parseSubmissionTime,
-    submissionVerdict,
-} from '@/lib/submissions'
+import { buildSubmissionHref, formatSubmissionTime, parseSubmissionTime, submissionVerdict } from '@/lib/submissions'
 
 export type AwardRow = {
     award_id: string
@@ -38,9 +33,7 @@ export type AwardDetail = AwardRow & {
 export function buildAwardSubmissionDetail(submission: Submission, tables: AllTables): AwardSubmissionDetail {
     const problem = parseProblemKey(submission.problem_id)
     const problemHref =
-        problem?.kind === 'problem_id'
-            ? `/problems/${problem.problem_nm}`
-            : `/problems/${submission.problem_id}`
+        problem?.kind === 'problem_id' ? `/problems/${problem.problem_nm}` : `/problems/${submission.problem_id}`
     const problemLabel = problem?.kind === 'problem_id' ? problem.problem_nm : submission.problem_id
     const verdict = submissionVerdict(submission)
     const verdictMeta = tables.verdicts[verdict]

@@ -1137,77 +1137,77 @@ function SearchTabsComponent(props: SearchTabsComponentProps) {
             <div className="w-full sm:w-3/4 mx-auto">
                 <TooltipProvider>
                     <Tabs defaultValue="semantic" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="semantic">
-                            <BotIcon className="mr-2 -mt-1" size={16} />
-                            Semantic search
-                        </TabsTrigger>
-                        <TabsTrigger value="fulltext">
-                            <SearchIcon className="mr-2 -mt-1" size={16} />
-                            Text search
-                        </TabsTrigger>
-                    </TabsList>
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="semantic">
+                                <BotIcon className="mr-2 -mt-1" size={16} />
+                                Semantic search
+                            </TabsTrigger>
+                            <TabsTrigger value="fulltext">
+                                <SearchIcon className="mr-2 -mt-1" size={16} />
+                                Text search
+                            </TabsTrigger>
+                        </TabsList>
 
-                    <TabsContent value="semantic" className="space-y-4 mt-4">
-                        <div className="flex gap-2">
-                            <SearchInput
-                                type="text"
-                                placeholder="Your query"
-                                value={props.semanticQuery}
-                                onChange={(e) => props.setSemanticQuery(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && props.handleSemanticSearch()}
-                                className="flex-1"
-                            />
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={props.handleSemanticSearch}
-                                        size="icon"
-                                        className="shrink-0"
-                                        aria-label="Semantic search"
-                                    >
-                                        <BotIcon className="h-4 w-4" aria-hidden />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">Semantic search</TooltipContent>
-                            </Tooltip>
-                        </div>
-                        <p className="text-sm text-muted-foreground text-justify">
-                            Semantic search understands the meaning, language and context of your query to find relevant
-                            results about problems. Problems are reindexed each night.
-                        </p>
-                    </TabsContent>
+                        <TabsContent value="semantic" className="space-y-4 mt-4">
+                            <div className="flex gap-2">
+                                <SearchInput
+                                    type="text"
+                                    placeholder="Your query"
+                                    value={props.semanticQuery}
+                                    onChange={(e) => props.setSemanticQuery(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && props.handleSemanticSearch()}
+                                    className="flex-1"
+                                />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            onClick={props.handleSemanticSearch}
+                                            size="icon"
+                                            className="shrink-0"
+                                            aria-label="Semantic search"
+                                        >
+                                            <BotIcon className="h-4 w-4" aria-hidden />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">Semantic search</TooltipContent>
+                                </Tooltip>
+                            </div>
+                            <p className="text-sm text-muted-foreground text-justify">
+                                Semantic search understands the meaning, language and context of your query to find
+                                relevant results about problems. Problems are reindexed each night.
+                            </p>
+                        </TabsContent>
 
-                    <TabsContent value="fulltext" className="space-y-4 mt-4">
-                        <div className="flex gap-2">
-                            <SearchInput
-                                type="text"
-                                placeholder="Your query"
-                                value={props.fullTextQuery}
-                                onChange={(e) => props.setFullTextQuery(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && props.handleFullTextSearch()}
-                                className="flex-1"
-                            />
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={props.handleFullTextSearch}
-                                        size="icon"
-                                        className="shrink-0"
-                                        aria-label="Text search"
-                                    >
-                                        <SearchIcon className="h-4 w-4" aria-hidden />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">Text search</TooltipContent>
-                            </Tooltip>
-                        </div>
-                        <p className="text-sm text-muted-foreground text-justify">
-                            Text search looks for exact keyword matches in the title, statement, keywords and summaries
-                            of problems. Use boolean operators (AND, OR, NOT) and parentheses for more precise results.
-                            Use quotes for exact phrases. Problems are reindexed each night.
-                        </p>
-                    </TabsContent>
+                        <TabsContent value="fulltext" className="space-y-4 mt-4">
+                            <div className="flex gap-2">
+                                <SearchInput
+                                    type="text"
+                                    placeholder="Your query"
+                                    value={props.fullTextQuery}
+                                    onChange={(e) => props.setFullTextQuery(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && props.handleFullTextSearch()}
+                                    className="flex-1"
+                                />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            onClick={props.handleFullTextSearch}
+                                            size="icon"
+                                            className="shrink-0"
+                                            aria-label="Text search"
+                                        >
+                                            <SearchIcon className="h-4 w-4" aria-hidden />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">Text search</TooltipContent>
+                                </Tooltip>
+                            </div>
+                            <p className="text-sm text-muted-foreground text-justify">
+                                Text search looks for exact keyword matches in the title, statement, keywords and
+                                summaries of problems. Use boolean operators (AND, OR, NOT) and parentheses for more
+                                precise results. Use quotes for exact phrases. Problems are reindexed each night.
+                            </p>
+                        </TabsContent>
                     </Tabs>
                 </TooltipProvider>
             </div>

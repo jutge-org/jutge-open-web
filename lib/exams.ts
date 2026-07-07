@@ -97,7 +97,10 @@ export function buildExamDetail(exam_nm: string, exam: Exam): ExamDetail {
     }
 }
 
-export function examToCalendarLink(exam: Pick<Exam, 'title' | 'place' | 'exp_time_start'>, durationMinutes = DEFAULT_CALENDAR_DURATION_MINUTES): string {
+export function examToCalendarLink(
+    exam: Pick<Exam, 'title' | 'place' | 'exp_time_start'>,
+    durationMinutes = DEFAULT_CALENDAR_DURATION_MINUTES,
+): string {
     const formatDate = (date: Date): string => {
         const isoString = date.toISOString().replace(/[-:]/g, '')
         return isoString.slice(0, 13) + isoString.slice(15, -1)

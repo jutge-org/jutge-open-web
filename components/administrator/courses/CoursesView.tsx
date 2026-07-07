@@ -60,9 +60,7 @@ export default function CoursesView() {
     const [rows, setRows] = useState<AdminCourse[]>([])
 
     const updateCourseFlag = useCallback((courseId: string, field: CourseFlag, value: number) => {
-        setRows((current) =>
-            current.map((row) => (row.course_id === courseId ? { ...row, [field]: value } : row)),
-        )
+        setRows((current) => current.map((row) => (row.course_id === courseId ? { ...row, [field]: value } : row)))
     }, [])
 
     const renderFlagSwitch = useCallback(

@@ -53,8 +53,8 @@ export function CoursesHelpDialog() {
                 <div className="space-y-6 overflow-y-auto px-6 py-6">
                     <HelpSection title="What are courses?">
                         <p>
-                            Courses on Jutge.org are collections of programming problems organized by an instructor
-                            for a class or learning group. They provide a structured path through problem lists and let
+                            Courses on Jutge.org are collections of programming problems organized by an instructor for
+                            a class or learning group. They provide a structured path through problem lists and let
                             instructors follow student progress.
                         </p>
                     </HelpSection>
@@ -67,9 +67,10 @@ export function CoursesHelpDialog() {
                                 available once you are enrolled.
                             </li>
                             <li>
-                                Badges that describe the course: <strong className="font-medium text-foreground">Official</strong>{' '}
-                                (verified by Jutge), <strong className="font-medium text-foreground">Public</strong> (visible
-                                without enrollment), and <strong className="font-medium text-foreground">Instructor</strong>{' '}
+                                Badges that describe the course:{' '}
+                                <strong className="font-medium text-foreground">Official</strong> (verified by Jutge),{' '}
+                                <strong className="font-medium text-foreground">Public</strong> (visible without
+                                enrollment), and <strong className="font-medium text-foreground">Instructor</strong>{' '}
                                 (you own the course).
                             </li>
                         </ul>
@@ -95,8 +96,9 @@ export function CoursesHelpDialog() {
                                 Your instructor will no longer see your progress, but you can enroll again later.
                             </li>
                             <li>
-                                If you are the instructor, use <strong className="font-medium text-foreground">Edit</strong>{' '}
-                                to manage course properties.
+                                If you are the instructor, use{' '}
+                                <strong className="font-medium text-foreground">Edit</strong> to manage course
+                                properties.
                             </li>
                             <li>
                                 Use search, filters, and sorting to find courses by title or author, or to narrow

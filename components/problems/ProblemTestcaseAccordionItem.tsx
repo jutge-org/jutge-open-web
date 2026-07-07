@@ -27,7 +27,6 @@ type ProblemTestcaseAccordionItemProps = {
     onToggle: () => void
 }
 
-
 export function ProblemTestcaseAccordionItem({ testcase, isOpen, onToggle }: ProblemTestcaseAccordionItemProps) {
     const [showWhitespace, setShowWhitespace] = useState(false)
     const [sideways, setSideways] = useState(true)

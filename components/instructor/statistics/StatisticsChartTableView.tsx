@@ -47,8 +47,7 @@ export function StatisticsChartTableView({
         <>
             <div
                 className={cn(
-                    !chartVisible &&
-                        'pointer-events-none fixed top-0 left-[-9999px] overflow-hidden opacity-0',
+                    !chartVisible && 'pointer-events-none fixed top-0 left-[-9999px] overflow-hidden opacity-0',
                 )}
                 style={!chartVisible ? { width: chartHiddenWidth, height: chartHiddenHeight } : undefined}
                 aria-hidden={!chartVisible}
@@ -74,9 +73,7 @@ export function StatisticsChartTableView({
                                 )}
                             </Toggle>
                         </TooltipTrigger>
-                        <TooltipContent>
-                            {chartVisible ? 'Show table' : `Show ${showChartLabel}`}
-                        </TooltipContent>
+                        <TooltipContent>{chartVisible ? 'Show table' : `Show ${showChartLabel}`}</TooltipContent>
                     </Tooltip>
                     <StatisticsSaveButtonGroup
                         onSaveSvg={saveSvgHandle}

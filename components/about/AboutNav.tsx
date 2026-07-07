@@ -18,9 +18,7 @@ export function AboutNav({ activeTab }: AboutNavProps) {
                         if (external) {
                             return (
                                 <TabsTrigger key={tab} value={tab} asChild>
-                                    <ExternalLink href={href}>
-                                        {label}
-                                    </ExternalLink>
+                                    <ExternalLink href={href}>{label}</ExternalLink>
                                 </TabsTrigger>
                             )
                         }

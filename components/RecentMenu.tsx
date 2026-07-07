@@ -59,8 +59,7 @@ function RecentSection<T>({ label, icon, items, renderHref, renderTitle, emptyLa
 
 export function RecentMenu() {
     const { recents, clearCourses, clearProblems, clearSubmissions, clearAll } = useRecents()
-    const hasAnyRecents =
-        recents.courses.length > 0 || recents.problems.length > 0 || recents.submissions.length > 0
+    const hasAnyRecents = recents.courses.length > 0 || recents.problems.length > 0 || recents.submissions.length > 0
 
     return (
         <DropdownMenu>

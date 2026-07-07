@@ -1,11 +1,6 @@
 import type { Dict } from '@/lib/instructor/utils'
 import { parseProblemKey } from '@/lib/problems'
-import type {
-    AbstractProblem,
-    CourseSubmission,
-    InstructorCourse,
-    InstructorList,
-} from '@/lib/jutge_api_client'
+import type { AbstractProblem, CourseSubmission, InstructorCourse, InstructorList } from '@/lib/jutge_api_client'
 
 export type CourseProblemRankingRow = {
     rank: number

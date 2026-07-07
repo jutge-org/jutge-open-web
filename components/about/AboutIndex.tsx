@@ -1,7 +1,16 @@
 import { ExternalLink } from '@/components/ExternalLink'
 import { aboutIndexItems } from '@/lib/about'
 import { cn } from '@/lib/utils'
-import { Accessibility as AccessibilityIcon, Camera, ExternalLink as ExternalLinkIcon, FileText, Info, Megaphone, Send, Shield } from 'lucide-react'
+import {
+    Accessibility as AccessibilityIcon,
+    Camera,
+    ExternalLink as ExternalLinkIcon,
+    FileText,
+    Info,
+    Megaphone,
+    Send,
+    Shield,
+} from 'lucide-react'
 import Link from 'next/link'
 
 const indexIcons: Record<string, typeof Info> = {

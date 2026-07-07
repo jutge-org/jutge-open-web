@@ -31,7 +31,12 @@ export function ProfileFormShell({
                     <div className="hidden sm:block" />
                     <div className="flex flex-col gap-3">
                         {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
-                        <Button type="button" onClick={onSave} disabled={pending || saveDisabled} className="w-full gap-2 sm:w-auto">
+                        <Button
+                            type="button"
+                            onClick={onSave}
+                            disabled={pending || saveDisabled}
+                            className="w-full gap-2 sm:w-auto"
+                        >
                             <SaveIcon className="size-4" />
                             {pending ? pendingLabel : saveLabel}
                         </Button>

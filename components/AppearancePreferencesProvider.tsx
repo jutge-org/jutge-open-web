@@ -171,7 +171,7 @@ export function AppearancePreferencesProvider({ children }: { children: ReactNod
         setReducedMotionState(DEFAULT_REDUCED_MOTION)
         syncReducedMotionDataset(DEFAULT_REDUCED_MOTION)
         setSoundEffectsState(DEFAULT_SOUND_EFFECTS)
-        setTheme('dark')
+        setTheme('system')
         setLayoutWidth(DEFAULT_LAYOUT_WIDTH)
     }
 

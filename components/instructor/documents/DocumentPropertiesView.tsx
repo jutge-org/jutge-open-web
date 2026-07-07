@@ -3,7 +3,7 @@
 import dayjs from 'dayjs'
 import { SaveIcon, TrashIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { createElement, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { fetchInstructorDocument, instructorDocumentRemove, instructorDocumentUpdate } from '@/actions/instructor'
@@ -69,7 +69,6 @@ function EditDocumentForm(props: DocumentFormProps) {
     const [description, setDescription] = useDynamic(props.document.description, [props.document])
     const [file, setFile] = useDynamic(null as File | null, [props.document])
 
-    const FileIcon = getDocumentFileIcon(props.document.type)
     const typeLabel = documentTypeLabel(props.document)
 
     const fields: JFormFields = {

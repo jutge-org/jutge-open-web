@@ -214,7 +214,7 @@ function MySummaryChart(props: MySummaryChartProps) {
     }
 
     return (
-        <ChartContainer config={chartConfig} className="h-[372px] w-full">
+        <ChartContainer config={chartConfig} className="h-93 w-full">
             <BarChart data={chartData} layout="vertical">
                 <CartesianGrid horizontal={false} vertical={false} />
                 <YAxis dataKey="problem_nm" type="category" tickLine={false} axisLine={false} />
@@ -265,7 +265,7 @@ function MyTimelineChart(props: MyTimelineChartProps) {
     } satisfies ChartConfig
 
     return (
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+        <ChartContainer config={chartConfig} className="h-75 w-full">
             <BarChart data={props.data}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -350,7 +350,7 @@ function MyPieChart(props: MyPieChartProps) {
     const chart = (
         <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[400px] [&_.recharts-text]:fill-background"
+            className="mx-auto aspect-square max-h-100 [&_.recharts-text]:fill-background"
         >
             <PieChart>
                 <ChartTooltip content={<ChartTooltipContent nameKey="label" hideLabel />} />

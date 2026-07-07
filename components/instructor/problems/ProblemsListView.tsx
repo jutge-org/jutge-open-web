@@ -59,11 +59,6 @@ export function ProblemsListView() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        if (isMobile)
-            setColDefs((colDefs) => colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at'))
-    }, [isMobile])
-
-    useEffect(() => {
         async function fetchProblems() {
             setLoading(true)
             try {
@@ -290,6 +285,11 @@ export function ProblemsListView() {
             ),
         },
     ])
+
+    useEffect(() => {
+        if (isMobile)
+            setColDefs((colDefs) => colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at'))
+    }, [isMobile])
 
     return (
         <>

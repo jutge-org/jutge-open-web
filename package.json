@@ -73,6 +73,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
+        "@eslint/compat": "^2.1.0",
         "@tailwindcss/postcss": "^4",
         "@types/byte-size": "^8.1.2",
         "@types/canvas-confetti": "^1.9.0",

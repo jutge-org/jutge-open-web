@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { BookTextIcon, FileQuestionIcon, HomeIcon, ListIcon } from 'lucide-react'
+import { FileQuestionIcon, HomeIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata = { title: 'Page not found — Jutge.org' }

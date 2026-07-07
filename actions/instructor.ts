@@ -5,7 +5,6 @@ import type {
     ChatMessage,
     ChatPrompt,
     Deprecation,
-    Document,
     DocumentCreation,
     InstructorCourseCreation,
     InstructorCourseUpdate,

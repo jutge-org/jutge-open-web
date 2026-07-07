@@ -10,11 +10,8 @@ ModuleRegistry.registerModules([AllCommunityModule])
 type GridProps = {
     wrapperBorder?: boolean
     themeParams?: Record<string, string>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rowData?: any[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columnDefs?: any[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
 }
 

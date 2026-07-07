@@ -10,14 +10,16 @@ import {
 } from '@/lib/instructor/courseStatisticsPeriod'
 
 export function useCourseStatisticsPeriodPreference(courseKey: string, defaultStartDate: Date, defaultEndDate: Date) {
-    const fallback: CourseStatisticsPeriod = { startDate: defaultStartDate, endDate: defaultEndDate }
-    const [period, setPeriodState] = useState<CourseStatisticsPeriod>(fallback)
+    const [period, setPeriodState] = useState<CourseStatisticsPeriod>(() => ({
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
+    }))
 
     useEffect(() => {
-        const stored = parseCourseStatisticsPeriod(
-            localStorage.getItem(courseStatisticsPeriodStorageKey(courseKey)),
-            fallback,
-        )
+        const stored = parseCourseStatisticsPeriod(localStorage.getItem(courseStatisticsPeriodStorageKey(courseKey)), {
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+        })
         setPeriodState(stored)
     }, [courseKey, defaultStartDate, defaultEndDate])
 

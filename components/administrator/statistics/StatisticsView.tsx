@@ -11,7 +11,6 @@ import {
     fetchAdminStatsDistributionOfProglangs,
     fetchAdminStatsDistributionOfSubmissionsByHour,
     fetchAdminStatsDistributionOfSubmissionsByWeekday,
-    fetchAdminStatsDistributionOfSubmissionsByDay,
     fetchAdminStatsDistributionOfSubmissionsByYear,
     fetchAdminStatsDistributionOfUsersByCountry,
     fetchAdminStatsDistributionOfUsersBySubmissions,
@@ -177,19 +176,6 @@ function SubmissionsByWeekDay() {
     }, [])
 
     return MyCard({ title: 'Submissions by weekday', children: MyBarChart(data, CHART_THEME_COLORS[3], 'Submissions') })
-}
-
-function SubmissionsByDay() {
-    const [data, setData] = useState<Distribution | null>(null)
-
-    useEffect(() => {
-        async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByDay())
-        }
-        update()
-    }, [])
-
-    return MyCard({ title: 'Submissions by day', children: MyBarChart(data) })
 }
 
 function SubmissionsByHour() {

@@ -1,6 +1,3 @@
-import { ExternalLink } from '@/components/ExternalLink'
-import { GithubIcon } from '@/components/GithubIcon'
-import { JutgeLogoIcon } from '@/components/JutgeLogoIcon'
 import { UpcLogoIcon } from '@/components/UpcLogoIcon'
 import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 

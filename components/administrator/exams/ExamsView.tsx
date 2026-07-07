@@ -48,7 +48,7 @@ export default function ExamsView() {
         }
     }, [isMobile])
 
-    const [colDefs, setColDefs] = useState([
+    const colDefs = [
         {
             field: 'time',
             headerName: 'Scheduled time',
@@ -89,7 +89,7 @@ export default function ExamsView() {
             width: 100,
             type: 'rightAligned',
         },
-    ])
+    ]
 
     return (
         <>

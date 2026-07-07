@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardRecentConnectedUsers } from '@/actions/administrator'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { UsersIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'

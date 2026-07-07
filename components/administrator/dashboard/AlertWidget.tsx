@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardAll } from '@/actions/administrator'
 import { Prose } from '@/components/documentation/Prose'
 import { MessageSquareWarningIcon } from 'lucide-react'
 import pluralize from 'pluralize'
@@ -56,7 +39,7 @@ export default function AlertWidget() {
         )
     }
 
-    for (const [_disk_id, disk] of Object.entries(data.free_disk_space)) {
+    for (const [, disk] of Object.entries(data.free_disk_space)) {
         if (disk && Number(disk.use.replace('%', '')) > 75) {
             alerts.push(
                 `Disk ${disk.disk} is almost full: ${disk.available} available, ${disk.used} used (${disk.use}).`,

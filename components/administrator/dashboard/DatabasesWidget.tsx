@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardDatabasesInfo } from '@/actions/administrator'
 import byteSize from 'byte-size'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'

@@ -58,14 +58,10 @@ function EditDocumentForm(props: DocumentFormProps) {
         cancelLabel: 'No',
     })
 
-    const [document_nm, setDocument_nm] = useDynamic(props.document.document_nm, [props.document])
+    const [document_nm] = useDynamic(props.document.document_nm, [props.document])
     const [title, setTitle] = useDynamic(props.document.title, [props.document])
-    const [created_at, setCreated_at] = useDynamic(dayjs(props.document.created_at).format('YYYY-MM-DD HH:mm:ss'), [
-        props.document,
-    ])
-    const [updated_at, setUpdated_at] = useDynamic(dayjs(props.document.updated_at).format('YYYY-MM-DD HH:mm:ss'), [
-        props.document,
-    ])
+    const [created_at] = useDynamic(dayjs(props.document.created_at).format('YYYY-MM-DD HH:mm:ss'), [props.document])
+    const [updated_at] = useDynamic(dayjs(props.document.updated_at).format('YYYY-MM-DD HH:mm:ss'), [props.document])
     const [description, setDescription] = useDynamic(props.document.description, [props.document])
     const [file, setFile] = useDynamic(null as File | null, [props.document])
 
@@ -104,7 +100,7 @@ function EditDocumentForm(props: DocumentFormProps) {
             label: `Current ${typeLabel}`,
             content: (
                 <Button variant="outline" className="h-16 w-16 [&_svg]:size-12" onClick={download}>
-                    <FileIcon strokeWidth={0.6} />
+                    {createElement(getDocumentFileIcon(props.document.type), { strokeWidth: 0.6 })}
                 </Button>
             ),
         },

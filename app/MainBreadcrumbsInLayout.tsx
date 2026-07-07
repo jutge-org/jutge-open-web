@@ -124,7 +124,7 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
     }
 }
 
-function MainNavCoursesSubItemIcon(_props: { href: string }) {
+function MainNavCoursesSubItemIcon() {
     return <BookOpenCheckIcon aria-hidden />
 }
 

@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardRecentLoadAverages } from '@/actions/administrator'
 import { ServerCogIcon } from 'lucide-react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 

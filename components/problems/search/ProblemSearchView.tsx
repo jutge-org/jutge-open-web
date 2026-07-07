@@ -135,26 +135,26 @@ function SearchViewInner(props: SearchViewProps) {
 
     async function semanticSearch() {
         if (searching) return
-        setResults((old) => undefined)
+        setResults(undefined)
         const query = semanticQuery.trim()
-        setSemanticQuery((old) => query)
+        setSemanticQuery(query)
         if (query.length === 0) return
-        setSearching((old) => true)
+        setSearching(true)
         const results = await props.actions.semanticSearch(query)
-        setSearching((old) => false)
-        setResults((old) => results)
+        setSearching(false)
+        setResults(results)
     }
 
     async function fullTextSearch() {
         if (searching) return
-        setResults((old) => undefined)
+        setResults(undefined)
         const query = fullTextQuery.trim()
-        setFullTextQuery((old) => query)
+        setFullTextQuery(query)
         if (query.length === 0) return
         setSearching(true)
         const results = await props.actions.fullTextSearch(query)
-        setSearching((old) => false)
-        setResults((old) => results)
+        setSearching(false)
+        setResults(results)
     }
 
     return (
@@ -893,14 +893,14 @@ function Result(props: ResultProps) {
     const [statement, setStatement] = useState<JSX.Element | null>(null)
     const [isStatementDialogOpen, setIsStatementDialogOpen] = useState(false)
 
-    const [abspbm, setAbspbm] = useState(props.allAbstractProblems[props.result.problem_nm])
+    const abspbm = props.allAbstractProblems[props.result.problem_nm]
     const [pbm, setPbm] = useState(
         Object.values(abspbm.problems).find((p) => p.original_language_id === p.language_id)!,
     )
     const [detailsOpen, setDetailsOpen] = useState(false)
 
     function click(language_id: string) {
-        setPbm((old) => Object.values(abspbm.problems).find((p) => p.language_id === language_id)!)
+        setPbm(Object.values(abspbm.problems).find((p) => p.language_id === language_id)!)
     }
 
     async function pdfFile() {

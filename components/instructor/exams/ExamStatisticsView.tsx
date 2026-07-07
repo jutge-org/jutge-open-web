@@ -249,9 +249,10 @@ type MyTimelineChartProps = {
 }
 
 function MyTimelineChart(props: MyTimelineChartProps) {
-    for (const bucket of props.data) {
-        bucket.minute = bucket.minute.toString()
-    }
+    const chartData = props.data.map((bucket) => ({
+        ...bucket,
+        minute: bucket.minute.toString(),
+    }))
 
     const chartConfig = {
         ok: {
@@ -266,7 +267,7 @@ function MyTimelineChart(props: MyTimelineChartProps) {
 
     return (
         <ChartContainer config={chartConfig} className="h-75 w-full">
-            <BarChart data={props.data}>
+            <BarChart data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                     dataKey="minute"

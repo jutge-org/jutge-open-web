@@ -42,6 +42,7 @@ function SponsorLogoCard({ href, src, alt, className }: (typeof sponsors)[number
     return (
         <a href={href} target="_blank" rel="noopener noreferrer" className={cn(sponsorCardClassName, className)}>
             <div className="row-start-1 flex h-full w-full min-h-0 items-end justify-center overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     alt={alt}
                     className="max-h-full max-w-full object-contain opacity-80 grayscale transition-opacity hover:opacity-100 dark:invert"

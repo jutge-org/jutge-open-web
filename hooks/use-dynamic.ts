@@ -5,6 +5,7 @@ export function useDynamic<T>(init: T, deps: DependencyList): [T, Dispatch<SetSt
 
     useEffect(() => {
         setValue(init)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps)
 
     return [value, setValue]

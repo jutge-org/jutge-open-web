@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { sleep } from 'radash'
 import { Dispatch, JSX, SetStateAction, useState } from 'react'
-import Dropzone, { DropzoneState } from 'shadcn-dropzone'
+import Dropzone from 'shadcn-dropzone'
 import { toast } from 'sonner'
 import { ZodSchema } from 'zod'
 import { cn, commandFilter } from '@/lib/utils'
@@ -979,7 +979,9 @@ interface JSeparatorComponentProps {
     field: JFormSeparatorField
 }
 
-function JSeparatorComponent(props: JSeparatorComponentProps) {
+function JSeparatorComponent({ fieldKey, field }: JSeparatorComponentProps) {
+    void fieldKey
+    void field
     const content = (
         <div className="mt-4 mb-2">
             <div className="border-t border-neutral-300" />
@@ -1060,7 +1062,7 @@ function DropzoneSingle(props: DropzoneSingleProps) {
                     }
                 }}
             >
-                {(dropzone: DropzoneState) => (
+                {() => (
                     <div className="w-96 h-28 pt-5 flex flex-col items-center text-xs">
                         <CloudUploadIcon className="w-8 h-8" strokeWidth={1} />
                         <div className="pt-2">Drag and drop your file here or click to select.</div>

@@ -9,7 +9,7 @@ import { SearchInput } from '@/components/SearchInput'
 import { useState } from 'react'
 
 export default function UsersListView() {
-    const [runProfileDialog, ProfileDialogComponent] = useProfileDialog({})
+    const [runProfileDialog, ProfileDialogComponent] = useProfileDialog()
     const [rows, setRows] = useState<ProfileForAdmin[]>([])
     const [search, setSearch] = useState('')
     const [message, setMessage] = useState('Search must be at least 3 characters long')

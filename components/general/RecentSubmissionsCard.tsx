@@ -40,10 +40,6 @@ function submissionPercentage(count: number, minutes: number): number {
     return Math.min(100, (count / max) * 100)
 }
 
-function formatPercentage(percentage: number): string {
-    return Number.isInteger(percentage) ? String(percentage) : percentage.toFixed(1)
-}
-
 type RadialGaugeProps = {
     count: number
     minutes: number
@@ -54,7 +50,6 @@ type RadialGaugeProps = {
 
 function RadialGauge({ count, minutes, label, period, replayKey }: RadialGaugeProps) {
     const percentage = submissionPercentage(count, minutes)
-    const peakCapacity = MAX_SUBMISSIONS_PER_MINUTE * minutes
     const submissionWord = count === 1 ? 'submission' : 'submissions'
     const trackData = [{ key: 'track', value: 100, fill: 'var(--color-track)' }]
     const progressData = [

@@ -31,6 +31,7 @@ export async function HomePageGuest() {
                     alt="Jutge.org"
                     width={250}
                     height={250}
+                    loading="eager"
                     className="-mb-2 hover:ease-in-out hover:duration-300 hover:scale-125"
                 />
                 <h1 className="inline-block bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text pb-1 leading-[1.2] font-thin tracking-wide text-balance text-transparent sm:text-8xl">

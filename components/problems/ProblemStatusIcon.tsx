@@ -4,6 +4,7 @@ import { GaugeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
+import { cn } from '@/lib/utils'
 
 const statusTooltipFields = [
     { key: 'status' as const, label: 'Status', always: true },
@@ -70,7 +71,7 @@ export function ProblemStatusIcon({ status, className }: ProblemStatusIconProps)
         <Tooltip>
             <TooltipTrigger asChild>
                 <span className="inline-flex cursor-default items-center">
-                    <Icon className={className ?? `size-6 shrink-0 ${iconClassName}`} aria-hidden />
+                    <Icon className={cn(iconClassName, 'shrink-0', className ?? 'size-6')} aria-hidden />
                 </span>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="flex flex-col items-start px-3 py-2">
@@ -79,3 +80,4 @@ export function ProblemStatusIcon({ status, className }: ProblemStatusIconProps)
         </Tooltip>
     )
 }
+

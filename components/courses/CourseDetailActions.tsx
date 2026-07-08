@@ -7,8 +7,8 @@ import {
     ArchiveIcon,
     ArchiveRestoreIcon,
     EditIcon,
-    GraduationCap,
     Loader2,
+    LogInIcon,
     LogOutIcon,
     EllipsisVerticalIcon,
 } from 'lucide-react'
@@ -102,73 +102,81 @@ export function CourseDetailActions({
         })
     }
 
+    const showEnrollButton = status === 'available'
+    const showUnenrollButton = status !== 'available' && !isOwner
+    const hasMenuItems = isOwner || status === 'enrolled' || status === 'archived'
+
     return (
         <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            <div className="flex shrink-0 items-center gap-2">
+                {showEnrollButton ? (
                     <Button
                         type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-8 shrink-0"
+                        onClick={() => handleAction('enroll')}
                         disabled={isPending}
-                        aria-label={`Actions for ${title}`}
+                        className="bg-blue-600 text-white hover:bg-blue-700"
                     >
-                        {isPending ? (
-                            <Loader2 className="size-4 animate-spin" aria-hidden />
-                        ) : (
-                            <EllipsisVerticalIcon className="size-4" aria-hidden />
-                        )}
+                        {isPending ? <Loader2 className="animate-spin" aria-hidden /> : <LogInIcon aria-hidden />}
+                        Enroll this course
                     </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {canSuperviseCourse({ isOwner, isTutor }) ? (
-                        <SuperviseCourseMenuItem userId={userId} courseKey={courseKey} />
-                    ) : null}
-                    {isOwner ? (
-                        <DropdownMenuItem asChild>
-                            <Link href={instructorCoursePropertiesHref(courseKey)}>
-                                <EditIcon aria-hidden />
-                                Edit
-                            </Link>
-                        </DropdownMenuItem>
-                    ) : null}
-                    {status === 'available' ? (
-                        <DropdownMenuItem onClick={() => handleAction('enroll')}>
-                            <GraduationCap aria-hidden />
-                            Enroll
-                        </DropdownMenuItem>
-                    ) : null}
-                    {status === 'enrolled' ? (
-                        <>
-                            {!isOwner ? (
-                                <DropdownMenuItem onClick={() => handleAction('unenroll')}>
-                                    <LogOutIcon aria-hidden />
-                                    Unenroll
+                ) : null}
+                {showUnenrollButton ? (
+                    <Button
+                        type="button"
+                        onClick={() => handleAction('unenroll')}
+                        disabled={isPending}
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                        {isPending ? <Loader2 className="animate-spin" aria-hidden /> : <LogOutIcon aria-hidden />}
+                        Unenroll this course
+                    </Button>
+                ) : null}
+                {hasMenuItems ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 shrink-0"
+                                disabled={isPending}
+                                aria-label={`Actions for ${title}`}
+                            >
+                                {isPending ? (
+                                    <Loader2 className="size-4 animate-spin" aria-hidden />
+                                ) : (
+                                    <EllipsisVerticalIcon className="size-4" aria-hidden />
+                                )}
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {canSuperviseCourse({ isOwner, isTutor }) ? (
+                                <SuperviseCourseMenuItem userId={userId} courseKey={courseKey} />
+                            ) : null}
+                            {isOwner ? (
+                                <DropdownMenuItem asChild>
+                                    <Link href={instructorCoursePropertiesHref(courseKey)}>
+                                        <EditIcon aria-hidden />
+                                        Edit
+                                    </Link>
                                 </DropdownMenuItem>
                             ) : null}
-                            <DropdownMenuItem onClick={() => handleAction('archive')}>
-                                <ArchiveIcon aria-hidden />
-                                Archive
-                            </DropdownMenuItem>
-                        </>
-                    ) : null}
-                    {status === 'archived' ? (
-                        <>
-                            {!isOwner ? (
-                                <DropdownMenuItem onClick={() => handleAction('unenroll')}>
-                                    <LogOutIcon aria-hidden />
-                                    Unenroll
+                            {status === 'enrolled' ? (
+                                <DropdownMenuItem onClick={() => handleAction('archive')}>
+                                    <ArchiveIcon aria-hidden />
+                                    Archive
                                 </DropdownMenuItem>
                             ) : null}
-                            <DropdownMenuItem onClick={() => handleAction('unarchive')}>
-                                <ArchiveRestoreIcon aria-hidden />
-                                Unarchive
-                            </DropdownMenuItem>
-                        </>
-                    ) : null}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                            {status === 'archived' ? (
+                                <DropdownMenuItem onClick={() => handleAction('unarchive')}>
+                                    <ArchiveRestoreIcon aria-hidden />
+                                    Unarchive
+                                </DropdownMenuItem>
+                            ) : null}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : null}
+            </div>
             <ConfirmDialogComponent />
             <UnenrollDialogComponent />
         </>

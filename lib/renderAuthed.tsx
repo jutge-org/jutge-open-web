@@ -4,6 +4,8 @@ import { AccessDeniedGate } from '@/components/AccessDeniedGate'
 import { LoginGate } from '@/components/LoginGate'
 import { tryGetCurrentUser, type SessionUser } from '@/lib/auth'
 
+// FIXME: This is a really stupid way to organize forbidden parts of the app...
+
 export async function renderAuthed(render: (user: SessionUser) => ReactNode | Promise<ReactNode>): Promise<ReactNode> {
     const user = await tryGetCurrentUser()
     if (!user) return <LoginGate />

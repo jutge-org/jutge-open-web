@@ -23,7 +23,7 @@ const problemTableColumnDefs = [
         cellRenderer: (p: ICellRendererParams<ProblemRow>) => (
             <Link href={`/instructor/problems/${p.data!.problem_nm}/properties`}>{p.data!.problem_nm}</Link>
         ),
-        width: 100,
+        width: 80,
         filter: true,
         valueGetter: (p: ICellRendererParams<ProblemRow>) => p.data!.problem_nm,
     },
@@ -46,7 +46,7 @@ const problemTableColumnDefs = [
     {
         field: 'sharing',
         headerName: 'Sharing',
-        width: 120,
+        width: 90,
         filter: false,
         sort: false,
         cellRenderer: (p: ICellRendererParams<ProblemRow>) => <SharingCell problem={p.data!} />,
@@ -78,7 +78,8 @@ export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] })
 
     let columnDefs = problemTableColumnDefs
     if (isMobile) {
-        columnDefs = columnDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at')
+        const includedFields = ["problem_nm", "title", "sharing"]
+        columnDefs = columnDefs.filter((c) => includedFields.includes(c.field))
     }
 
     const filteredRows = rows.filter((row) => row.deprecated === showDeprecated)

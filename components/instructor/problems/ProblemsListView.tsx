@@ -1,11 +1,6 @@
 'use client'
 
-import {
-    fetchAbstractProblems,
-    fetchInstructorAllAlerts,
-    fetchInstructorAllSharingSettings,
-    fetchInstructorOwnProblems,
-} from '@/actions/instructor'
+import { fetchInstructorProblemTableRows } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
 import { Badge } from '@/components/ui/badge'
@@ -14,8 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { mapmap } from '@/lib/instructor/utils'
-import type { AbstractProblem, ProblemAlerts, SharingSettings } from '@/lib/jutge_api_client'
+import type { AbstractProblem } from '@/lib/jutge_api_client'
 import type { ICellRendererParams } from 'ag-grid-community'
 import dayjs from 'dayjs'
 import {
@@ -51,6 +45,8 @@ type ProblemRow = {
     se_count: number
     ie_count: number
 }
+
+// Sharing Icons
 
 type LucideIcon = React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>>
 
@@ -93,6 +89,8 @@ const SharingCell = ({ problem }: { problem: ProblemRow }) => (
     </div>
 )
 
+// Language Badges
+
 const LanguageBadge = ({ language, problem }: { language: string; problem: ProblemRow }) => {
     const abstractProblem = problem.abstractProblems[problem.problem_nm]
     if (!abstractProblem) {
@@ -122,7 +120,7 @@ const LanguageBadge = ({ language, problem }: { language: string; problem: Probl
                     </p>
                     <hr />
                     <p>{solution_tags?.tags.replaceAll(',', ', ')}</p>
-                    <p className="flex gap-1 justify-start debug">
+                    <p className="flex gap-1 justify-start">
                         <BotIcon size={14} className="" /> {solution_tags?.model}
                     </p>
                 </TooltipContent>
@@ -131,7 +129,26 @@ const LanguageBadge = ({ language, problem }: { language: string; problem: Probl
     )
 }
 
-const initialTableColumns = [
+// Alerts
+
+const AlertIcon = ({ title, Icon }: { title: string; Icon: LucideIcon }) => (
+    <span title={title}>
+        <Icon size={14} className="text-red-800" />
+    </span>
+)
+
+const AlertsCell = ({ problem }: { problem: ProblemRow }) => (
+    <div className="mt-3 flex flex-row items-center gap-2">
+        {problem.deprecated && <AlertIcon title="Deprecated" Icon={SkullIcon} />}
+        {!problem.checked && <AlertIcon title="Checks failed" Icon={AlertCircleIcon} />}
+        {problem.se_count > 0 && <AlertIcon title={`${problem.se_count} setter errors`} Icon={CatIcon} />}
+        {problem.ie_count > 0 && <AlertIcon title={`${problem.ie_count} internal errors`} Icon={BugIcon} />}
+    </div>
+)
+
+// Problem Table Column Definitions
+
+const problemTableColumnDefs = [
     {
         field: 'problem_nm',
         headerName: 'Id',
@@ -182,113 +199,46 @@ const initialTableColumns = [
         width: 90,
         filter: false,
         sort: false,
-        cellRenderer: (p: ICellRendererParams<ProblemRow>) => (
-            <div className="mt-3 flex flex-row items-center gap-2">
-                {p.data!.deprecated && (
-                    <span title="Deprecated">
-                        <SkullIcon size={14} className="text-red-800" />
-                    </span>
-                )}
-                {!p.data!.checked && (
-                    <span title="Checks failed">
-                        <AlertCircleIcon size={14} className="text-red-800" />
-                    </span>
-                )}
-                {p.data!.se_count > 0 && (
-                    <span
-                        title={`${p.data!.se_count} setter errors`}
-                        className="flex items-center gap-1 text-xs text-gray-500"
-                    >
-                        <CatIcon size={14} className="text-red-800" />
-                    </span>
-                )}
-                {p.data!.ie_count > 0 && (
-                    <span
-                        title={`${p.data!.ie_count} internal errors`}
-                        className="flex items-center gap-1 text-xs text-gray-500"
-                    >
-                        <BugIcon size={14} className="text-red-800" />
-                    </span>
-                )}
-            </div>
-        ),
+        cellRenderer: (p: ICellRendererParams<ProblemRow>) => <AlertsCell problem={p.data!} />,
     },
 ]
 
-const fetchInstructorProblems = async () => {
-    const ownProblems = await fetchInstructorOwnProblems()
-    const ownProblemsSharingSettings = await fetchInstructorAllSharingSettings()
-    const allAlerts = await fetchInstructorAllAlerts()
-    const abstractProblems = await fetchAbstractProblems(ownProblems.join(','))
-    const sharingByProblem: Record<string, SharingSettings> = Object.fromEntries(
-        ownProblemsSharingSettings.map((s) => [s.problem_nm, s]),
-    )
-    const alertsByProblem: Record<string, ProblemAlerts> = Object.fromEntries(
-        allAlerts.map((alerts) => [alerts.problem_nm, alerts]),
-    )
+const ProblemTable = ({ rows, loading }: { rows: ProblemRow[]; loading: boolean }) => {
+    const isMobile = useIsMobile()
 
-    function buildTitle(problem_nm: string) {
-        const problems = Object.values(abstractProblems[problem_nm].problems)
-        return problems.map((problem) => problem.title).join(' / ')
+    let columnDefs = problemTableColumnDefs
+    if (isMobile) {
+        columnDefs = columnDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at')
     }
 
-    return ownProblems.map((problem_nm) => {
-        const abstractProblem = abstractProblems[problem_nm]
-        const sharing = sharingByProblem[problem_nm]
-        const alerts = alertsByProblem[problem_nm]
-        return {
-            problem_nm,
-            title: buildTitle(abstractProblem.problem_nm),
-            created_at: abstractProblem.created_at,
-            updated_at: abstractProblem.updated_at,
-            deprecated: abstractProblem.deprecation !== null,
-            languages: mapmap(abstractProblem.problems, (_problem_id, problem) => problem.language_id),
-            passcode: sharing?.passcode === null,
-            shared_testcases: sharing?.shared_testcases ?? false,
-            shared_solutions: sharing?.shared_solutions ?? false,
-            checked: Object.values(abstractProblem.problems).every((problem) => problem.checked !== 0),
-            se_count: alerts?.se_count ?? 0,
-            ie_count: alerts?.ie_count ?? 0,
-            abstractProblems,
-        }
-    })
+    return <AgTableFull rowData={rows} columnDefs={columnDefs} loading={loading} />
 }
 
 export function ProblemsListView() {
-    const isMobile = useIsMobile()
-
     const [problemRows, setProblemRows] = useState<ProblemRow[]>([])
     const [problemRowsAll, setProblemRowsAll] = useState<ProblemRow[]>([])
     const [showDeprecated, setShowDeprecated] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function fetchProblems() {
-            setLoading(true)
-            try {
-                const rows = await fetchInstructorProblems()
-                setProblemRowsAll(rows)
-                setProblemRows(rows.filter((row) => !row.deprecated))
-            } finally {
-                setLoading(false)
-            }
+    async function fetchProblems() {
+        setLoading(true)
+        try {
+            const rows = await fetchInstructorProblemTableRows()
+            setProblemRowsAll(rows)
+            setProblemRows(rows.filter((row) => !row.deprecated))
+        } finally {
+            setLoading(false)
         }
+    }
 
+    useEffect(() => {
         fetchProblems()
     }, [])
 
     function showDeprecatedChange(deprecationChecked: boolean) {
         setShowDeprecated(deprecationChecked)
-        if (deprecationChecked) setProblemRows(problemRowsAll.filter((row) => row.deprecated))
-        else setProblemRows(problemRowsAll.filter((row) => !row.deprecated))
+        setProblemRows(problemRowsAll.filter((row) => row.deprecated === deprecationChecked))
     }
-
-    const [colDefs, setColDefs] = useState(initialTableColumns)
-
-    useEffect(() => {
-        if (isMobile)
-            setColDefs((colDefs) => colDefs.filter((c) => c.field !== 'annotation' && c.field !== 'created_at'))
-    }, [isMobile])
 
     return (
         <>
@@ -310,7 +260,9 @@ export function ProblemsListView() {
                     Show deprecated problems
                 </Label>
             </div>
-            <AgTableFull rowData={problemRows} columnDefs={colDefs} loading={loading} />
+
+            {/* --- Problem Table --- */}
+            <ProblemTable rows={problemRows} loading={loading} />
         </>
     )
 }

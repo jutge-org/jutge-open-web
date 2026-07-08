@@ -15,7 +15,7 @@ const eslintConfig = defineConfig([
         'components/ui/**',
         'hooks/use-mobile.ts',
         'next-env.d.ts',
-		'lib/jutge_api_client.ts',
+        'lib/jutge_api_client.ts',
     ]),
     {
         rules: {

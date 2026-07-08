@@ -11,11 +11,10 @@ import dayjs from 'dayjs'
 import { SquarePlusIcon, WrenchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { ProblemRow } from './types'
 import { AlertsCell } from './AlertsCell'
-import { SharingCell } from './SharingCell'
 import { LanguageBadge } from './LanguageBadge'
-import LoadingSpinner from '@/components/LoadingSpinner'
+import { SharingCell } from './SharingCell'
+import { ProblemRow } from './types'
 
 const problemTableColumnDefs = [
     {

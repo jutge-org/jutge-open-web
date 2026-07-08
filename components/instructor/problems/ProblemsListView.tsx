@@ -27,6 +27,7 @@ import {
     FileBoxIcon,
     FileCodeIcon,
     LockIcon,
+    LucideProps,
     SkullIcon,
     SquarePlusIcon,
     UnlockIcon,
@@ -49,6 +50,85 @@ type ProblemRow = {
     checked: boolean
     se_count: number
     ie_count: number
+}
+
+type LucideIcon = React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>>
+
+type IconStateInfo = {
+    Icon: LucideIcon
+    title: string
+}
+type StateInfo = {
+    positive: IconStateInfo
+    negative: IconStateInfo
+}
+
+const ProblemState = ({ state, info }: { state: boolean; info: StateInfo }) => {
+    const { Icon, title } = state ? info.positive : info.negative
+    return (
+        <span title={title}>
+            <Icon size={14} className={state ? '' : 'opacity-25'} />
+        </span>
+    )
+}
+
+const lockInfo: StateInfo = {
+    positive: { Icon: LockIcon, title: 'Protected by passcode' },
+    negative: { Icon: UnlockIcon, title: 'Visible to all' },
+}
+const sharedTestcasesInfo: StateInfo = {
+    positive: { Icon: FileBoxIcon, title: 'Test cases shared with instructors' },
+    negative: { Icon: FileBoxIcon, title: 'Test cases not shared with instructors' },
+}
+const sharedSolutionsInfo: StateInfo = {
+    positive: { Icon: FileCodeIcon, title: 'Solutions shared with instructors' },
+    negative: { Icon: FileCodeIcon, title: 'Solutions not shared with instructors' },
+}
+
+const SharingCell = ({ problem }: { problem: ProblemRow }) => (
+    <div className="mt-3 flex flex-row gap-2">
+        <ProblemState state={Boolean(problem.passcode)} info={lockInfo} />
+        <ProblemState state={problem.shared_testcases} info={sharedTestcasesInfo} />
+        <ProblemState state={problem.shared_solutions} info={sharedSolutionsInfo} />
+    </div>
+)
+
+const LanguageBadge = ({ language, problem }: { language: string; problem: ProblemRow }) => {
+    const abstractProblem = problem.abstractProblems[problem.problem_nm]
+    if (!abstractProblem) {
+        return (
+            <Badge variant="secondary" className="mr-1 px-2">
+                {language}
+            </Badge>
+        )
+    }
+    const { problem_nm } = problem
+    const { solution_tags, problems } = abstractProblem
+    const { summary } = problems[`${problem_nm}_${language}`]
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Badge variant="secondary" className="mr-1 px-2">
+                        {language} <BotMessageSquareIcon size={12} className="ml-1" />
+                    </Badge>
+                </TooltipTrigger>
+                <TooltipContent className="flex w-64 flex-col gap-2 items-start">
+                    <p className="font-semibold">{summary?.summary_1s}</p>
+                    <p>{summary?.summary_1p}</p>
+                    <p>{summary?.keywords.replaceAll(',', ', ')}</p>
+                    <p className="flex gap-1">
+                        <BotIcon size={14} className="" /> {summary?.model}
+                    </p>
+                    <hr />
+                    <p>{solution_tags?.tags.replaceAll(',', ', ')}</p>
+                    <p className="flex gap-1 justify-start debug">
+                        <BotIcon size={14} className="" /> {solution_tags?.model}
+                    </p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    )
 }
 
 const initialTableColumns = [
@@ -84,38 +164,7 @@ const initialTableColumns = [
         width: 120,
         filter: false,
         sort: false,
-        cellRenderer: (p: ICellRendererParams<ProblemRow>) => (
-            <div className="mt-3 flex flex-row gap-2">
-                {!p.data!.passcode ? (
-                    <span title="Protected by passcode">
-                        <LockIcon size={14} className="text-red-800" />
-                    </span>
-                ) : (
-                    <span title="Visible to all">
-                        <UnlockIcon size={14} className="text-green-800" />
-                    </span>
-                )}
-                {p.data!.shared_testcases ? (
-                    <span title="Test cases shared with instructors">
-                        <FileBoxIcon size={14} className="text-green-800" />
-                    </span>
-                ) : (
-                    <span title="Test cases not shared with instructors">
-                        <FileBoxIcon size={14} className="text-gray-200" />
-                    </span>
-                )}
-
-                {p.data!.shared_solutions ? (
-                    <span title="Solutions shared with instructors">
-                        <FileCodeIcon size={14} className="text-green-800" />
-                    </span>
-                ) : (
-                    <span title="Solutions not shared with instructors">
-                        <FileCodeIcon size={14} className="text-gray-200" />
-                    </span>
-                )}
-            </div>
-        ),
+        cellRenderer: (p: ICellRendererParams<ProblemRow>) => <SharingCell problem={p.data!} />,
     },
     {
         field: 'languages',
@@ -123,64 +172,7 @@ const initialTableColumns = [
         filter: true,
         cellRenderer: (p: ICellRendererParams<ProblemRow>) =>
             p.data!.languages.map((language: string) => (
-                <div key={language}>
-                    {p.data!.abstractProblems[p.data!.problem_nm]?.problems[`${p.data!.problem_nm}_${language}`]
-                        .summary ? (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Badge variant="secondary" className="mr-1 px-2">
-                                        {language} <BotMessageSquareIcon size={12} className="ml-1" />
-                                    </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent className="flex w-64 flex-col gap-2">
-                                    <p className="font-semibold">
-                                        {
-                                            p.data!.abstractProblems[p.data!.problem_nm].problems[
-                                                `${p.data!.problem_nm}_${language}`
-                                            ]?.summary?.summary_1s
-                                        }
-                                    </p>
-                                    <p>
-                                        {
-                                            p.data!.abstractProblems[p.data!.problem_nm].problems[
-                                                `${p.data!.problem_nm}_${language}`
-                                            ]?.summary?.summary_1p
-                                        }
-                                    </p>
-                                    <p>
-                                        {p.data!.abstractProblems[p.data!.problem_nm].problems[
-                                            `${p.data!.problem_nm}_${language}`
-                                        ]?.summary?.keywords.replaceAll(',', ', ')}
-                                    </p>
-                                    <p className="flex gap-1">
-                                        <BotIcon size={14} className="" />
-                                        {
-                                            p.data!.abstractProblems[p.data!.problem_nm].problems[
-                                                `${p.data!.problem_nm}_${language}`
-                                            ]?.summary?.model
-                                        }
-                                    </p>
-                                    <hr />
-                                    <p>
-                                        {p.data!.abstractProblems[p.data!.problem_nm].solution_tags?.tags.replaceAll(
-                                            ',',
-                                            ', ',
-                                        )}
-                                    </p>
-                                    <p className="flex gap-1">
-                                        <BotIcon size={14} className="" />
-                                        {p.data!.abstractProblems[p.data!.problem_nm].solution_tags?.model}
-                                    </p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    ) : (
-                        <Badge variant="secondary" className="mr-1 px-2">
-                            {language}
-                        </Badge>
-                    )}
-                </div>
+                <LanguageBadge key={language} language={language} problem={p.data!} />
             )),
         valueGetter: (p: ICellRendererParams<ProblemRow>) => p.data!.languages.join(', '),
     },

@@ -1,7 +1,7 @@
 'use client'
 
 import { Command as CommandPrimitive } from 'cmdk'
-import { MicIcon, MicOffIcon, SearchIcon, TerminalIcon } from 'lucide-react'
+import { MicIcon, MicOffIcon } from 'lucide-react'
 import { useCallback, useRef, type ComponentProps } from 'react'
 
 import { Button } from '@/components/ui/button'

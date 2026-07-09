@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardFreeDiskSpace } from '@/actions/administrator'
 import { SaveIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FreeDiskSpace } from '@/lib/jutge_api_client'
@@ -46,7 +29,7 @@ export default function DiskWidget() {
             <Table>
                 <TableBody>
                     {Object.entries(data)
-                        .filter(([key, item]) => item !== null)
+                        .filter(([, item]) => item !== null)
                         .map(([key, item]) =>
                             item === null ? (
                                 <TableRow key={key}></TableRow>

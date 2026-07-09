@@ -2,6 +2,8 @@
 
 import { CircuitBoardIcon, Gamepad2Icon, ImageIcon, ListChecksIcon, PuzzleIcon, type LucideIcon } from 'lucide-react'
 
+import { createElement } from 'react'
+
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
@@ -24,8 +26,10 @@ type ProblemTypeIconProps = {
 }
 
 export function ProblemTypeIcon({ type, className, showTooltip = true }: ProblemTypeIconProps) {
-    const Icon = getProblemTypeIcon(type)
-    const icon = <Icon className={cn('size-4 shrink-0', className)} aria-hidden />
+    const icon = createElement(getProblemTypeIcon(type), {
+        className: cn('size-4 shrink-0', className),
+        'aria-hidden': true,
+    })
 
     if (!showTooltip) {
         return icon

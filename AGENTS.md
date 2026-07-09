@@ -1,3 +1,10 @@
+# Workflow
+
+- After any change, _always_ do:
+    - `bun run format`
+    - `bun lint`
+    - `bun run build`
+
 # Project rules
 
 - Prefer `fs/promises` over `fs` for all I/O operations.

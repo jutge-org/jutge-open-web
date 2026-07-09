@@ -81,7 +81,7 @@ export function ProblemsNewTerminalView() {
                     Problem could not be created. Please check the terminal for more information.
                 </div>
             )}
-            <div className="mb-8 h-[480px] w-full rounded-lg border-8 border-black">
+            <div className="mb-8 h-120 w-full rounded-lg border-8 border-black">
                 <div ref={ref} style={{ width: '100%', height: '100%' }} />
             </div>
             {!loading && problem_nm && (

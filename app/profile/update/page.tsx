@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Update profile — Jutge.org' }
 
 export default async function ProfileUpdatePage() {
-    return renderAuthed((user) => (
+    return renderAuthed(() => (
         <ProfilePageShell activeTab="update" subpage={{ title: 'Update', url: '/profile/update' }}>
             <UserProfileEdit />
         </ProfilePageShell>

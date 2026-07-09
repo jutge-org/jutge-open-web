@@ -1,11 +1,11 @@
 'use server'
 
+import { mapmap } from '@/lib/instructor/utils'
 import { withInstructorClient } from '@/lib/instructor/with-instructor-client'
 import type {
     ChatMessage,
     ChatPrompt,
     Deprecation,
-    Document,
     DocumentCreation,
     InstructorCourseCreation,
     InstructorCourseUpdate,
@@ -17,6 +17,7 @@ import type {
     InstructorListCreation,
     ShareWithInp,
     SharingSettings,
+    ProblemAlerts,
 } from '@/lib/jutge_api_client'
 
 // --- Documents ---
@@ -347,6 +348,45 @@ export async function fetchMiscHexColors() {
 
 export async function fetchInstructorApiUrl() {
     return process.env.JUTGE_API_URL ?? 'https://api.jutge.org/api'
+}
+
+export async function fetchInstructorProblemTableRows() {
+    const ownProblems = await fetchInstructorOwnProblems()
+    const ownProblemsSharingSettings = await fetchInstructorAllSharingSettings()
+    const allAlerts = await fetchInstructorAllAlerts()
+    const abstractProblems = await fetchAbstractProblems(ownProblems.join(','))
+    const sharingByProblem: Record<string, SharingSettings> = Object.fromEntries(
+        ownProblemsSharingSettings.map((s) => [s.problem_nm, s]),
+    )
+    const alertsByProblem: Record<string, ProblemAlerts> = Object.fromEntries(
+        allAlerts.map((alerts) => [alerts.problem_nm, alerts]),
+    )
+
+    function buildTitle(problem_nm: string) {
+        const problems = Object.values(abstractProblems[problem_nm].problems)
+        return problems.map((problem) => problem.title).join(' / ')
+    }
+
+    return ownProblems.map((problem_nm) => {
+        const abstractProblem = abstractProblems[problem_nm]
+        const sharing = sharingByProblem[problem_nm]
+        const alerts = alertsByProblem[problem_nm]
+        return {
+            problem_nm,
+            title: buildTitle(abstractProblem.problem_nm),
+            created_at: abstractProblem.created_at,
+            updated_at: abstractProblem.updated_at,
+            deprecated: abstractProblem.deprecation !== null,
+            languages: mapmap(abstractProblem.problems, (_problem_id, problem) => problem.language_id),
+            passcode: sharing?.passcode === null,
+            shared_testcases: sharing?.shared_testcases ?? false,
+            shared_solutions: sharing?.shared_solutions ?? false,
+            checked: Object.values(abstractProblem.problems).every((problem) => problem.checked !== 0),
+            se_count: alerts?.se_count ?? 0,
+            ie_count: alerts?.ie_count ?? 0,
+            abstractProblems,
+        }
+    })
 }
 
 // --- JutgeAI ---

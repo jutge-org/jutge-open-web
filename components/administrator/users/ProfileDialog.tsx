@@ -14,9 +14,7 @@ import remarkGfm from 'remark-gfm'
 export type ProfileDialogConfig = { ignoredTitle?: string }
 export type ProfileDialogResult = boolean
 
-export const useProfileDialog = (
-    _config: ProfileDialogConfig,
-): [(profile: ProfileForAdmin) => Promise<ProfileDialogResult>, () => JSX.Element] => {
+export const useProfileDialog = (): [(profile: ProfileForAdmin) => Promise<ProfileDialogResult>, () => JSX.Element] => {
     const [promise, setPromise] = useState<{ resolve: (result: ProfileDialogResult) => void } | null>(null)
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState<ProfileForAdmin | null>(null)

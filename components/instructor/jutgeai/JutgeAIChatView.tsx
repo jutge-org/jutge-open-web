@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { ChatMessage } from '@/lib/jutge_api_client'
-import { BotIcon, ClipboardCopyIcon, EditIcon, SendHorizontalIcon, SendIcon, UserIcon } from 'lucide-react'
+import { BotIcon, ClipboardCopyIcon, EditIcon, SendHorizontalIcon, UserIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 

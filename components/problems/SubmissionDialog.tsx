@@ -19,7 +19,6 @@ import { getCompilerStatus } from '@/lib/documentation'
 import { pickPreferredId } from '@/lib/problems'
 import { buildSubmissionHref } from '@/lib/submissions'
 import type { Compiler } from '@/lib/jutge_api_client'
-import { Separator } from '@base-ui/react/separator'
 
 type SubmissionDialogProps = {
     open: boolean

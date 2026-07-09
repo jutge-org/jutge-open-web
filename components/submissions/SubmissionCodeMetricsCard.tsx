@@ -2,7 +2,6 @@ import { InfoIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { Gauge } from '@/components/Gauge'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'

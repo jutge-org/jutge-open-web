@@ -11,7 +11,6 @@ import {
     fetchAdminStatsDistributionOfProglangs,
     fetchAdminStatsDistributionOfSubmissionsByHour,
     fetchAdminStatsDistributionOfSubmissionsByWeekday,
-    fetchAdminStatsDistributionOfSubmissionsByDay,
     fetchAdminStatsDistributionOfSubmissionsByYear,
     fetchAdminStatsDistributionOfUsersByCountry,
     fetchAdminStatsDistributionOfUsersBySubmissions,
@@ -179,19 +178,6 @@ function SubmissionsByWeekDay() {
     return MyCard({ title: 'Submissions by weekday', children: MyBarChart(data, CHART_THEME_COLORS[3], 'Submissions') })
 }
 
-function SubmissionsByDay() {
-    const [data, setData] = useState<Distribution | null>(null)
-
-    useEffect(() => {
-        async function update() {
-            setData(await fetchAdminStatsDistributionOfSubmissionsByDay())
-        }
-        update()
-    }, [])
-
-    return MyCard({ title: 'Submissions by day', children: MyBarChart(data) })
-}
-
 function SubmissionsByHour() {
     const [data, setData] = useState<Distribution | null>(null)
 
@@ -266,7 +252,7 @@ function ProblemPopularityBarChart(data: ProblemPopularityBucketEntry[] | null) 
     } satisfies ChartConfig
 
     return (
-        <ChartContainer config={chartConfig} className="min-h-[320px] w-full">
+        <ChartContainer config={chartConfig} className="min-h-80 w-full">
             <BarChart accessibilityLayer data={chartData} margin={{ left: 8, right: 8, bottom: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -324,7 +310,7 @@ function MyBarChart(data: Distribution | null, color: string = CHART_THEME_COLOR
     } satisfies ChartConfig
 
     return (
-        <ChartContainer config={chartConfig} className="min-h-[280px] w-full">
+        <ChartContainer config={chartConfig} className="min-h-70 w-full">
             <BarChart accessibilityLayer data={chartData} margin={{ left: 8, right: 8, bottom: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="Day" tickLine={false} tickMargin={10} axisLine={false} />
@@ -479,5 +465,5 @@ const PIE_CHART_COLORS = Object.values(CHART_THEME_COLORS)
 const OTHERS_SLICE_COLOR = 'var(--muted-foreground)'
 
 function Loading() {
-    return <Skeleton className="h-[400px] w-full" />
+    return <Skeleton className="h-100 w-full" />
 }

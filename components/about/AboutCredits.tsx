@@ -1,4 +1,3 @@
-import { Prose } from '@/components/documentation/Prose'
 import type { ReactNode } from 'react'
 import { developerCredits, maintenanceCredits, problemSetters, problemTranslators } from '@/lib/about'
 

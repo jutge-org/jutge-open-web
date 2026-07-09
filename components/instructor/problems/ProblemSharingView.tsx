@@ -103,7 +103,6 @@ function SharingSettingsForm({
 }
 
 type ShareWithEmailsFormProps = {
-    problem_nm: string
     shareEmailsInput: string
     setShareEmailsInput: (v: string) => void
     shareMessageInput: string
@@ -112,7 +111,6 @@ type ShareWithEmailsFormProps = {
 }
 
 function ShareWithEmailsForm({
-    problem_nm,
     shareEmailsInput,
     setShareEmailsInput,
     shareMessageInput,
@@ -251,7 +249,6 @@ export function ProblemSharingView() {
             <TabsContent value="share" className="mt-4">
                 {canShareByEmail ? (
                     <ShareWithEmailsForm
-                        problem_nm={problem_nm}
                         shareEmailsInput={shareEmailsInput}
                         setShareEmailsInput={setShareEmailsInput}
                         shareMessageInput={shareMessageInput}

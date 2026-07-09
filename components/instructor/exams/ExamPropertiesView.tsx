@@ -70,15 +70,22 @@ export function ExamPropertiesView() {
 
     if (!exam || !compilers || !documents) return <SimpleSpinner />
 
-    if (exam.course.course_nm === 'All' && exam.course.title === 'All problems') {
-        exam.course.course_nm = ''
-        exam.course.title = ''
-    }
+    const normalizedExam =
+        exam.course.course_nm === 'All' && exam.course.title === 'All problems'
+            ? {
+                  ...exam,
+                  course: {
+                      ...exam.course,
+                      course_nm: '',
+                      title: '',
+                  },
+              }
+            : exam
 
     return (
         <EditExamForm
             fetchData={fetchData}
-            exam={exam}
+            exam={normalizedExam}
             courses={courses}
             archived={archived}
             setArchived={setArchived}

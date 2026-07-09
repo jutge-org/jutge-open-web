@@ -268,7 +268,7 @@ function titleFromDocument(fallback: string): string {
     return fallback
 }
 
-function submissionTitleFromDocument(submissionId: string, problemNm: string): string {
+function submissionTitleFromDocument(submissionId: string): string {
     const parts = document.title.split(' — ')
     if (parts.length >= 3 && parts[parts.length - 1]?.trim() === 'Jutge.org') {
         const problemTitle = parts[1]?.trim()
@@ -313,7 +313,7 @@ export function patchRecentsFromDocument(pathname: string, data: RecentsData): R
             return null
         }
 
-        const title = submissionTitleFromDocument(submissionId, parsed.problem_nm)
+        const title = submissionTitleFromDocument(submissionId)
         const verdictEmoji = verdictEmojiFromDocument()
         const index = data.submissions.findIndex((entry) => entry.submissionId === submissionId)
 
@@ -394,7 +394,7 @@ export function recordRecentFromPathname(pathname: string, data: RecentsData): R
         return addRecentSubmission(data, {
             submissionId,
             problemNm,
-            title: submissionTitleFromDocument(submissionId, problemNm),
+            title: submissionTitleFromDocument(submissionId),
             verdictEmoji: verdictEmojiFromDocument(),
             accessedAt: Date.now(),
         })

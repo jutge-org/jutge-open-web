@@ -28,7 +28,7 @@ import {
     fetchTablesCompilers,
     fetchTablesVerdicts,
 } from '@/actions/administrator'
-import { Compiler, SubmissionQueueItems, Verdict } from '@/lib/jutge_api_client'
+import { Compiler, SubmissionQueueItems } from '@/lib/jutge_api_client'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -53,8 +53,6 @@ export default function QueueView() {
     const [view, setView] = useState(defaultView)
     const [speed, setSpeed] = useState('5')
     const [counter, setCounter] = useState(0)
-    const [verdicts, setVerdicts] = useState<Record<string, Verdict>>({})
-    const [compilers, setCompilers] = useState<Record<string, Compiler>>({})
     const [colDefs, setColDefs] = useState<any[]>([])
 
     const isMobile = useIsMobile()
@@ -234,8 +232,6 @@ export default function QueueView() {
         ]
 
         setRows(rows)
-        setVerdicts(verdicts)
-        setCompilers(compilers)
         setColDefs(colDefs)
     }, [view, isMobile])
 

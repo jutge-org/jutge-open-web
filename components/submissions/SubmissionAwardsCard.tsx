@@ -23,6 +23,7 @@ export function SubmissionAwardsCard({ awards }: SubmissionAwardsCardProps) {
                             className="group rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                             <div className="bg-white p-0.5 shadow-md transition-[box-shadow,transform] duration-200 group-hover:-translate-y-0.5 group-hover:shadow-lg dark:rounded-full">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={award.iconUrl}
                                     alt=""

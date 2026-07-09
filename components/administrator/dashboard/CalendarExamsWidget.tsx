@@ -1,23 +1,6 @@
 'use client'
 
-import {
-    fetchAdminDashboardAll,
-    fetchAdminDashboardDatabasesInfo,
-    fetchAdminDashboardDockerStatus,
-    fetchAdminDashboardFreeDiskSpace,
-    fetchAdminDashboardPM2Status,
-    fetchAdminDashboardRecentConnectedUsers,
-    fetchAdminDashboardRecentLoadAverages,
-    fetchAdminDashboardRecentSubmissions,
-    fetchAdminDashboardSubmissionsHistograms,
-    fetchAdminDashboardUpcomingExams,
-    fetchAdminDashboardZombies,
-    fetchHomepageStats,
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-} from '@/actions/administrator'
+import { fetchAdminDashboardUpcomingExams } from '@/actions/administrator'
 import {
     mdiNumeric0Circle,
     mdiNumeric0CircleOutline,
@@ -127,14 +110,6 @@ export default function CalendarExamsWidget() {
     return <Widget icon=<CalendarRangeIcon size={18} /> title="Exams and contests" content={content} />
 }
 
-function count(exams: UpcomingExams, period: 'day' | 'week' | 'month'): string {
-    const now = dayjs()
-    const filteredExams = exams.filter((exam) => dayjs(exam.exp_time_start).isSame(now, period))
-    const length = filteredExams.length
-    const students = filteredExams.reduce((acc, exam) => acc + exam.students, 0)
-    return `${length} (${students})`
-}
-
 function seq(n: number): number[] {
     return Array.from({ length: n }, (_, i) => i)
 }
@@ -148,8 +123,8 @@ export interface Entry {
 }
 
 function init_table(exams: UpcomingExams | null): Entry[][] {
-    const table = seq(5).map((i) =>
-        seq(7).map((j) => ({
+    const table = seq(5).map(() =>
+        seq(7).map(() => ({
             date: dayjs(),
             exams: 0,
             contests: 0,

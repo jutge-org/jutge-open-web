@@ -214,7 +214,7 @@ function MySummaryChart(props: MySummaryChartProps) {
     }
 
     return (
-        <ChartContainer config={chartConfig} className="h-[372px] w-full">
+        <ChartContainer config={chartConfig} className="h-93 w-full">
             <BarChart data={chartData} layout="vertical">
                 <CartesianGrid horizontal={false} vertical={false} />
                 <YAxis dataKey="problem_nm" type="category" tickLine={false} axisLine={false} />
@@ -249,9 +249,10 @@ type MyTimelineChartProps = {
 }
 
 function MyTimelineChart(props: MyTimelineChartProps) {
-    for (const bucket of props.data) {
-        bucket.minute = bucket.minute.toString()
-    }
+    const chartData = props.data.map((bucket) => ({
+        ...bucket,
+        minute: bucket.minute.toString(),
+    }))
 
     const chartConfig = {
         ok: {
@@ -265,8 +266,8 @@ function MyTimelineChart(props: MyTimelineChartProps) {
     } satisfies ChartConfig
 
     return (
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
-            <BarChart data={props.data}>
+        <ChartContainer config={chartConfig} className="h-75 w-full">
+            <BarChart data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                     dataKey="minute"
@@ -350,7 +351,7 @@ function MyPieChart(props: MyPieChartProps) {
     const chart = (
         <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[400px] [&_.recharts-text]:fill-background"
+            className="mx-auto aspect-square max-h-100 [&_.recharts-text]:fill-background"
         >
             <PieChart>
                 <ChartTooltip content={<ChartTooltipContent nameKey="label" hideLabel />} />

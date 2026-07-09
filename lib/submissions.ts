@@ -3,20 +3,10 @@ import type { AllTables, Submission } from '@/lib/jutge_api_client'
 import { includesForSearch } from '@/lib/utils'
 
 export type SubmissionsDefaultColumnField =
-    | 'problem_id'
-    | 'submission_id'
-    | 'verdict'
-    | 'compiler_id'
-    | 'time_inMs'
-    | 'annotation'
+    'problem_id' | 'submission_id' | 'verdict' | 'compiler_id' | 'time_inMs' | 'annotation'
 
 export type SubmissionsProblemColumnField =
-    | 'language_id'
-    | 'submission_id'
-    | 'verdict'
-    | 'compiler_id'
-    | 'time_inMs'
-    | 'annotation'
+    'language_id' | 'submission_id' | 'verdict' | 'compiler_id' | 'time_inMs' | 'annotation'
 
 export type SubmissionsColumnField = SubmissionsDefaultColumnField | SubmissionsProblemColumnField
 

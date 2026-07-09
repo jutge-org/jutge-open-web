@@ -33,6 +33,7 @@ export function AwardDetailCard({ award }: AwardDetailCardProps) {
             <Card className="overflow-hidden">
                 <CardContent className="space-y-6 px-8 py-8">
                     <div className="gap-4 px-8 py-4 text-center flex flex-col items-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src={award.iconUrl}
                             alt=""

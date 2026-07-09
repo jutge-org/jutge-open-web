@@ -49,6 +49,8 @@ export function UserProfileEditForm({ profile, countries }: UserProfileEditFormP
                 birth_year: parsedBirthYear,
                 country_id: countryId,
                 timezone_id: timezoneId,
+                compiler_id: profile.compiler_id,
+                language_id: profile.language_id,
             })
 
             if (!result.ok) {

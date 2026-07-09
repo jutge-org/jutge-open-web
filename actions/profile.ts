@@ -6,17 +6,25 @@ import { updateProfile, updateProfileAvatar, updateProfilePassword } from '@/ser
 
 type ProfileActionResult = { ok: true } | { ok: false; error: string }
 
+function trimToNull(value: string | null): string | null {
+    if (value == null) return null
+    const trimmed = value.trim()
+    return trimmed ? trimmed : null
+}
+
 export async function updateProfileAction(data: NewProfile): Promise<ProfileActionResult> {
     const name = data.name.trim()
     if (!name) {
         return { ok: false, error: 'Name is required.' }
     }
 
-    if (!data.country_id.trim()) {
+    const countryId = data.country_id?.trim()
+    if (!countryId) {
         return { ok: false, error: 'Country is required.' }
     }
 
-    if (!data.timezone_id.trim()) {
+    const timezoneId = data.timezone_id?.trim()
+    if (!timezoneId) {
         return { ok: false, error: 'Timezone is required.' }
     }
 
@@ -24,13 +32,15 @@ export async function updateProfileAction(data: NewProfile): Promise<ProfileActi
         const client = await getCurrentClient()
         await updateProfile(client, {
             name,
-            nickname: data.nickname.trim(),
-            affiliation: data.affiliation.trim(),
-            description: data.description.trim(),
-            webpage: data.webpage.trim(),
+            nickname: trimToNull(data.nickname),
+            affiliation: trimToNull(data.affiliation),
+            description: trimToNull(data.description),
+            webpage: trimToNull(data.webpage),
             birth_year: data.birth_year,
-            country_id: data.country_id.trim(),
-            timezone_id: data.timezone_id.trim(),
+            country_id: countryId,
+            timezone_id: timezoneId,
+            compiler_id: data.compiler_id,
+            language_id: data.language_id,
         })
         return { ok: true }
     } catch (e) {

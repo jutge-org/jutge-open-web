@@ -3,7 +3,7 @@ import { cache } from 'react'
 import { getPreferredLanguageId } from '@/lib/auth'
 import { buildExamDetail, buildExamRow, type ExamDetail, type ExamProblemRow, type ExamRow } from '@/lib/exams'
 import { buildSubmissionRow, type LastSubmissionInfo } from '@/lib/submissions'
-import type { JutgeApiClient } from '@/lib/jutge_api_client'
+import type { AbstractProblem, JutgeApiClient } from '@/lib/jutge_api_client'
 
 import {
     abstractProblemToRow,
@@ -36,8 +36,10 @@ export const fetchExamDetail = cache(async (client: JutgeApiClient, examKey: str
             await Promise.all([
                 client.tables.get(),
                 problemNms.length > 0
-                    ? client.problems.getAbstractProblems(problemNms.join(',')).catch(() => ({}))
-                    : Promise.resolve({}),
+                    ? client.problems
+                          .getAbstractProblems(problemNms.join(','))
+                          .catch((): Record<string, AbstractProblem> => ({}))
+                    : Promise.resolve<Record<string, AbstractProblem>>({}),
                 getPreferredLanguageId(),
                 fetchLanguages(),
                 fetchStudentProblemStatuses(client),

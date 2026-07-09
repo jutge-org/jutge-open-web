@@ -1,6 +1,7 @@
 import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon } from 'lucide-react'
 
 import { CourseDetailActions } from '@/components/courses/CourseDetailActions'
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { CourseLists } from '@/components/courses/CourseLists'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
@@ -37,8 +38,45 @@ export function CourseDetail({
         <div className="flex flex-col gap-6">
             <Card className="border border-border shadow-sm ring-0">
                 <CardContent className="flex w-full flex-col gap-2">
-                    <div className="flex items-start justify-between gap-2">
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{row.title}</h1>
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex min-w-0 flex-1 items-start gap-4">
+                            <CourseIconImage iconUrl={row.iconUrl} size="lg" />
+                            <div className="min-w-0 flex-1">
+                                <h1 className="text-2xl font-semibold tracking-tight text-foreground">{row.title}</h1>
+                                <div className="mt-1.5 flex items-center justify-between gap-2">
+                                    <p className="flex min-w-0 items-center gap-1 text-muted-foreground">
+                                        <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                                        {row.ownerName}
+                                    </p>
+                                    <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                                        {row.isOfficial ? (
+                                            <Badge variant="outline" className="gap-1">
+                                                <ShieldCheck aria-hidden />
+                                                Official
+                                            </Badge>
+                                        ) : null}
+                                        {row.isPublic ? (
+                                            <Badge variant="outline" className="gap-1">
+                                                <Globe aria-hidden />
+                                                Public
+                                            </Badge>
+                                        ) : null}
+                                        {status === 'enrolled' ? (
+                                            <Badge variant="outline" className="gap-1">
+                                                <BookOpenCheckIcon aria-hidden />
+                                                Enrolled
+                                            </Badge>
+                                        ) : null}
+                                        {status === 'archived' ? (
+                                            <Badge variant="outline" className="gap-1">
+                                                <ArchiveIcon aria-hidden />
+                                                Archived
+                                            </Badge>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <CourseDetailActions
                             courseKey={courseKey}
                             title={row.title}
@@ -46,38 +84,6 @@ export function CourseDetail({
                             status={status}
                             isOwner={isOwner}
                         />
-                    </div>
-                    <div className="flex items-center justify-between gap-2">
-                        <p className="flex min-w-0 items-center gap-1 text-muted-foreground">
-                            <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                            {row.ownerName}
-                        </p>
-                        <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
-                            {row.isOfficial ? (
-                                <Badge variant="outline" className="gap-1">
-                                    <ShieldCheck aria-hidden />
-                                    Official
-                                </Badge>
-                            ) : null}
-                            {row.isPublic ? (
-                                <Badge variant="outline" className="gap-1">
-                                    <Globe aria-hidden />
-                                    Public
-                                </Badge>
-                            ) : null}
-                            {status === 'enrolled' ? (
-                                <Badge variant="outline" className="gap-1">
-                                    <BookOpenCheckIcon aria-hidden />
-                                    Enrolled
-                                </Badge>
-                            ) : null}
-                            {status === 'archived' ? (
-                                <Badge variant="outline" className="gap-1">
-                                    <ArchiveIcon aria-hidden />
-                                    Archived
-                                </Badge>
-                            ) : null}
-                        </div>
                     </div>
                     {row.description ? (
                         <div className="pt-2">

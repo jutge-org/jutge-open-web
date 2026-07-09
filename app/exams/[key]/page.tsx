@@ -40,7 +40,7 @@ export default async function ExamDetailPage({ params }: PageProps) {
                 <MainBreadcrumbs
                     breadcrumbs={[
                         { title: 'Exams', url: '/exams' },
-                        { title: exam.title, url: `/exams/${exam.exam_nm}` },
+                        { title: exam.title, url: `/exams/${exam.exam_key}` },
                     ]}
                 />
                 <ExamsReminderAlert />

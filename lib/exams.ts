@@ -2,9 +2,10 @@ import dayjs from 'dayjs'
 
 import { buildCourseKey, courseIconUrl } from '@/lib/courses'
 import { includesForSearch } from '@/lib/utils'
-import type { Exam, PublicProfile } from '@/lib/jutge_api_client'
+import type { BriefExam, Exam, PublicProfile } from '@/lib/jutge_api_client'
 
-type ExamTimestamp = Exam['exp_time_start']
+type StudentExam = BriefExam | Exam
+type ExamTimestamp = StudentExam['exp_time_start']
 
 const DEFAULT_CALENDAR_DURATION_MINUTES = 120
 
@@ -17,91 +18,151 @@ export function formatExamDateTime(exp_time_start: ExamTimestamp): string {
     return dayjs(parseExamTime(exp_time_start)).format('YYYY-MM-DD HH:mm:ss')
 }
 
+function parseRunningTimeMinutes(running_time: StudentExam['running_time']): number {
+    if (typeof running_time === 'number' && Number.isFinite(running_time)) {
+        return running_time
+    }
+
+    const parsed = Number(running_time)
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_CALENDAR_DURATION_MINUTES
+}
+
 export type ExamStatusTone = 'finished' | 'upcoming' | 'in-progress'
 
 export type ExamRow = {
-    exam_nm: string
+    exam_key: string
     title: string
     place: string
     description: string
     exp_time_start: string
     exp_time_startMs: number
     contest: boolean
-    finished: boolean
     courseTitle: string
     courseIconUrl: string
     courseHref: string
     ownerName: string
+    status: string
+    statusLabel: string
     statusTone: ExamStatusTone
+    runningTimeMinutes: number
     calendarUrl: string
 }
 
 export type ExamDetail = ExamRow & {
     course_nm: string
-    courseHref: string
-    statusLabel: string
-    statusTone: ExamStatusTone
 }
 
 function ownerDisplayName(owner: PublicProfile): string {
     return owner.name?.trim() || owner.username?.trim() || owner.email
 }
 
-function buildExamRowBase(exam_nm: string, exam: Exam): Omit<ExamRow, 'calendarUrl'> {
+function statusLabelFromTone(tone: ExamStatusTone): string {
+    switch (tone) {
+        case 'finished':
+            return 'Finished'
+        case 'upcoming':
+            return 'Upcoming'
+        case 'in-progress':
+            return 'In progress'
+    }
+}
+
+function statusToneFromStatus(status: string): ExamStatusTone | null {
+    const normalized = status.trim().toLowerCase()
+    if (!normalized) {
+        return null
+    }
+
+    if (normalized.includes('finish') || normalized === 'ended' || normalized === 'completed') {
+        return 'finished'
+    }
+
+    if (normalized.includes('progress') || normalized.includes('running') || normalized === 'started') {
+        return 'in-progress'
+    }
+
+    if (normalized.includes('upcoming') || normalized.includes('schedul') || normalized.includes('not')) {
+        return 'upcoming'
+    }
+
+    return null
+}
+
+function statusToneFromTimes(
+    exam: Pick<StudentExam, 'exp_time_start' | 'time_start' | 'time_end' | 'running_time'>,
+): ExamStatusTone {
+    if (exam.time_end) {
+        return 'finished'
+    }
+
+    if (exam.time_start) {
+        return 'in-progress'
+    }
+
+    const start = parseExamTime(exam.exp_time_start)
+    if (start.getTime() > Date.now()) {
+        return 'upcoming'
+    }
+
+    const runningMs = parseRunningTimeMinutes(exam.running_time) * 60_000
+    if (start.getTime() + runningMs < Date.now()) {
+        return 'finished'
+    }
+
+    return 'in-progress'
+}
+
+export function getExamStatus(
+    exam: Pick<StudentExam, 'status' | 'exp_time_start' | 'time_start' | 'time_end' | 'running_time'>,
+): { label: string; tone: ExamStatusTone } {
+    const tone = statusToneFromStatus(exam.status) ?? statusToneFromTimes(exam)
+    const trimmedStatus = exam.status.trim()
+
+    return {
+        label: trimmedStatus || statusLabelFromTone(tone),
+        tone,
+    }
+}
+
+function buildExamRowBase(exam: StudentExam): Omit<ExamRow, 'calendarUrl'> {
     const status = getExamStatus(exam)
 
     return {
-        exam_nm,
+        exam_key: exam.exam_key,
         title: exam.title,
         place: exam.place?.trim() ?? '',
         description: exam.description?.trim() ?? '',
         exp_time_start: formatExamDateTime(exam.exp_time_start),
         exp_time_startMs: parseExamTime(exam.exp_time_start).getTime(),
         contest: exam.contest,
-        finished: exam.finished,
         courseTitle: exam.course.title?.trim() || exam.course.course_nm,
         courseIconUrl: courseIconUrl(exam.course.icon),
         courseHref: `/courses/${buildCourseKey(exam.owner, exam.course.course_nm)}`,
         ownerName: ownerDisplayName(exam.owner),
+        status: exam.status,
+        statusLabel: status.label,
         statusTone: status.tone,
+        runningTimeMinutes: parseRunningTimeMinutes(exam.running_time),
     }
 }
 
-export function buildExamRow(exam_nm: string, exam: Exam): ExamRow {
+export function buildExamRow(exam: StudentExam): ExamRow {
     return {
-        ...buildExamRowBase(exam_nm, exam),
+        ...buildExamRowBase(exam),
         calendarUrl: examToCalendarLink(exam),
     }
 }
 
-export function getExamStatus(exam: Exam): { label: string; tone: ExamStatusTone } {
-    if (exam.finished) {
-        return { label: 'Finished', tone: 'finished' }
-    }
-
-    const start = parseExamTime(exam.exp_time_start)
-    if (start.getTime() > Date.now()) {
-        return { label: 'Upcoming', tone: 'upcoming' }
-    }
-
-    return { label: 'In progress', tone: 'in-progress' }
-}
-
-export function buildExamDetail(exam_nm: string, exam: Exam): ExamDetail {
-    const status = getExamStatus(exam)
-
+export function buildExamDetail(exam: Exam): ExamDetail {
     return {
-        ...buildExamRow(exam_nm, exam),
+        ...buildExamRow(exam),
         course_nm: exam.course.course_nm,
-        courseHref: `/courses/${buildCourseKey(exam.owner, exam.course.course_nm)}`,
-        statusLabel: status.label,
-        statusTone: status.tone,
     }
 }
 
 export function examToCalendarLink(
-    exam: Pick<Exam, 'title' | 'place' | 'exp_time_start'>,
-    durationMinutes = DEFAULT_CALENDAR_DURATION_MINUTES,
+    exam: Pick<StudentExam, 'title' | 'place' | 'exp_time_start' | 'running_time'>,
+    durationMinutes?: number,
 ): string {
     const formatDate = (date: Date): string => {
         const isoString = date.toISOString().replace(/[-:]/g, '')
@@ -109,7 +170,8 @@ export function examToCalendarLink(
     }
 
     const startDate = parseExamTime(exam.exp_time_start)
-    const endDate = new Date(startDate.getTime() + durationMinutes * 60_000)
+    const minutes = durationMinutes ?? parseRunningTimeMinutes(exam.running_time)
+    const endDate = new Date(startDate.getTime() + minutes * 60_000)
 
     const text = encodeURIComponent(exam.title)
     const dates = `${formatDate(startDate)}/${formatDate(endDate)}`
@@ -124,7 +186,7 @@ export type ExamsSortField = 'date' | 'title' | 'course' | 'instructor'
 
 export type SearchableExamRow = Pick<
     ExamRow,
-    | 'exam_nm'
+    | 'exam_key'
     | 'title'
     | 'courseTitle'
     | 'ownerName'
@@ -140,7 +202,7 @@ function matchesExamSearch(exam: SearchableExamRow, query: string): boolean {
         return true
     }
 
-    const haystack = [exam.exam_nm, exam.title, exam.courseTitle, exam.ownerName, exam.place, exam.description].join(
+    const haystack = [exam.exam_key, exam.title, exam.courseTitle, exam.ownerName, exam.place, exam.description].join(
         ' ',
     )
     return includesForSearch(haystack, query)

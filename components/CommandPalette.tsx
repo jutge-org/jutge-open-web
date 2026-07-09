@@ -481,9 +481,9 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                             <CommandGroup heading="Exams">
                                 {filteredExams.map((exam) => (
                                     <CommandItem
-                                        key={exam.exam_nm}
-                                        value={exam.exam_nm}
-                                        onSelect={() => navigate(`/exams/${exam.exam_nm}`)}
+                                        key={exam.exam_key}
+                                        value={exam.exam_key}
+                                        onSelect={() => navigate(`/exams/${exam.exam_key}`)}
                                     >
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <div className="flex min-w-0 items-center gap-2">

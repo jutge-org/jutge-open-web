@@ -78,7 +78,7 @@ export function ExamsList({ rows }: ExamsListProps) {
                 <TooltipProvider>
                     <div className="flex flex-col gap-4">
                         {visibleRows.map((row) => (
-                            <ExamListCard key={row.exam_nm} row={row} />
+                            <ExamListCard key={row.exam_key} row={row} />
                         ))}
                     </div>
                 </TooltipProvider>

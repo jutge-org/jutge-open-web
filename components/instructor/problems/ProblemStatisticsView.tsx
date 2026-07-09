@@ -28,11 +28,13 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import FloatingToolbar from '@/components/instructor/FloatingToolbar'
+import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Switch } from '@/components/ui/switch'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     fetchAbstractProblem,
     fetchInstructorAnonymousSubmissions,
@@ -61,6 +63,7 @@ import {
 } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import {
     AlertTriangleIcon,
     BarChart3Icon,
@@ -77,7 +80,7 @@ import {
     XIcon,
 } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import {
     Area,
     AreaChart,
@@ -93,6 +96,16 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
+
+dayjs.extend(customParseFormat)
+
+const DATE_FORMAT = 'YYYY-MM-DD'
+const CALENDAR_START_MONTH = new Date(2000, 0)
+const CALENDAR_END_MONTH = new Date(new Date().getFullYear() + 1, 11)
+
+function formatDateValue(date: Date | undefined): string {
+    return date && dayjs(date).isValid() ? dayjs(date).format(DATE_FORMAT) : ''
+}
 
 /** Pie chart: slices below this percentage are grouped into "Others". */
 const MIN_PERCENT_FOR_PIE_LABEL = 5
@@ -359,27 +372,91 @@ function DatePickerField({
     onChange: (d: Date | undefined) => void
     disabled?: boolean
 }) {
+    const inputId = useId()
+    const [open, setOpen] = useState(false)
+    const [month, setMonth] = useState<Date | undefined>(value)
+    const [inputValue, setInputValue] = useState(() => formatDateValue(value))
+
+    useEffect(() => {
+        setInputValue(formatDateValue(value))
+        if (value && dayjs(value).isValid()) setMonth(value)
+    }, [value])
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const text = event.target.value
+        setInputValue(text)
+        const parsed = dayjs(text, DATE_FORMAT, true)
+        if (parsed.isValid()) {
+            const date = parsed.toDate()
+            onChange(date)
+            setMonth(date)
+        }
+    }
+
+    const handleCalendarSelect = (date: Date | undefined) => {
+        onChange(date)
+        if (date) {
+            setInputValue(formatDateValue(date))
+            setMonth(date)
+        }
+        setOpen(false)
+    }
+
     return (
         <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-muted-foreground">{label}</span>
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        disabled={disabled}
-                        className={cn(
-                            'w-[160px] justify-start text-left font-normal',
-                            !value && 'text-muted-foreground',
-                        )}
-                    >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {value ? dayjs(value).format('YYYY-MM-DD') : <span>{label}</span>}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                    <Calendar mode="single" selected={value} onSelect={onChange} />
-                </PopoverContent>
-            </Popover>
+            <label htmlFor={inputId} className="text-sm font-medium text-muted-foreground">
+                {label}
+            </label>
+            <div className="relative">
+                <Input
+                    id={inputId}
+                    value={inputValue}
+                    placeholder={DATE_FORMAT}
+                    disabled={disabled}
+                    className="w-[160px] pr-9"
+                    onChange={handleInputChange}
+                    onBlur={() => setInputValue(formatDateValue(value))}
+                    onKeyDown={(event) => {
+                        if (event.key === 'ArrowDown') {
+                            event.preventDefault()
+                            setOpen(true)
+                        }
+                    }}
+                />
+                <Popover open={open} onOpenChange={setOpen}>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        disabled={disabled}
+                                        aria-label={`Open ${label.toLowerCase()} calendar`}
+                                        className="absolute top-1/2 right-1 size-7 -translate-y-1/2"
+                                    >
+                                        <CalendarIcon className="h-4 w-4" />
+                                    </Button>
+                                </PopoverTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>Open calendar</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                            mode="single"
+                            selected={value}
+                            month={month}
+                            onMonthChange={setMonth}
+                            onSelect={handleCalendarSelect}
+                            captionLayout="dropdown"
+                            startMonth={CALENDAR_START_MONTH}
+                            endMonth={CALENDAR_END_MONTH}
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
         </div>
     )
 }

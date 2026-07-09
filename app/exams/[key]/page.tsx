@@ -1,6 +1,11 @@
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import { ExamDetailCard } from '@/components/exams/ExamDetailCard'
+import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
+import { ExamDetailInfoCard } from '@/components/exams/ExamDetailInfoCard'
+import { ExamDetailTitleCard } from '@/components/exams/ExamDetailTitleCard'
+import { ExamSubmissionsTable } from '@/components/exams/ExamSubmissionsTable'
 import { ExamsReminderAlert } from '@/components/exams/ExamsReminderAlert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { getCurrentClient } from '@/lib/auth'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchExamDetail } from '@/services/queries/exams'
@@ -44,7 +49,35 @@ export default async function ExamDetailPage({ params }: PageProps) {
                     ]}
                 />
                 <ExamsReminderAlert />
-                <ExamDetailCard exam={exam} />
+                <TooltipProvider>
+                    <ExamDetailTitleCard exam={exam} />
+                    <ExamDetailInfoCard exam={exam} />
+                    {exam.problems.length > 0 ? (
+                        <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
+                            <CardHeader className="border-b border-border px-4 py-2">
+                                <CardTitle className="text-lg font-semibold">Problems</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <CourseListItemsTable
+                                    items={exam.problems}
+                                    languages={exam.languages}
+                                    statuses={exam.problemStatuses}
+                                    lastSubmissions={exam.problemLastSubmissions}
+                                />
+                            </CardContent>
+                        </Card>
+                    ) : null}
+                    {exam.submissions.length > 0 ? (
+                        <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
+                            <CardHeader className="border-b border-border px-4 py-2">
+                                <CardTitle className="text-lg font-semibold">Submissions</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <ExamSubmissionsTable submissions={exam.submissions} />
+                            </CardContent>
+                        </Card>
+                    ) : null}
+                </TooltipProvider>
             </div>
         )
     })

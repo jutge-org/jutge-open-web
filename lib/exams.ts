@@ -1,8 +1,9 @@
 import dayjs from 'dayjs'
 
 import { buildCourseKey, courseIconUrl } from '@/lib/courses'
+import type { LastSubmissionInfo, SubmissionRow } from '@/lib/submissions'
 import { includesForSearch } from '@/lib/utils'
-import type { BriefExam, Exam, PublicProfile } from '@/lib/jutge_api_client'
+import type { AbstractStatus, BriefExam, Exam, Language, PublicProfile } from '@/lib/jutge_api_client'
 
 type StudentExam = BriefExam | Exam
 type ExamTimestamp = StudentExam['exp_time_start']
@@ -16,6 +17,14 @@ export function parseExamTime(exp_time_start: ExamTimestamp): Date {
 
 export function formatExamDateTime(exp_time_start: ExamTimestamp): string {
     return dayjs(parseExamTime(exp_time_start)).format('YYYY-MM-DD HH:mm:ss')
+}
+
+export function formatExamDateTimeOrNull(timestamp: ExamTimestamp | null | undefined): string | null {
+    if (timestamp == null) {
+        return null
+    }
+
+    return formatExamDateTime(timestamp)
 }
 
 function parseRunningTimeMinutes(running_time: StudentExam['running_time']): number {
@@ -48,8 +57,27 @@ export type ExamRow = {
     calendarUrl: string
 }
 
+export type ExamProblemRow = {
+    kind: 'problem'
+    problem_nm: string
+    title: string
+    language_ids: string[]
+    driver_id: string | null
+    author: string | null
+    created_at: string | number
+    updated_at: string | number
+}
+
 export type ExamDetail = ExamRow & {
     course_nm: string
+    time_start: string | null
+    time_end: string | null
+    visible_submissions: boolean
+    problems: ExamProblemRow[]
+    languages: Record<string, Language>
+    problemStatuses: Record<string, AbstractStatus>
+    problemLastSubmissions: Record<string, LastSubmissionInfo>
+    submissions: SubmissionRow[]
 }
 
 function ownerDisplayName(owner: PublicProfile): string {
@@ -153,10 +181,40 @@ export function buildExamRow(exam: StudentExam): ExamRow {
     }
 }
 
-export function buildExamDetail(exam: Exam): ExamDetail {
+function buildFallbackExamProblemRow(problem_nm: string): ExamProblemRow {
+    return {
+        kind: 'problem',
+        problem_nm,
+        title: problem_nm,
+        language_ids: [],
+        driver_id: null,
+        author: null,
+        created_at: '',
+        updated_at: '',
+    }
+}
+
+export function buildExamDetail(
+    exam: Exam,
+    options?: {
+        problems?: ExamProblemRow[]
+        languages?: Record<string, Language>
+        problemStatuses?: Record<string, AbstractStatus>
+        problemLastSubmissions?: Record<string, LastSubmissionInfo>
+        submissions?: SubmissionRow[]
+    },
+): ExamDetail {
     return {
         ...buildExamRow(exam),
         course_nm: exam.course.course_nm,
+        time_start: formatExamDateTimeOrNull(exam.time_start),
+        time_end: formatExamDateTimeOrNull(exam.time_end),
+        visible_submissions: exam.visible_submissions,
+        problems: options?.problems ?? exam.problems.map(buildFallbackExamProblemRow),
+        languages: options?.languages ?? {},
+        problemStatuses: options?.problemStatuses ?? {},
+        problemLastSubmissions: options?.problemLastSubmissions ?? {},
+        submissions: options?.submissions ?? [],
     }
 }
 

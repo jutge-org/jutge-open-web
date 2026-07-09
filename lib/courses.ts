@@ -4,7 +4,7 @@ import { includesForSearch } from '@/lib/utils'
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
 
 const DEFAULT_COURSE_ICON_URL =
-    'https://jutge.org/img/course-icons/orange-network/ff106627bf1648a5872de4bdada3105a.png'
+    'https://jutge.org/img/course-icons/default/jutge-neon.png'
 
 export function courseIconUrl(icon: string | null | undefined): string {
     if (!icon) {

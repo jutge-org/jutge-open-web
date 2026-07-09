@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { GraduationCap, SearchIcon, ShieldCheck, SignatureIcon } from 'lucide-react'
 
 import { MarkdownText } from '@/components/general/MarkdownText'
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { Badge } from '@/components/ui/badge'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,11 +47,16 @@ function GuestCourseCard({ course }: { course: GuestCourseRow }) {
             )}
         >
             <CardHeader className="">
-                <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
-                <CardDescription className="flex items-center gap-1 text-xs group-hover:text-foreground/80">
-                    <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                    {course.ownerName}
-                </CardDescription>
+                <div className="flex items-start gap-3">
+                    <CourseIconImage iconUrl={course.iconUrl} />
+                    <div className="min-w-0 flex-1">
+                        <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
+                        <CardDescription className="mt-1.5 flex items-center gap-1 text-xs group-hover:text-foreground/80">
+                            <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                            {course.ownerName}
+                        </CardDescription>
+                    </div>
+                </div>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
                 {course.description ? <MarkdownText className="line-clamp-4">{course.description}</MarkdownText> : null}

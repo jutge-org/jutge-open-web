@@ -23,6 +23,7 @@ import Link from 'next/link'
 import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -97,32 +98,42 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
         >
             <CardHeader className="-mt-2">
                 <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="w-full flex flex-row items-start">
-                        <Link
-                            href={courseHref(course.course_key)}
-                            className="line-clamp-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                        >
-                            {course.title}
-                        </Link>
-                        <div className="flex-1" />
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-4 shrink-0 -mr-2 mt-1"
-                                    disabled={isPending}
-                                    aria-label={`Actions for ${course.title}`}
+                    <div className="flex min-w-0 flex-1 items-start gap-3">
+                        <CourseIconImage iconUrl={course.iconUrl} />
+                        <div className="min-w-0 flex-1">
+                            <CardTitle className="w-full flex flex-row items-start">
+                                <Link
+                                    href={courseHref(course.course_key)}
+                                    className="line-clamp-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                                 >
-                                    {isPending ? (
-                                        <Loader2 className="size-4 animate-spin" aria-hidden />
-                                    ) : (
-                                        <EllipsisVerticalIcon className="size-4" aria-hidden />
-                                    )}
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                                    {course.title}
+                                </Link>
+                                <div className="flex-1" />
+                            </CardTitle>
+                            <CardDescription className="mt-1.5 flex items-center gap-1 text-xs group-hover:text-foreground/80">
+                                <SignatureIcon className="size-3 shrink-0" aria-hidden />
+                                {course.ownerName}
+                            </CardDescription>
+                        </div>
+                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-4 shrink-0 -mr-2 mt-1"
+                                disabled={isPending}
+                                aria-label={`Actions for ${course.title}`}
+                            >
+                                {isPending ? (
+                                    <Loader2 className="size-4 animate-spin" aria-hidden />
+                                ) : (
+                                    <EllipsisVerticalIcon className="size-4" aria-hidden />
+                                )}
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
                                 {course.isOwner ? (
                                     <DropdownMenuItem asChild>
                                         <Link href={instructorCoursePropertiesHref(course.course_key)}>
@@ -166,13 +177,8 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                                     </>
                                 ) : null}
                             </DropdownMenuContent>
-                        </DropdownMenu>
-                    </CardTitle>
+                    </DropdownMenu>
                 </div>
-                <CardDescription className="flex items-center gap-1 text-xs group-hover:text-foreground/80">
-                    <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                    {course.ownerName}
-                </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-3">
                 {course.description ? <MarkdownText className="line-clamp-4">{course.description}</MarkdownText> : null}

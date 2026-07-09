@@ -3,11 +3,23 @@ import { includesForSearch } from '@/lib/utils'
 
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
 
+const DEFAULT_COURSE_ICON_URL =
+    'https://jutge.org/img/course-icons/orange-network/ff106627bf1648a5872de4bdada3105a.png'
+
+export function courseIconUrl(icon: string | null | undefined): string {
+    if (!icon) {
+        return DEFAULT_COURSE_ICON_URL
+    }
+
+    return `https://jutge.org/img/course-icons/${icon}.png`
+}
+
 export type CourseRow = {
     course_key: string
     title: string
     description: string
     ownerName: string
+    iconUrl: string
     isOfficial: boolean
     isPublic: boolean
     isOwner: boolean
@@ -55,6 +67,7 @@ export type GuestCourseRow = {
     title: string
     description: string
     ownerName: string
+    iconUrl: string
     isOfficial: boolean
     isPublic: boolean
 }
@@ -95,6 +108,15 @@ export function isCourseOwnedByUser(owner: PublicProfile, user: Pick<Profile, 'e
     return false
 }
 
+function readCourseIcon(course: object): string | null {
+    if (!('icon' in course)) {
+        return null
+    }
+
+    const icon = course.icon
+    return typeof icon === 'string' || icon === null ? icon : null
+}
+
 export function buildCourseRow(
     course: BriefCourse,
     status: CourseStatus,
@@ -106,6 +128,7 @@ export function buildCourseRow(
         title: displayText(course.title) || course.course_nm,
         description: displayText(course.description),
         ownerName: ownerDisplayName(course.owner),
+        iconUrl: courseIconUrl(readCourseIcon(course)),
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
         isOwner,
@@ -136,6 +159,7 @@ export function buildGuestCourseRow(course: PublicCourse, courseKey?: string): G
         title: displayText(course.title) || course.course_nm,
         description: displayText(course.description),
         ownerName: displayText(course.owner.name) || displayText(course.owner.username) || course.owner.email,
+        iconUrl: courseIconUrl(readCourseIcon(course)),
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
     }

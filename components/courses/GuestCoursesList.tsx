@@ -47,11 +47,11 @@ function GuestCourseCard({ course }: { course: GuestCourseRow }) {
             )}
         >
             <CardHeader className="">
-                <div className="flex items-start gap-3">
-                    <CourseIconImage iconUrl={course.iconUrl} />
+                <div className="flex items-center gap-3">
+                    <CourseIconImage iconUrl={course.iconUrl} size="sm" />
                     <div className="min-w-0 flex-1">
-                        <CardTitle className="line-clamp-2 text-base leading-snug">{course.title}</CardTitle>
-                        <CardDescription className="mt-1.5 flex items-center gap-1 text-xs group-hover:text-foreground/80">
+                        <CardTitle className="line-clamp-1 text-base leading-snug">{course.title}</CardTitle>
+                        <CardDescription className="mt-1 flex items-center gap-1 text-xs group-hover:text-foreground/80">
                             <SignatureIcon className="size-3 shrink-0" aria-hidden />
                             {course.ownerName}
                         </CardDescription>

@@ -1,11 +1,13 @@
 'use client'
 
+import { fetchCommandPaletteCourses } from '@/actions/commandPalette'
 import {
     clearAllRecents,
     clearRecentCourses,
     clearRecentProblems,
     clearRecentSubmissions,
     emptyRecents,
+    enrichRecentCourseIcons,
     observeRecentPageMetadata,
     readRecents,
     syncRecentsFromPage,
@@ -79,6 +81,39 @@ export function RecentsProvider({ children, authenticated, userId }: RecentsProv
             syncFromPage(false)
         })
     }, [authenticated, pathname, userId])
+
+    useEffect(() => {
+        if (!authenticated || !userId) {
+            return
+        }
+
+        if (!recents.courses.some((course) => !course.iconUrl)) {
+            return
+        }
+
+        let cancelled = false
+
+        void fetchCommandPaletteCourses().then((allCourses) => {
+            if (cancelled) {
+                return
+            }
+
+            const iconByKey = new Map(allCourses.map((course) => [course.course_key, course.iconUrl]))
+            setRecents((current) => {
+                const next = enrichRecentCourseIcons(current, iconByKey)
+                if (next === current) {
+                    return current
+                }
+
+                writeRecents(userId, next)
+                return next
+            })
+        })
+
+        return () => {
+            cancelled = true
+        }
+    }, [authenticated, recents.courses, userId])
 
     function updateRecents(updater: (data: RecentsData) => RecentsData) {
         if (!userId) {

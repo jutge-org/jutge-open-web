@@ -7,8 +7,8 @@ type CourseIconImageProps = {
 }
 
 const sizeConfig = {
-    sm: { className: 'size-10', width: 40, height: 40 },
-    lg: { className: 'size-20', width: 80, height: 80 },
+    sm: { className: 'size-12', width: 48, height: 48 },
+    lg: { className: 'size-24', width: 96, height: 96 },
 } as const
 
 export function CourseIconImage({ iconUrl, size = 'sm', className }: CourseIconImageProps) {
@@ -18,7 +18,7 @@ export function CourseIconImage({ iconUrl, size = 'sm', className }: CourseIconI
         <img
             src={iconUrl}
             alt=""
-            className={cn('shrink-0 rounded-lg object-contain', sizeClassName, className)}
+            className={cn('shrink-0 rounded-sm object-contain', sizeClassName, className)}
             width={width}
             height={height}
         />

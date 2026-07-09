@@ -191,8 +191,8 @@ export type FetchedPublicCourse = {
     course: PublicCourse
 }
 
-export const fetchPublicCourse = cache(async (courseKeyParam: string): Promise<FetchedPublicCourse | null> =>
-    resolvePublicCourse(courseKeyParam),
+export const fetchPublicCourse = cache(
+    async (courseKeyParam: string): Promise<FetchedPublicCourse | null> => resolvePublicCourse(courseKeyParam),
 )
 
 async function loadPublicCourses(): Promise<GuestCourseRow[]> {

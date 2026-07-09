@@ -22,7 +22,12 @@ export function GuestCourseDetail({ courseKey, course }: GuestCourseDetailProps)
                     <div className="flex min-w-0 flex-1 items-start gap-4">
                         <CourseIconImage iconUrl={row.iconUrl} size="lg" />
                         <div className="min-w-0 flex-1">
-                            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{row.title}</h1>
+                            <h1
+                                className="text-2xl font-semibold tracking-tight text-foreground"
+                                data-recent-course-icon-url={row.iconUrl}
+                            >
+                                {row.title}
+                            </h1>
                             <p className="mt-1.5 flex min-w-0 items-center gap-1 text-muted-foreground">
                                 <SignatureIcon className="size-3 shrink-0" aria-hidden />
                                 {row.ownerName}

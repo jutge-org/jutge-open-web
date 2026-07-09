@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-06T15:25:26.732Z
+ * This file has been automatically generated at 2026-07-09T17:14:07.675Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -140,6 +140,7 @@ export type PublicCourse = {
     description: string
     public: number
     official: number
+    icon: string | null
     lists: string[]
     problem_count: number
     owner: PublicProfile
@@ -291,13 +292,15 @@ export type Profile = {
 
 export type NewProfile = {
     name: string
-    birth_year: number
-    nickname: string
-    webpage: string
-    affiliation: string
-    description: string
-    country_id: string
-    timezone_id: string
+    birth_year: number | null
+    nickname: string | null
+    webpage: string | null
+    affiliation: string | null
+    description: string | null
+    country_id: string | null
+    timezone_id: string | null
+    compiler_id: string | null
+    language_id: string | null
 }
 
 export type NewPassword = {
@@ -471,7 +474,9 @@ export type BriefCourse = {
     description: string | null
     public: number
     official: number
+    icon: string | null
     owner: PublicProfile
+    enrollment: string | string | string
 }
 
 export type Course = {
@@ -480,7 +485,9 @@ export type Course = {
     description: string | null
     public: number
     official: number
+    icon: string | null
     owner: PublicProfile
+    enrollment: string | string | string
     lists: string[]
 }
 
@@ -545,16 +552,40 @@ export type RunningExam = {
     documents: RunningExamDocument[]
 }
 
+export type BriefExam = {
+    exam_key: string
+    title: string
+    place: string
+    description: string
+    contest: boolean
+    course: { course_nm: string; title: string; icon: string | null }
+    owner: PublicProfile
+    visible_submissions: boolean
+    status: string
+    exp_time_start: string | string | string | number
+    running_time: string | string | string | number
+    time_start: string | string | string | number | null
+    time_end: string | string | string | number | null
+}
+
+export type BriefExams = Record<string, BriefExam>
+
 export type Exam = {
     exam_key: string
     title: string
     place: string
     description: string
-    exp_time_start: string | string | string | number
     contest: boolean
-    finished: boolean
-    course: { course_nm: string; title: string }
+    course: { course_nm: string; title: string; icon: string | null }
     owner: PublicProfile
+    visible_submissions: boolean
+    status: string
+    exp_time_start: string | string | string | number
+    running_time: string | string | string | number
+    time_start: string | string | string | number | null
+    time_end: string | string | string | number | null
+    problems: string[]
+    submissions: Submission[]
 }
 
 export type AbstractStatus = {
@@ -665,6 +696,7 @@ export type InstructorBriefCourse = {
     annotation: string
     official: number
     public: number
+    icon: string | null
     created_at: string | string | string | number
     updated_at: string | string | string | number
 }
@@ -682,6 +714,7 @@ export type InstructorCourse = {
     annotation: string
     official: number
     public: number
+    icon: string | null
     created_at: string | string | string | number
     updated_at: string | string | string | number
     lists: string[]
@@ -726,6 +759,11 @@ export type InstructorCourseUpdate = {
     lists: string[] | null
     students: CourseMembers | null
     tutors: CourseMembers | null
+}
+
+export type InstructorCourseUpdateIconInput = {
+    course_nm: string
+    icon: string
 }
 
 export type InstructorExamCourse = {
@@ -1466,6 +1504,7 @@ export class JutgeApiClient {
         this.testing = new Module_testing(this)
 
         this.clientTTLs.set('misc.getAvatarPacks', 3600)
+        this.clientTTLs.set('misc.getCourseIcons', 3600)
         this.clientTTLs.set('misc.getExamIcons', 3600)
         this.clientTTLs.set('misc.getDemosForCompiler', 3600)
         this.clientTTLs.set('tables.get', 3600)
@@ -1732,6 +1771,18 @@ class Module_misc {
      */
     async getAvatarPacks(): Promise<string[]> {
         const [output, ofiles] = await this.root.execute('misc.getAvatarPacks', null)
+        return output
+    }
+
+    /**
+     * Returns all course icons.
+     *
+     * 🔐 Authentication: instructor
+     * No warnings
+     * Course icons are used in courses to identify courses. Icons themselves are stored in the https://jutge.org/img/course-icons/FILE.png URL
+     */
+    async getCourseIcons(): Promise<TagsDict> {
+        const [output, ofiles] = await this.root.execute('misc.getCourseIcons', null)
         return output
     }
 
@@ -3016,22 +3067,7 @@ class Module_student_exams {
      * No warnings
      *
      */
-    async getAll(): Promise<
-        Record<
-            string,
-            {
-                exam_key: string
-                title: string
-                place: string
-                description: string
-                exp_time_start: string | string | string | number
-                contest: boolean
-                finished: boolean
-                course: InstructorExamCourse
-                owner: PublicProfile
-            }
-        >
-    > {
+    async getAll(): Promise<BriefExams> {
         const [output, ofiles] = await this.root.execute('student.exams.getAll', null)
         return output
     }
@@ -3043,18 +3079,8 @@ class Module_student_exams {
      * No warnings
      *
      */
-    async get(exam_nm: string): Promise<{
-        exam_key: string
-        title: string
-        place: string
-        description: string
-        exp_time_start: string | string | string | number
-        contest: boolean
-        finished: boolean
-        course: InstructorExamCourse
-        owner: PublicProfile
-    }> {
-        const [output, ofiles] = await this.root.execute('student.exams.get', exam_nm)
+    async get(exam_key: string): Promise<Exam> {
+        const [output, ofiles] = await this.root.execute('student.exams.get', exam_key)
         return output
     }
 }
@@ -3448,6 +3474,18 @@ class Module_instructor_courses {
      */
     async update(data: InstructorCourseUpdate): Promise<void> {
         const [output, ofiles] = await this.root.execute('instructor.courses.update', data)
+        return output
+    }
+
+    /**
+     * Update the icon of a course.
+     *
+     * 🔐 Authentication: instructor
+     * No warnings
+     *
+     */
+    async updateIcon(data: InstructorCourseUpdateIconInput): Promise<void> {
+        const [output, ofiles] = await this.root.execute('instructor.courses.updateIcon', data)
         return output
     }
 

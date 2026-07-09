@@ -96,15 +96,17 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                 'hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
             )}
         >
-            <CardHeader className="-mt-2">
+            <CardHeader className="">
                 <div className="flex items-start justify-between gap-2">
-                    <div className="flex min-w-0 flex-1 items-start gap-3">
-                        <CourseIconImage iconUrl={course.iconUrl} />
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <Link href={courseHref(course.course_key)}>
+                            <CourseIconImage iconUrl={course.iconUrl} />
+                        </Link>
                         <div className="min-w-0 flex-1">
                             <CardTitle className="w-full flex flex-row items-start">
                                 <Link
                                     href={courseHref(course.course_key)}
-                                    className="line-clamp-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                    className="line-clamp-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                                 >
                                     {course.title}
                                 </Link>
@@ -134,49 +136,49 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                                {course.isOwner ? (
-                                    <DropdownMenuItem asChild>
-                                        <Link href={instructorCoursePropertiesHref(course.course_key)}>
-                                            <EditIcon aria-hidden />
-                                            Edit
-                                        </Link>
-                                    </DropdownMenuItem>
-                                ) : null}
-                                {tab === 'available' ? (
-                                    <DropdownMenuItem onClick={() => onAction(course, 'enroll')}>
-                                        <GraduationCap aria-hidden />
-                                        Enroll
-                                    </DropdownMenuItem>
-                                ) : null}
-                                {tab === 'enrolled' ? (
-                                    <>
-                                        {!course.isOwner ? (
-                                            <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
-                                                <LogOutIcon aria-hidden />
-                                                Unenroll
-                                            </DropdownMenuItem>
-                                        ) : null}
-                                        <DropdownMenuItem onClick={() => onAction(course, 'archive')}>
-                                            <ArchiveIcon aria-hidden />
-                                            Archive
+                            {course.isOwner ? (
+                                <DropdownMenuItem asChild>
+                                    <Link href={instructorCoursePropertiesHref(course.course_key)}>
+                                        <EditIcon aria-hidden />
+                                        Edit
+                                    </Link>
+                                </DropdownMenuItem>
+                            ) : null}
+                            {tab === 'available' ? (
+                                <DropdownMenuItem onClick={() => onAction(course, 'enroll')}>
+                                    <GraduationCap aria-hidden />
+                                    Enroll
+                                </DropdownMenuItem>
+                            ) : null}
+                            {tab === 'enrolled' ? (
+                                <>
+                                    {!course.isOwner ? (
+                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
                                         </DropdownMenuItem>
-                                    </>
-                                ) : null}
-                                {tab === 'archived' ? (
-                                    <>
-                                        {!course.isOwner ? (
-                                            <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
-                                                <LogOutIcon aria-hidden />
-                                                Unenroll
-                                            </DropdownMenuItem>
-                                        ) : null}
-                                        <DropdownMenuItem onClick={() => onAction(course, 'unarchive')}>
-                                            <ArchiveRestoreIcon aria-hidden />
-                                            Unarchive
+                                    ) : null}
+                                    <DropdownMenuItem onClick={() => onAction(course, 'archive')}>
+                                        <ArchiveIcon aria-hidden />
+                                        Archive
+                                    </DropdownMenuItem>
+                                </>
+                            ) : null}
+                            {tab === 'archived' ? (
+                                <>
+                                    {!course.isOwner ? (
+                                        <DropdownMenuItem onClick={() => onAction(course, 'unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
                                         </DropdownMenuItem>
-                                    </>
-                                ) : null}
-                            </DropdownMenuContent>
+                                    ) : null}
+                                    <DropdownMenuItem onClick={() => onAction(course, 'unarchive')}>
+                                        <ArchiveRestoreIcon aria-hidden />
+                                        Unarchive
+                                    </DropdownMenuItem>
+                                </>
+                            ) : null}
+                        </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </CardHeader>

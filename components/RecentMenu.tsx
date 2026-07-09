@@ -1,5 +1,6 @@
 'use client'
 
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { useRecents } from '@/components/RecentsProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,6 +21,7 @@ import {
     type RecentProblemItem,
     type RecentSubmissionItem,
 } from '@/lib/recents'
+import { courseIconUrl } from '@/lib/courses'
 import { BookOpenIcon, Clock3Icon, FileBracesCornerIcon, SendIcon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
@@ -30,10 +32,19 @@ type RecentSectionProps<T> = {
     items: T[]
     renderHref: (item: T) => string
     renderTitle: (item: T) => ReactNode
+    renderLeading?: (item: T) => ReactNode
     emptyLabel: string
 }
 
-function RecentSection<T>({ label, icon, items, renderHref, renderTitle, emptyLabel }: RecentSectionProps<T>) {
+function RecentSection<T>({
+    label,
+    icon,
+    items,
+    renderHref,
+    renderTitle,
+    renderLeading,
+    emptyLabel,
+}: RecentSectionProps<T>) {
     return (
         <>
             <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
@@ -48,6 +59,7 @@ function RecentSection<T>({ label, icon, items, renderHref, renderTitle, emptyLa
                 items.map((item) => (
                     <DropdownMenuItem key={renderHref(item)} asChild>
                         <Link href={renderHref(item)} className="flex min-w-0 items-center gap-1.5">
+                            {renderLeading ? renderLeading(item) : null}
                             <span className="truncate">{renderTitle(item)}</span>
                         </Link>
                     </DropdownMenuItem>
@@ -85,6 +97,12 @@ export function RecentMenu() {
                     items={recents.courses}
                     renderHref={recentCourseHref}
                     renderTitle={(item) => item.title}
+                    renderLeading={(item) => (
+                        <CourseIconImage
+                            iconUrl={item.iconUrl ?? courseIconUrl(null)}
+                            className="size-4 shrink-0 rounded"
+                        />
+                    )}
                     emptyLabel="No recent courses"
                 />
                 <DropdownMenuSeparator />

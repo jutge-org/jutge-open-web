@@ -10,6 +10,7 @@ import { abstractProblemsToRows, type ProblemRow } from '@/services/queries/prob
 
 export type CommandPaletteCourse = SearchableCourseRow & {
     course_key: string
+    iconUrl: string
 }
 
 export async function fetchCommandPaletteProblems(): Promise<ProblemRow[]> {
@@ -38,6 +39,7 @@ export async function fetchCommandPaletteCourses(): Promise<CommandPaletteCourse
                 description: course.description,
                 isOfficial: course.isOfficial,
                 isOwner: course.isOwner,
+                iconUrl: course.iconUrl,
             })
         }
 
@@ -51,6 +53,7 @@ export async function fetchCommandPaletteCourses(): Promise<CommandPaletteCourse
         ownerName: course.ownerName,
         description: course.description,
         isOfficial: course.isOfficial,
+        iconUrl: course.iconUrl,
     }))
 }
 

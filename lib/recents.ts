@@ -9,6 +9,7 @@ const RECENTS_STORAGE_PREFIX = 'jutge-recents:'
 export type RecentCourseItem = {
     courseKey: string
     title: string
+    iconUrl?: string
     accessedAt: number
 }
 
@@ -46,7 +47,8 @@ function isRecentCourseItem(value: unknown): value is RecentCourseItem {
         value !== null &&
         typeof (value as RecentCourseItem).courseKey === 'string' &&
         typeof (value as RecentCourseItem).title === 'string' &&
-        typeof (value as RecentCourseItem).accessedAt === 'number'
+        typeof (value as RecentCourseItem).accessedAt === 'number' &&
+        ((value as RecentCourseItem).iconUrl === undefined || typeof (value as RecentCourseItem).iconUrl === 'string')
     )
 }
 
@@ -151,6 +153,25 @@ export function clearAllRecents(): RecentsData {
     return emptyRecents()
 }
 
+export function enrichRecentCourseIcons(data: RecentsData, iconByKey: ReadonlyMap<string, string>): RecentsData {
+    let changed = false
+    const courses = data.courses.map((course) => {
+        if (course.iconUrl) {
+            return course
+        }
+
+        const iconUrl = iconByKey.get(course.courseKey)
+        if (!iconUrl) {
+            return course
+        }
+
+        changed = true
+        return { ...course, iconUrl }
+    })
+
+    return changed ? { ...data, courses } : data
+}
+
 export function readRecents(userId: string): RecentsData {
     if (typeof window === 'undefined') {
         return emptyRecents()
@@ -194,6 +215,7 @@ export type CommandPaletteRecentItem = {
     label: string
     description: string
     href: string
+    iconUrl?: string
     accessedAt: number
 }
 
@@ -205,6 +227,7 @@ export function commandPaletteRecentItems(recents: RecentsData): CommandPaletteR
             label: item.title,
             description: item.courseKey,
             href: recentCourseHref(item),
+            iconUrl: item.iconUrl,
             accessedAt: item.accessedAt,
         })),
         ...recents.problems.map((item) => ({
@@ -248,11 +271,18 @@ export function filterCommandPaletteRecents(
 }
 
 const RECENT_VERDICT_EMOJI_SELECTOR = '[data-recent-verdict-emoji]'
+const RECENT_COURSE_ICON_SELECTOR = '[data-recent-course-icon-url]'
 
 function verdictEmojiFromDocument(): string | undefined {
     const element = document.querySelector(RECENT_VERDICT_EMOJI_SELECTOR)
     const emoji = element?.getAttribute('data-recent-verdict-emoji')?.trim()
     return emoji || undefined
+}
+
+function courseIconUrlFromDocument(): string | undefined {
+    const element = document.querySelector(RECENT_COURSE_ICON_SELECTOR)
+    const iconUrl = element?.getAttribute('data-recent-course-icon-url')?.trim()
+    return iconUrl || undefined
 }
 
 const COURSE_PATH_RE = /^\/courses\/(?!public(?:\/|$))([^/]+)$/
@@ -295,12 +325,18 @@ export function patchRecentsFromDocument(pathname: string, data: RecentsData): R
         }
 
         const index = data.courses.findIndex((entry) => entry.courseKey === courseKey)
-        if (index === -1 || data.courses[index].title === title) {
+        const iconUrl = courseIconUrlFromDocument()
+        if (index === -1) {
+            return null
+        }
+
+        const existing = data.courses[index]
+        if (existing.title === title && existing.iconUrl === iconUrl) {
             return null
         }
 
         const courses = [...data.courses]
-        courses[index] = { ...courses[index], title }
+        courses[index] = { ...existing, title, iconUrl }
         return { ...data, courses }
     }
 
@@ -377,6 +413,7 @@ export function recordRecentFromPathname(pathname: string, data: RecentsData): R
         return addRecentCourse(data, {
             courseKey,
             title: titleFromDocument(courseKey),
+            iconUrl: courseIconUrlFromDocument(),
             accessedAt: Date.now(),
         })
     }
@@ -452,7 +489,7 @@ export function observeRecentPageMetadata(onChange: () => void): () => void {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ['data-recent-verdict-emoji'],
+        attributeFilter: ['data-recent-verdict-emoji', 'data-recent-course-icon-url'],
     })
 
     const retryTimeouts = [50, 150, 500, 1000, 2000, 3000].map((delay) => window.setTimeout(handleChange, delay))

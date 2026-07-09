@@ -1,5 +1,12 @@
 export type AboutTab =
-    'index' | 'telegram' | 'terms-of-service' | 'honor-code' | 'accessibility' | 'pictures' | 'publications' | 'credits'
+    | 'index'
+    | 'telegram'
+    | 'terms-of-service'
+    | 'honor-code'
+    | 'accessibility'
+    | 'pictures'
+    | 'publications'
+    | 'credits'
 
 export type AboutNavItem = {
     tab: AboutTab

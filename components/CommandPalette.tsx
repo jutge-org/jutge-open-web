@@ -8,6 +8,7 @@ import {
     type CommandPaletteCourse,
 } from '@/actions/commandPalette'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { useRecents } from '@/components/RecentsProvider'
 import { SignInDialog } from '@/components/SignInDialog'
@@ -32,7 +33,7 @@ import {
     type CommandPaletteSection,
 } from '@/lib/commandPaletteSections'
 import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
-import { courseHref, filterAndSortCourses, publicCourseHref } from '@/lib/courses'
+import { courseHref, filterAndSortCourses, publicCourseHref, resolveCourseIconUrl } from '@/lib/courses'
 import { filterAndSortExams, type ExamRow } from '@/lib/exams'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
 import { filterProblems } from '@/lib/problems'
@@ -175,6 +176,18 @@ export function CommandPalette({ authenticated, instructor = false, administrato
         return filterCommandPaletteRecents(recents, trimmedQuery, RESULTS_LIMIT)
     }, [authenticated, recents, trimmedQuery])
 
+    const courseIconByKey = useMemo(() => {
+        const map = new Map<string, string>()
+        for (const course of courses) {
+            map.set(course.course_key, course.iconUrl)
+        }
+        for (const exam of exams) {
+            const courseKey = exam.courseHref.replace(/^\/courses\//, '')
+            map.set(courseKey, exam.courseIconUrl)
+        }
+        return map
+    }, [courses, exams])
+
     const filteredSections = useMemo(() => {
         if (!trimmedQuery) {
             return { app: [], command: [], profile: [], documentation: [], about: [] }
@@ -305,6 +318,24 @@ export function CommandPalette({ authenticated, instructor = false, administrato
         }
     }
 
+    function resolveRecentCourseIconUrl(item: CommandPaletteRecentItem): string | undefined {
+        if (item.kind !== 'course') {
+            return undefined
+        }
+
+        const courseKey = item.id.slice('course:'.length)
+        return resolveCourseIconUrl(courseKey, courseIconByKey, item.iconUrl)
+    }
+
+    function renderRecentLeading(item: CommandPaletteRecentItem) {
+        if (item.kind === 'course') {
+            return <CourseIconImage iconUrl={resolveRecentCourseIconUrl(item)!} className="size-3.5 shrink-0 rounded" />
+        }
+
+        const Icon = recentIcon(item)
+        return <Icon className="size-3.5 shrink-0" aria-hidden />
+    }
+
     const hasCommands = filteredSections.command.length > 0
     const hasProblems = filteredProblems.length > 0
     const hasCourses = filteredCourses.length > 0
@@ -429,7 +460,10 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                                     >
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <BookOpenIcon className="size-3.5 shrink-0" aria-hidden />
+                                                <CourseIconImage
+                                                    iconUrl={course.iconUrl}
+                                                    className="size-3.5 shrink-0 rounded"
+                                                />
                                                 <span className="truncate font-medium">{course.title}</span>
                                             </div>
                                             <span className="truncate pl-5.5 text-xs text-muted-foreground">
@@ -456,9 +490,15 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                                                 <SchoolIcon className="size-3.5 shrink-0" aria-hidden />
                                                 <span className="truncate font-medium">{exam.title}</span>
                                             </div>
-                                            <span className="truncate pl-5.5 text-xs text-muted-foreground">
-                                                {exam.courseTitle} · {exam.ownerName}
-                                            </span>
+                                            <div className="flex min-w-0 items-center gap-1.5 pl-5.5 text-xs text-muted-foreground">
+                                                <CourseIconImage
+                                                    iconUrl={exam.courseIconUrl}
+                                                    className="size-3.5 shrink-0 rounded"
+                                                />
+                                                <span className="truncate">
+                                                    {exam.courseTitle} · {exam.ownerName}
+                                                </span>
+                                            </div>
                                         </div>
                                     </CommandItem>
                                 ))}
@@ -469,22 +509,19 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                         ) : null}
                         {!loading && filteredRecents.length > 0 ? (
                             <CommandGroup heading="Recent">
-                                {filteredRecents.map((item) => {
-                                    const Icon = recentIcon(item)
-                                    return (
-                                        <CommandItem key={item.id} value={item.id} onSelect={() => navigate(item.href)}>
-                                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                                <div className="flex min-w-0 items-center gap-2">
-                                                    <Icon className="size-3.5 shrink-0" aria-hidden />
-                                                    <span className="truncate font-medium">{item.label}</span>
-                                                </div>
-                                                <span className="truncate pl-5.5 text-xs text-muted-foreground">
-                                                    {item.description}
-                                                </span>
+                                {filteredRecents.map((item) => (
+                                    <CommandItem key={item.id} value={item.id} onSelect={() => navigate(item.href)}>
+                                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                            <div className="flex min-w-0 items-center gap-2">
+                                                {renderRecentLeading(item)}
+                                                <span className="truncate font-medium">{item.label}</span>
                                             </div>
-                                        </CommandItem>
-                                    )
-                                })}
+                                            <span className="truncate pl-5.5 text-xs text-muted-foreground">
+                                                {item.description}
+                                            </span>
+                                        </div>
+                                    </CommandItem>
+                                ))}
                             </CommandGroup>
                         ) : null}
                         {!loading &&

@@ -20,11 +20,13 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { ExternalLink } from '@/components/ExternalLink'
 import { aboutNavItems } from '@/lib/about'
 import { administratorIndexItems } from '@/lib/administrator'
 import { documentationNavItems } from '@/lib/documentation'
 import { instructorIndexItems } from '@/lib/instructor'
+import type { CoursesNavItem } from '@/lib/courses'
 import {
     getSiteNavLinks,
     homeLink,
@@ -81,8 +83,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment, type ComponentType } from 'react'
 
+type MainNavSubmenuItem = {
+    href: string
+    label: string
+    external?: boolean
+    iconUrl?: string
+}
+
 type MainBreadcrumbsInLayoutProps = SiteNavLinksContext & {
-    enrolledCoursesNavItems?: readonly { href: string; label: string }[]
+    enrolledCoursesNavItems?: readonly CoursesNavItem[]
 }
 
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
@@ -124,8 +133,18 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
     }
 }
 
-function MainNavCoursesSubItemIcon() {
-    return <BookOpenCheckIcon aria-hidden />
+function MainNavSubmenuItemIcon({
+    item,
+    SubItemIcon,
+}: {
+    item: Pick<MainNavSubmenuItem, 'href' | 'iconUrl'>
+    SubItemIcon: ComponentType<{ href: string }>
+}) {
+    if (item.iconUrl) {
+        return <CourseIconImage iconUrl={item.iconUrl} className="size-4 rounded" />
+    }
+
+    return <SubItemIcon href={item.href} />
 }
 
 function MainNavInstructorSubItemIcon({ href }: { href: string }) {
@@ -235,7 +254,7 @@ type MainNavRoleSubmenuProps = {
     href: string
     label: string
     indexHref: string
-    items: readonly { href: string; label: string; external?: boolean }[]
+    items: readonly MainNavSubmenuItem[]
     pathname: string
     isCurrentSection: boolean
     subItemIcon: ComponentType<{ href: string }>
@@ -272,7 +291,7 @@ function MainNavRoleSubmenu({
                         item.external ? (
                             <DropdownMenuItem asChild key={item.href}>
                                 <ExternalLink href={item.href}>
-                                    <SubItemIcon href={item.href} />
+                                    <MainNavSubmenuItemIcon item={item} SubItemIcon={SubItemIcon} />
                                     {item.label}
                                 </ExternalLink>
                             </DropdownMenuItem>
@@ -285,7 +304,7 @@ function MainNavRoleSubmenu({
                                             'font-semibold text-foreground',
                                     )}
                                 >
-                                    <SubItemIcon href={item.href} />
+                                    <MainNavSubmenuItemIcon item={item} SubItemIcon={SubItemIcon} />
                                     {item.label}
                                 </Link>
                             </DropdownMenuItem>
@@ -380,7 +399,7 @@ export function MainBreadcrumbsInLayout({
                                                 items={enrolledCoursesNavItems}
                                                 pathname={pathname}
                                                 isCurrentSection={linkIsCurrentMainSection(href)}
-                                                subItemIcon={MainNavCoursesSubItemIcon}
+                                                subItemIcon={MainNavMenuItemIcon}
                                             />
                                         ) : href === '/documentation' ? (
                                             <MainNavRoleSubmenu

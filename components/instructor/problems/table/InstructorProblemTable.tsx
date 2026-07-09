@@ -78,7 +78,7 @@ export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] })
 
     let columnDefs = problemTableColumnDefs
     if (isMobile) {
-        const includedFields = ["problem_nm", "title", "sharing"]
+        const includedFields = ['problem_nm', 'title', 'sharing']
         columnDefs = columnDefs.filter((c) => includedFields.includes(c.field))
     }
 

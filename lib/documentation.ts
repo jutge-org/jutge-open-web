@@ -1,7 +1,15 @@
 import type { Compiler } from '@/lib/jutge_api_client'
 
 export type DocumentationTab =
-    'index' | 'faq' | 'compilers' | 'verdicts' | 'code-metrics' | 'pylibs' | 'certificates' | 'markdown' | 'references'
+    | 'index'
+    | 'faq'
+    | 'compilers'
+    | 'verdicts'
+    | 'code-metrics'
+    | 'pylibs'
+    | 'certificates'
+    | 'markdown'
+    | 'references'
 
 export type DocumentationNavItem = {
     tab: DocumentationTab

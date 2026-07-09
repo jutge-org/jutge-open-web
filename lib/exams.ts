@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { buildCourseKey } from '@/lib/courses'
+import { buildCourseKey, courseIconUrl } from '@/lib/courses'
 import { includesForSearch } from '@/lib/utils'
 import type { Exam, PublicProfile } from '@/lib/jutge_api_client'
 
@@ -29,6 +29,7 @@ export type ExamRow = {
     contest: boolean
     finished: boolean
     courseTitle: string
+    courseIconUrl: string
     courseHref: string
     ownerName: string
     statusTone: ExamStatusTone
@@ -59,6 +60,7 @@ function buildExamRowBase(exam_nm: string, exam: Exam): Omit<ExamRow, 'calendarU
         contest: exam.contest,
         finished: exam.finished,
         courseTitle: exam.course.title?.trim() || exam.course.course_nm,
+        courseIconUrl: courseIconUrl(exam.course.icon),
         courseHref: `/courses/${buildCourseKey(exam.owner, exam.course.course_nm)}`,
         ownerName: ownerDisplayName(exam.owner),
         statusTone: status.tone,

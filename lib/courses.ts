@@ -3,8 +3,7 @@ import { includesForSearch } from '@/lib/utils'
 
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
 
-const DEFAULT_COURSE_ICON_URL =
-    'https://jutge.org/img/course-icons/default/jutge-neon.png'
+const DEFAULT_COURSE_ICON_URL = 'https://jutge.org/img/course-icons/default/jutge-neon.png'
 
 export function courseIconUrl(icon: string | null | undefined): string {
     if (!icon) {
@@ -12,6 +11,14 @@ export function courseIconUrl(icon: string | null | undefined): string {
     }
 
     return `https://jutge.org/img/course-icons/${icon}.png`
+}
+
+export function resolveCourseIconUrl(
+    courseKey: string,
+    iconByKey: ReadonlyMap<string, string>,
+    storedIconUrl?: string,
+): string {
+    return storedIconUrl ?? iconByKey.get(courseKey) ?? courseIconUrl(null)
 }
 
 export type CourseRow = {
@@ -266,12 +273,14 @@ export function normalizeCourseKeyParam(raw: string): string {
 export type CoursesNavItem = {
     href: string
     label: string
+    iconUrl: string
 }
 
 export function buildCoursesNavItems(rows: CourseRow[]): CoursesNavItem[] {
     return rows.map((row) => ({
         href: courseHref(row.course_key),
         label: row.title,
+        iconUrl: row.iconUrl,
     }))
 }
 

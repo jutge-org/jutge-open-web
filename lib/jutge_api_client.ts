@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-10T11:08:21.733Z
+ * This file has been automatically generated at 2026-07-10T11:44:22.490Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -642,6 +642,21 @@ export type BriefAward = {
     youtube: string | null
 }
 
+export type EnrolledStudent = {
+    name: string
+    email: string
+}
+
+export type CourseSubmission = {
+    time: string
+    user_uid: string
+    email: string
+    problem_id: string
+    verdict: string
+    compiler_id: string
+    proglang: string
+}
+
 export type Document = {
     document_nm: string
     title: string
@@ -737,16 +752,6 @@ export type InstructorCourse = {
 export type StudentProfile = {
     name: string
     email: string
-}
-
-export type CourseSubmission = {
-    time: string
-    user_uid: string
-    email: string
-    problem_id: string
-    verdict: string
-    compiler_id: string
-    proglang: string
 }
 
 export type InstructorCourseCreation = {
@@ -1497,6 +1502,7 @@ export class JutgeApiClient {
     readonly courses: Module_courses
     readonly problems: Module_problems
     readonly student: Module_student
+    readonly tutor: Module_tutor
     readonly instructor: Module_instructor
     readonly games: Module_games
     readonly admin: Module_admin
@@ -1510,6 +1516,7 @@ export class JutgeApiClient {
         this.courses = new Module_courses(this)
         this.problems = new Module_problems(this)
         this.student = new Module_student(this)
+        this.tutor = new Module_tutor(this)
         this.instructor = new Module_instructor(this)
         this.games = new Module_games(this)
         this.admin = new Module_admin(this)
@@ -3191,6 +3198,113 @@ class Module_student_awards {
      */
     async get(award_id: string): Promise<Award> {
         const [output, ofiles] = await this.root.execute('student.awards.get', award_id)
+        return output
+    }
+}
+
+/**
+ *
+ * These operations are available to course tutors and instructors.
+ *
+ */
+class Module_tutor {
+    private readonly root: JutgeApiClient
+
+    readonly courses: Module_tutor_courses
+    readonly profile: Module_tutor_profile
+    readonly submissions: Module_tutor_submissions
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+        this.courses = new Module_tutor_courses(root)
+        this.profile = new Module_tutor_profile(root)
+        this.submissions = new Module_tutor_submissions(root)
+    }
+}
+
+/**
+ *
+ * Course operations for tutors.
+ *
+ */
+class Module_tutor_courses {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get course keys the user can tutorize.
+     *
+     * 🔐 Authentication: tutor
+     * No warnings
+     * Returns the union of courses owned as instructor and courses enrolled as tutor.
+     */
+    async coursesKeys(): Promise<string[]> {
+        const [output, ofiles] = await this.root.execute('tutor.courses.coursesKeys', null)
+        return output
+    }
+
+    /**
+     * Get students enrolled in a course.
+     *
+     * 🔐 Authentication: tutor
+     * No warnings
+     * Returns name and email for each student enrolled in the given course. Gated to courses the user can tutorize.
+     */
+    async enrolledStudents(course_key: string): Promise<EnrolledStudent[]> {
+        const [output, ofiles] = await this.root.execute('tutor.courses.enrolledStudents', course_key)
+        return output
+    }
+}
+
+/**
+ *
+ * Student profile operations for tutors.
+ *
+ */
+class Module_tutor_profile {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get the public profile of a student.
+     *
+     * 🔐 Authentication: tutor
+     * No warnings
+     * Returns the public profile for the given email. Gated to students enrolled in courses the user can tutorize.
+     */
+    async profile(email: string): Promise<PublicProfile> {
+        const [output, ofiles] = await this.root.execute('tutor.profile.profile', email)
+        return output
+    }
+}
+
+/**
+ *
+ * Submission operations for tutors.
+ *
+ */
+class Module_tutor_submissions {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get submissions for a student in a course.
+     *
+     * 🔐 Authentication: tutor
+     * No warnings
+     * Returns submissions for the given student on the problems of the course. Gated to students enrolled in courses the user can tutorize.
+     */
+    async submissions(data: { course_key: string; email: string }): Promise<CourseSubmission[]> {
+        const [output, ofiles] = await this.root.execute('tutor.submissions.submissions', data)
         return output
     }
 }

@@ -3,11 +3,8 @@ import type { Metadata } from 'next'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { SupervisionForm } from '@/components/supervision/SupervisionForm'
-import { getCurrentClient } from '@/lib/auth'
-import { canSuperviseCourse } from '@/lib/courses'
 import { renderSupervisor } from '@/lib/renderAuthed'
-import type { SupervisionCourseOption } from '@/lib/supervision'
-import { fetchCoursesData } from '@/services/queries/courses'
+import { fetchSupervisionCourseOptions } from '@/services/queries/supervision'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,15 +12,7 @@ export const metadata: Metadata = { title: 'Supervision — Jutge.org' }
 
 export default async function SupervisionPage() {
     return renderSupervisor(async (user) => {
-        const client = await getCurrentClient()
-        const data = await fetchCoursesData(client)
-        const courses: SupervisionCourseOption[] = data.enrolled
-            .filter((course) => canSuperviseCourse(course))
-            .map((course) => ({
-                courseKey: course.course_key,
-                title: course.title,
-                iconUrl: course.iconUrl,
-            }))
+        const courses = await fetchSupervisionCourseOptions()
 
         return (
             <div className="flex flex-col gap-6">

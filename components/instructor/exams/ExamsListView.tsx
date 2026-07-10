@@ -3,6 +3,7 @@
 import { fetchInstructorExamsArchived, fetchInstructorExamsIndex } from '@/actions/instructor'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { InstructorBriefExam } from '@/lib/jutge_api_client'
@@ -88,15 +89,17 @@ export function ExamsListView() {
 
     return (
         <>
-            <div className="mb-4 flex flex-row gap-2">
-                <Switch checked={showArchived} onCheckedChange={showArchivedChange} />
-                <div className="text-sm">Archived exams</div>
-                <div className="flex-grow" />
+            <div className="flex flex-row gap-2 items-center">
                 <Link href="/instructor/exams/new">
-                    <Button>
+                    <Button variant="outline">
                         <SquarePlusIcon /> New exam
                     </Button>
                 </Link>
+                <div className="grow" />
+                <Label>
+                    <Switch checked={showArchived} onCheckedChange={showArchivedChange} />
+                    <div className="text-sm">Archived exams</div>
+                </Label>
             </div>
             <AgTableFull rowData={rows} columnDefs={colDefs} />
         </>

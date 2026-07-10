@@ -11,6 +11,7 @@ export default function InstructorExamsPage() {
                 { title: 'Exams', url: '/instructor/exams' },
             ]}
         >
+            <h1>Instructor Exams</h1>
             <ExamsListView />
         </InstructorPageShell>
     )

@@ -16,3 +16,8 @@ export function includesForSearch(haystack: string, query: string): boolean {
 export function commandFilter(value: string, search: string): number {
     return includesForSearch(value, search) ? 1 : 0
 }
+
+export function formatDate(date: string | number): string {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('es-CA')
+}

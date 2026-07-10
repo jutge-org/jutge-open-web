@@ -11,6 +11,7 @@ export default function InstructorCoursesPage() {
                 { title: 'Courses', url: '/instructor/courses' },
             ]}
         >
+            <h1>Instructor Courses</h1>
             <CoursesListView />
         </InstructorPageShell>
     )

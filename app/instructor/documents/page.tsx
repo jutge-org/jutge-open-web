@@ -11,6 +11,7 @@ export default function InstructorDocumentsPage() {
                 { title: 'Documents', url: '/instructor/documents' },
             ]}
         >
+            <h1>Instructor Documents</h1>
             <DocumentsListView />
         </InstructorPageShell>
     )

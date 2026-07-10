@@ -33,7 +33,7 @@ const sharedSolutionsInfo: StateInfo = {
 }
 
 export const SharingCell = ({ problem }: { problem: ProblemRow }) => (
-    <div className="mt-3 flex flex-row gap-2">
+    <div className="flex flex-row gap-2">
         <ProblemState state={!Boolean(problem.passcode)} info={lockInfo} />
         <ProblemState state={problem.shared_testcases} info={sharedTestcasesInfo} />
         <ProblemState state={problem.shared_solutions} info={sharedSolutionsInfo} />

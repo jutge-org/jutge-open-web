@@ -3,6 +3,8 @@
 import { useMainBreadcrumbs, type MainBreadcrumbSegment } from '@/store/MainBreadcrumbs'
 import { useEffect } from 'react'
 
+// FIXME: This system is quite a stupid way of implementing breadcrumbs...
+
 export type MainBreadcrumbsProps = {
     breadcrumbs: readonly MainBreadcrumbSegment[]
 }

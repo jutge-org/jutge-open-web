@@ -11,6 +11,7 @@ export default function InstructorProblemsPage() {
                 { title: 'Problems', url: '/instructor/problems' },
             ]}
         >
+            <h1>Instructor Problems</h1>
             <ProblemsListView />
         </InstructorPageShell>
     )

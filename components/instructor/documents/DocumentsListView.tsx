@@ -88,9 +88,9 @@ export function DocumentsListView() {
 
     return (
         <>
-            <div className="mb-4 flex flex-row-reverse gap-2">
+            <div className="flex flex-row gap-2 items-center">
                 <Link href="/instructor/documents/new">
-                    <Button>
+                    <Button variant="outline">
                         <SquarePlusIcon /> New document
                     </Button>
                 </Link>

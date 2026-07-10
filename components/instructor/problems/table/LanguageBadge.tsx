@@ -40,3 +40,13 @@ export const LanguageBadge = ({ language, problem }: { language: string; problem
         </TooltipProvider>
     )
 }
+
+export const LanguageBadgeList = ({ problem, className }: { problem: ProblemRow; className: string }) => {
+    return (
+        <div className={className}>
+            {problem.languages.map((language: string) => (
+                <LanguageBadge key={language} language={language} problem={problem} />
+            ))}
+        </div>
+    )
+}

@@ -41,7 +41,7 @@ export const LanguageBadge = ({ language, problem }: { language: string; problem
     )
 }
 
-export const LanguageBadgeList = ({ problem, className }: { problem: ProblemRow; className: string }) => {
+export const LanguageBadgeList = ({ problem, className }: { problem: ProblemRow; className?: string }) => {
     return (
         <div className={className}>
             {problem.languages.map((language: string) => (

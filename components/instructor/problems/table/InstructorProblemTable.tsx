@@ -160,7 +160,9 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
                             <SharingCell problem={row} />
                         </td>
                         <td className="pr-2 flex flex-row items-center">
-                            <span className="line-clamp-1">{row.title}</span>{' '}
+                            <Link href={`/instructor/problems/${row.problem_nm}/properties`} className="hover:underline">
+                                <span className="line-clamp-1">{row.title}</span>
+                            </Link>
                             <LanguageBadgeList className="ml-2" problem={row} />
                         </td>
                         <td className="text-sm opacity-60 text-right">{formatDate(row.updated_at)}</td>

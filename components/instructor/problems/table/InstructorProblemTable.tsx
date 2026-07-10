@@ -2,12 +2,13 @@
 
 import { ExternalLink } from '@/components/ExternalLink'
 import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { cn, formatDate } from '@/lib/utils'
-import { ChevronDown, ChevronUp, SquarePlusIcon, WrenchIcon } from 'lucide-react'
+import { cn, formatDate, includesNocaps } from '@/lib/utils'
+import { ChevronDown, ChevronUp, CircleSlash2, PlusIcon, SearchIcon, SquarePlusIcon, WrenchIcon } from 'lucide-react'
 import Link from 'next/link'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { LanguageBadgeList } from './LanguageBadge'
 import { SharingCell } from './SharingCell'
 import { ProblemRow } from './types'
@@ -116,14 +117,20 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
         })
     }
 
-    const filteredRows = rows.filter((row) => row.deprecated === showDeprecated)
-    let sortedRows = filteredRows
-    if (order) {
-        const sortFns = sortFunctions[order.column]
-        if (sortFns) {
-            sortedRows.sort(sortFns[order.direction])
+    const filteredRows = useMemo(() => {
+        return rows.filter((row) => row.deprecated === showDeprecated)
+    }, [rows, showDeprecated])
+
+    const sortedRows = useMemo(() => {
+        let result = [...filteredRows]
+        if (order) {
+            const sortFns = sortFunctions[order.column]
+            if (sortFns) {
+                result.sort(sortFns[order.direction])
+            }
         }
-    }
+        return result
+    }, [filteredRows, order])
 
     const orderIcon = (column: Column) => {
         let icon = undefined
@@ -160,7 +167,10 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
                             <SharingCell problem={row} />
                         </td>
                         <td className="pr-2 flex flex-row items-center">
-                            <Link href={`/instructor/problems/${row.problem_nm}/properties`} className="hover:underline">
+                            <Link
+                                href={`/instructor/problems/${row.problem_nm}/properties`}
+                                className="hover:underline"
+                            >
                                 <span className="line-clamp-1">{row.title}</span>
                             </Link>
                             <LanguageBadgeList className="ml-2" problem={row} />
@@ -168,6 +178,15 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
                         <td className="text-sm opacity-60 text-right">{formatDate(row.updated_at)}</td>
                     </tr>
                 ))}
+                {sortedRows.length === 0 && (
+                    <tr className="border-t h-12">
+                        <td colSpan={4} className="h-12">
+                            <div className="h-full flex flex-row justify-center items-center gap-2 opacity-50">
+                                <CircleSlash2 className="w-4 h-4" /> No results.
+                            </div>
+                        </td>
+                    </tr>
+                )}
             </tbody>
         </table>
     )
@@ -175,29 +194,44 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
 
 export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] }) {
     const [showDeprecated, setShowDeprecated] = useState(false)
+    const [search, setSearch] = useState<string>('')
+
+    const filteredRows = useMemo(
+        () => rows.filter((row) => includesNocaps(row.problem_nm, search) || includesNocaps(row.title, search)),
+        [rows, search],
+    )
+
     return (
-        <>
-            <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2 items-center mb-4">
                 <Link href="/instructor/problems/new">
                     <Button variant="outline" className="w-36 justify-start" title="Add a new problem">
-                        <SquarePlusIcon /> New problem
+                        <PlusIcon /> New problem
                     </Button>
                 </Link>
                 <ExternalLink href="https://github.com/jutge-org/jutge-toolkit">
-                    <Button variant="outline" className="w-36 justify-start" title="Open Jutge Toolkit website">
+                    <Button variant="link" className="w-36 justify-start" title="Open Jutge Toolkit website">
                         <WrenchIcon /> Jutge Toolkit
                     </Button>
                 </ExternalLink>
                 <div className="grow" />
-                <Label className="text-sm">
+            </div>
+            <div className="flex flex-row gap-2">
+                <InputGroup>
+                    <InputGroupInput placeholder="ID or title..." onChange={(e) => setSearch(e.target.value)} />
+                    <InputGroupAddon>
+                        <SearchIcon />
+                    </InputGroupAddon>
+                </InputGroup>
+                <Label className="text-sm min-w-[20em] flex flex-row justify-end">
                     <Switch checked={showDeprecated} onCheckedChange={(checked) => setShowDeprecated(checked)} />
                     Show deprecated problems
                 </Label>
             </div>
 
             {/* --- Problem Table --- */}
-            <Table rows={rows} showDeprecated={showDeprecated} />
+            <Table rows={filteredRows} showDeprecated={showDeprecated} />
             {/* <ComplexTable rows={rows} /> */}
-        </>
+        </div>
     )
 }

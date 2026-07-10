@@ -21,3 +21,7 @@ export function formatDate(date: string | number): string {
     const dateObj = new Date(date);
     return dateObj.toLocaleDateString('es-CA')
 }
+
+export function includesNocaps(s: string, part: string) {
+    return s.toLowerCase().includes(part.toLocaleLowerCase())
+}

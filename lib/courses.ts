@@ -21,6 +21,8 @@ export function resolveCourseIconUrl(
     return storedIconUrl ?? iconByKey.get(courseKey) ?? courseIconUrl(null)
 }
 
+export type CourseEnrollment = 'student' | 'tutor'
+
 export type CourseRow = {
     course_key: string
     title: string
@@ -30,6 +32,7 @@ export type CourseRow = {
     isOfficial: boolean
     isPublic: boolean
     isOwner: boolean
+    isTutor: boolean
     status: CourseStatus
 }
 
@@ -101,6 +104,18 @@ export function instructorCoursePropertiesHref(courseKey: string): string {
     return courseNm ? `/instructor/courses/${courseNm}/properties` : '/instructor/courses'
 }
 
+export function readCourseEnrollment(enrollment: string): CourseEnrollment {
+    return enrollment === 'tutor' ? 'tutor' : 'student'
+}
+
+export function isCourseTutor(course: Pick<BriefCourse, 'enrollment'>, isOwner: boolean): boolean {
+    return !isOwner && readCourseEnrollment(course.enrollment) === 'tutor'
+}
+
+export function canSuperviseCourse(course: Pick<CourseRow, 'isOwner' | 'isTutor'>): boolean {
+    return course.isOwner || course.isTutor
+}
+
 export function isCourseOwnedByUser(owner: PublicProfile, user: Pick<Profile, 'email' | 'username'>): boolean {
     if (owner.email.toLowerCase() === user.email.toLowerCase()) {
         return true
@@ -139,6 +154,7 @@ export function buildCourseRow(
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
         isOwner,
+        isTutor: isCourseTutor(course, isOwner),
         status,
     }
 }

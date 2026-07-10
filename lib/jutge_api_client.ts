@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-10T09:04:37.816Z
+ * This file has been automatically generated at 2026-07-10T11:08:21.733Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -294,6 +294,7 @@ export type Profile = {
     max_subsxday: number
     administrator: number
     instructor: number
+    tutor: number
     parent_email: string | null
     country_id: string | null
     timezone_id: string

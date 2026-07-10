@@ -16,9 +16,11 @@ import { toast } from 'sonner'
 
 import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
+import { SuperviseCourseMenuItem } from '@/components/supervision/SuperviseCourseMenuItem'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import {
+    canSuperviseCourse,
     courseActionSuccessMessage,
     instructorCoursePropertiesHref,
     type CourseStatus,
@@ -36,9 +38,19 @@ type CourseDetailActionsProps = {
     ownerName: string
     status: CourseStatus
     isOwner: boolean
+    isTutor: boolean
+    userId: string
 }
 
-export function CourseDetailActions({ courseKey, title, ownerName, status, isOwner }: CourseDetailActionsProps) {
+export function CourseDetailActions({
+    courseKey,
+    title,
+    ownerName,
+    status,
+    isOwner,
+    isTutor,
+    userId,
+}: CourseDetailActionsProps) {
     const router = useRouter()
     const [isPending, setIsPending] = useState(false)
     const [, startTransition] = useTransition()
@@ -110,6 +122,9 @@ export function CourseDetailActions({ courseKey, title, ownerName, status, isOwn
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                    {canSuperviseCourse({ isOwner, isTutor }) ? (
+                        <SuperviseCourseMenuItem userId={userId} courseKey={courseKey} />
+                    ) : null}
                     {isOwner ? (
                         <DropdownMenuItem asChild>
                             <Link href={instructorCoursePropertiesHref(courseKey)}>

@@ -54,6 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                 <MainBreadcrumbsInLayout
                                                     authenticated={authenticated}
                                                     instructor={currentUser?.instructor ?? false}
+                                                    tutor={currentUser?.tutor ?? false}
                                                     administrator={currentUser?.administrator ?? false}
                                                     enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                 />
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                                     <CommandPalette
                                                         authenticated={authenticated}
                                                         instructor={currentUser?.instructor ?? false}
+                                                        tutor={currentUser?.tutor ?? false}
                                                         administrator={currentUser?.administrator ?? false}
                                                     />
                                                     {authenticated ? <RecentMenu /> : null}

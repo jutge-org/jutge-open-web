@@ -6,7 +6,7 @@ import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { fetchProfilePageData } from '@/services/queries/users'
-import { CrownIcon, GraduationCapIcon } from 'lucide-react'
+import { CrownIcon, GraduationCapIcon, UsersIcon } from 'lucide-react'
 
 type UserProfileViewProps = {
     user: SessionUser
@@ -61,7 +61,7 @@ export async function UserProfileView({ user }: UserProfileViewProps) {
                         />
                         {languageName ? <ProfileField label="Favorite language" value={languageName} /> : null}
                         {compilerName ? <ProfileField label="Favorite compiler" value={compilerName} /> : null}
-                        {user.instructor || user.administrator ? (
+                        {user.instructor || user.administrator || user.tutor ? (
                             <ProfileField
                                 label="Roles"
                                 value={
@@ -70,6 +70,12 @@ export async function UserProfileView({ user }: UserProfileViewProps) {
                                             <Badge variant="secondary">
                                                 <GraduationCapIcon aria-hidden />
                                                 Instructor
+                                            </Badge>
+                                        ) : null}
+                                        {user.tutor ? (
+                                            <Badge variant="secondary">
+                                                <UsersIcon aria-hidden />
+                                                Tutor
                                             </Badge>
                                         ) : null}
                                         {user.administrator ? (

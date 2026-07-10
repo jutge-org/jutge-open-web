@@ -7,6 +7,7 @@ import {
     ActivityIcon,
     SendIcon,
     CrownIcon,
+    EyeIcon,
     GraduationCap,
     Info,
     FileBracesCornerIcon,
@@ -34,6 +35,8 @@ function NavIcon({ href, className }: { href: string; className?: string }) {
             return <Award className={iconClass} aria-hidden />
         case '/profile':
             return <User className={iconClass} aria-hidden />
+        case '/supervision':
+            return <EyeIcon className={iconClass} aria-hidden />
         case '/instructor':
             return <GraduationCap className={iconClass} aria-hidden />
         case '/administrator':
@@ -55,6 +58,7 @@ const cardAccent: Record<string, string> = {
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
+    '/supervision': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/administrator': 'border-l-4 border-l-slate-500 text-slate-600 dark:text-slate-400',
     '/documentation': 'border-l-4 border-l-amber-400 text-amber-600 dark:text-amber-400',

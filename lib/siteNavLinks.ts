@@ -52,6 +52,12 @@ const profileLink: SiteNavLink = {
     match: (pathname) => pathname === '/profile' || pathname.startsWith('/profile/'),
 }
 
+const supervisionLink: SiteNavLink = {
+    href: '/supervision',
+    label: 'Supervision',
+    match: (pathname) => pathname === '/supervision' || pathname.startsWith('/supervision/'),
+}
+
 const instructorLink: SiteNavLink = {
     href: '/instructor',
     label: 'Instructor',
@@ -103,6 +109,7 @@ const authenticatedLinks: readonly SiteNavLink[] = [
 export type SiteNavLinksContext = {
     authenticated: boolean
     instructor?: boolean
+    tutor?: boolean
     administrator?: boolean
 }
 
@@ -115,6 +122,7 @@ export const authenticatedNavLinkDescriptions: Record<string, string> = {
     '/activity': 'Check your activity and progress',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'See and update your Jutge.org profile',
+    '/supervision': 'Supervise a student in a course you teach',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
     '/documentation': 'Learn how to use Jutge.org',
@@ -138,7 +146,12 @@ export function getSiteNavLinks(context: SiteNavLinksContext): readonly SiteNavL
     if (!context.authenticated) return links
 
     const roleLinks: SiteNavLink[] = []
-    if (context.instructor) roleLinks.push(instructorLink)
+    if (context.instructor || context.tutor) {
+        roleLinks.push(supervisionLink)
+    }
+    if (context.instructor) {
+        roleLinks.push(instructorLink)
+    }
     if (context.administrator) roleLinks.push(administratorLink)
 
     const profileIndex = authenticatedLinks.indexOf(profileLink)

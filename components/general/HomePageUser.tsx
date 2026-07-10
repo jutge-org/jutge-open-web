@@ -26,6 +26,7 @@ export function HomePageUser({ user }: HomePageUserProps) {
                 <HomeQuickNav
                     authenticated
                     instructor={user?.instructor ?? false}
+                    tutor={user?.tutor ?? false}
                     administrator={user?.administrator ?? false}
                 />
             </div>

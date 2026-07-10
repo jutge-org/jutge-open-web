@@ -49,6 +49,7 @@ import {
     LayoutGridIcon,
     LogInIcon,
     LogOutIcon,
+    EyeIcon,
     RectangleHorizontalIcon,
     SchoolIcon,
     SendIcon,
@@ -84,7 +85,12 @@ function SearchShortcutHint() {
 
 type CommandPaletteProps = SiteNavLinksContext
 
-export function CommandPalette({ authenticated, instructor = false, administrator = false }: CommandPaletteProps) {
+export function CommandPalette({
+    authenticated,
+    instructor = false,
+    tutor = false,
+    administrator = false,
+}: CommandPaletteProps) {
     const router = useRouter()
     const pathname = usePathname()
     const { resolvedTheme, setTheme } = useTheme()
@@ -101,8 +107,8 @@ export function CommandPalette({ authenticated, instructor = false, administrato
     const [loaded, setLoaded] = useState(false)
 
     const navContext = useMemo(
-        () => ({ authenticated, instructor, administrator }),
-        [authenticated, instructor, administrator],
+        () => ({ authenticated, instructor, tutor, administrator }),
+        [authenticated, instructor, tutor, administrator],
     )
 
     const loadData = useCallback(async () => {
@@ -303,6 +309,9 @@ export function CommandPalette({ authenticated, instructor = false, administrato
                         return SquareIcon
                 }
             default:
+                if (section.href === '/supervision') {
+                    return EyeIcon
+                }
                 return TerminalIcon
         }
     }

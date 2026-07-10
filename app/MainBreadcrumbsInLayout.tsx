@@ -64,6 +64,7 @@ import {
     SendIcon,
     FileBracesCornerIcon,
     CrownIcon,
+    EyeIcon,
     GraduationCap,
     House,
     SchoolIcon,
@@ -120,6 +121,8 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
             return <Award aria-hidden />
         case '/profile':
             return <User aria-hidden />
+        case '/supervision':
+            return <EyeIcon aria-hidden />
         case '/instructor':
             return <GraduationCap aria-hidden />
         case '/administrator':
@@ -319,12 +322,13 @@ function MainNavRoleSubmenu({
 export function MainBreadcrumbsInLayout({
     authenticated,
     instructor,
+    tutor,
     administrator,
     enrolledCoursesNavItems = [],
 }: MainBreadcrumbsInLayoutProps) {
     const breadcrumbs = useMainBreadcrumbs((s) => s.breadcrumbs)
     const pathname = usePathname()
-    const navLinks = getSiteNavLinks({ authenticated, instructor, administrator })
+    const navLinks = getSiteNavLinks({ authenticated, instructor, tutor, administrator })
     const mainMenuLinks = orderMainNavMenuLinks(navLinks)
 
     /** First crumb encodes main-menu section — shown only on the opener, not duplicated in the trail. */
@@ -370,7 +374,9 @@ export function MainBreadcrumbsInLayout({
                                 {mainMenuLinks.map(({ href, label }) => (
                                     <Fragment key={href}>
                                         {href === '/documentation' ? <DropdownMenuSeparator /> : null}
-                                        {href === '/instructor' ? <DropdownMenuSeparator /> : null}
+                                        {href === '/supervision' || href === '/instructor' ? (
+                                            <DropdownMenuSeparator />
+                                        ) : null}
                                         {href === '/instructor' ? (
                                             <MainNavRoleSubmenu
                                                 href={href}

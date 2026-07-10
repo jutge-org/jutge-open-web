@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { AccessDeniedGate } from '@/components/AccessDeniedGate'
 import { LoginGate } from '@/components/LoginGate'
-import { tryGetCurrentUser, type SessionUser } from '@/lib/auth'
+import { canAccessSupervision, tryGetCurrentUser, type SessionUser } from '@/lib/auth'
 
 // FIXME: This is a really stupid way to organize forbidden parts of the app...
 
@@ -18,6 +18,15 @@ export async function renderInstructor(
     const user = await tryGetCurrentUser()
     if (!user) return <LoginGate />
     if (!user.instructor) return <AccessDeniedGate />
+    return render(user)
+}
+
+export async function renderSupervisor(
+    render: (user: SessionUser) => ReactNode | Promise<ReactNode>,
+): Promise<ReactNode> {
+    const user = await tryGetCurrentUser()
+    if (!user) return <LoginGate />
+    if (!canAccessSupervision(user)) return <AccessDeniedGate />
     return render(user)
 }
 

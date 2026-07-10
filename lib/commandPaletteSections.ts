@@ -161,12 +161,23 @@ export function getCommandPaletteProfileSections(context: SiteNavLinksContext): 
         })
 }
 
+const supervisionCommand: CommandPaletteSection = {
+    label: 'Supervision',
+    description: 'Supervise a student in a course you teach',
+    keywords: ['Supervise', 'Student', 'Monitor', 'Watch'],
+    href: '/supervision',
+    area: 'command',
+}
+
 export function getCommandPaletteCommands(context: SiteNavLinksContext): CommandPaletteSection[] {
     const sharedCommands = [appearanceSettingsCommand, toggleThemeCommand, ...layoutWidthCommands]
 
     if (context.authenticated) {
+        const supervisorCommands = context.instructor || context.tutor ? [supervisionCommand] : []
+
         return [
             ...sharedCommands,
+            ...supervisorCommands,
             reportIssueCommand,
             {
                 label: 'Sign out',

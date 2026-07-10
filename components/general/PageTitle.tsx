@@ -7,6 +7,7 @@ import {
     ActivityIcon,
     SendIcon,
     CrownIcon,
+    EyeIcon,
     GraduationCap,
     Info,
     FileBracesCornerIcon,
@@ -24,6 +25,7 @@ export type PageTitleSection =
     | '/activity'
     | '/awards'
     | '/profile'
+    | '/supervision'
     | '/registration'
     | '/password-reset'
     | '/instructor'
@@ -39,6 +41,7 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
+    '/supervision': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
     '/registration': 'border-l-4 border-l-indigo-500 text-indigo-600 dark:text-indigo-400',
     '/password-reset': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
@@ -55,6 +58,7 @@ const sectionLabel: Record<PageTitleSection, string> = {
     '/activity': 'Activity',
     '/awards': 'Awards',
     '/profile': 'Profile',
+    '/supervision': 'Supervision',
     '/registration': 'Registration',
     '/password-reset': 'Password reset',
     '/instructor': 'Instructor',
@@ -71,6 +75,7 @@ const guestDescription: Record<PageTitleSection, string> = {
     '/activity': 'Your activity and progress',
     '/awards': 'Achievements earned',
     '/profile': 'Your account details',
+    '/supervision': 'Supervise a student in the course you teach',
     '/registration': 'Create a new Jutge.org account.',
     '/password-reset': 'Reset your Jutge.org account password.',
     '/instructor': 'Manage courses, exams, and teaching tools',
@@ -87,6 +92,7 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
     '/activity': 'Your activity, verdicts, and progress over time',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'Your account details',
+    '/supervision': 'Supervise a student in a course you teach',
     '/registration': 'Create a new Jutge.org account.',
     '/password-reset': 'Reset your Jutge.org account password.',
     '/instructor': 'Manage courses, exams, and teaching tools',
@@ -119,6 +125,8 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
             return <Award className={iconClass} aria-hidden />
         case '/profile':
             return <User className={iconClass} aria-hidden />
+        case '/supervision':
+            return <EyeIcon className={iconClass} aria-hidden />
         case '/registration':
             return <UserPlusIcon className={iconClass} aria-hidden />
         case '/password-reset':

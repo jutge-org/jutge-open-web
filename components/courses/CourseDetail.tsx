@@ -1,4 +1,4 @@
-import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon } from 'lucide-react'
+import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon, UsersIcon } from 'lucide-react'
 
 import { CourseDetailActions } from '@/components/courses/CourseDetailActions'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
@@ -16,6 +16,8 @@ type CourseDetailProps = {
     course: Course
     status: CourseStatus
     isOwner: boolean
+    isTutor: boolean
+    userId: string
     lists: CourseListData[]
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
@@ -27,6 +29,8 @@ export function CourseDetail({
     course,
     status,
     isOwner,
+    isTutor,
+    userId,
     lists,
     languages,
     statuses,
@@ -66,7 +70,13 @@ export function CourseDetail({
                                                 Public
                                             </Badge>
                                         ) : null}
-                                        {status === 'enrolled' ? (
+                                        {isTutor ? (
+                                            <Badge variant="outline" className="gap-1">
+                                                <UsersIcon aria-hidden />
+                                                Tutor
+                                            </Badge>
+                                        ) : null}
+                                        {status === 'enrolled' && !isTutor ? (
                                             <Badge variant="outline" className="gap-1">
                                                 <BookOpenCheckIcon aria-hidden />
                                                 Enrolled
@@ -88,6 +98,8 @@ export function CourseDetail({
                             ownerName={row.ownerName}
                             status={status}
                             isOwner={isOwner}
+                            isTutor={isTutor}
+                            userId={userId}
                         />
                     </div>
                     {row.description ? (

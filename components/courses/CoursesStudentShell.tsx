@@ -2,7 +2,7 @@ import { CoursesList } from '@/components/courses/CoursesList'
 import { CoursesNav } from '@/components/courses/CoursesNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { getCurrentClient } from '@/lib/auth'
+import { getCurrentClient, getCurrentUser } from '@/lib/auth'
 import type { CoursesData, CoursesTab } from '@/lib/courses'
 import { fetchCoursesData } from '@/services/queries/courses'
 
@@ -35,12 +35,12 @@ type CoursesTabPageProps = {
 }
 
 export async function CoursesTabPage({ activeTab }: CoursesTabPageProps) {
-    const client = await getCurrentClient()
+    const [client, user] = await Promise.all([getCurrentClient(), getCurrentUser()])
     const data = await fetchCoursesData(client)
 
     return (
         <CoursesStudentShell activeTab={activeTab} data={data}>
-            <CoursesList tab={activeTab} courses={data[activeTab]} />
+            <CoursesList tab={activeTab} courses={data[activeTab]} userId={user.id} />
         </CoursesStudentShell>
     )
 }

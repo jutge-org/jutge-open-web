@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { CourseDetail } from '@/components/courses/CourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
-import { buildCourseRow, courseHref, isCourseOwnedByUser } from '@/lib/courses'
+import { buildCourseRow, courseHref, isCourseOwnedByUser, isCourseTutor } from '@/lib/courses'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchCourse } from '@/services/queries/courses'
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CoursePage({ params }: PageProps) {
     const { course_key: rawCourseKey } = await params
 
-    return renderAuthed(async () => {
+    return renderAuthed(async (user) => {
         const client = await getCurrentClient()
         const [result, profile] = await Promise.all([fetchCourse(client, rawCourseKey), client.student.profile.get()])
         if (!result) {
@@ -47,6 +47,7 @@ export default async function CoursePage({ params }: PageProps) {
 
         const { courseKey, course, status } = result
         const isOwner = isCourseOwnedByUser(course.owner, profile)
+        const isTutor = isCourseTutor(course, isOwner)
         const row = buildCourseRow(course, status, courseKey, isOwner)
         const href = courseHref(courseKey)
 
@@ -84,6 +85,8 @@ export default async function CoursePage({ params }: PageProps) {
                     course={course}
                     status={status}
                     isOwner={isOwner}
+                    isTutor={isTutor}
+                    userId={user.id}
                     lists={lists}
                     languages={languages}
                     statuses={statuses}

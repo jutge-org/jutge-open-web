@@ -16,6 +16,7 @@ import {
     SearchIcon,
     ShieldCheck,
     SignatureIcon,
+    UsersIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -24,6 +25,7 @@ import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrol
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
+import { SuperviseCourseMenuItem } from '@/components/supervision/SuperviseCourseMenuItem'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,6 +33,7 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from '@/component
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
+    canSuperviseCourse,
     courseActionSuccessMessage,
     courseHref,
     instructorCoursePropertiesHref,
@@ -50,6 +53,7 @@ const UNENROLL_CONFIRMATION =
 type CoursesListProps = {
     tab: CoursesTab
     courses: CourseRow[]
+    userId: string
 }
 
 type CourseAction = CourseStudentAction
@@ -61,6 +65,12 @@ function CourseBadges({ course }: { course: CourseRow }) {
                 <Badge variant="outline" className="gap-1">
                     <GraduationCapIcon aria-hidden />
                     Instructor
+                </Badge>
+            ) : null}
+            {course.isTutor ? (
+                <Badge variant="outline" className="gap-1">
+                    <UsersIcon aria-hidden />
+                    Tutor
                 </Badge>
             ) : null}
             {course.isOfficial ? (
@@ -83,10 +93,11 @@ type StudentCourseCardProps = {
     course: CourseRow
     tab: CoursesTab
     pendingKey: string | null
+    userId: string
     onAction: (course: CourseRow, action: CourseAction) => void
 }
 
-function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseCardProps) {
+function StudentCourseCard({ course, tab, pendingKey, userId, onAction }: StudentCourseCardProps) {
     const isPending = pendingKey === course.course_key
 
     return (
@@ -136,6 +147,9 @@ function StudentCourseCard({ course, tab, pendingKey, onAction }: StudentCourseC
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                            {canSuperviseCourse(course) ? (
+                                <SuperviseCourseMenuItem userId={userId} courseKey={course.course_key} />
+                            ) : null}
                             {course.isOwner ? (
                                 <DropdownMenuItem asChild>
                                     <Link href={instructorCoursePropertiesHref(course.course_key)}>
@@ -211,7 +225,7 @@ const emptyStateByTab: Record<CoursesTab, { title: string; description: string; 
     },
 }
 
-export function CoursesList({ tab, courses }: CoursesListProps) {
+export function CoursesList({ tab, courses, userId }: CoursesListProps) {
     const router = useRouter()
     const [pendingKey, setPendingKey] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
@@ -327,6 +341,7 @@ export function CoursesList({ tab, courses }: CoursesListProps) {
                                 course={course}
                                 tab={tab}
                                 pendingKey={pendingKey}
+                                userId={userId}
                                 onAction={handleAction}
                             />
                         ))}

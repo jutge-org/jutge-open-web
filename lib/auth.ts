@@ -12,6 +12,11 @@ export type SessionUser = {
     email: string
     instructor: boolean
     administrator: boolean
+    tutor: boolean
+}
+
+export function canAccessSupervision(user: Pick<SessionUser, 'instructor' | 'tutor'>): boolean {
+    return user.instructor || user.tutor
 }
 
 function profileToSessionUser(profile: Profile): SessionUser {
@@ -22,6 +27,7 @@ function profileToSessionUser(profile: Profile): SessionUser {
         email: profile.email,
         instructor: profile.instructor !== 0,
         administrator: profile.administrator !== 0,
+        tutor: profile.tutor !== 0,
     }
 }
 

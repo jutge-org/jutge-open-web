@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-09T17:14:07.675Z
+ * This file has been automatically generated at 2026-07-10T09:04:37.816Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -33,6 +33,17 @@ export type CredentialsOut = {
 
 export type CredentialsWithUsernameIn = {
     username: string
+    password: string
+}
+
+export type RegisterIn = {
+    name: string
+    email: string
+    birth_year: number
+    parent_email: string | null
+    country_id: string
+    policies_agreement: boolean
+    recaptcha_token: string
     password: string
 }
 
@@ -1674,6 +1685,18 @@ class Module_auth {
      */
     async loginWithUsername(data: CredentialsWithUsernameIn): Promise<CredentialsOut> {
         const [output, ofiles] = await this.root.execute('auth.loginWithUsername', data)
+        return output
+    }
+
+    /**
+     * Register a new user account.
+     *
+     * 🔐 Authentication: any
+     * No warnings
+     * Creates a new user with the provided profile data. Requires a valid reCAPTCHA v3 token.
+     */
+    async register(data: RegisterIn): Promise<void> {
+        const [output, ofiles] = await this.root.execute('auth.register', data)
         return output
     }
 }

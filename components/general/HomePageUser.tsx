@@ -1,4 +1,5 @@
 import { HomeQuickNav } from '@/components/general/HomeQuickNav'
+import { HomeWelcomeMessage } from '@/components/general/HomeWelcomeMessage'
 import { HomeYearsGithubCorner } from '@/components/general/HomeYearsGithubCorner'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import type { SessionUser } from '@/lib/auth'
@@ -17,7 +18,7 @@ export function HomePageUser({ user }: HomePageUserProps) {
                     Jutge.org
                 </h1>
                 <p className="max-w-2xl text-xl text-pretty font-thin text-muted-foreground italic sm:text-2xl">
-                    {`Welcome back, ${user?.nickname ?? user?.name ?? 'user'}`}
+                    <HomeWelcomeMessage userName={user?.nickname ?? user?.name ?? 'user'} />
                 </p>
             </div>
 

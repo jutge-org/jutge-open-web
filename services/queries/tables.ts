@@ -1,7 +1,17 @@
 import { cache } from 'react'
 
 import { getAnonymousJutgeClient } from '@/lib/jutge-client-registry'
-import { type Compiler, type Verdict } from '@/lib/jutge_api_client'
+import { type Compiler, type Country, type Verdict } from '@/lib/jutge_api_client'
+
+export const fetchCountries = cache(async (): Promise<Country[]> => {
+    try {
+        const client = getAnonymousJutgeClient()
+        const countries = await client.tables.getCountries()
+        return Object.values(countries).sort((a, b) => a.eng_name.localeCompare(b.eng_name))
+    } catch {
+        return []
+    }
+})
 
 export const fetchCompilers = cache(async (): Promise<Compiler[]> => {
     try {

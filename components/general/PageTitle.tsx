@@ -10,8 +10,10 @@ import {
     GraduationCap,
     Info,
     FileBracesCornerIcon,
+    KeyRoundIcon,
     SchoolIcon,
     User,
+    UserPlusIcon,
 } from 'lucide-react'
 
 export type PageTitleSection =
@@ -22,6 +24,8 @@ export type PageTitleSection =
     | '/activity'
     | '/awards'
     | '/profile'
+    | '/registration'
+    | '/password-reset'
     | '/instructor'
     | '/administrator'
     | '/documentation'
@@ -35,6 +39,8 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
+    '/registration': 'border-l-4 border-l-indigo-500 text-indigo-600 dark:text-indigo-400',
+    '/password-reset': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
     '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/administrator': 'border-l-4 border-l-slate-500 text-slate-600 dark:text-slate-400',
     '/documentation': 'border-l-4 border-l-amber-600 text-amber-600 dark:text-amber-400',
@@ -49,6 +55,8 @@ const sectionLabel: Record<PageTitleSection, string> = {
     '/activity': 'Activity',
     '/awards': 'Awards',
     '/profile': 'Profile',
+    '/registration': 'Registration',
+    '/password-reset': 'Password reset',
     '/instructor': 'Instructor',
     '/administrator': 'Administrator',
     '/documentation': 'Documentation',
@@ -63,6 +71,8 @@ const guestDescription: Record<PageTitleSection, string> = {
     '/activity': 'Your activity and progress',
     '/awards': 'Achievements earned',
     '/profile': 'Your account details',
+    '/registration': 'Create a new Jutge.org account.',
+    '/password-reset': 'Reset your Jutge.org account password.',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
     '/documentation': 'Learn how to use this site',
@@ -77,6 +87,8 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
     '/activity': 'Your activity, verdicts, and progress over time',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'Your account details',
+    '/registration': 'Create a new Jutge.org account.',
+    '/password-reset': 'Reset your Jutge.org account password.',
     '/instructor': 'Manage courses, exams, and teaching tools',
     '/administrator': 'Site administration and configuration',
     '/documentation': 'Learn how to use this site',
@@ -107,6 +119,10 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
             return <Award className={iconClass} aria-hidden />
         case '/profile':
             return <User className={iconClass} aria-hidden />
+        case '/registration':
+            return <UserPlusIcon className={iconClass} aria-hidden />
+        case '/password-reset':
+            return <KeyRoundIcon className={iconClass} aria-hidden />
         case '/instructor':
             return <GraduationCap className={iconClass} aria-hidden />
         case '/administrator':

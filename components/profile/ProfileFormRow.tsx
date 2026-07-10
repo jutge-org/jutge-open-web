@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 type ProfileFormRowProps = {
-    label: string
+    label: ReactNode
     htmlFor?: string
     children: ReactNode
     alignStart?: boolean

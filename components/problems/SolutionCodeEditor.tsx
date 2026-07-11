@@ -189,16 +189,11 @@ export function SolutionCodeEditor({
     }
 
     function downloadCode() {
-        void fetch(codeHref)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Download failed')
-                }
-
-                return response.blob()
-            })
-            .then((blob) => saveAs(blob, codeFilename))
-            .catch(() => toast.error('Failed to download'))
+        try {
+            saveAs(new Blob([code], { type: 'text/plain;charset=utf-8' }), codeFilename)
+        } catch {
+            toast.error('Failed to download')
+        }
     }
 
     return (

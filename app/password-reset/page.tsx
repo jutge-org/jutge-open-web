@@ -1,17 +1,26 @@
-import { redirect } from 'next/navigation'
+'use client'
 
-import { PasswordResetForm } from '@/components/password-reset/PasswordResetForm'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+import { useAuth } from '@/components/AuthProvider'
+import { PageSpinner } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { isAuthenticated } from '@/lib/auth'
+import { PasswordResetForm } from '@/components/password-reset/PasswordResetForm'
 
-export const dynamic = 'force-dynamic'
+export default function PasswordResetPage() {
+    const { user, loading } = useAuth()
+    const router = useRouter()
 
-export const metadata = { title: 'Password reset — Jutge.org' }
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace('/')
+        }
+    }, [loading, user, router])
 
-export default async function PasswordResetPage() {
-    if (await isAuthenticated()) {
-        redirect('/')
+    if (loading || user) {
+        return <PageSpinner />
     }
 
     return (

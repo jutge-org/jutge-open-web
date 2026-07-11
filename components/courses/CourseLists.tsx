@@ -14,7 +14,7 @@ import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import { instructorListPropertiesHref } from '@/lib/courses'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
-import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
+import type { CourseListData, CourseListItemRow } from '@/lib/data/lists'
 import { cn } from '@/lib/utils'
 
 type CourseListsProps = {

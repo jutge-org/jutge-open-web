@@ -5,7 +5,7 @@ import {
     fetchInstructorCourseTutorProfiles,
     fetchMiscHexColors,
     fetchTablesLanguages,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import type { Dict } from '@/lib/instructor/utils'
 import { parseProblemKey } from '@/lib/problems'
 import type {

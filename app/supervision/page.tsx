@@ -1,25 +1,30 @@
-import type { Metadata } from 'next'
+'use client'
 
+import { useEffect, useState } from 'react'
+
+import { SupervisorGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { SupervisionForm } from '@/components/supervision/SupervisionForm'
-import { renderSupervisor } from '@/lib/renderAuthed'
-import { fetchSupervisionCourseOptions } from '@/services/queries/supervision'
+import { fetchSupervisionCourseOptions } from '@/lib/data/supervision'
+import type { SupervisionCourseOption } from '@/lib/supervision'
 
-export const dynamic = 'force-dynamic'
+export default function SupervisionPage() {
+    return <SupervisorGate>{(user) => <SupervisionPageContent userId={user.id} />}</SupervisorGate>
+}
 
-export const metadata: Metadata = { title: 'Supervision — Jutge.org' }
+function SupervisionPageContent({ userId }: { userId: string }) {
+    const [courses, setCourses] = useState<SupervisionCourseOption[] | null>(null)
 
-export default async function SupervisionPage() {
-    return renderSupervisor(async (user) => {
-        const courses = await fetchSupervisionCourseOptions()
+    useEffect(() => {
+        void fetchSupervisionCourseOptions().then(setCourses)
+    }, [])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Supervision', url: '/supervision' }]} />
-                <PageTitle section="/supervision" authenticated hidden={false} />
-                <SupervisionForm userId={user.id} courses={courses} />
-            </div>
-        )
-    })
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={[{ title: 'Supervision', url: '/supervision' }]} />
+            <PageTitle section="/supervision" authenticated hidden={false} />
+            <SupervisionForm userId={userId} courses={courses} />
+        </div>
+    )
 }

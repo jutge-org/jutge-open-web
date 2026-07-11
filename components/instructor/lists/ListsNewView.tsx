@@ -1,6 +1,6 @@
 'use client'
 
-import { instructorListCreate } from '@/actions/instructor'
+import { instructorListCreate } from '@/lib/instructor/client'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { PlusCircleIcon } from 'lucide-react'

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardSubmissionsHistograms } from '@/actions/administrator'
+import { fetchAdminDashboardSubmissionsHistograms } from '@/lib/administrator/client'
 import dayjs from 'dayjs'
 import { ChartAreaIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'

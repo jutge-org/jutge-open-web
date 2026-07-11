@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchInstructorExam, instructorExamGetSubmissions } from '@/actions/instructor'
+import { fetchInstructorExam, instructorExamGetSubmissions } from '@/lib/instructor/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { Warning } from '@/components/instructor/Warning'

@@ -21,7 +21,12 @@ import {
 import { toast } from 'sonner'
 import Link from 'next/link'
 
-import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
+import {
+    archiveCourseAction,
+    enrollCourseAction,
+    unarchiveCourseAction,
+    unenrollCourseAction,
+} from '@/lib/data/coursesActions'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { CoursesListToolbar } from '@/components/courses/CoursesListToolbar'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
@@ -32,6 +37,7 @@ import { Button } from '@/components/ui/button'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Spinner } from '@/components/ui/spinner'
 import {
     canSuperviseCourse,
     courseActionSuccessMessage,
@@ -54,6 +60,7 @@ type CoursesListProps = {
     tab: CoursesTab
     courses: CourseRow[]
     userId: string
+    loading?: boolean
 }
 
 type CourseAction = CourseStudentAction
@@ -225,7 +232,7 @@ const emptyStateByTab: Record<CoursesTab, { title: string; description: string; 
     },
 }
 
-export function CoursesList({ tab, courses, userId }: CoursesListProps) {
+export function CoursesList({ tab, courses, userId, loading = false }: CoursesListProps) {
     const router = useRouter()
     const [pendingKey, setPendingKey] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
@@ -285,6 +292,31 @@ export function CoursesList({ tab, courses, userId }: CoursesListProps) {
 
             toast.error(result.error)
         })
+    }
+
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4">
+                <CoursesListToolbar
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    officialFilter={officialFilter}
+                    onOfficialFilterChange={setOfficialFilter}
+                    instructorFilter={instructorFilter}
+                    onInstructorFilterChange={setInstructorFilter}
+                    sortField={sortField}
+                    onSortFieldChange={setSortField}
+                    showHelp
+                />
+                <div
+                    aria-busy="true"
+                    aria-label="Loading courses"
+                    className="flex justify-center border border-dashed border-border bg-muted/20 py-16"
+                >
+                    <Spinner className="size-8 text-muted-foreground" />
+                </div>
+            </div>
+        )
     }
 
     if (courses.length === 0) {

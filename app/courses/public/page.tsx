@@ -1,18 +1,35 @@
-import { redirect } from 'next/navigation'
+'use client'
 
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+import { useAuth } from '@/components/AuthProvider'
+import { PageSpinner } from '@/components/ClientGates'
 import { GuestCoursesList } from '@/components/courses/GuestCoursesList'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { isAuthenticated } from '@/lib/auth'
-import { fetchPublicCourses } from '@/services/queries/courses'
+import { fetchPublicCourses } from '@/lib/data/courses'
+import type { GuestCourseRow } from '@/lib/courses'
 
-export const metadata = { title: 'Public courses — Jutge.org' }
+export default function PublicCoursesPage() {
+    const { user, loading } = useAuth()
+    const router = useRouter()
+    const [courses, setCourses] = useState<GuestCourseRow[] | null>(null)
 
-export default async function PublicCoursesPage() {
-    const authenticated = await isAuthenticated()
-    if (authenticated) redirect('/courses')
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace('/courses')
+        }
+    }, [loading, user, router])
 
-    const courses = await fetchPublicCourses()
+    useEffect(() => {
+        if (loading || user) return
+        void fetchPublicCourses().then(setCourses)
+    }, [loading, user])
+
+    if (loading || user || !courses) {
+        return <PageSpinner />
+    }
 
     return (
         <div className="flex flex-col gap-6">

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardUpcomingExams } from '@/actions/administrator'
+import { fetchAdminDashboardUpcomingExams } from '@/lib/administrator/client'
 import {
     mdiNumeric0Circle,
     mdiNumeric0CircleOutline,

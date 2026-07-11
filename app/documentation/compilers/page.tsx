@@ -1,12 +1,7 @@
-import { CompilersTable } from '@/components/documentation/CompilersTable'
+import { CompilersPageContent } from '@/components/documentation/CompilersPageContent'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
-import { fetchCompilers } from '@/services/queries/tables'
 
-export const metadata = { title: 'Compilers — Documentation — Jutge.org' }
-
-export default async function DocumentationCompilersPage() {
-    const compilers = await fetchCompilers()
-
+export default function DocumentationCompilersPage() {
     return (
         <DocumentationPageShell
             activeTab="compilers"
@@ -15,11 +10,7 @@ export default async function DocumentationCompilersPage() {
                 { title: 'Compilers', url: '/documentation/compilers' },
             ]}
         >
-            {compilers.length === 0 ? (
-                <p className="text-muted-foreground">Could not load compilers. Please try again later.</p>
-            ) : (
-                <CompilersTable compilers={compilers} />
-            )}
+            <CompilersPageContent />
         </DocumentationPageShell>
     )
 }

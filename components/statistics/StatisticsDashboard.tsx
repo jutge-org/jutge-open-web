@@ -8,6 +8,7 @@ import { Cell, Legend, Line, LineChart, Pie, PieChart, Bar, BarChart, XAxis, YAx
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { buildHeatmapWeekGrid, HEATMAP_ROW_LABELS } from '@/lib/statistics/heatmap'
@@ -22,10 +23,10 @@ import {
     hourDistributionToBars,
     weekdayDistributionToBars,
 } from '@/lib/statistics/data'
-import type { StatisticsData } from '@/services/queries/statistics'
+import type { StatisticsData } from '@/lib/data/statistics'
 
 type StatisticsDashboardProps = {
-    data: StatisticsData
+    data: StatisticsData | null
 }
 
 const summaryCards = [
@@ -69,14 +70,82 @@ const weekdayShort: Record<string, string> = {
     sunday: 'Sun',
 }
 
-function PanelCard({ title, children, className }: { title: string; children: ReactNode; className?: string }) {
+function WidgetSpinner({ className }: { className?: string }) {
+    return (
+        <div className={cn('flex items-center justify-center py-8', className)}>
+            <Spinner className="size-8 text-muted-foreground" />
+        </div>
+    )
+}
+
+function PanelCard({
+    title,
+    children,
+    className,
+    loading,
+}: {
+    title: string
+    children?: ReactNode
+    className?: string
+    loading?: boolean
+}) {
     return (
         <Card className={cn('gap-4 rounded-2xl border border-border shadow-sm', className)}>
             <CardHeader className="">
                 <CardTitle className="text-base font-semibold">{title}</CardTitle>
             </CardHeader>
-            <CardContent>{children}</CardContent>
+            <CardContent>{loading ? <WidgetSpinner /> : children}</CardContent>
         </Card>
+    )
+}
+
+function StatisticsDashboardLoading() {
+    return (
+        <div className="flex flex-col gap-6">
+            <section aria-label="Summary" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {summaryCards.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
+                    <div
+                        key={key}
+                        className={cn(
+                            'flex flex-col rounded-2xl border border-border border-t-4 bg-card shadow-sm',
+                            borderAccent,
+                        )}
+                    >
+                        <div className="flex flex-1 items-center justify-between gap-3 px-5 py-5">
+                            <div className="flex min-w-0 flex-col gap-1">
+                                <span className="text-sm font-medium text-muted-foreground">{label}</span>
+                                <Spinner className="size-8 text-muted-foreground" />
+                            </div>
+                            <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />
+                        </div>
+                    </div>
+                ))}
+            </section>
+
+            <section className="grid gap-4 xl:grid-cols-3">
+                <PanelCard title="Verdict distribution" loading />
+                <PanelCard title="Problems along time" loading />
+                <PanelCard title="Submissions along time" loading />
+            </section>
+
+            <PanelCard title="Submission calendar" loading />
+
+            <section className="grid gap-4 lg:grid-cols-2">
+                <PanelCard title="Accepted / rejected submissions" loading />
+                <PanelCard title="Recent submissions" loading />
+            </section>
+
+            <section className="grid gap-4 xl:grid-cols-3">
+                <PanelCard title="Language distribution" loading />
+                <PanelCard title="Compiler distribution" loading />
+                <PanelCard title="Accuracy along time" loading />
+            </section>
+
+            <section className="grid gap-4 lg:grid-cols-2">
+                <PanelCard title="Submissions by hour of the day" loading />
+                <PanelCard title="Submissions by day of week" loading />
+            </section>
+        </div>
     )
 }
 
@@ -87,6 +156,10 @@ function heatColor(value: number, max: number): string {
 }
 
 export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
+    if (!data) {
+        return <StatisticsDashboardLoading />
+    }
+
     const { dashboard, level, tables, hexColors, submissions } = data
     const summary = dashboardSummary(dashboard, level)
     const verdictSlices = distributionToSlices(dashboard.distributions.verdicts, tables, hexColors, 'verdicts')
@@ -146,7 +219,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                                 <Pie
                                     data={verdictSlices}
                                     dataKey="count"
-                                    nameKey="label"
+                                    nameKey="key"
                                     innerRadius="45%"
                                     strokeWidth={2}
                                 >
@@ -371,7 +444,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                                 <Pie
                                     data={compilerSlices}
                                     dataKey="count"
-                                    nameKey="label"
+                                    nameKey="key"
                                     innerRadius="45%"
                                     strokeWidth={2}
                                 >

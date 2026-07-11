@@ -1,92 +1,119 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
+import { FullscreenEditorLoading } from '@/components/general/FullscreenEditorLoading'
 import { DebugInformationEditor } from '@/components/submissions/DebugInformationEditor'
-import { getCurrentClient } from '@/lib/auth'
+import jutge from '@/lib/jutge'
 import { getDebugInformationFields, hasDebugInformation } from '@/lib/debugInformation'
 import { parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
 import { buildSubmissionNavLinks } from '@/lib/submissions'
-import { fetchProblemDetail, resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchSubmissionDetail } from '@/services/queries/submissions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { fetchProblemDetail, resolveProblemId } from '@/lib/data/problemDetail'
+import { fetchSubmissionDetail } from '@/lib/data/submissions'
 
-type PageProps = {
-    params: Promise<{ key: string; submission_id: string }>
+type PageData = {
+    fields: ReturnType<typeof getDebugInformationFields>
+    problemId: string
+    submissionId: string
+    verdict: string
+    verdictEmoji: string
+    verdictFullName: string
+    isPending: boolean
+    navigation: ReturnType<typeof buildSubmissionNavLinks>
 }
 
-export const dynamic = 'force-dynamic'
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, submission_id } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: `${submission_id} — Jutge.org` }
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: `${submission_id} — Jutge.org` }
-    }
-
-    return {
-        title: `Debug — ${data.problem.problem_nm} - ${submission_id} — Jutge.org`,
-    }
+export default function ProblemSubmissionDebugViewPage() {
+    return (
+        <AuthedGate>
+            {(user) => <ProblemSubmissionDebugViewPageContent isAdministrator={user.administrator} />}
+        </AuthedGate>
+    )
 }
 
-export default async function ProblemSubmissionDebugViewPage({ params }: PageProps) {
-    const { key, submission_id } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
+function ProblemSubmissionDebugViewPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string; submission_id: string }>()
+    const key = params.key
+    const submission_id = params.submission_id
+    const [pageData, setPageData] = useState<PageData | null | undefined>(undefined)
+
+    useEffect(() => {
+        void (async () => {
+            const problemId = await resolveProblemId(key)
+            if (!problemId) {
+                setPageData(null)
+                return
+            }
+
+            const data = await fetchProblemDetail(problemId)
+            if (!data) {
+                setPageData(null)
+                return
+            }
+
+            const parsed = parseProblemKey(problemId)
+            const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
+
+            const isExamOrContest = await jutge.student.exam.get().then(
+                () => true,
+                () => false,
+            )
+
+            const [submissionDetail, problemSubmissions] = await Promise.all([
+                fetchSubmissionDetail(jutge, key, submission_id, {
+                    isAdministrator,
+                    isExamOrContest,
+                }),
+                jutge.student.submissions.getForAbstractProblems(problem_nm),
+            ])
+
+            if (!submissionDetail || !hasDebugInformation(submissionDetail.debugInformation)) {
+                setPageData(null)
+                return
+            }
+
+            const fields = getDebugInformationFields(submissionDetail.debugInformation!)
+            if (fields.length === 0) {
+                setPageData(null)
+                return
+            }
+
+            const doneSubmissions = problemSubmissions.filter((submission) => submission.state === 'done')
+            const navigation = buildSubmissionNavLinks(doneSubmissions, submission_id, key, '/debug/view')
+            const { submission } = submissionDetail
+
+            setPageData({
+                fields,
+                problemId: submission.problem_id,
+                submissionId: submission.submission_id,
+                verdict: submissionDetail.verdict,
+                verdictEmoji: submissionDetail.verdictEmoji ?? '',
+                verdictFullName: submissionDetail.verdictFullName ?? '',
+                isPending: submissionDetail.verdict === 'Pending',
+                navigation,
+            })
+        })()
+    }, [isAdministrator, key, submission_id])
+
+    if (pageData === undefined) {
+        return <FullscreenEditorLoading title={`${submission_id} — debug information`} />
+    }
+
+    if (!pageData) {
         notFound()
     }
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
-
-    return renderAuthed(async (user) => {
-        const client = await getCurrentClient()
-        const isExamOrContest = await client.student.exam.get().then(
-            () => true,
-            () => false,
-        )
-
-        const [submissionDetail, problemSubmissions] = await Promise.all([
-            fetchSubmissionDetail(client, key, submission_id, {
-                isAdministrator: user.administrator,
-                isExamOrContest,
-            }),
-            client.student.submissions.getForAbstractProblems(problem_nm),
-        ])
-
-        if (!submissionDetail || !hasDebugInformation(submissionDetail.debugInformation)) {
-            notFound()
-        }
-
-        const fields = getDebugInformationFields(submissionDetail.debugInformation!)
-        if (fields.length === 0) {
-            notFound()
-        }
-
-        const doneSubmissions = problemSubmissions.filter((submission) => submission.state === 'done')
-        const navigation = buildSubmissionNavLinks(doneSubmissions, submission_id, key, '/debug/view')
-
-        const { submission } = submissionDetail
-
-        return (
-            <DebugInformationEditor
-                fields={fields}
-                problemId={submission.problem_id}
-                submissionId={submission.submission_id}
-                verdict={submissionDetail.verdict}
-                verdictEmoji={submissionDetail.verdictEmoji}
-                verdictFullName={submissionDetail.verdictFullName}
-                isPending={submissionDetail.verdict === 'Pending'}
-                navigation={navigation}
-            />
-        )
-    })
+    return (
+        <DebugInformationEditor
+            fields={pageData.fields}
+            problemId={pageData.problemId}
+            submissionId={pageData.submissionId}
+            verdict={pageData.verdict}
+            verdictEmoji={pageData.verdictEmoji}
+            verdictFullName={pageData.verdictFullName}
+            isPending={pageData.isPending}
+            navigation={pageData.navigation}
+        />
+    )
 }

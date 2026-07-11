@@ -1,8 +1,6 @@
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
 import { MarkdownDoc } from '@/components/documentation/MarkdownDoc'
 
-export const metadata = { title: 'FAQ — Documentation — Jutge.org' }
-
 export default function DocumentationFaqPage() {
     return (
         <DocumentationPageShell

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchInstructorApiUrl } from '@/actions/instructor'
+import { fetchInstructorApiUrl } from '@/lib/instructor/client'
 import { useXTerm } from '@/components/instructor/XTerm'
 import { Button } from '@/components/ui/button'
 import { CloudDownloadIcon } from 'lucide-react'

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import type { ScoringRow } from '@/services/queries/submissions'
+import type { ScoringRow } from '@/lib/data/submissions'
 
 type ScoringCardProps = {
     scoring: ScoringRow[]

@@ -1,7 +1,7 @@
+'use client'
+
 import { DocumentsNewView } from '@/components/instructor/documents/DocumentsNewView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
-
-export const metadata = { title: 'New document — Documents — Instructor — Jutge.org' }
 
 export default function InstructorDocumentsNewPage() {
     return (

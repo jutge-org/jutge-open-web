@@ -1,6 +1,6 @@
 'use client'
 
-import { adminSetPassword } from '@/actions/administrator'
+import { adminSetPassword } from '@/lib/administrator/client'
 import HtmlEditor from '@/components/administrator/HtmlEditor'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'

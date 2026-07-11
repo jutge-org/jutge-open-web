@@ -4,7 +4,7 @@ import {
     fetchInstructorAnonymousSubmissions,
     fetchInstructorProblemPopularityBuckets,
     fetchMiscHexColors,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import {
     BookmarkIcon,
     BotIcon,

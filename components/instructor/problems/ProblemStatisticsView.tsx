@@ -41,7 +41,7 @@ import {
     fetchInstructorProblemPopularityBuckets,
     fetchMiscHexColors,
     fetchTablesLanguages,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import {
     deriveSubmissionChartData,
     deriveSubmissionsByLanguageOverTime,

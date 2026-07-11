@@ -1,12 +1,12 @@
 'use client'
 
-import { signOutAction } from '@/actions/auth'
+import { useAuth } from '@/components/AuthProvider'
 import {
     fetchCommandPaletteCourses,
     fetchCommandPaletteExams,
     fetchCommandPaletteProblems,
     type CommandPaletteCourse,
-} from '@/actions/commandPalette'
+} from '@/lib/data/commandPalette'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
@@ -38,8 +38,7 @@ import { filterAndSortExams, type ExamRow } from '@/lib/exams'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
 import { filterProblems } from '@/lib/problems'
 import { filterCommandPaletteRecents, type CommandPaletteRecentItem } from '@/lib/recents'
-import type { SiteNavLinksContext } from '@/lib/siteNavLinks'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
 import {
     BookOpenIcon,
     BookTextIcon,
@@ -83,14 +82,12 @@ function SearchShortcutHint() {
     )
 }
 
-type CommandPaletteProps = SiteNavLinksContext
-
-export function CommandPalette({
-    authenticated,
-    instructor = false,
-    tutor = false,
-    administrator = false,
-}: CommandPaletteProps) {
+export function CommandPalette() {
+    const { user, logout } = useAuth()
+    const authenticated = user !== null
+    const instructor = user?.instructor ?? false
+    const tutor = user?.tutor ?? false
+    const administrator = user?.administrator ?? false
     const router = useRouter()
     const pathname = usePathname()
     const { resolvedTheme, setTheme } = useTheme()
@@ -240,7 +237,7 @@ export function CommandPalette({
 
     function handleSignOut() {
         startSignOut(async () => {
-            await signOutAction()
+            await logout()
             toast.success('Signed out')
             if (pathname === '/') {
                 router.refresh()
@@ -386,7 +383,7 @@ export function CommandPalette({
                 onOpenChange={setOpen}
                 title="Quick search"
                 description="Search problems, courses, exams, sections, and documentation"
-                className="max-w-2xl p-4"
+                className="max-w-4xl p-4"
             >
                 <Command shouldFilter={false}>
                     <div className="px-2 pb-2 text-sm font-medium flex flex-row items-center gap-2">

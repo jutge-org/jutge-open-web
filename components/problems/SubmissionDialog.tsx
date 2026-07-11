@@ -7,7 +7,7 @@ import { filesize } from 'filesize'
 import { CloudUploadIcon, SendIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { submitSolutionAction } from '@/actions/submissions'
+import { submitSolutionAction } from '@/lib/data/submissionsActions'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

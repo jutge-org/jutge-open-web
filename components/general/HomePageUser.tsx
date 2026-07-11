@@ -2,7 +2,7 @@ import { HomeQuickNav } from '@/components/general/HomeQuickNav'
 import { HomeWelcomeMessage } from '@/components/general/HomeWelcomeMessage'
 import { HomeYearsGithubCorner } from '@/components/general/HomeYearsGithubCorner'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import type { SessionUser } from '@/lib/auth'
+import type { SessionUser } from '@/lib/session'
 
 type HomePageUserProps = {
     user: SessionUser | null

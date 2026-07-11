@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardDockerStatus } from '@/actions/administrator'
+import { fetchAdminDashboardDockerStatus } from '@/lib/administrator/client'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'

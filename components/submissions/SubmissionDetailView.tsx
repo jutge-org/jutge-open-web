@@ -10,13 +10,14 @@ import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsC
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionNavButton } from '@/components/submissions/SubmissionNavButton'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
+import { WidgetSpinner } from '@/components/general/WidgetSpinner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { hasDebugInformation } from '@/lib/debugInformation'
 import { parseSubmissionTime, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
-import type { ScoringRow, SubmissionDetailData } from '@/services/queries/submissions'
+import type { ScoringRow, SubmissionDetailData } from '@/lib/data/submissions'
 import type { ReactNode } from 'react'
 
 dayjs.extend(relativeTime)
@@ -31,13 +32,24 @@ function scoringTotals(scoring: ScoringRow[]): { obtained: number; total: number
     )
 }
 
-type SubmissionDetailViewProps = {
-    data: SubmissionDetailData
-    codeHref: string
-    debugHref: string
-    problemKey: string
-    navigation?: SubmissionNavLinks | null
-}
+type SubmissionDetailViewProps =
+    | {
+          loading: true
+          submissionId?: string
+          data?: never
+          codeHref?: never
+          debugHref?: never
+          problemKey?: never
+          navigation?: never
+      }
+    | {
+          loading?: false
+          data: SubmissionDetailData
+          codeHref: string
+          debugHref: string
+          problemKey: string
+          navigation?: SubmissionNavLinks | null
+      }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
     return (
@@ -48,7 +60,35 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
     )
 }
 
-export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, navigation }: SubmissionDetailViewProps) {
+function SubmissionDetailViewLoading({ submissionId }: { submissionId?: string }) {
+    return (
+        <div className="flex flex-col gap-6">
+            <Card className="ring-0 border border-border shadow-sm">
+                <CardHeader className="border-b border-border">
+                    <CardTitle className="text-lg font-semibold">{submissionId ?? 'Submission'}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <WidgetSpinner label="Loading submission" />
+                </CardContent>
+            </Card>
+            <Card className="ring-0 border border-border shadow-sm">
+                <CardHeader className="border-b border-border">
+                    <CardTitle>Source code</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <WidgetSpinner label="Loading source code" />
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+
+export function SubmissionDetailView(props: SubmissionDetailViewProps) {
+    if (props.loading) {
+        return <SubmissionDetailViewLoading submissionId={props.submissionId} />
+    }
+
+    const { data, codeHref, debugHref, problemKey, navigation } = props
     const { submission } = data
     const isPending = submission.state !== 'done'
     const submittedAt = dayjs(parseSubmissionTime(submission.time_in))

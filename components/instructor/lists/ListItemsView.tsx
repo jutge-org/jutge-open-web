@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAllAbstractProblems, fetchInstructorList, instructorListUpdate } from '@/actions/instructor'
+import { fetchAllAbstractProblems, fetchInstructorList, instructorListUpdate } from '@/lib/instructor/client'
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'

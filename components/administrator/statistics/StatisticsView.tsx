@@ -17,7 +17,7 @@ import {
     fetchAdminStatsDistributionOfUsersByYear,
     fetchAdminStatsDistributionOfVerdicts,
     fetchProblemPopularityBuckets,
-} from '@/actions/administrator'
+} from '@/lib/administrator/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { ScrollArea } from '@/components/ui/scroll-area'

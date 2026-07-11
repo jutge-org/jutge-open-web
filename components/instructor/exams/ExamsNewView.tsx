@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchInstructorCoursesIndex, instructorExamCreate } from '@/actions/instructor'
+import { fetchInstructorCoursesIndex, instructorExamCreate } from '@/lib/instructor/client'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import type { InstructorBriefCourse } from '@/lib/jutge_api_client'

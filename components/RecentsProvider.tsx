@@ -1,6 +1,7 @@
 'use client'
 
-import { fetchCommandPaletteCourses } from '@/actions/commandPalette'
+import { useAuth } from '@/components/AuthProvider'
+import { fetchCommandPaletteCourses } from '@/lib/data/commandPalette'
 import {
     clearAllRecents,
     clearRecentCourses,
@@ -29,8 +30,6 @@ const RecentsContext = createContext<RecentsContextValue | null>(null)
 
 type RecentsProviderProps = {
     children: ReactNode
-    authenticated: boolean
-    userId: string | null
 }
 
 function mergeWithStoredRecents(userId: string, current: RecentsData): RecentsData {
@@ -42,7 +41,10 @@ function mergeWithStoredRecents(userId: string, current: RecentsData): RecentsDa
     return current
 }
 
-export function RecentsProvider({ children, authenticated, userId }: RecentsProviderProps) {
+export function RecentsProvider({ children }: RecentsProviderProps) {
+    const { user } = useAuth()
+    const authenticated = user !== null
+    const userId = user?.id ?? null
     const pathname = usePathname() ?? ''
     const [recents, setRecents] = useState<RecentsData>(emptyRecents)
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { instructorProblemCreate } from '@/actions/instructor'
+import { instructorProblemCreate } from '@/lib/instructor/client'
 import { ExternalLink } from '@/components/ExternalLink'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'

@@ -6,11 +6,12 @@ import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
-import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/actions/submissions'
+import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/lib/data/submissionsActions'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { SubmissionsListToolbar } from '@/components/submissions/SubmissionsListToolbar'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     DEFAULT_SUBMISSIONS_COLUMN_VISIBILITY,
@@ -32,16 +33,18 @@ type SubmissionsListProps =
           rows: SubmissionRow[]
           variant?: 'default'
           showHelp?: boolean
+          loading?: boolean
       }
     | {
           rows: ProblemSubmissionRow[]
           variant: 'problem'
           problemNm: string
           showHelp?: boolean
+          loading?: boolean
       }
 
 export function SubmissionsList(props: SubmissionsListProps) {
-    const { rows: initialRows, variant = 'default', showHelp = false } = props
+    const { rows: initialRows, variant = 'default', showHelp = false, loading = false } = props
     const problemNm = props.variant === 'problem' ? props.problemNm : undefined
     const [rows, setRows] = useState(initialRows)
     const [searchQuery, setSearchQuery] = useState('')
@@ -241,6 +244,30 @@ export function SubmissionsList(props: SubmissionsListProps) {
         ],
         [columnVisibility, variant],
     )
+
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4">
+                <SubmissionsListToolbar
+                    variant={variant}
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    verdictFilter={verdictFilter}
+                    onVerdictFilterChange={setVerdictFilter}
+                    columnVisibility={columnVisibility}
+                    onColumnVisibilityChange={handleColumnVisibilityChange}
+                    showHelp={showHelp}
+                />
+                <div
+                    aria-busy="true"
+                    aria-label="Loading submissions"
+                    className="flex min-h-64 items-center justify-center border border-dashed border-border bg-muted/20"
+                >
+                    <Spinner className="size-8 text-muted-foreground" />
+                </div>
+            </div>
+        )
+    }
 
     if (rows.length === 0) {
         return (

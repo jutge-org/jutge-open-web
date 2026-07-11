@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchSupervisionCourseStudents } from '@/actions/supervision'
+import { fetchSupervisionCourseStudents } from '@/lib/data/supervisionActions'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
@@ -18,7 +18,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 type SupervisionFormProps = {
     userId: string
-    courses: SupervisionCourseOption[]
+    courses: SupervisionCourseOption[] | null
 }
 
 type StudentOption = {
@@ -34,10 +34,14 @@ function CourseCombobox({
     courses,
     value,
     onValueChange,
+    disabled,
+    placeholder,
 }: {
     courses: SupervisionCourseOption[]
     value: string
     onValueChange: (courseKey: string) => void
+    disabled?: boolean
+    placeholder: string
 }) {
     const [open, setOpen] = useState(false)
     const [search, setSearch] = useState('')
@@ -62,13 +66,14 @@ function CourseCombobox({
                     role="combobox"
                     aria-expanded={open}
                     aria-label="Select course"
+                    disabled={disabled}
                     className="w-full justify-between font-normal"
                 >
                     <span className="flex min-w-0 items-center gap-2">
                         {selectedCourse ? (
                             <CourseIconImage iconUrl={selectedCourse.iconUrl} className="size-5 rounded" />
                         ) : null}
-                        <span className="truncate">{selectedCourse?.title ?? 'Select a course…'}</span>
+                        <span className="truncate">{selectedCourse?.title ?? placeholder}</span>
                     </span>
                     <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" aria-hidden />
                 </Button>
@@ -177,7 +182,9 @@ function StudentCombobox({
 }
 
 export function SupervisionForm({ userId, courses }: SupervisionFormProps) {
-    const [courseKey, setCourseKey] = useSupervisionCoursePreference(userId, courses)
+    const loadingCourses = courses === null
+    const courseOptions = courses ?? []
+    const [courseKey, setCourseKey] = useSupervisionCoursePreference(userId, courseOptions)
     const [students, setStudents] = useState<StudentOption[]>([])
     const [studentEmail, setStudentEmail] = useSupervisionStudentPreference(userId, courseKey, students)
     const [loadingStudents, setLoadingStudents] = useState(false)
@@ -209,13 +216,17 @@ export function SupervisionForm({ userId, courses }: SupervisionFormProps) {
         }
     }, [courseKey])
 
-    const studentPlaceholder = !courseKey
-        ? 'Select a course first'
-        : loadingStudents
-          ? 'Loading students…'
-          : students.length === 0
-            ? 'No students in this course'
-            : 'Select a student…'
+    const coursePlaceholder = loadingCourses ? 'Loading courses…' : 'Select a course…'
+
+    const studentPlaceholder = loadingCourses
+        ? 'Loading courses…'
+        : !courseKey
+          ? 'Select a course first'
+          : loadingStudents
+            ? 'Loading students…'
+            : students.length === 0
+              ? 'No students in this course'
+              : 'Select a student…'
 
     const superviseHref = courseKey && studentEmail ? supervisionHref(courseKey, studentEmail) : null
 
@@ -229,14 +240,20 @@ export function SupervisionForm({ userId, courses }: SupervisionFormProps) {
                     }}
                 >
                     <ProfileFormRow label="Course">
-                        <CourseCombobox courses={courses} value={courseKey} onValueChange={setCourseKey} />
+                        <CourseCombobox
+                            courses={courseOptions}
+                            value={courseKey}
+                            onValueChange={setCourseKey}
+                            disabled={loadingCourses}
+                            placeholder={coursePlaceholder}
+                        />
                     </ProfileFormRow>
                     <ProfileFormRow label="Student">
                         <StudentCombobox
                             students={students}
                             value={studentEmail}
                             onValueChange={setStudentEmail}
-                            disabled={!courseKey || loadingStudents || students.length === 0}
+                            disabled={loadingCourses || !courseKey || loadingStudents || students.length === 0}
                             placeholder={studentPlaceholder}
                         />
                     </ProfileFormRow>

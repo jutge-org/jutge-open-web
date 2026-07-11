@@ -1,6 +1,6 @@
 'use client'
 
-import { instructorProblemUpdate } from '@/actions/instructor'
+import { instructorProblemUpdate } from '@/lib/instructor/client'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'
 import { CloudUploadIcon } from 'lucide-react'

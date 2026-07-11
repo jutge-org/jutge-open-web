@@ -1,6 +1,6 @@
 'use client'
 
-import { adminSetCoursePublicAndOfficial, fetchAdminCourses } from '@/actions/administrator'
+import { adminSetCoursePublicAndOfficial, fetchAdminCourses } from '@/lib/administrator/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Switch } from '@/components/ui/switch'
 import { useIsMobile } from '@/hooks/use-mobile'

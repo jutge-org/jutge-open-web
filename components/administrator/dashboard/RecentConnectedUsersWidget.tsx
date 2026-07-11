@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardRecentConnectedUsers } from '@/actions/administrator'
+import { fetchAdminDashboardRecentConnectedUsers } from '@/lib/administrator/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { UsersIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'

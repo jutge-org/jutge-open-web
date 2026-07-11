@@ -1,114 +1,136 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { SubmissionDetailView } from '@/components/submissions/SubmissionDetailView'
 import { SubmissionPendingRefresh } from '@/components/submissions/SubmissionPendingRefresh'
-import { getCurrentClient } from '@/lib/auth'
-import { parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { buildSubmissionNavLinks } from '@/lib/submissions'
-import {
-    fetchProblemDetail,
-    fetchInstructorOwnsProblem,
-    fetchProblemStatus,
-    resolveProblemId,
-} from '@/services/queries/problemDetail'
-import { fetchSubmissionDetail } from '@/services/queries/submissions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { useProblemShell } from '@/hooks/useProblemShell'
+import jutge from '@/lib/jutge'
+import { buildSubmissionNavLinks, type SubmissionNavLinks } from '@/lib/submissions'
+import { problemLoadedBreadcrumbs, problemTrailBreadcrumbs } from '@/lib/problemBreadcrumbs'
+import { fetchSubmissionDetail, type SubmissionDetailData } from '@/lib/data/submissions'
 
-type PageProps = {
-    params: Promise<{ key: string; submission_id: string }>
+export default function ProblemSubmissionDetailPage() {
+    return (
+        <AuthedGate>{(user) => <ProblemSubmissionDetailPageContent isAdministrator={user.administrator} />}</AuthedGate>
+    )
 }
 
-export const dynamic = 'force-dynamic'
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, submission_id } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: 'Submission — Jutge.org' }
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: 'Submission — Jutge.org' }
-    }
-
-    return { title: `${submission_id} — ${data.problem.title} — Jutge.org` }
-}
-
-export default async function ProblemSubmissionDetailPage({ params }: PageProps) {
-    const { key, submission_id } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        notFound()
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
+function ProblemSubmissionDetailPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string; submission_id: string }>()
+    const key = params.key
+    const submission_id = params.submission_id
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
-    const codeHref = `${submissionHref}/code`
-    const debugHref = `${submissionHref}/debug/view`
+    const shell = useProblemShell({ key, isAuthenticated: true })
+    const [submissionDetail, setSubmissionDetail] = useState<SubmissionDetailData | null | undefined>(undefined)
+    const [navigation, setNavigation] = useState<SubmissionNavLinks | null | undefined>(undefined)
 
-    return renderAuthed(async (user) => {
-        const client = await getCurrentClient()
-        const [status, profile, isExamOrContest, problemSubmissions, isInstructorOwner] = await Promise.all([
-            fetchProblemStatus(client, problem_nm),
-            client.student.profile.get(),
-            client.student.exam.get().then(
+    useEffect(() => {
+        let cancelled = false
+        setSubmissionDetail(undefined)
+
+        void (async () => {
+            const isExamOrContest = await jutge.student.exam.get().then(
                 () => true,
                 () => false,
-            ),
-            client.student.submissions.getForAbstractProblems(problem_nm),
-            fetchInstructorOwnsProblem(problem_nm),
-        ])
+            )
+            const detail = await fetchSubmissionDetail(jutge, key, submission_id, {
+                isAdministrator,
+                isExamOrContest,
+            })
+            if (!cancelled) setSubmissionDetail(detail)
+        })()
 
-        const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
-            isAdministrator: user.administrator,
-            isExamOrContest,
+        return () => {
+            cancelled = true
+        }
+    }, [isAdministrator, key, submission_id])
+
+    useEffect(() => {
+        if (!shell.problem_nm) return
+
+        let cancelled = false
+        setNavigation(undefined)
+
+        void jutge.student.submissions.getForAbstractProblems(shell.problem_nm).then((submissions) => {
+            if (!cancelled) {
+                setNavigation(buildSubmissionNavLinks(submissions, submission_id, key))
+            }
         })
 
-        if (!submissionDetail) {
-            notFound()
+        return () => {
+            cancelled = true
         }
+    }, [key, shell.problem_nm, submission_id])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Problems', url: '/problems' },
-                        { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
-                        { title: data.problem.title, url: `/problems/${key}` },
-                        { title: 'Submissions', url: `/problems/${key}/submissions` },
-                        { title: submission_id, url: submissionHref },
-                    ]}
-                />
+    if (shell.detail === null) {
+        notFound()
+    }
+
+    if (submissionDetail === null) {
+        notFound()
+    }
+
+    const breadcrumbs =
+        shell.detail && shell.problem_nm
+            ? problemLoadedBreadcrumbs(key, shell.detail.problem.problem_nm, shell.detail.problem.title, [
+                  { title: 'Submissions', url: `/problems/${key}/submissions` },
+                  { title: submission_id, url: submissionHref },
+              ])
+            : problemTrailBreadcrumbs(key, [
+                  { title: 'Submissions', url: `/problems/${key}/submissions` },
+                  { title: submission_id, url: submissionHref },
+              ])
+
+    const codeHref = `${submissionHref}/code`
+    const debugHref = `${submissionHref}/debug/view`
+    const submissionLoading = submissionDetail === undefined
+
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}
-                    data={data}
-                    status={status}
-                    defaultCompilerId={profile.compiler_id}
-                    isInstructorOwner={isInstructorOwner}
-                    isAdministrator={user.administrator}
+                    data={shell.detail}
+                    status={shell.status}
+                    defaultCompilerId={shell.defaultCompilerId}
+                    isInstructorOwner={shell.isInstructorOwner ?? false}
+                    isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <SubmissionPendingRefresh isPending={submissionDetail.verdict === 'Pending'} />
-                    <SubmissionDetailView
-                        data={submissionDetail}
-                        codeHref={codeHref}
-                        debugHref={debugHref}
-                        problemKey={key}
-                        navigation={buildSubmissionNavLinks(problemSubmissions, submission_id, key)}
-                    />
+                    {submissionLoading ? (
+                        <SubmissionDetailView loading submissionId={submission_id} />
+                    ) : (
+                        <>
+                            <SubmissionPendingRefresh isPending={submissionDetail!.verdict === 'Pending'} />
+                            <SubmissionDetailView
+                                data={submissionDetail!}
+                                codeHref={codeHref}
+                                debugHref={debugHref}
+                                problemKey={key}
+                                navigation={navigation ?? null}
+                            />
+                        </>
+                    )}
                 </ProblemDetail>
-            </div>
-        )
-    })
+            ) : (
+                <ProblemDetail
+                    loading
+                    pageKey={key}
+                    showStatement={false}
+                    showTestcases={false}
+                    showInformation={false}
+                >
+                    <SubmissionDetailView loading submissionId={submission_id} />
+                </ProblemDetail>
+            )}
+        </div>
+    )
 }

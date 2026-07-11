@@ -1,7 +1,7 @@
+'use client'
+
 import { ListsNewView } from '@/components/instructor/lists/ListsNewView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
-
-export const metadata = { title: 'Add list — Instructor — Jutge.org' }
 
 export default function InstructorListsNewPage() {
     return (

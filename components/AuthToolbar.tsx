@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { signOutAction } from '@/actions/auth'
+import { useAuth } from '@/components/AuthProvider'
 import { SignInDialog } from '@/components/SignInDialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,33 +23,33 @@ import {
     GraduationCapIcon,
     LogIn as SignIn,
     LogOut as SignOut,
+    RefreshCwIcon,
     User,
 } from 'lucide-react'
+import jutge from '@/lib/jutge'
 import { toast } from 'sonner'
 
-type AuthToolbarProps = {
-    authenticated: boolean
-    instructor?: boolean
-    administrator?: boolean
-    userName?: string
-    userNickname?: string | null
-}
-
-export function AuthToolbar({
-    authenticated,
-    instructor = false,
-    administrator = false,
-    userName,
-    userNickname,
-}: AuthToolbarProps) {
+export function AuthToolbar() {
+    const { user, logout } = useAuth()
+    const authenticated = user !== null
+    const instructor = user?.instructor ?? false
+    const administrator = user?.administrator ?? false
+    const userName = user?.name
+    const userNickname = user?.nickname
     const router = useRouter()
     const pathname = usePathname()
     const [dialogOpen, setDialogOpen] = useState(false)
     const [signOutPending, startSignOut] = useTransition()
 
+    function handleResetCache() {
+        jutge.clearCache()
+        toast.success('Client cache cleared')
+        window.location.reload()
+    }
+
     function handleSignOut() {
         startSignOut(async () => {
-            await signOutAction()
+            await logout()
             toast.success(userName ? `Bye ${userName}, you signed out` : 'Signed out')
             if (pathname === '/') {
                 router.refresh()
@@ -112,6 +112,11 @@ export function AuthToolbar({
                             <User aria-hidden />
                             Profile
                         </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleResetCache}>
+                        <RefreshCwIcon aria-hidden />
+                        Clear cache
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem disabled={signOutPending} onClick={handleSignOut}>

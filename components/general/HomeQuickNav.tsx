@@ -18,9 +18,15 @@ import Link from 'next/link'
 
 type HomeQuickNavProps = SiteNavLinksContext
 
+function navStyleHref(href: string): string {
+    if (href.startsWith('/problems')) return '/problems'
+    if (href.startsWith('/courses')) return '/courses'
+    return href
+}
+
 function NavIcon({ href, className }: { href: string; className?: string }) {
     const iconClass = cn('shrink-0', 'group-hover:animate-pulse', className ?? 'size-10')
-    switch (href) {
+    switch (navStyleHref(href)) {
         case '/problems':
             return <FileBracesCornerIcon className={iconClass} aria-hidden />
         case '/submissions':
@@ -83,7 +89,7 @@ export function HomeQuickNav(props: HomeQuickNavProps) {
                     <span
                         className={cn(
                             'flex size-14 items-center justify-center rounded-xl bg-muted/80 transition-colors group-hover:bg-muted',
-                            cardAccent[href] ?? '',
+                            cardAccent[navStyleHref(href)] ?? '',
                         )}
                     >
                         <NavIcon href={href} className="size-7" />

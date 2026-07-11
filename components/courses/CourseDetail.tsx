@@ -1,15 +1,18 @@
 import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon, UsersIcon } from 'lucide-react'
 
 import { CourseDetailActions } from '@/components/courses/CourseDetailActions'
+import { CourseGuestLists } from '@/components/courses/CourseGuestLists'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { CourseLists } from '@/components/courses/CourseLists'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { buildCourseRow, type CourseStatus } from '@/lib/courses'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Course, Language } from '@/lib/jutge_api_client'
-import type { CourseListData } from '@/services/queries/lists'
+import type { CourseListData } from '@/lib/data/lists'
 
 type CourseDetailProps = {
     courseKey: string
@@ -22,6 +25,86 @@ type CourseDetailProps = {
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
     lastSubmissions?: Record<string, LastSubmissionInfo>
+    listsLoading?: boolean
+    problemCount?: number
+}
+
+function CourseListCardLoading() {
+    return (
+        <Card className="gap-0 border border-border pt-2 pb-2 shadow-sm ring-0">
+            <CardHeader className="px-4 py-2">
+                <div className="flex w-full items-center gap-2">
+                    <Skeleton className="h-6 w-48" />
+                    <div className="ml-auto flex items-center gap-1.5">
+                        <Skeleton className="h-5 w-8 rounded-full" />
+                        <Skeleton className="size-4" />
+                    </div>
+                </div>
+            </CardHeader>
+        </Card>
+    )
+}
+
+export function CourseListsLoading({ count }: { count: number }) {
+    if (count === 0) {
+        return null
+    }
+
+    const expandedIndex = count > 1 ? 1 : 0
+
+    return (
+        <div className="flex flex-col gap-4" aria-busy="true" aria-label="Loading course lists">
+            {Array.from({ length: count }, (_, index) =>
+                index === expandedIndex ? (
+                    <Card key={index} className="gap-0 border border-border pt-2 pb-0 shadow-sm ring-0">
+                        <CardHeader className="border-b border-border px-4 py-2">
+                            <div className="flex w-full items-center gap-2">
+                                <Skeleton className="h-6 w-56" />
+                                <div className="ml-auto flex items-center gap-1.5">
+                                    <Skeleton className="h-5 w-8 rounded-full" />
+                                    <Skeleton className="size-4" />
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="flex items-center justify-center py-8">
+                            <Spinner className="size-8 text-muted-foreground" />
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <CourseListCardLoading key={index} />
+                ),
+            )}
+        </div>
+    )
+}
+
+export function CourseDetailLoading() {
+    return (
+        <div className="flex flex-col gap-6" aria-busy="true" aria-label="Loading course">
+            <Card className="border border-border shadow-sm ring-0">
+                <CardContent className="flex w-full flex-col gap-2">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex min-w-0 flex-1 items-start gap-4">
+                            <Skeleton className="size-24 shrink-0 rounded-sm" />
+                            <div className="min-w-0 flex-1 space-y-2">
+                                <Skeleton className="h-8 w-full max-w-md" />
+                                <Skeleton className="h-4 w-40" />
+                                <div className="flex flex-wrap gap-1.5 pt-0.5">
+                                    <Skeleton className="h-5 w-16 rounded-full" />
+                                    <Skeleton className="h-5 w-14 rounded-full" />
+                                </div>
+                            </div>
+                        </div>
+                        <Skeleton className="size-8 shrink-0 rounded-md" />
+                    </div>
+                    <div className="space-y-2 pt-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-4/5" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
 
 export function CourseDetail({
@@ -35,6 +118,8 @@ export function CourseDetail({
     languages,
     statuses,
     lastSubmissions,
+    listsLoading = false,
+    problemCount,
 }: CourseDetailProps) {
     const row = buildCourseRow(course, status, courseKey, isOwner)
 
@@ -107,10 +192,15 @@ export function CourseDetail({
                             <MarkdownText>{row.description}</MarkdownText>
                         </div>
                     ) : null}
+                    {status === 'available' ? (
+                        <CourseGuestLists lists={course.lists} problemCount={problemCount} />
+                    ) : null}
                 </CardContent>
             </Card>
 
-            {status !== 'available' ? (
+            {status !== 'available' && listsLoading ? (
+                <CourseListsLoading count={course.lists.length} />
+            ) : status !== 'available' ? (
                 <CourseLists
                     courseKey={courseKey}
                     lists={lists}

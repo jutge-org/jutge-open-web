@@ -1,18 +1,20 @@
+'use client'
+
+import { AdministratorGate } from '@/components/ClientGates'
 import { AdministratorPageShell } from '@/components/administrator/AdministratorPageShell'
 import CoursesView from '@/components/administrator/courses/CoursesView'
-import { renderAdministrator } from '@/lib/renderAuthed'
 
-export const metadata = { title: 'Courses — Administrator — Jutge.org' }
-
-export default async function AdministratorCoursesPage() {
-    return renderAdministrator(() => (
-        <AdministratorPageShell
-            breadcrumbs={[
-                { title: 'Administrator', url: '/administrator' },
-                { title: 'Courses', url: '/administrator/courses' },
-            ]}
-        >
-            <CoursesView />
-        </AdministratorPageShell>
-    ))
+export default function AdministratorCoursesPage() {
+    return (
+        <AdministratorGate>
+            <AdministratorPageShell
+                breadcrumbs={[
+                    { title: 'Administrator', url: '/administrator' },
+                    { title: 'Courses', url: '/administrator/courses' },
+                ]}
+            >
+                <CoursesView />
+            </AdministratorPageShell>
+        </AdministratorGate>
+    )
 }

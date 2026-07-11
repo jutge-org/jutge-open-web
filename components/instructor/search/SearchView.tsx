@@ -9,7 +9,7 @@ import {
     fetchTextStatement,
     instructorFullTextSearch,
     instructorSemanticSearch,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { ProblemSearchView, type ProblemSearchActions } from '@/components/problems/search/ProblemSearchView'
 
 const instructorSearchActions: ProblemSearchActions = {

@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
-import type { ProblemDetailData } from '@/services/queries/problemDetail'
+import type { ProblemDetailData } from '@/lib/data/problemDetail'
 
 type ProblemHeaderCardProps = {
     data: ProblemDetailData

@@ -1,7 +1,7 @@
+'use client'
+
 import { SearchView } from '@/components/instructor/search/SearchView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
-
-export const metadata = { title: 'Search — Instructor — Jutge.org' }
 
 export default function InstructorSearchPage() {
     return (

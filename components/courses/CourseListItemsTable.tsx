@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
-import type { CourseListItemRow } from '@/services/queries/lists'
+import type { CourseListItemRow } from '@/lib/data/lists'
 
 type CourseListItemsTableProps = {
     items: CourseListItemRow[]

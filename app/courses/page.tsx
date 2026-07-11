@@ -1,31 +1,23 @@
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
+'use client'
 
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+
+import { AuthedGate, PageSpinner } from '@/components/ClientGates'
 import { CoursesTabPage } from '@/components/courses/CoursesStudentShell'
-import { isAuthenticated } from '@/lib/auth'
-import { coursesPageTitles, parseCoursesTab } from '@/lib/courses'
+import { parseCoursesTab } from '@/lib/courses'
 
-export const dynamic = 'force-dynamic'
-
-type PageProps = {
-    searchParams: Promise<{ tab?: string | string[] }>
+export default function CoursesPage() {
+    return (
+        <Suspense fallback={<PageSpinner />}>
+            <CoursesPageContent />
+        </Suspense>
+    )
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-    const { tab } = await searchParams
-    const activeTab = parseCoursesTab(tab)
+function CoursesPageContent() {
+    const searchParams = useSearchParams()
+    const activeTab = parseCoursesTab(searchParams.get('tab') ?? undefined)
 
-    return { title: `${coursesPageTitles[activeTab]} — Jutge.org` }
-}
-
-export default async function CoursesPage({ searchParams }: PageProps) {
-    const authenticated = await isAuthenticated()
-    if (!authenticated) {
-        redirect('/courses/public')
-    }
-
-    const { tab } = await searchParams
-    const activeTab = parseCoursesTab(tab)
-
-    return <CoursesTabPage activeTab={activeTab} />
+    return <AuthedGate>{(user) => <CoursesTabPage activeTab={activeTab} userId={user.id} />}</AuthedGate>
 }

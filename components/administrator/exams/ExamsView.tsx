@@ -1,7 +1,7 @@
 'use client'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
-import { fetchAdminDashboardUpcomingExams } from '@/actions/administrator'
+import { fetchAdminDashboardUpcomingExams } from '@/lib/administrator/client'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'

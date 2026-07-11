@@ -5,7 +5,7 @@ import {
     fetchInstructorExamProblems,
     fetchInstructorExamRanking,
     fetchMiscHexColors,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { ExternalLink } from '@/components/ExternalLink'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type {

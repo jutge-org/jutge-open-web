@@ -1,48 +1,48 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate, PageSpinner } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { AwardDetailCard } from '@/components/awards/AwardDetailCard'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchAwardDetail } from '@/services/queries/awards'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import jutge from '@/lib/jutge'
+import { fetchAwardDetail } from '@/lib/data/awards'
+import type { AwardDetail } from '@/lib/awards'
 
-type PageProps = {
-    params: Promise<{ id: string }>
+export default function AwardDetailPage() {
+    return (
+        <AuthedGate>
+            <AwardDetailPageContent />
+        </AuthedGate>
+    )
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { id } = await params
-    const client = await getCurrentClient()
-    const award = await fetchAwardDetail(client, decodeURIComponent(id))
-    console.log('award', award)
+function AwardDetailPageContent() {
+    const params = useParams<{ id: string }>()
+    const [award, setAward] = useState<AwardDetail | null | undefined>(undefined)
 
-    if (!award) {
-        return { title: 'Award — Jutge.org' }
+    useEffect(() => {
+        void fetchAwardDetail(jutge, decodeURIComponent(params.id)).then(setAward)
+    }, [params.id])
+
+    if (award === undefined) {
+        return <PageSpinner />
     }
 
-    return { title: `${award.title} — Awards — Jutge.org` }
-}
+    if (!award) {
+        notFound()
+    }
 
-export default async function AwardDetailPage({ params }: PageProps) {
-    return renderAuthed(async () => {
-        const { id } = await params
-        const client = await getCurrentClient()
-        const award = await fetchAwardDetail(client, decodeURIComponent(id))
-
-        if (!award) {
-            notFound()
-        }
-
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Awards', url: '/awards' },
-                        { title: award.title, url: `/awards/${encodeURIComponent(award.award_id)}` },
-                    ]}
-                />
-                <AwardDetailCard award={award} />
-            </div>
-        )
-    })
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs
+                breadcrumbs={[
+                    { title: 'Awards', url: '/awards' },
+                    { title: award.title, url: `/awards/${encodeURIComponent(award.award_id)}` },
+                ]}
+            />
+            <AwardDetailCard award={award} />
+        </div>
+    )
 }

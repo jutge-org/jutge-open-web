@@ -1,3 +1,5 @@
+'use client'
+
 import { HomeLoginCard } from '@/components/HomeLoginCard'
 import { HomeNewsSection } from '@/components/general/HomeNewsSection'
 import { HomepageStatsDashboard } from '@/components/general/HomepageStatsDashboard'
@@ -6,20 +8,41 @@ import { HomeQuickNav } from '@/components/general/HomeQuickNav'
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { countActiveProglangs, getActiveCompilers } from '@/lib/documentation'
-import { fetchHomepageStats } from '@/services/queries/misc'
-import { fetchCompilers } from '@/services/queries/tables'
+import { fetchHomepageStats } from '@/lib/data/misc'
+import { fetchCompilers } from '@/lib/data/tables'
+import type { HomepageStats } from '@/lib/jutge_api_client'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
-export async function HomePageGuest() {
-    const [homepageStats, compilers] = await Promise.all([fetchHomepageStats(), fetchCompilers()])
-    const activeCompilers = getActiveCompilers(compilers)
-    const platformStats = homepageStats
-        ? {
-              ...homepageStats,
-              languages: countActiveProglangs(compilers),
-              compilers: activeCompilers.length,
-          }
-        : null
+type PlatformStats = HomepageStats & {
+    languages: number
+    compilers: number
+}
+
+export function HomePageGuest() {
+    const [platformStats, setPlatformStats] = useState<PlatformStats | null>(null)
+
+    useEffect(() => {
+        let cancelled = false
+
+        async function loadStats() {
+            const [homepageStats, compilers] = await Promise.all([fetchHomepageStats(), fetchCompilers()])
+            if (cancelled || !homepageStats) {
+                return
+            }
+            const activeCompilers = getActiveCompilers(compilers)
+            setPlatformStats({
+                ...homepageStats,
+                languages: countActiveProglangs(compilers),
+                compilers: activeCompilers.length,
+            })
+        }
+
+        void loadStats()
+        return () => {
+            cancelled = true
+        }
+    }, [])
 
     return (
         <div className="flex flex-col gap-10">

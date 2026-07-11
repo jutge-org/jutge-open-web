@@ -11,6 +11,7 @@ import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { ProblemsListToolbar } from '@/components/problems/ProblemsListToolbar'
 import { Badge } from '@/components/ui/badge'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
@@ -19,7 +20,7 @@ import {
     type ProblemsColumnVisibility,
 } from '@/lib/problems'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
 
 type ProblemsListProps = {
     problems: ProblemRow[]
@@ -28,6 +29,7 @@ type ProblemsListProps = {
     showAdvancedSearch?: boolean
     showHelp?: boolean
     preferredLanguageId?: string | null
+    loading?: boolean
 }
 
 export function ProblemsList({
@@ -37,6 +39,7 @@ export function ProblemsList({
     showAdvancedSearch = false,
     showHelp = false,
     preferredLanguageId = null,
+    loading = false,
 }: ProblemsListProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [columnVisibility, setColumnVisibility] = useState<ProblemsColumnVisibility>(
@@ -163,6 +166,29 @@ export function ProblemsList({
         ],
         [columnVisibility, languages, preferredLanguageId, statuses],
     )
+
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4">
+                <ProblemsListToolbar
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    columnVisibility={columnVisibility}
+                    onColumnVisibilityChange={handleColumnVisibilityChange}
+                    showStatusColumn={statuses !== undefined}
+                    showAdvancedSearch={showAdvancedSearch}
+                    showHelp={showHelp}
+                />
+                <div
+                    aria-busy="true"
+                    aria-label="Loading problems"
+                    className="flex min-h-64 items-center justify-center border border-dashed border-border bg-muted/20"
+                >
+                    <Spinner className="size-8 text-muted-foreground" />
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col gap-4">

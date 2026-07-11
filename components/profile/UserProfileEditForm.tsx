@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import { toast } from 'sonner'
 
-import { updateProfileAction } from '@/actions/profile'
+import { updateProfileAction } from '@/lib/data/profileActions'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
 import { ProfileFormShell } from '@/components/profile/ProfileFormShell'
 import { Input } from '@/components/ui/input'

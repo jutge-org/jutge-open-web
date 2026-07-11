@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { updateProfilePasswordAction } from '@/actions/profile'
+import { updateProfilePasswordAction } from '@/lib/data/profileActions'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
 import { ProfileFormShell } from '@/components/profile/ProfileFormShell'
 import { Input } from '@/components/ui/input'

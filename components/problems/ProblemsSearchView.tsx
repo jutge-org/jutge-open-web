@@ -11,7 +11,7 @@ import {
     fetchProblemsSearchCatalog,
     problemsFullTextSearch,
     problemsSemanticSearch,
-} from '@/actions/problems'
+} from '@/lib/data/problemsActions'
 import { ProblemSearchView, type ProblemSearchActions } from '@/components/problems/search/ProblemSearchView'
 
 const problemsSearchActions: ProblemSearchActions = {

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardAll } from '@/actions/administrator'
+import { fetchAdminDashboardAll } from '@/lib/administrator/client'
 import { Prose } from '@/components/documentation/Prose'
 import { MessageSquareWarningIcon } from 'lucide-react'
 import pluralize from 'pluralize'

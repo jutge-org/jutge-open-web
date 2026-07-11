@@ -6,7 +6,7 @@ import {
     adminFatalizePendings,
     adminResubmitIEs,
     adminResubmitPendings,
-} from '@/actions/administrator'
+} from '@/lib/administrator/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { AudioLinesIcon, ChevronDownIcon, GhostIcon, RotateCwIcon, SkullIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'

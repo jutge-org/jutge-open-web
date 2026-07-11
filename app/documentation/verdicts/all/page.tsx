@@ -1,12 +1,7 @@
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
-import { VerdictDetail } from '@/components/documentation/VerdictDetail'
-import { fetchVerdicts } from '@/services/queries/tables'
+import { VerdictsAllPageContent } from '@/components/documentation/VerdictsAllPageContent'
 
-export const metadata = { title: 'All verdicts — Documentation — Jutge.org' }
-
-export default async function DocumentationVerdictsAllPage() {
-    const verdicts = await fetchVerdicts()
-
+export default function DocumentationVerdictsAllPage() {
     return (
         <DocumentationPageShell
             activeTab="verdicts"
@@ -16,15 +11,7 @@ export default async function DocumentationVerdictsAllPage() {
                 { title: 'All', url: '/documentation/verdicts/all' },
             ]}
         >
-            {verdicts.length === 0 ? (
-                <p className="text-muted-foreground">Could not load verdicts. Please try again later.</p>
-            ) : (
-                <div className="flex flex-col gap-6">
-                    {verdicts.map((verdict) => (
-                        <VerdictDetail key={verdict.verdict_id} verdict={verdict} />
-                    ))}
-                </div>
-            )}
+            <VerdictsAllPageContent />
         </DocumentationPageShell>
     )
 }

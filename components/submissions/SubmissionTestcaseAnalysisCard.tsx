@@ -21,7 +21,7 @@ import { TestcaseField } from '@/components/TestcaseField'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, TESTCASES_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { cn } from '@/lib/utils'
-import type { SubmissionTestcaseAnalysisData } from '@/services/queries/submissions'
+import type { SubmissionTestcaseAnalysisData } from '@/lib/data/submissions'
 
 type SubmissionTestcaseAnalysisCardProps = {
     data: SubmissionTestcaseAnalysisData

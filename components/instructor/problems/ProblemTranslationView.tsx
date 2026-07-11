@@ -8,7 +8,7 @@ import {
     fetchProblem,
     fetchProblemSuppl,
     fetchTextStatement,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { ExternalLink } from '@/components/ExternalLink'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'

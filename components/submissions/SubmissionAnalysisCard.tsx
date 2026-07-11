@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { buildSubmissionTestcaseHref } from '@/lib/submissions'
-import type { SubmissionAnalysisRow } from '@/services/queries/submissions'
+import type { SubmissionAnalysisRow } from '@/lib/data/submissions'
 
 type SubmissionAnalysisCardProps = {
     analysis: SubmissionAnalysisRow[]

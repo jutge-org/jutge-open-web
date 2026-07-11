@@ -1,16 +1,13 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { CourseStudentsView } from '@/components/instructor/courses/CourseStudentsView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorCourseSubNav } from '@/lib/instructor/menus'
 
-export const metadata = { title: 'Course students — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ course_nm: string }>
-}
-
-export default async function InstructorCourseStudentsPage({ params }: Props) {
-    const { course_nm } = await params
+export default function InstructorCourseStudentsPage() {
+    const { course_nm } = useParams<{ course_nm: string }>()
     const baseHref = `/instructor/courses/${course_nm}`
 
     return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchInstructorApiUrl, fetchJutgeaiSupportedModels, jutgeaiChatMessages } from '@/actions/instructor'
+import { fetchInstructorApiUrl, fetchJutgeaiSupportedModels, jutgeaiChatMessages } from '@/lib/instructor/client'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'

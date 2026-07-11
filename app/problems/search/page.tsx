@@ -1,26 +1,21 @@
-import { redirect } from 'next/navigation'
+'use client'
 
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemsSearchView } from '@/components/problems/ProblemsSearchView'
-import { isAuthenticated } from '@/lib/auth'
 
-export const dynamic = 'force-dynamic'
-
-export const metadata = { title: 'Search — Problems — Jutge.org' }
-
-export default async function ProblemsSearchPage() {
-    const authenticated = await isAuthenticated()
-    if (!authenticated) redirect('/problems/public')
-
+export default function ProblemsSearchPage() {
     return (
-        <div className="flex flex-col gap-6">
-            <MainBreadcrumbs
-                breadcrumbs={[
-                    { title: 'Problems', url: '/problems' },
-                    { title: 'Search', url: '/problems/search' },
-                ]}
-            />
-            <ProblemsSearchView />
-        </div>
+        <AuthedGate>
+            <div className="flex flex-col gap-6">
+                <MainBreadcrumbs
+                    breadcrumbs={[
+                        { title: 'Problems', url: '/problems' },
+                        { title: 'Search', url: '/problems/search' },
+                    ]}
+                />
+                <ProblemsSearchView />
+            </div>
+        </AuthedGate>
     )
 }

@@ -1,16 +1,13 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { ListDuplicateView } from '@/components/instructor/lists/ListDuplicateView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorListSubNav } from '@/lib/instructor/menus'
 
-export const metadata = { title: 'Duplicate list — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ list_nm: string }>
-}
-
-export default async function InstructorListDuplicatePage({ params }: Props) {
-    const { list_nm } = await params
+export default function InstructorListDuplicatePage() {
+    const { list_nm } = useParams<{ list_nm: string }>()
     const baseHref = `/instructor/lists/${list_nm}`
 
     return (

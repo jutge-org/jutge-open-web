@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import Link from 'next/link'
 
-export const metadata = { title: 'Certificates — Documentation — Jutge.org' }
-
 export default function DocumentationCertificatesPage() {
     return (
         <DocumentationPageShell

@@ -1,46 +1,48 @@
-import { SubmissionTestcaseDiffEditor } from '@/components/submissions/SubmissionTestcaseDiffEditor'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+'use client'
 
-type PageProps = {
-    params: Promise<{ key: string; submission_id: string; testcase: string }>
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
+import { FullscreenEditorLoading } from '@/components/general/FullscreenEditorLoading'
+import { SubmissionTestcaseDiffEditor } from '@/components/submissions/SubmissionTestcaseDiffEditor'
+import jutge from '@/lib/jutge'
+import { fetchSubmissionTestcaseAnalysis } from '@/lib/data/submissions'
+
+type AnalysisData = NonNullable<Awaited<ReturnType<typeof fetchSubmissionTestcaseAnalysis>>>
+
+export default function ProblemSubmissionTestcaseDiffViewPage() {
+    return (
+        <AuthedGate>
+            <ProblemSubmissionTestcaseDiffViewPageContent />
+        </AuthedGate>
+    )
 }
 
-export const dynamic = 'force-dynamic'
+function ProblemSubmissionTestcaseDiffViewPageContent() {
+    const params = useParams<{ key: string; submission_id: string; testcase: string }>()
+    const { key, submission_id, testcase } = params
+    const [analysis, setAnalysis] = useState<AnalysisData | null | undefined>(undefined)
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, submission_id, testcase } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: `${testcase} — ${submission_id} — Jutge.org` }
+    useEffect(() => {
+        void fetchSubmissionTestcaseAnalysis(jutge, key, submission_id, testcase).then(setAnalysis)
+    }, [key, submission_id, testcase])
+
+    if (analysis === undefined) {
+        return <FullscreenEditorLoading title={`${submission_id} — ${testcase} diff`} />
     }
 
-    return { title: `${testcase} — ${problemId} — ${submission_id} — Jutge.org` }
-}
+    if (!analysis) {
+        notFound()
+    }
 
-export default async function ProblemSubmissionTestcaseDiffViewPage({ params }: PageProps) {
-    const { key, submission_id, testcase } = await params
-
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const analysis = await fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase)
-
-        if (!analysis) {
-            notFound()
-        }
-
-        return (
-            <SubmissionTestcaseDiffEditor
-                input={analysis.input}
-                output={analysis.output}
-                expected={analysis.expected}
-                outputImageSrc={analysis.outputImageSrc}
-                expectedImageSrc={analysis.expectedImageSrc}
-            />
-        )
-    })
+    return (
+        <SubmissionTestcaseDiffEditor
+            input={analysis.input}
+            output={analysis.output}
+            expected={analysis.expected}
+            outputImageSrc={analysis.outputImageSrc}
+            expectedImageSrc={analysis.expectedImageSrc}
+        />
+    )
 }

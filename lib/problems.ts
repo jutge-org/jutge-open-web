@@ -1,6 +1,6 @@
 import { includesForSearch } from '@/lib/utils'
 import type { Problem } from '@/lib/jutge_api_client'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
 
 export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'driver_id'
 

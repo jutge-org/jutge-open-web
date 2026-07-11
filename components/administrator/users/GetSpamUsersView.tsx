@@ -1,6 +1,6 @@
 'use client'
 
-import { adminRemoveSpamUsers, fetchAdminSpamUsers } from '@/actions/administrator'
+import { adminRemoveSpamUsers, fetchAdminSpamUsers } from '@/lib/administrator/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { Button } from '@/components/ui/button'

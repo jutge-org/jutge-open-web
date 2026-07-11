@@ -1,8 +1,10 @@
+'use client'
+
 import { ExternalLink } from '@/components/ExternalLink'
+import { PageSpinner } from '@/components/ClientGates'
 import { Prose } from '@/components/documentation/Prose'
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -11,9 +13,29 @@ type MarkdownDocProps = {
     section?: 'documentation' | 'about'
 }
 
-export async function MarkdownDoc({ filename, section = 'documentation' }: MarkdownDocProps) {
-    const filePath = path.join(process.cwd(), 'content', section, filename)
-    const content = await readFile(filePath, 'utf8')
+export function MarkdownDoc({ filename, section = 'documentation' }: MarkdownDocProps) {
+    const [content, setContent] = useState<string | null>(null)
+
+    useEffect(() => {
+        let cancelled = false
+
+        async function loadContent() {
+            const response = await fetch(`/api/content/${section}/${filename}`)
+            if (!response.ok || cancelled) {
+                return
+            }
+            setContent(await response.text())
+        }
+
+        void loadContent()
+        return () => {
+            cancelled = true
+        }
+    }, [filename, section])
+
+    if (!content) {
+        return <PageSpinner />
+    }
 
     return (
         <Prose>

@@ -1,8 +1,22 @@
-import { fetchInstructorProblemTableRows } from '@/actions/instructor'
-import InstructorProblemTable from './table/InstructorProblemTable'
+'use client'
 
-export async function ProblemsListView() {
-    const rows = await fetchInstructorProblemTableRows()
+import { PageSpinner } from '@/components/ClientGates'
+import { fetchInstructorProblemTableRows } from '@/lib/instructor/client'
+import { useEffect, useState } from 'react'
+import InstructorProblemTable from './table/InstructorProblemTable'
+import type { ProblemRow } from './table/types'
+
+export function ProblemsListView() {
+    const [rows, setRows] = useState<ProblemRow[] | null>(null)
+
+    useEffect(() => {
+        void fetchInstructorProblemTableRows().then(setRows)
+    }, [])
+
+    if (!rows) {
+        return <PageSpinner />
+    }
+
     return (
         <>
             <h1>Authored Problems</h1>

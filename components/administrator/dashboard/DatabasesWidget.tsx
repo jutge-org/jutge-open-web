@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardDatabasesInfo } from '@/actions/administrator'
+import { fetchAdminDashboardDatabasesInfo } from '@/lib/administrator/client'
 import byteSize from 'byte-size'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'

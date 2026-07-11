@@ -92,7 +92,19 @@ export function pathsHrefEqual(a: string, b: string): boolean {
     return norm(a) === norm(b)
 }
 
-const links: readonly SiteNavLink[] = [coursesLink, problemsLink, documentationLink, aboutLink]
+const guestCoursesLink: SiteNavLink = {
+    href: '/courses/public',
+    label: 'Courses',
+    match: (pathname) => pathname === '/courses/public' || pathname.startsWith('/courses/public/'),
+}
+
+const guestProblemsLink: SiteNavLink = {
+    href: '/problems/public',
+    label: 'Problems',
+    match: (pathname) => pathname.startsWith('/problems/'),
+}
+
+const guestLinks: readonly SiteNavLink[] = [guestCoursesLink, guestProblemsLink, documentationLink, aboutLink]
 
 const authenticatedLinks: readonly SiteNavLink[] = [
     coursesLink,
@@ -131,8 +143,8 @@ export const authenticatedNavLinkDescriptions: Record<string, string> = {
 
 export const guestNavLinkDescriptions: Record<string, string> = {
     '/': 'Return to the home page',
-    '/problems': 'Browse public programming problems',
-    '/courses': 'Browse public courses',
+    '/problems/public': 'Browse public programming problems',
+    '/courses/public': 'Browse public courses',
     '/documentation': 'Documentation for Jutge.org',
     '/about': 'Find more about this site',
 }
@@ -143,7 +155,7 @@ export function getSiteNavLinkDescription(href: string, context: SiteNavLinksCon
 }
 
 export function getSiteNavLinks(context: SiteNavLinksContext): readonly SiteNavLink[] {
-    if (!context.authenticated) return links
+    if (!context.authenticated) return guestLinks
 
     const roleLinks: SiteNavLink[] = []
     if (context.instructor || context.tutor) {

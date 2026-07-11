@@ -8,7 +8,7 @@ import {
     instructorListRemove,
     instructorListUnarchive,
     instructorListUpdate,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'

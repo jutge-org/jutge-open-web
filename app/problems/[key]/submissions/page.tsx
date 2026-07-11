@@ -1,93 +1,98 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { SubmissionsList } from '@/components/submissions/SubmissionsList'
-import { getCurrentClient } from '@/lib/auth'
-import { isGameProblem, parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
-import {
-    fetchProblemDetail,
-    fetchInstructorOwnsProblem,
-    fetchProblemStatus,
-    resolveProblemId,
-} from '@/services/queries/problemDetail'
-import { fetchProblemSubmissionsData } from '@/services/queries/submissions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { useProblemShell } from '@/hooks/useProblemShell'
+import jutge from '@/lib/jutge'
+import { isGameProblem } from '@/lib/problems'
+import { problemLoadedBreadcrumbs, problemNmFromKey, problemTrailBreadcrumbs } from '@/lib/problemBreadcrumbs'
+import { fetchProblemSubmissionsData } from '@/lib/data/submissions'
+import type { ProblemSubmissionRow } from '@/lib/submissions'
 
-type PageProps = {
-    params: Promise<{ key: string }>
+export default function ProblemSubmissionsPage() {
+    return <AuthedGate>{(user) => <ProblemSubmissionsPageContent isAdministrator={user.administrator} />}</AuthedGate>
 }
 
-export const dynamic = 'force-dynamic'
+function ProblemSubmissionsPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string }>()
+    const key = params.key
+    const fallbackProblemNm = problemNmFromKey(key) ?? key
+    const shell = useProblemShell({ key, isAuthenticated: true })
+    const [rows, setRows] = useState<ProblemSubmissionRow[] | null>(null)
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: 'Submissions — Jutge.org' }
-    }
+    useEffect(() => {
+        if (!shell.detail || !shell.problem_nm) return
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: 'Submissions — Jutge.org' }
-    }
+        let cancelled = false
+        setRows(null)
 
-    return { title: `Submissions — ${data.problem.title} — Jutge.org` }
-}
+        const languageTitles = new Map(shell.detail.languageVariants.map((variant) => [variant.problem_id, variant.title]))
+        void fetchProblemSubmissionsData(jutge, shell.problem_nm, languageTitles).then((data) => {
+            if (!cancelled) setRows(data)
+        })
 
-export default async function ProblemSubmissionsPage({ params }: PageProps) {
-    const { key } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
+        return () => {
+            cancelled = true
+        }
+    }, [shell.detail, shell.problem_nm])
+
+    const shellLoading = shell.detail === undefined
+    const submissionsLoading = shell.detail !== null && shell.detail !== undefined && rows === null
+
+    if (!shellLoading && shell.detail === null) {
         notFound()
     }
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
+    if (!shellLoading && shell.detail && isGameProblem(shell.detail.problem.abstract_problem.driver_id)) {
         notFound()
     }
 
-    if (isGameProblem(data.problem.abstract_problem.driver_id)) {
-        notFound()
-    }
+    const breadcrumbs =
+        shell.detail && shell.problem_nm
+            ? problemLoadedBreadcrumbs(key, shell.detail.problem.problem_nm, shell.detail.problem.title, [
+                  { title: 'Submissions', url: `/problems/${key}/submissions` },
+              ])
+            : problemTrailBreadcrumbs(key, [{ title: 'Submissions', url: `/problems/${key}/submissions` }])
 
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
+    const problemNm = shell.problem_nm ?? fallbackProblemNm
 
-    return renderAuthed(async (user) => {
-        const client = await getCurrentClient()
-        const languageTitles = new Map(data.languageVariants.map((variant) => [variant.problem_id, variant.title]))
-        const [status, profile, rows, isInstructorOwner] = await Promise.all([
-            fetchProblemStatus(client, problem_nm),
-            client.student.profile.get(),
-            fetchProblemSubmissionsData(client, problem_nm, languageTitles),
-            fetchInstructorOwnsProblem(problem_nm),
-        ])
-
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Problems', url: '/problems' },
-                        { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
-                        { title: data.problem.title, url: `/problems/${key}` },
-                        { title: 'Submissions', url: `/problems/${key}/submissions` },
-                    ]}
-                />
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}
-                    data={data}
-                    status={status}
-                    defaultCompilerId={profile.compiler_id}
-                    isInstructorOwner={isInstructorOwner}
-                    isAdministrator={user.administrator}
+                    data={shell.detail}
+                    status={shell.status}
+                    defaultCompilerId={shell.defaultCompilerId}
+                    isInstructorOwner={shell.isInstructorOwner ?? false}
+                    isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <SubmissionsList rows={rows} variant="problem" problemNm={problem_nm} />
+                    {submissionsLoading ? (
+                        <SubmissionsList rows={[]} variant="problem" problemNm={problemNm} loading />
+                    ) : (
+                        <SubmissionsList rows={rows ?? []} variant="problem" problemNm={problemNm} />
+                    )}
                 </ProblemDetail>
-            </div>
-        )
-    })
+            ) : (
+                <ProblemDetail
+                    loading
+                    pageKey={key}
+                    showStatement={false}
+                    showTestcases={false}
+                    showInformation={false}
+                >
+                    <SubmissionsList rows={[]} variant="problem" problemNm={problemNm} loading />
+                </ProblemDetail>
+            )}
+        </div>
+    )
 }

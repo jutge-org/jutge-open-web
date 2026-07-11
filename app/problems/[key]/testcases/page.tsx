@@ -1,100 +1,109 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { ProblemTestcases } from '@/components/problems/ProblemTestcases'
-import { getCurrentClient } from '@/lib/auth'
-import { isGameProblem, parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
-import {
-    fetchInstructorOwnsProblem,
-    fetchProblemDetail,
-    fetchProblemStatus,
-    resolveProblemId,
-} from '@/services/queries/problemDetail'
-import { fetchAllProblemTestcases } from '@/services/queries/problemTestcases'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { hasInstructorProblemAccess, useProblemShell } from '@/hooks/useProblemShell'
+import jutge from '@/lib/jutge'
+import { isGameProblem } from '@/lib/problems'
+import { problemLoadedBreadcrumbs, problemTrailBreadcrumbs } from '@/lib/problemBreadcrumbs'
+import { fetchAllProblemTestcases } from '@/lib/data/problemTestcases'
+import type { DecodedTestcase } from '@/lib/data/problemDetail'
 
-type PageProps = {
-    params: Promise<{ key: string }>
+export default function ProblemTestcasesPage() {
+    return <AuthedGate>{(user) => <ProblemTestcasesPageContent isAdministrator={user.administrator} />}</AuthedGate>
 }
 
-export const dynamic = 'force-dynamic'
+function ProblemTestcasesPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string }>()
+    const key = params.key
+    const shell = useProblemShell({ key, isAuthenticated: true })
+    const [testcases, setTestcases] = useState<DecodedTestcase[] | null | undefined>(undefined)
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: 'Test cases — Jutge.org' }
-    }
+    const access = hasInstructorProblemAccess(shell.isInstructorOwner, isAdministrator)
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: 'Test cases — Jutge.org' }
-    }
+    useEffect(() => {
+        if (!shell.detail || !shell.problem_nm || access !== true) return
 
-    return { title: `Test cases — ${data.problem.title} — Jutge.org` }
-}
+        let cancelled = false
+        setTestcases(undefined)
 
-export default async function ProblemTestcasesPage({ params }: PageProps) {
-    const { key } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        notFound()
-    }
+        void fetchAllProblemTestcases(
+            jutge,
+            shell.detail.problem.problem_id,
+            shell.problem_nm,
+            shell.detail.problem.abstract_problem.driver_id,
+        ).then((data) => {
+            if (!cancelled) setTestcases(data)
+        })
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    if (isGameProblem(data.problem.abstract_problem.driver_id)) {
-        notFound()
-    }
-
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
-
-    return renderAuthed(async (user) => {
-        const isInstructorOwner = await fetchInstructorOwnsProblem(problem_nm)
-        if (!isInstructorOwner && !user.administrator) {
-            notFound()
+        return () => {
+            cancelled = true
         }
+    }, [access, shell.detail, shell.problem_nm])
 
-        const client = await getCurrentClient()
-        const [status, profile, testcases] = await Promise.all([
-            fetchProblemStatus(client, problem_nm),
-            client.student.profile.get(),
-            fetchAllProblemTestcases(client, problemId, problem_nm, data.problem.abstract_problem.driver_id),
-        ])
+    const shellLoading = shell.detail === undefined || access === undefined
+    const testcasesLoading = access === true && shell.detail && testcases === undefined
 
-        if (!testcases) {
-            notFound()
-        }
+    if (!shellLoading && shell.detail === null) {
+        notFound()
+    }
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Problems', url: '/problems' },
-                        { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
-                        { title: data.problem.title, url: `/problems/${key}` },
-                        { title: 'Test cases', url: `/problems/${key}/testcases` },
-                    ]}
-                />
+    if (!shellLoading && shell.detail && isGameProblem(shell.detail.problem.abstract_problem.driver_id)) {
+        notFound()
+    }
+
+    if (!shellLoading && access === false) {
+        notFound()
+    }
+
+    if (!shellLoading && access === true && testcases === null) {
+        notFound()
+    }
+
+    const breadcrumbs =
+        shell.detail && shell.problem_nm
+            ? problemLoadedBreadcrumbs(key, shell.detail.problem.problem_nm, shell.detail.problem.title, [
+                  { title: 'Test cases', url: `/problems/${key}/testcases` },
+              ])
+            : problemTrailBreadcrumbs(key, [{ title: 'Test cases', url: `/problems/${key}/testcases` }])
+
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}
-                    data={data}
-                    status={status}
-                    defaultCompilerId={profile.compiler_id}
-                    isInstructorOwner={isInstructorOwner}
-                    isAdministrator={user.administrator}
+                    data={shell.detail}
+                    status={shell.status}
+                    defaultCompilerId={shell.defaultCompilerId}
+                    isInstructorOwner={shell.isInstructorOwner ?? false}
+                    isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
                 >
-                    <ProblemTestcases testcases={testcases} />
+                    {testcasesLoading ? (
+                        <ProblemTestcases loading />
+                    ) : (
+                        <ProblemTestcases testcases={testcases ?? []} />
+                    )}
                 </ProblemDetail>
-            </div>
-        )
-    })
+            ) : (
+                <ProblemDetail
+                    loading
+                    pageKey={key}
+                    showStatement={false}
+                    showTestcases={false}
+                    showInformation={false}
+                >
+                    <ProblemTestcases loading />
+                </ProblemDetail>
+            )}
+        </div>
+    )
 }

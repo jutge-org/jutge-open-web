@@ -3,7 +3,7 @@
 import { BookmarkIcon, BotIcon, LanguagesIcon, ScrollIcon, ScrollTextIcon, SignatureIcon, TagsIcon } from 'lucide-react'
 import { type ReactNode, useCallback, useRef, useState } from 'react'
 
-import { fetchProblemAbstractProblem } from '@/actions/problems'
+import { fetchProblemAbstractProblem } from '@/lib/data/problemsActions'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import type { AbstractProblem, ProblemSummary, SolutionTags } from '@/lib/jutge_api_client'

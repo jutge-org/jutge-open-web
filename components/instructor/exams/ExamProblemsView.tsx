@@ -7,7 +7,7 @@ import {
     fetchInstructorExam,
     fetchMiscExamIcons,
     instructorExamUpdateProblems,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
@@ -231,7 +231,12 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
         const extra = await runTextareaDialog(`© ${profile.name}\n\n`)
         if (extra === null) return
         toast.info('Generating PDF...')
-        const doc = await makeExamPdf({ exam_nm, extra })
+        const token = localStorage.getItem('token')
+        if (!token) {
+            toast.error('Sign in required to generate exam PDF.')
+            return
+        }
+        const doc = await makeExamPdf({ exam_nm, extra, token })
         saveAs(doc, `${exam_nm}-${nanoid()}.pdf`)
     }
 

@@ -7,7 +7,7 @@ import { filesize } from 'filesize'
 import { CloudUploadIcon, SaveIcon, TrashIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { updateProfileAvatarAction } from '@/actions/profile'
+import { updateProfileAvatarAction } from '@/lib/data/profileActions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'

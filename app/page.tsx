@@ -1,14 +1,18 @@
+'use client'
+
 import { HomePageGuest } from '@/components/general/HomePageGuest'
 import { HomePageUser } from '@/components/general/HomePageUser'
-import { isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
+import { PageSpinner } from '@/components/ClientGates'
+import { useAuth } from '@/components/AuthProvider'
 
-export const dynamic = 'force-dynamic'
+export default function Home() {
+    const { user, loading } = useAuth()
 
-export default async function Home() {
-    const authenticated = await isAuthenticated()
+    if (loading) {
+        return <PageSpinner />
+    }
 
-    if (authenticated) {
-        const user = await tryGetCurrentUser()
+    if (user) {
         return <HomePageUser user={user} />
     }
 

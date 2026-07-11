@@ -74,14 +74,7 @@ type SolutionCodeEditorProps = {
     proglang: string
 }
 
-export function SolutionCodeEditor({
-    code,
-    codeExtension,
-    codeFilename,
-    codeHref,
-    title,
-    proglang,
-}: SolutionCodeEditorProps) {
+export function SolutionCodeEditor({ code, codeExtension, codeFilename, title, proglang }: SolutionCodeEditorProps) {
     const { resolvedTheme } = useTheme()
     const [editorTheme, setEditorTheme] = useMonacoThemePreference()
     const [fontScale, setFontScale] = useFontScalePreference(SOURCE_CODE_FONT_SCALE_KEY)

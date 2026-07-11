@@ -88,8 +88,6 @@ type MainNavSubmenuItem = {
     iconUrl?: string
 }
 
-type MainBreadcrumbsInLayoutProps = Record<string, never>
-
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
     const documentation = links.find((l) => l.href === '/documentation')
     const about = links.find((l) => l.href === '/about')
@@ -314,7 +312,7 @@ function MainNavRoleSubmenu({
     )
 }
 
-export function MainBreadcrumbsInLayout(_: MainBreadcrumbsInLayoutProps) {
+export function MainBreadcrumbsInLayout() {
     const { user } = useAuth()
     const authenticated = user !== null
     const instructor = user?.instructor ?? false

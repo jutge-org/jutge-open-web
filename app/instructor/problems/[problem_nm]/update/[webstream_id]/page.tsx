@@ -5,8 +5,7 @@ import { ProblemUpdateTerminalView } from '@/components/instructor/problems/Prob
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 
 export default function InstructorProblemUpdateTerminalPage() {
-    const { problem_nm } = useParams<{ problem_nm: string }>()
-    const { webstream_id } = useParams<{ webstream_id: string }>()
+    const { problem_nm } = useParams<{ problem_nm: string; webstream_id: string }>()
     const baseHref = `/instructor/problems/${problem_nm}`
 
     return (

@@ -87,7 +87,6 @@ export function SubmissionCodeEditor({
     code,
     codeExtension,
     codeFilename,
-    codeHref,
     title,
     submissionId,
     verdict,

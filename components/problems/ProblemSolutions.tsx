@@ -23,12 +23,13 @@ type ProblemSolutionsProps =
       }
 
 export function ProblemSolutions(props: ProblemSolutionsProps) {
+    const [openItems, setOpenItems] = useState<string[]>([])
+
     if (props.loading) {
         return <ProblemWidgetCard title="Solutions" />
     }
 
     const { pageKey, problemId, problem_nm, proglangs } = props
-    const [openItems, setOpenItems] = useState<string[]>([])
 
     function toggleProglang(proglang: string) {
         setOpenItems((current) =>

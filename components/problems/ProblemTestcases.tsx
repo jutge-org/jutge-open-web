@@ -18,12 +18,13 @@ type ProblemTestcasesProps =
       }
 
 export function ProblemTestcases(props: ProblemTestcasesProps) {
+    const [openItems, setOpenItems] = useState<string[]>([])
+
     if (props.loading) {
         return <ProblemWidgetCard title="Test cases" />
     }
 
     const { testcases } = props
-    const [openItems, setOpenItems] = useState<string[]>([])
 
     function toggleTestcase(name: string) {
         setOpenItems((current) =>

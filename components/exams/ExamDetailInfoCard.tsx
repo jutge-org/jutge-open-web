@@ -26,14 +26,14 @@ export function ExamDetailInfoCard({ exam }: ExamDetailInfoCardProps) {
                         </p>
                         {exam.time_start ? (
                             <p className="flex items-start gap-2 text-sm text-muted-foreground">
-                                <div className="mt-0.5 size-4 shrink-0" aria-hidden />
+                                <span className="mt-0.5 size-4 shrink-0" aria-hidden />
                                 <span>Started {exam.time_start}</span>
                                 <span>({dayjs(exam.time_start).fromNow()})</span>
                             </p>
                         ) : null}
                         {exam.time_end ? (
                             <p className="flex items-start gap-2 text-sm text-muted-foreground">
-                                <div className="mt-0.5 size-4 shrink-0" aria-hidden />
+                                <span className="mt-0.5 size-4 shrink-0" aria-hidden />
                                 <span>Ended {exam.time_end}</span>
                                 <span>({dayjs(exam.time_end).fromNow()})</span>
                             </p>

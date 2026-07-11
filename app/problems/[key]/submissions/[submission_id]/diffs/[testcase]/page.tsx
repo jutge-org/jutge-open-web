@@ -37,11 +37,15 @@ function ProblemSubmissionTestcaseAnalysisPageContent({ isAdministrator }: { isA
     const [testcaseAnalysis, setTestcaseAnalysis] = useState<SubmissionTestcaseAnalysisData | null | undefined>(
         undefined,
     )
-    const [submissionCode, setSubmissionCode] = useState<{
-        code: string
-        codeExtension: string | null
-        codeFilename: string
-    } | null | undefined>(undefined)
+    const [submissionCode, setSubmissionCode] = useState<
+        | {
+              code: string
+              codeExtension: string | null
+              codeFilename: string
+          }
+        | null
+        | undefined
+    >(undefined)
 
     useEffect(() => {
         let cancelled = false

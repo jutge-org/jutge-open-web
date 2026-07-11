@@ -72,13 +72,7 @@ export function ProblemDetail(props: ProblemDetailProps) {
         )
     }
 
-    const {
-        data,
-        status,
-        defaultCompilerId,
-        isInstructorOwner = false,
-        isAdministrator = false,
-    } = props
+    const { data, status, defaultCompilerId, isInstructorOwner = false, isAdministrator = false } = props
     const { problem } = data
     const isGame = isGameProblem(problem.abstract_problem.driver_id)
     const showActions = status !== undefined && !isGame

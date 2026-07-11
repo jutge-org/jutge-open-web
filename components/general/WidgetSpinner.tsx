@@ -8,11 +8,7 @@ type WidgetSpinnerProps = {
 
 export function WidgetSpinner({ className, label = 'Loading' }: WidgetSpinnerProps) {
     return (
-        <div
-            aria-busy="true"
-            aria-label={label}
-            className={cn('flex items-center justify-center py-8', className)}
-        >
+        <div aria-busy="true" aria-label={label} className={cn('flex items-center justify-center py-8', className)}>
             <Spinner className="size-8 text-muted-foreground" />
         </div>
     )

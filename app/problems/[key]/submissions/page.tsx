@@ -31,7 +31,9 @@ function ProblemSubmissionsPageContent({ isAdministrator }: { isAdministrator: b
         let cancelled = false
         setRows(null)
 
-        const languageTitles = new Map(shell.detail.languageVariants.map((variant) => [variant.problem_id, variant.title]))
+        const languageTitles = new Map(
+            shell.detail.languageVariants.map((variant) => [variant.problem_id, variant.title]),
+        )
         void fetchProblemSubmissionsData(jutge, shell.problem_nm, languageTitles).then((data) => {
             if (!cancelled) setRows(data)
         })

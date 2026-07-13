@@ -72,6 +72,7 @@ function mapListItem(item: ListItem, problemByNm: Map<string, ProblemRow>): Cour
         kind: 'problem',
         problem_nm: item.problem_nm,
         title: item.problem_nm,
+        iconUrl: null,
         language_ids: [],
         driver_id: null,
         author: null,

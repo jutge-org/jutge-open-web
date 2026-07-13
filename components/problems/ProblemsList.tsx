@@ -5,6 +5,7 @@ import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
 import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSummaryTooltip'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
@@ -92,9 +93,14 @@ export function ProblemsList({
                         title={params.data.title}
                         preferredLanguageId={preferredLanguageId}
                     >
-                        <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
-                            {params.data.problem_nm}
-                        </Link>
+                        <span className="inline-flex items-center gap-1.5">
+                            {params.data.iconUrl ? (
+                                <ProblemIconImage iconUrl={params.data.iconUrl} size="xs" className="translate-y-px" />
+                            ) : null}
+                            <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                                {params.data.problem_nm}
+                            </Link>
+                        </span>
                     </ProblemTitleSummaryTooltip>
                 ),
                 valueGetter: (params: { data: ProblemRow }) => params.data.problem_nm,
@@ -110,7 +116,9 @@ export function ProblemsList({
                         problem_nm={params.data.problem_nm}
                         title={params.data.title}
                         preferredLanguageId={preferredLanguageId}
-                    />
+                    >
+                        <span className="inline-flex items-center gap-1.5">{params.data.title}</span>
+                    </ProblemTitleSummaryTooltip>
                 ),
             },
             {

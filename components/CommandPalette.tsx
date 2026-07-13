@@ -9,6 +9,7 @@ import {
 } from '@/lib/data/commandPalette'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { useRecents } from '@/components/RecentsProvider'
 import { SignInDialog } from '@/components/SignInDialog'
@@ -36,7 +37,7 @@ import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { courseHref, filterAndSortCourses, publicCourseHref, resolveCourseIconUrl } from '@/lib/courses'
 import { filterAndSortExams, type ExamRow } from '@/lib/exams'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
-import { filterProblems } from '@/lib/problems'
+import { filterProblems, resolveProblemIconUrl } from '@/lib/problems'
 import { filterCommandPaletteRecents, type CommandPaletteRecentItem } from '@/lib/recents'
 import type { ProblemRow } from '@/lib/data/problems'
 import {
@@ -191,6 +192,16 @@ export function CommandPalette() {
         return map
     }, [courses, exams])
 
+    const problemIconByNm = useMemo(() => {
+        const map = new Map<string, string>()
+        for (const problem of problems) {
+            if (problem.iconUrl) {
+                map.set(problem.problem_nm, problem.iconUrl)
+            }
+        }
+        return map
+    }, [problems])
+
     const filteredSections = useMemo(() => {
         if (!trimmedQuery) {
             return { app: [], command: [], profile: [], documentation: [], about: [] }
@@ -333,9 +344,25 @@ export function CommandPalette() {
         return resolveCourseIconUrl(courseKey, courseIconByKey, item.iconUrl)
     }
 
+    function resolveRecentProblemIconUrl(item: CommandPaletteRecentItem): string | null {
+        if (item.kind !== 'problem') {
+            return null
+        }
+
+        const problemNm = item.id.slice('problem:'.length)
+        return resolveProblemIconUrl(problemNm, problemIconByNm, item.iconUrl)
+    }
+
     function renderRecentLeading(item: CommandPaletteRecentItem) {
         if (item.kind === 'course') {
             return <CourseIconImage iconUrl={resolveRecentCourseIconUrl(item)!} className="size-3.5 shrink-0 rounded" />
+        }
+
+        if (item.kind === 'problem') {
+            const iconUrl = resolveRecentProblemIconUrl(item)
+            if (iconUrl) {
+                return <ProblemIconImage iconUrl={iconUrl} className="size-3.5 shrink-0 rounded" />
+            }
         }
 
         const Icon = recentIcon(item)
@@ -437,7 +464,14 @@ export function CommandPalette() {
                                     >
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
+                                                {problem.iconUrl ? (
+                                                    <ProblemIconImage
+                                                        iconUrl={problem.iconUrl}
+                                                        className="size-3.5 shrink-0 rounded"
+                                                    />
+                                                ) : (
+                                                    <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
+                                                )}
                                                 <span className="truncate font-medium">{problem.title}</span>
                                             </div>
                                             <span className="truncate pl-5.5 text-xs text-muted-foreground">

@@ -4,6 +4,7 @@ import { LucideProps } from 'lucide-react'
 export type ProblemRow = {
     problem_nm: string
     title: string
+    iconUrl: string | null
     created_at: string | number
     updated_at: string | number
     deprecated: boolean

@@ -1,6 +1,7 @@
 'use client'
 
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { useRecents } from '@/components/RecentsProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -112,6 +113,11 @@ export function RecentMenu() {
                     items={recents.problems}
                     renderHref={recentProblemHref}
                     renderTitle={formatRecentProblemTitle}
+                    renderLeading={(item) =>
+                        item.iconUrl ? (
+                            <ProblemIconImage iconUrl={item.iconUrl} className="size-4 shrink-0 rounded" />
+                        ) : null
+                    }
                     emptyLabel="No recent problems"
                 />
                 <DropdownMenuSeparator />

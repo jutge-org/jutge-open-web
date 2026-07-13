@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 
 import { AgTableAutoHeight } from '@/components/administrator/AgTable'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
@@ -61,9 +62,14 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                 cellRenderer: (params: { data: CourseListItemRow }) => {
                     if (!isProblemRow(params.data)) return ''
                     return (
-                        <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
-                            {params.data.problem_nm}
-                        </Link>
+                        <span className="inline-flex items-center gap-1.5">
+                            {params.data.iconUrl ? (
+                                <ProblemIconImage iconUrl={params.data.iconUrl} size="xs" className="translate-y-px" />
+                            ) : null}
+                            <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                                {params.data.problem_nm}
+                            </Link>
+                        </span>
                     )
                 },
             },
@@ -76,7 +82,7 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                     if (!isProblemRow(params.data)) {
                         return <span className="text-muted-foreground">{params.data.description}</span>
                     }
-                    return params.data.title
+                    return <span className="inline-flex items-center gap-1.5">{params.data.title}</span>
                 },
             },
             ...(lastSubmissions

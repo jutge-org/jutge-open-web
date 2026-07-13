@@ -52,6 +52,7 @@ export async function fetchExamDetail(client: JutgeApiClient, examKey: string): 
                     kind: 'problem' as const,
                     problem_nm,
                     title: problemTitles.get(problem_nm) ?? problem_nm,
+                    iconUrl: null,
                     language_ids: [],
                     driver_id: null,
                     author: null,

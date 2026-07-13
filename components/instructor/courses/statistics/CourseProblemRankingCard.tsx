@@ -3,12 +3,14 @@
 import { array2csv } from '@/actions/instructor/csv'
 import { AgTable } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
 import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { deriveCourseProblemRanking } from '@/lib/instructor/courseProblemRanking'
 import type { Dict } from '@/lib/instructor/utils'
+import { problemIconUrl } from '@/lib/problems'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type { AbstractProblem, CourseSubmission, InstructorCourse, InstructorList } from '@/lib/jutge_api_client'
 import type { ICellRendererParams } from 'ag-grid-community'
@@ -32,6 +34,19 @@ export function CourseProblemRankingCard({
 }: CourseProblemRankingCardProps) {
     const colDefs = useMemo(
         () => [
+            {
+                field: 'iconUrl',
+                headerName: '',
+                width: 36,
+                sortable: false,
+                filter: false,
+                cellRenderer: (params: ICellRendererParams<{ problem_nm: string }>) => {
+                    const iconUrl = problemIconUrl(abstractProblems[params.data!.problem_nm]?.icon)
+                    return iconUrl ? (
+                        <ProblemIconImage iconUrl={iconUrl} size="xs" className="translate-y-1" />
+                    ) : null
+                },
+            },
             {
                 field: 'problem_nm',
                 headerName: 'Id',
@@ -120,7 +135,7 @@ export function CourseProblemRankingCard({
                 ),
             },
         ],
-        [course.course_nm],
+        [course.course_nm, abstractProblems],
     )
 
     const rows = useMemo(

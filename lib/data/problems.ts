@@ -1,10 +1,12 @@
 import jutge from '@/lib/jutge'
+import { problemIconUrl } from '@/lib/problems'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import { JutgeApiClient, type AbstractProblem, type AbstractStatus, type Language } from '@/lib/jutge_api_client'
 
 export type ProblemRow = {
     problem_nm: string
     title: string
+    iconUrl: string | null
     language_ids: string[]
     driver_id: string | null
     author: string | null
@@ -50,6 +52,7 @@ export function abstractProblemToRow(
     return {
         problem_nm: ap.problem_nm,
         title,
+        iconUrl: problemIconUrl(ap.icon),
         language_ids,
         driver_id: ap.driver_id,
         author: ap.author,

@@ -1,5 +1,6 @@
 import jutge from '@/lib/jutge'
 import type { JutgeApiClient } from '@/lib/jutge_api_client'
+import { problemIconUrl } from '@/lib/problems'
 import { mapmap } from '@/lib/instructor/utils'
 
 export async function withInstructorClient<T>(fn: (client: JutgeApiClient) => Promise<T>): Promise<T> {
@@ -384,6 +385,7 @@ export async function fetchInstructorProblemTableRows() {
         return {
             problem_nm,
             title: buildTitle(abstractProblem.problem_nm),
+            iconUrl: problemIconUrl(abstractProblem.icon),
             created_at: abstractProblem.created_at,
             updated_at: abstractProblem.updated_at,
             deprecated: abstractProblem.deprecation !== null,

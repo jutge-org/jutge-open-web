@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/components/AuthProvider'
-import { fetchCommandPaletteCourses } from '@/lib/data/commandPalette'
+import { fetchCommandPaletteCourses, fetchCommandPaletteProblems } from '@/lib/data/commandPalette'
 import {
     clearAllRecents,
     clearRecentCourses,
@@ -9,6 +9,7 @@ import {
     clearRecentSubmissions,
     emptyRecents,
     enrichRecentCourseIcons,
+    enrichRecentProblemIcons,
     observeRecentPageMetadata,
     readRecents,
     syncRecentsFromPage,
@@ -116,6 +117,43 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             cancelled = true
         }
     }, [authenticated, recents.courses, userId])
+
+    useEffect(() => {
+        if (!authenticated || !userId) {
+            return
+        }
+
+        if (!recents.problems.some((problem) => !problem.iconUrl)) {
+            return
+        }
+
+        let cancelled = false
+
+        void fetchCommandPaletteProblems().then((allProblems) => {
+            if (cancelled) {
+                return
+            }
+
+            const iconByNm = new Map(
+                allProblems.flatMap((problem) =>
+                    problem.iconUrl ? [[problem.problem_nm, problem.iconUrl] as const] : [],
+                ),
+            )
+            setRecents((current) => {
+                const next = enrichRecentProblemIcons(current, iconByNm)
+                if (next === current) {
+                    return current
+                }
+
+                writeRecents(userId, next)
+                return next
+            })
+        })
+
+        return () => {
+            cancelled = true
+        }
+    }, [authenticated, recents.problems, userId])
 
     function updateRecents(updater: (data: RecentsData) => RecentsData) {
         if (!userId) {

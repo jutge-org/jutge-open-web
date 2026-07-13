@@ -3,25 +3,26 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 const sizeConfig = {
-    sm: { className: 'size-12', width: 48, height: 48 },
-    md: { className: 'size-16', width: 64, height: 64 },
-    lg: { className: 'size-24', width: 96, height: 96 },
+    xs: { className: 'size-4', width: 16, height: 16 },
+    sm: { className: 'size-5', width: 20, height: 20 },
+    md: { className: 'size-8', width: 32, height: 32 },
+    lg: { className: 'size-28', width: 112, height: 112 },
 } as const
 
-type CourseIconImageProps = {
+type ProblemIconImageProps = {
     iconUrl: string
     size?: keyof typeof sizeConfig
     className?: string
 }
 
-export function CourseIconImage({ iconUrl, size = 'sm', className }: CourseIconImageProps) {
+export function ProblemIconImage({ iconUrl, size = 'sm', className }: ProblemIconImageProps) {
     const { className: sizeClassName, width, height } = sizeConfig[size]
 
     return (
         <Image
             src={iconUrl}
             alt=""
-            className={cn('shrink-0 rounded-sm object-contain', sizeClassName, className)}
+            className={cn('block shrink-0 rounded-sm object-contain', sizeClassName, className)}
             width={width}
             height={height}
             loading={size === 'lg' ? 'eager' : undefined}

@@ -11,6 +11,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
+import { SolvedProblemsCard } from '@/components/statistics/SolvedProblemsCard'
 import { buildHeatmapWeekGrid, HEATMAP_ROW_LABELS } from '@/lib/statistics/heatmap'
 import {
     buildAcceptedProblemsSeries,
@@ -145,6 +146,8 @@ function StatisticsDashboardLoading() {
                 <PanelCard title="Submissions by hour of the day" loading />
                 <PanelCard title="Submissions by day of week" loading />
             </section>
+
+            <SolvedProblemsCard problems={[]} loading />
         </div>
     )
 }
@@ -160,7 +163,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
         return <StatisticsDashboardLoading />
     }
 
-    const { dashboard, level, tables, hexColors, submissions } = data
+    const { dashboard, level, tables, hexColors, submissions, solvedProblems } = data
     const summary = dashboardSummary(dashboard, level)
     const verdictSlices = distributionToSlices(dashboard.distributions.verdicts, tables, hexColors, 'verdicts')
     const languageSlices = distributionToSlices(dashboard.distributions.proglangs, tables, hexColors, 'proglangs')
@@ -514,6 +517,8 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                     </ChartContainer>
                 </PanelCard>
             </section>
+
+            <SolvedProblemsCard problems={solvedProblems} />
         </div>
     )
 }

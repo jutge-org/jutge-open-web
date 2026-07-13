@@ -1,6 +1,9 @@
+import { abstractProblemToRow } from '@/lib/data/problems'
 import { parseProblemKey } from '@/lib/problems'
 import { compilerColor, proglangColor, verdictColor } from '@/lib/statistics/colors'
 import type {
+    AbstractProblem,
+    AbstractStatus,
     AllTables,
     ColorMapping,
     Dashboard,
@@ -49,6 +52,13 @@ export type RecentSubmissionRow = {
     verdictEmoji?: string
     verdictColor: string
     ago: string
+}
+
+export type SolvedProblemRow = {
+    problem_nm: string
+    title: string
+    iconUrl: string | null
+    href: string
 }
 
 const WEEKDAY_ORDER = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const
@@ -277,6 +287,27 @@ export function cumulativeHeatmapSeries(heatmap: HeatmapCalendar): { date: strin
         const date = new Date(entry.date * 1000).toISOString().slice(0, 10)
         return { date, total: cumulative }
     })
+}
+
+export function buildSolvedProblems(
+    statuses: Record<string, AbstractStatus>,
+    abstractProblems: Record<string, AbstractProblem>,
+    preferredLanguageId?: string | null,
+): SolvedProblemRow[] {
+    return Object.values(statuses)
+        .filter((status) => status.status === 'accepted')
+        .sort((a, b) => a.problem_nm.localeCompare(b.problem_nm))
+        .map((status) => {
+            const abstractProblem = abstractProblems[status.problem_nm]
+            const row = abstractProblem ? abstractProblemToRow(abstractProblem, preferredLanguageId) : null
+
+            return {
+                problem_nm: status.problem_nm,
+                title: row?.title ?? status.problem_nm,
+                iconUrl: row?.iconUrl ?? null,
+                href: `/problems/${status.problem_nm}`,
+            }
+        })
 }
 
 export function dashboardSummary(dashboard: Dashboard, level: string) {

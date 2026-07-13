@@ -1,9 +1,13 @@
 import { getCurrentClient, getPreferredLanguageId } from '@/lib/data/auth'
 import { buildCourseRow, courseIconUrl, listTitleFromKey } from '@/lib/courses'
-import { deriveAbstractStatusesFromCourseSubmissions } from '@/lib/supervisionSubmissions'
 import { withSupervisorClient } from '@/lib/supervisor/client'
-import type { SupervisionCourseOption } from '@/lib/supervision'
-import type { AbstractStatus, CourseSubmission, PublicProfile } from '@/lib/jutge_api_client'
+import {
+    buildSupervisionLastSubmissionsByProblemNm,
+    type SupervisionContext,
+    type SupervisionCourseOption,
+} from '@/lib/supervision'
+import type { AbstractStatus, PublicProfile, TutorSubmission } from '@/lib/jutge_api_client'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import { fetchCourse, fetchCoursesData } from '@/lib/data/courses'
 import { fetchCourseListsData, type CourseListData } from '@/lib/data/lists'
 import { fetchAllAbstractProblems, fetchLanguages } from '@/lib/data/problems'
@@ -11,7 +15,7 @@ import { fetchAllAbstractProblems, fetchLanguages } from '@/lib/data/problems'
 export async function fetchSupervisionCourseOptions(): Promise<SupervisionCourseOption[]> {
     const client = await getCurrentClient()
     const [courseKeys, coursesData] = await Promise.all([
-        withSupervisorClient((supervisorClient) => supervisorClient.tutor.courses.coursesKeys()),
+        withSupervisorClient((supervisorClient) => supervisorClient.tutor.courses.getCoursesKeys()),
         fetchCoursesData(client),
     ])
 
@@ -52,12 +56,14 @@ export async function fetchSupervisionCourseOptions(): Promise<SupervisionCourse
 
 export type SupervisionStudentPageData = {
     profile: PublicProfile
-    submissions: CourseSubmission[]
+    submissions: TutorSubmission[]
     courseKey: string
     courseTitle: string
     lists: CourseListData[]
     languages: Awaited<ReturnType<typeof fetchLanguages>>
     statuses: Record<string, AbstractStatus>
+    lastSubmissions: Record<string, LastSubmissionInfo>
+    supervisionContext: SupervisionContext
 }
 
 export async function fetchSupervisionStudentPageData(
@@ -65,16 +71,20 @@ export async function fetchSupervisionStudentPageData(
     email: string,
 ): Promise<SupervisionStudentPageData | null> {
     const client = await getCurrentClient()
-    const [profile, submissions, courseResult, languages, preferredLanguageId, userProfile] = await Promise.all([
-        withSupervisorClient((supervisorClient) => supervisorClient.tutor.profile.profile(email)),
-        withSupervisorClient((supervisorClient) =>
-            supervisorClient.tutor.submissions.submissions({ course_key: courseKey, email }),
-        ),
-        fetchCourse(client, courseKey),
-        fetchLanguages(),
-        getPreferredLanguageId(),
-        client.student.profile.get(),
-    ])
+    const [profile, submissions, statuses, courseResult, languages, preferredLanguageId, userProfile] =
+        await Promise.all([
+            withSupervisorClient((supervisorClient) => supervisorClient.tutor.profile.get(email)),
+            withSupervisorClient((supervisorClient) =>
+                supervisorClient.tutor.submissions.getAll({ course_key: courseKey, email }),
+            ),
+            withSupervisorClient((supervisorClient) =>
+                supervisorClient.tutor.statuses.getAll({ course_key: courseKey, email }),
+            ),
+            fetchCourse(client, courseKey),
+            fetchLanguages(),
+            getPreferredLanguageId(),
+            client.student.profile.get(),
+        ])
 
     if (!courseResult) {
         return null
@@ -82,8 +92,12 @@ export async function fetchSupervisionStudentPageData(
 
     const problems = await fetchAllAbstractProblems(preferredLanguageId)
     const lists = await fetchCourseListsData(client, courseResult.course.lists, problems, userProfile)
-    const statuses = deriveAbstractStatusesFromCourseSubmissions(submissions)
     const courseTitle = buildCourseRow(courseResult.course, courseResult.status, courseResult.courseKey).title
+    const supervisionContext: SupervisionContext = {
+        courseKey: courseResult.courseKey,
+        email,
+        studentName: profile.name,
+    }
 
     return {
         profile,
@@ -93,5 +107,18 @@ export async function fetchSupervisionStudentPageData(
         lists,
         languages,
         statuses,
+        lastSubmissions: buildSupervisionLastSubmissionsByProblemNm(submissions, supervisionContext),
+        supervisionContext: { ...supervisionContext, studentName: profile.name },
+    }
+}
+
+export async function fetchSupervisionStudentProfile(
+    courseKey: string,
+    email: string,
+): Promise<PublicProfile | null> {
+    try {
+        return await withSupervisorClient((client) => client.tutor.profile.get(email))
+    } catch {
+        return null
     }
 }

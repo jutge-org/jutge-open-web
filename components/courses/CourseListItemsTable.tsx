@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
+import type { SupervisionContext } from '@/lib/supervision'
+import { supervisionProblemHref } from '@/lib/supervision'
 import type { CourseListItemRow } from '@/lib/data/lists'
 
 type CourseListItemsTableProps = {
@@ -18,6 +20,7 @@ type CourseListItemsTableProps = {
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
     lastSubmissions?: Record<string, LastSubmissionInfo>
+    supervisionContext?: SupervisionContext
 }
 
 function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow, { kind: 'problem' }> {
@@ -26,7 +29,13 @@ function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow,
 
 const ROW_HEIGHT = 36
 
-export function CourseListItemsTable({ items, languages, statuses, lastSubmissions }: CourseListItemsTableProps) {
+export function CourseListItemsTable({
+    items,
+    languages,
+    statuses,
+    lastSubmissions,
+    supervisionContext,
+}: CourseListItemsTableProps) {
     const colDefs = useMemo(
         () => [
             ...(statuses
@@ -66,7 +75,14 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                             {params.data.iconUrl ? (
                                 <ProblemIconImage iconUrl={params.data.iconUrl} size="xs" className="translate-y-px" />
                             ) : null}
-                            <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                            <Link
+                                href={
+                                    supervisionContext
+                                        ? supervisionProblemHref(supervisionContext, params.data.problem_nm)
+                                        : `/problems/${params.data.problem_nm}`
+                                }
+                                className="tabular-nums text-sm"
+                            >
                                 {params.data.problem_nm}
                             </Link>
                         </span>
@@ -152,7 +168,7 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
                 },
             },
         ],
-        [languages, lastSubmissions, statuses],
+        [languages, lastSubmissions, statuses, supervisionContext],
     )
 
     return (

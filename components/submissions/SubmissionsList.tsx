@@ -34,6 +34,8 @@ type SubmissionsListProps =
           variant?: 'default'
           showHelp?: boolean
           loading?: boolean
+          onRefreshPending?: () => Promise<SubmissionRow[]>
+          emptyMessage?: string
       }
     | {
           rows: ProblemSubmissionRow[]
@@ -41,10 +43,19 @@ type SubmissionsListProps =
           problemNm: string
           showHelp?: boolean
           loading?: boolean
+          onRefreshPending?: () => Promise<ProblemSubmissionRow[]>
+          emptyMessage?: string
       }
 
 export function SubmissionsList(props: SubmissionsListProps) {
-    const { rows: initialRows, variant = 'default', showHelp = false, loading = false } = props
+    const {
+        rows: initialRows,
+        variant = 'default',
+        showHelp = false,
+        loading = false,
+        onRefreshPending,
+        emptyMessage,
+    } = props
     const problemNm = props.variant === 'problem' ? props.problemNm : undefined
     const [rows, setRows] = useState(initialRows)
     const [searchQuery, setSearchQuery] = useState('')
@@ -66,10 +77,11 @@ export function SubmissionsList(props: SubmissionsListProps) {
         const intervalId = window.setInterval(async () => {
             refreshCount += 1
 
-            const nextRows =
-                problemNm !== undefined
-                    ? await fetchProblemSubmissionsRowsAction(problemNm)
-                    : await fetchSubmissionsRowsAction()
+            const nextRows = onRefreshPending
+                ? await onRefreshPending()
+                : problemNm !== undefined
+                  ? await fetchProblemSubmissionsRowsAction(problemNm)
+                  : await fetchSubmissionsRowsAction()
 
             setRows(nextRows)
 
@@ -82,7 +94,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
         }, PENDING_SUBMISSION_REFRESH_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
-    }, [hasPending, problemNm])
+    }, [hasPending, onRefreshPending, problemNm])
 
     const visibleRows = useMemo(() => {
         if (variant === 'problem') {
@@ -272,9 +284,10 @@ export function SubmissionsList(props: SubmissionsListProps) {
     if (rows.length === 0) {
         return (
             <p className="w-full border p-12 text-sm text-muted-foreground text-center">
-                {variant === 'problem'
-                    ? 'You have not submitted any solution to this problem yet.'
-                    : 'No submissions yet.'}
+                {emptyMessage ??
+                    (variant === 'problem'
+                        ? 'You have not submitted any solution to this problem yet.'
+                        : 'No submissions yet.')}
             </p>
         )
     }

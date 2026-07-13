@@ -12,6 +12,7 @@ import { isGameProblem } from '@/lib/problems'
 import { showInstructorProblemTabs } from '@/lib/problemNav'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import type { ProblemDetailData } from '@/lib/data/problemDetail'
+import type { SupervisionContext } from '@/lib/supervision'
 
 import type { ReactNode } from 'react'
 
@@ -35,6 +36,8 @@ type ProblemDetailLoadedProps = ProblemDetailBaseProps & {
     defaultCompilerId?: string | null
     isInstructorOwner?: boolean
     isAdministrator?: boolean
+    readOnly?: boolean
+    supervisionContext?: SupervisionContext
 }
 
 type ProblemDetailProps = ProblemDetailLoadingProps | ProblemDetailLoadedProps
@@ -72,10 +75,18 @@ export function ProblemDetail(props: ProblemDetailProps) {
         )
     }
 
-    const { data, status, defaultCompilerId, isInstructorOwner = false, isAdministrator = false } = props
+    const {
+        data,
+        status,
+        defaultCompilerId,
+        isInstructorOwner = false,
+        isAdministrator = false,
+        readOnly = false,
+        supervisionContext,
+    } = props
     const { problem } = data
     const isGame = isGameProblem(problem.abstract_problem.driver_id)
-    const showActions = status !== undefined && !isGame
+    const showActions = !readOnly && status !== undefined && !isGame
     const showInstructorTabs = showInstructorProblemTabs(isInstructorOwner, isAdministrator)
 
     return (
@@ -87,6 +98,7 @@ export function ProblemDetail(props: ProblemDetailProps) {
                 status={status}
                 defaultCompilerId={defaultCompilerId}
                 showActions={showActions}
+                supervisionContext={supervisionContext}
             />
 
             {showNav ? <ProblemNav pageKey={pageKey} showInstructorTabs={showInstructorTabs} /> : null}

@@ -41,14 +41,16 @@ type SubmissionDetailViewProps =
           debugHref?: never
           problemKey?: never
           navigation?: never
+          getTestcaseHref?: never
       }
     | {
           loading?: false
           data: SubmissionDetailData
           codeHref: string
-          debugHref: string
+          debugHref?: string
           problemKey: string
           navigation?: SubmissionNavLinks | null
+          getTestcaseHref?: (testcase: string) => string | null
       }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
@@ -88,7 +90,7 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
         return <SubmissionDetailViewLoading submissionId={props.submissionId} />
     }
 
-    const { data, codeHref, debugHref, problemKey, navigation } = props
+    const { data, codeHref, debugHref, problemKey, navigation, getTestcaseHref } = props
     const { submission } = data
     const isPending = submission.state !== 'done'
     const submittedAt = dayjs(parseSubmissionTime(submission.time_in))
@@ -195,6 +197,7 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                         analysis={data.analysis}
                         problemKey={problemKey}
                         submissionId={submission.submission_id}
+                        getTestcaseHref={getTestcaseHref}
                     />
                 ) : null}
 
@@ -211,7 +214,7 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                     </>
                 ) : null}
 
-                {hasDebugInformation(data.debugInformation) && data.debugInformation ? (
+                {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (
                     <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
                 ) : null}
             </div>

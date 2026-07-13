@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import { notFound, useParams } from 'next/navigation'
 
 import { SupervisorGate } from '@/components/ClientGates'
-import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
+import { SupervisionPageShell } from '@/components/supervision/SupervisionPageShell'
 import { SupervisionStudentView, SupervisionStudentViewLoading } from '@/components/supervision/SupervisionStudentView'
 import { normalizeCourseKeyParam } from '@/lib/courses'
 import { fetchSupervisionStudentPageData, type SupervisionStudentPageData } from '@/lib/data/supervision'
+import { supervisionBaseBreadcrumbs } from '@/lib/supervision'
 
 export default function SupervisionStudentPage() {
     return (
@@ -32,19 +33,13 @@ function SupervisionStudentPageContent() {
         notFound()
     }
 
-    const studentName = data?.profile.name?.trim() || email
+    const context = data?.supervisionContext ?? { courseKey, email }
+    const breadcrumbs = supervisionBaseBreadcrumbs(context, data?.courseTitle)
 
     return (
-        <div className="flex flex-col gap-6">
-            <MainBreadcrumbs
-                breadcrumbs={[
-                    { title: 'Supervision', url: '/supervision' },
-                    { title: data?.courseTitle ?? courseKey, url: '/supervision' },
-                    { title: studentName, url: `/supervision/${courseKey}/${email}` },
-                ]}
-            />
+        <SupervisionPageShell context={context} courseTitle={data?.courseTitle} breadcrumbs={breadcrumbs}>
             <PageTitle section="/supervision" authenticated hidden={false} />
             {data === undefined ? <SupervisionStudentViewLoading /> : <SupervisionStudentView data={data} />}
-        </div>
+        </SupervisionPageShell>
     )
 }

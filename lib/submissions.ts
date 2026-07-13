@@ -155,6 +155,24 @@ export type SubmissionNavLinks = {
     lastHref: string | null
 }
 
+const SUBMISSION_CODE_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/code(\/view)?$/
+const SUBMISSION_TESTCASE_DIFF_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff(\/view)?$/
+const SUBMISSION_DEBUG_EDITOR_PATH = /^\/problems\/[^/]+\/submissions\/[^/]+\/debug\/view$/
+const SUPERVISION_SUBMISSION_CODE_EDITOR_PATH =
+    /^\/supervision\/[^/]+\/[^/]+\/problems\/[^/]+\/submissions\/[^/]+\/code$/
+const SUPERVISION_SUBMISSION_TESTCASE_DIFF_EDITOR_PATH =
+    /^\/supervision\/[^/]+\/[^/]+\/problems\/[^/]+\/submissions\/[^/]+\/diffs\/[^/]+\/diff$/
+
+export function isFullscreenSubmissionEditorPath(pathname: string): boolean {
+    return (
+        SUBMISSION_CODE_EDITOR_PATH.test(pathname) ||
+        SUBMISSION_TESTCASE_DIFF_EDITOR_PATH.test(pathname) ||
+        SUBMISSION_DEBUG_EDITOR_PATH.test(pathname) ||
+        SUPERVISION_SUBMISSION_CODE_EDITOR_PATH.test(pathname) ||
+        SUPERVISION_SUBMISSION_TESTCASE_DIFF_EDITOR_PATH.test(pathname)
+    )
+}
+
 export function buildSubmissionNavLinks(
     submissions: Submission[],
     currentSubmissionId: string,

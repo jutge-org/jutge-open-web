@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import { problemIconUrl } from '@/lib/problems'
+import { supervisionProblemHref, type SupervisionContext } from '@/lib/supervision'
 import { cn } from '@/lib/utils'
 import type { ProblemDetailData } from '@/lib/data/problemDetail'
 
@@ -18,9 +19,16 @@ type ProblemHeaderCardProps = {
     status?: AbstractStatus | null
     defaultCompilerId?: string | null
     showActions?: boolean
+    supervisionContext?: SupervisionContext
 }
 
-export function ProblemHeaderCard({ data, status, defaultCompilerId, showActions = false }: ProblemHeaderCardProps) {
+export function ProblemHeaderCard({
+    data,
+    status,
+    defaultCompilerId,
+    showActions = false,
+    supervisionContext,
+}: ProblemHeaderCardProps) {
     const { problem } = data
     const iconUrl = problemIconUrl(problem.abstract_problem.icon)
 
@@ -67,7 +75,16 @@ export function ProblemHeaderCard({ data, status, defaultCompilerId, showActions
                                                         {isCurrent ? (
                                                             <span>{variant.language_id}</span>
                                                         ) : (
-                                                            <Link href={`/problems/${variant.problem_id}`}>
+                                                            <Link
+                                                                href={
+                                                                    supervisionContext
+                                                                        ? supervisionProblemHref(
+                                                                              supervisionContext,
+                                                                              variant.problem_id,
+                                                                          )
+                                                                        : `/problems/${variant.problem_id}`
+                                                                }
+                                                            >
                                                                 {variant.language_id}
                                                             </Link>
                                                         )}

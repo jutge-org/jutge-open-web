@@ -6,7 +6,7 @@ export async function fetchSupervisionCourseStudents(courseKey: string): Promise
         return []
     }
 
-    const students = await withSupervisorClient((client) => client.tutor.courses.enrolledStudents(courseKey))
+    const students = await withSupervisorClient((client) => client.tutor.courses.getEnrolledStudents(courseKey))
 
     return [...students].sort((a, b) => {
         const nameCompare = a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })

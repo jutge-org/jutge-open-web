@@ -42,6 +42,8 @@ export function SupervisionStudentView({ data }: SupervisionStudentViewProps) {
                 lists={data.lists}
                 languages={data.languages}
                 statuses={data.statuses}
+                lastSubmissions={data.lastSubmissions}
+                supervisionContext={data.supervisionContext}
             />
         </div>
     )

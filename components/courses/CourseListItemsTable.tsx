@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { AgTableAutoHeight } from '@/components/administrator/AgTable'
 import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
+import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSummaryTooltip'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -21,6 +22,7 @@ type CourseListItemsTableProps = {
     statuses?: Record<string, AbstractStatus>
     lastSubmissions?: Record<string, LastSubmissionInfo>
     supervisionContext?: SupervisionContext
+    preferredLanguageId?: string | null
 }
 
 function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow, { kind: 'problem' }> {
@@ -35,6 +37,7 @@ export function CourseListItemsTable({
     statuses,
     lastSubmissions,
     supervisionContext,
+    preferredLanguageId = null,
 }: CourseListItemsTableProps) {
     const colDefs = useMemo(
         () => [
@@ -68,13 +71,16 @@ export function CourseListItemsTable({
                 width: 112,
                 sortable: false,
                 filter: false,
+                headerClass: 'ag-problem-column-header',
+                cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
                 cellRenderer: (params: { data: CourseListItemRow }) => {
                     if (!isProblemRow(params.data)) return ''
                     return (
-                        <span className="inline-flex items-center gap-1.5">
-                            {params.data.iconUrl ? (
-                                <ProblemIconImage iconUrl={params.data.iconUrl} size="xs" className="translate-y-px" />
-                            ) : null}
+                        <ProblemTitleSummaryTooltip
+                            problem_nm={params.data.problem_nm}
+                            title={params.data.title}
+                            preferredLanguageId={preferredLanguageId}
+                        >
                             <Link
                                 href={
                                     supervisionContext
@@ -83,9 +89,18 @@ export function CourseListItemsTable({
                                 }
                                 className="tabular-nums text-sm"
                             >
-                                {params.data.problem_nm}
+                                <span className="flex flex-row items-center gap-3">
+                                    {params.data.iconUrl ? (
+                                        <ProblemIconImage
+                                            iconUrl={params.data.iconUrl}
+                                            size="xs"
+                                            className="translate-y-px"
+                                        />
+                                    ) : null}
+                                    {params.data.problem_nm}
+                                </span>
                             </Link>
-                        </span>
+                        </ProblemTitleSummaryTooltip>
                     )
                 },
             },
@@ -154,7 +169,7 @@ export function CourseListItemsTable({
             },
             {
                 field: 'driver_id',
-                headerName: 'Driver',
+                headerName: 'Type',
                 width: 90,
                 sortable: false,
                 filter: false,
@@ -168,25 +183,27 @@ export function CourseListItemsTable({
                 },
             },
         ],
-        [languages, lastSubmissions, statuses, supervisionContext],
+        [languages, lastSubmissions, preferredLanguageId, statuses, supervisionContext],
     )
 
     return (
         <TooltipProvider>
-            <AgTableAutoHeight
-                rowData={items}
-                columnDefs={colDefs}
-                rowHeight={ROW_HEIGHT}
-                wrapperBorder={false}
-                themeParams={{
-                    backgroundColor: 'var(--card)',
-                    oddRowBackgroundColor: 'var(--card)',
-                    chromeBackgroundColor: 'var(--card)',
-                }}
-                getRowClass={(params: { data?: CourseListItemRow }) =>
-                    params.data?.kind === 'separator' ? 'bg-muted/30' : undefined
-                }
-            />
+            <div className="[&_.ag-problem-column-header_.ag-header-cell-label]:justify-center">
+                <AgTableAutoHeight
+                    rowData={items}
+                    columnDefs={colDefs}
+                    rowHeight={ROW_HEIGHT}
+                    wrapperBorder={false}
+                    themeParams={{
+                        backgroundColor: 'var(--card)',
+                        oddRowBackgroundColor: 'var(--card)',
+                        chromeBackgroundColor: 'var(--card)',
+                    }}
+                    getRowClass={(params: { data?: CourseListItemRow }) =>
+                        params.data?.kind === 'separator' ? 'bg-muted/30' : undefined
+                    }
+                />
+            </div>
         </TooltipProvider>
     )
 }

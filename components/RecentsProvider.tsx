@@ -3,21 +3,16 @@
 import { useAuth } from '@/components/AuthProvider'
 import { fetchCommandPaletteCourses, fetchCommandPaletteProblems } from '@/lib/data/commandPalette'
 import {
-    clearAllRecents,
-    clearRecentCourses,
-    clearRecentProblems,
-    clearRecentSubmissions,
-    emptyRecents,
     enrichRecentCourseIcons,
     enrichRecentProblemIcons,
+    emptyRecents,
     observeRecentPageMetadata,
-    readRecents,
     syncRecentsFromPage,
-    writeRecents,
     type RecentsData,
 } from '@/lib/recents'
+import { useOpenWebRecents, useOpenWebSettingsReady, useOpenWebSettingsStore } from '@/store/openWebSettings'
 import { usePathname } from 'next/navigation'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, type ReactNode } from 'react'
 
 type RecentsContextValue = {
     recents: RecentsData
@@ -33,48 +28,27 @@ type RecentsProviderProps = {
     children: ReactNode
 }
 
-function mergeWithStoredRecents(userId: string, current: RecentsData): RecentsData {
-    const stored = readRecents(userId)
-    if (current.courses.length === 0 && current.problems.length === 0 && current.submissions.length === 0) {
-        return stored
-    }
-
-    return current
-}
-
 export function RecentsProvider({ children }: RecentsProviderProps) {
     const { user } = useAuth()
     const authenticated = user !== null
-    const userId = user?.id ?? null
     const pathname = usePathname() ?? ''
-    const [recents, setRecents] = useState<RecentsData>(emptyRecents)
+    const ready = useOpenWebSettingsReady()
+    const recents = useOpenWebRecents()
+    const setRecents = useOpenWebSettingsStore((state) => state.setRecents)
+    const clearRecentCourses = useOpenWebSettingsStore((state) => state.clearRecentCourses)
+    const clearRecentProblems = useOpenWebSettingsStore((state) => state.clearRecentProblems)
+    const clearRecentSubmissions = useOpenWebSettingsStore((state) => state.clearRecentSubmissions)
+    const clearAllRecents = useOpenWebSettingsStore((state) => state.clearAllRecents)
 
     useEffect(() => {
-        if (!userId) {
-            setRecents(emptyRecents())
+        if (!authenticated || !ready) {
             return
         }
-
-        setRecents(readRecents(userId))
-    }, [userId])
-
-    useEffect(() => {
-        if (!authenticated || !userId) {
-            return
-        }
-
-        const activeUserId = userId
 
         function syncFromPage(record: boolean) {
             setRecents((current) => {
-                const base = mergeWithStoredRecents(activeUserId, current)
-                const next = syncRecentsFromPage(pathname, base, { record })
-                if (next === base) {
-                    return current
-                }
-
-                writeRecents(activeUserId, next)
-                return next
+                const next = syncRecentsFromPage(pathname, current, { record })
+                return next === current ? current : next
             })
         }
 
@@ -83,10 +57,10 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
         return observeRecentPageMetadata(() => {
             syncFromPage(false)
         })
-    }, [authenticated, pathname, userId])
+    }, [authenticated, pathname, ready, setRecents])
 
     useEffect(() => {
-        if (!authenticated || !userId) {
+        if (!authenticated || !ready) {
             return
         }
 
@@ -102,24 +76,16 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             }
 
             const iconByKey = new Map(allCourses.map((course) => [course.course_key, course.iconUrl]))
-            setRecents((current) => {
-                const next = enrichRecentCourseIcons(current, iconByKey)
-                if (next === current) {
-                    return current
-                }
-
-                writeRecents(userId, next)
-                return next
-            })
+            setRecents((current) => enrichRecentCourseIcons(current, iconByKey))
         })
 
         return () => {
             cancelled = true
         }
-    }, [authenticated, recents.courses, userId])
+    }, [authenticated, ready, recents.courses, setRecents])
 
     useEffect(() => {
-        if (!authenticated || !userId) {
+        if (!authenticated || !ready) {
             return
         }
 
@@ -139,52 +105,26 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
                     problem.iconUrl ? [[problem.problem_nm, problem.iconUrl] as const] : [],
                 ),
             )
-            setRecents((current) => {
-                const next = enrichRecentProblemIcons(current, iconByNm)
-                if (next === current) {
-                    return current
-                }
-
-                writeRecents(userId, next)
-                return next
-            })
+            setRecents((current) => enrichRecentProblemIcons(current, iconByNm))
         })
 
         return () => {
             cancelled = true
         }
-    }, [authenticated, recents.problems, userId])
+    }, [authenticated, ready, recents.problems, setRecents])
 
-    function updateRecents(updater: (data: RecentsData) => RecentsData) {
-        if (!userId) {
-            return
-        }
-
-        setRecents((current) => {
-            const next = updater(current)
-            writeRecents(userId, next)
-            return next
-        })
-    }
-
-    function clearCourses() {
-        updateRecents(clearRecentCourses)
-    }
-
-    function clearProblems() {
-        updateRecents(clearRecentProblems)
-    }
-
-    function clearSubmissions() {
-        updateRecents(clearRecentSubmissions)
-    }
-
-    function clearAll() {
-        updateRecents(() => clearAllRecents())
-    }
+    const visibleRecents = authenticated ? recents : emptyRecents()
 
     return (
-        <RecentsContext.Provider value={{ recents, clearCourses, clearProblems, clearSubmissions, clearAll }}>
+        <RecentsContext.Provider
+            value={{
+                recents: visibleRecents,
+                clearCourses: clearRecentCourses,
+                clearProblems: clearRecentProblems,
+                clearSubmissions: clearRecentSubmissions,
+                clearAll: clearAllRecents,
+            }}
+        >
             {children}
         </RecentsContext.Provider>
     )

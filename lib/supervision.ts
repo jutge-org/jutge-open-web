@@ -7,6 +7,7 @@ import {
 } from '@/lib/submissions'
 import type { Submission, TutorSubmission } from '@/lib/jutge_api_client'
 import type { MainBreadcrumbSegment } from '@/store/MainBreadcrumbs'
+import { useOpenWebSettingsStore } from '@/store/openWebSettings'
 
 export type SupervisionCourseOption = {
     courseKey: string
@@ -106,8 +107,8 @@ export function supervisionSubmissionTestcaseDiffHref(
     return `${supervisionSubmissionTestcaseHref(ctx, problem_id, submission_id, testcase)}/diff`
 }
 
-export function storeSupervisionCoursePreference(userId: string, courseKey: string): void {
-    localStorage.setItem(supervisionCourseStorageKey(userId), courseKey)
+export function storeSupervisionCoursePreference(_userId: string, courseKey: string): void {
+    useOpenWebSettingsStore.getState().setSupervisionLastCourse(courseKey)
 }
 
 export type SupervisionProblemTab = 'statement' | 'submissions'

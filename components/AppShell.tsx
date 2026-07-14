@@ -1,6 +1,5 @@
 'use client'
 
-import { AuthProvider, useAuth } from '@/components/AuthProvider'
 import { AuthToolbar } from '@/components/AuthToolbar'
 import { ReportIssueButton } from '@/components/ReportIssueButton'
 import { CommandPalette } from '@/components/CommandPalette'
@@ -11,6 +10,7 @@ import { AppFooter } from '@/components/layout/AppFooter'
 import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 import { RootShell } from '@/components/RootShell'
 import { MainBreadcrumbsInLayout } from '@/app/MainBreadcrumbsInLayout'
+import { useAuth } from '@/components/AuthProvider'
 
 function AppShellInner({ children }: { children: React.ReactNode }) {
     const { user } = useAuth()
@@ -42,9 +42,5 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-    return (
-        <AuthProvider>
-            <AppShellInner>{children}</AppShellInner>
-        </AuthProvider>
-    )
+    return <AppShellInner>{children}</AppShellInner>
 }

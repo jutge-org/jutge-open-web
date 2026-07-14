@@ -60,6 +60,7 @@ import {
     TerminalIcon,
     UserIcon,
 } from 'lucide-react'
+import { useAppearanceThemePreference } from '@/components/AppearancePreferencesProvider'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
@@ -91,7 +92,8 @@ export function CommandPalette() {
     const administrator = user?.administrator ?? false
     const router = useRouter()
     const pathname = usePathname()
-    const { resolvedTheme, setTheme } = useTheme()
+    const [, setAppearanceTheme] = useAppearanceThemePreference()
+    const { resolvedTheme } = useTheme()
     const { setLayoutWidth } = useLayoutWidth()
     const { recents } = useRecents()
     const [open, setOpen] = useState(false)
@@ -280,7 +282,7 @@ export function CommandPalette() {
                 dispatchOpenAppearanceSettings()
                 return
             case 'toggle-theme':
-                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+                setAppearanceTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
                 return
             case 'set-layout-width':
                 if (section.layoutWidth) {

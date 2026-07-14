@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-13T09:41:20.782Z
+ * This file has been automatically generated at 2026-07-14T11:00:45.245Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -59,6 +59,27 @@ export type ConfirmPasswordRequestIn = {
     password: string
     recaptcha_token: string
 }
+
+export type RequestUnregistrationIn = {
+    password: string
+    hostname: string
+    recaptcha_token: string
+}
+
+export type ConfirmUnregistrationIn = {
+    email: string
+    code: string
+    recaptcha_token: string
+}
+
+export type RequestChangeEmailIn = {
+    new_email: string
+    password: string
+    hostname: string
+    recaptcha_token: string
+}
+
+export type ConfirmChangeEmailIn = ConfirmUnregistrationIn
 
 export type Time = {
     full_time: string
@@ -656,6 +677,13 @@ export type BriefAward = {
     title: string
     info: string
     youtube: string | null
+}
+
+export type Settings = Record<string, any>
+
+export type Setting = {
+    key: string
+    value: any
 }
 
 export type EnrolledStudent = {
@@ -1539,7 +1567,6 @@ export class JutgeApiClient {
     readonly testing: Module_testing
 
     constructor() {
-        console.log('new JutgeApiClient')
         this.clients = new Module_clients(this)
         this.auth = new Module_auth(this)
         this.misc = new Module_misc(this)
@@ -1759,6 +1786,54 @@ class Module_auth {
      */
     async confirmPasswordRequest(data: ConfirmPasswordRequestIn): Promise<void> {
         const [output, ofiles] = await this.root.execute("auth.confirmPasswordRequest", data)
+        return output
+    }
+
+    /**
+     * Request account unregistration confirmation link by email.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     * Verifies the current password and sends an unregistration confirmation link. Requires authentication and a valid reCAPTCHA v3 token.
+     */
+    async requestUnregistration(data: RequestUnregistrationIn): Promise<void> {
+        const [output, ofiles] = await this.root.execute("auth.requestUnregistration", data)
+        return output
+    }
+
+    /**
+     * Confirm account unregistration.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     * Validates the unregistration code, removes the account, unlinks course enrollments, and invalidates all sessions. Requires authentication and a valid reCAPTCHA v3 token. Warning: This action is irreversible!!!
+     */
+    async confirmUnregistration(data: ConfirmUnregistrationIn): Promise<void> {
+        const [output, ofiles] = await this.root.execute("auth.confirmUnregistration", data)
+        return output
+    }
+
+    /**
+     * Request an email address change confirmation link.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     * Verifies the current password and sends a confirmation link to the new email address. Requires authentication and a valid reCAPTCHA v3 token.
+     */
+    async requestChangeEmail(data: RequestChangeEmailIn): Promise<void> {
+        const [output, ofiles] = await this.root.execute("auth.requestChangeEmail", data)
+        return output
+    }
+
+    /**
+     * Confirm an email address change.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     * Validates the email change code, updates the account email, migrates course enrollments, and invalidates all sessions. Requires authentication and a valid reCAPTCHA v3 token.
+     */
+    async confirmChangeEmail(data: ConfirmUnregistrationIn): Promise<void> {
+        const [output, ofiles] = await this.root.execute("auth.confirmChangeEmail", data)
         return output
     }
 }
@@ -2350,6 +2425,7 @@ class Module_student {
     readonly exams: Module_student_exams
     readonly statuses: Module_student_statuses
     readonly awards: Module_student_awards
+    readonly settings: Module_student_settings
 
     constructor(root: JutgeApiClient) {
         this.root = root
@@ -2363,6 +2439,7 @@ class Module_student {
         this.exams = new Module_student_exams(root)
         this.statuses = new Module_student_statuses(root)
         this.awards = new Module_student_awards(root)
+        this.settings = new Module_student_settings(root)
     }
 }
 
@@ -2842,6 +2919,18 @@ class Module_student_submissions {
     }
 
     /**
+     * Get the modules of a circuit submission. Only for circuits. Each element is an SVG string.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getCircuitModules(data: GetGameResultIn): Promise<Record<string, string>> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getCircuitModules", data)
+        return output
+    }
+
+    /**
      * Get the result of a game submission.
      *
      * 🔐 Authentication: user
@@ -3240,6 +3329,55 @@ class Module_student_awards {
      */
     async get(award_id: string): Promise<Award> {
         const [output, ofiles] = await this.root.execute("student.awards.get", award_id)
+        return output
+    }
+}
+
+/**
+ *
+ * User-specific settings stored as key-value pairs.
+ *
+ */
+class Module_student_settings {
+    private readonly root: JutgeApiClient
+
+    constructor(root: JutgeApiClient) {
+        this.root = root
+    }
+
+    /**
+     * Get all user settings.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getAll(): Promise<Settings> {
+        const [output, ofiles] = await this.root.execute("student.settings.getAll", null)
+        return output
+    }
+
+    /**
+     * Get a user setting by key.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async get(key: string): Promise<any> {
+        const [output, ofiles] = await this.root.execute("student.settings.get", key)
+        return output
+    }
+
+    /**
+     * Set a user setting.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async set(data: Setting): Promise<void> {
+        const [output, ofiles] = await this.root.execute("student.settings.set", data)
         return output
     }
 }

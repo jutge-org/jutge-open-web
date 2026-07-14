@@ -193,22 +193,6 @@ export function enrichRecentProblemIcons(data: RecentsData, iconByNm: ReadonlyMa
     return changed ? { ...data, problems } : data
 }
 
-export function readRecents(userId: string): RecentsData {
-    if (typeof window === 'undefined') {
-        return emptyRecents()
-    }
-
-    return parseRecentsData(localStorage.getItem(recentsStorageKey(userId)))
-}
-
-export function writeRecents(userId: string, data: RecentsData): void {
-    if (typeof window === 'undefined') {
-        return
-    }
-
-    localStorage.setItem(recentsStorageKey(userId), serializeRecentsData(data))
-}
-
 export function recentCourseHref(item: RecentCourseItem): string {
     return courseHref(item.courseKey)
 }

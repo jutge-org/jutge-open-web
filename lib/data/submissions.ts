@@ -5,6 +5,7 @@ import {
     shouldShowCodeMetrics,
     type SubmissionCodeMetricsData,
 } from '@/lib/codeMetrics'
+import { CIRCUITS_COMPILER_ID } from '@/lib/circuits'
 import { decodeSubmissionCodeBase64, MAKE_PRO2_COMPILER_ID } from '@/lib/makePro2SourceCode'
 import { isGraphicProblem, parseProblemKey } from '@/lib/problems'
 import {
@@ -115,6 +116,7 @@ export type SubmissionDetailData = {
     compilationErrors: CompilationErrors | null
     awards: AwardRow[]
     debugInformation: DebugInformation | null
+    circuitModules: Record<string, string> | null
 }
 
 export type SubmissionCodeData = {
@@ -315,7 +317,7 @@ export async function fetchSubmissionDetail(
     const defaultExtension = compilerMeta?.extension ?? 'txt'
     const decodedCode = codeB64 ? decodeSubmissionCodeBase64(codeB64, submission.compiler_id, defaultExtension) : null
 
-    const [codeMetrics, compilationErrors] = await Promise.all([
+    const [codeMetrics, compilationErrors, circuitModules] = await Promise.all([
         shouldShowCodeMetrics({
             submission,
             verdict,
@@ -329,6 +331,11 @@ export async function fetchSubmissionDetail(
                   .getCompilationErrors({ problem_id: submission.problem_id, submission_id })
                   .catch(() => null)
             : Promise.resolve(null),
+        submission.compiler_id === CIRCUITS_COMPILER_ID && submission.state === 'done'
+            ? client.student.submissions
+                  .getCircuitModules({ problem_id: submission.problem_id, submission_id })
+                  .catch(() => ({} as Record<string, string>))
+            : Promise.resolve(null as Record<string, string> | null),
     ])
 
     return {
@@ -358,6 +365,8 @@ export async function fetchSubmissionDetail(
         compilationErrors,
         awards,
         debugInformation,
+        circuitModules:
+            circuitModules && Object.keys(circuitModules).length > 0 ? circuitModules : null,
     }
 }
 

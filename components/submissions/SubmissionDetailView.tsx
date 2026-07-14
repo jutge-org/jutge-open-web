@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ChevronUpIcon } from 'lucide-react'
 
+import { CircuitModulesCard } from '@/components/submissions/CircuitModulesCard'
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
 import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
 import { ScoringCard } from '@/components/submissions/ScoringCard'
@@ -212,6 +213,14 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                             codeHref={codeHref}
                         />
                     </>
+                ) : null}
+
+                {data.circuitModules ? (
+                    <CircuitModulesCard
+                        modules={data.circuitModules}
+                        problemKey={problemKey}
+                        submissionId={submission.submission_id}
+                    />
                 ) : null}
 
                 {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (

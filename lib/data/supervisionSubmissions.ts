@@ -272,6 +272,7 @@ export async function fetchSupervisionSubmissionDetail(
         compilationErrors: compilationErrorsResult,
         awards: [],
         debugInformation: null,
+        circuitModules: null,
     }
 }
 

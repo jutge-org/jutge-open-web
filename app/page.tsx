@@ -2,8 +2,6 @@ import { HomePageGuest } from '@/components/general/HomePageGuest'
 import { HomePageUser } from '@/components/general/HomePageUser'
 import { isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
 
-export const dynamic = 'force-dynamic'
-
 export default async function Home() {
     const authenticated = await isAuthenticated()
 

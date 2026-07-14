@@ -12,8 +12,6 @@ import { fetchCourseListsData } from '@/services/queries/lists'
 import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
 import { fetchLastSubmissionsByProblemNm } from '@/services/queries/submissions'
 
-export const dynamic = 'force-dynamic'
-
 type PageProps = {
     params: Promise<{ course_key: string }>
 }

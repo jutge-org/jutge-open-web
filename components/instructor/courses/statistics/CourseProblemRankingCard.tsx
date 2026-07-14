@@ -6,11 +6,11 @@ import { ExternalLink } from '@/components/ExternalLink'
 import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
 import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { deriveCourseProblemRanking } from '@/lib/instructor/courseProblemRanking'
 import type { Dict } from '@/lib/instructor/utils'
-import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type { AbstractProblem, CourseSubmission, InstructorCourse, InstructorList } from '@/lib/jutge_api_client'
+import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type { ICellRendererParams } from 'ag-grid-community'
 import { BarChart3Icon, FileDownIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -102,21 +102,19 @@ export function CourseProblemRankingCard({
                 sortable: false,
                 suppressHeaderMenuButton: true,
                 cellRenderer: (params: ICellRendererParams<{ problem_nm: string }>) => (
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" className="size-8" asChild>
-                                    <Link
-                                        href={`/instructor/courses/${course.course_nm}/statistics/${params.data!.problem_nm}`}
-                                    >
-                                        <BarChart3Icon className="size-4" aria-hidden />
-                                        <span className="sr-only">Problem statistics</span>
-                                    </Link>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Problem statistics</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="size-8" asChild>
+                                <Link
+                                    href={`/instructor/courses/${course.course_nm}/statistics/${params.data!.problem_nm}`}
+                                >
+                                    <BarChart3Icon className="size-4" aria-hidden />
+                                    <span className="sr-only">Problem statistics</span>
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Problem statistics</TooltipContent>
+                    </Tooltip>
                 ),
             },
         ],
@@ -159,15 +157,13 @@ export function CourseProblemRankingCard({
             <CardHeader className="p-4">
                 <CardTitle>Problems</CardTitle>
                 <CardAction>
-                    <TooltipProvider>
-                        <SaveFileIconButton
-                            onClick={saveCsvHandle}
-                            disabled={rows.length === 0}
-                            tooltip="Save table as CSV"
-                            aria-label="Save table as CSV"
-                            icon={FileDownIcon}
-                        />
-                    </TooltipProvider>
+                    <SaveFileIconButton
+                        onClick={saveCsvHandle}
+                        disabled={rows.length === 0}
+                        tooltip="Save table as CSV"
+                        aria-label="Save table as CSV"
+                        icon={FileDownIcon}
+                    />
                 </CardAction>
             </CardHeader>
             <CardContent className="flex min-h-0 flex-1 flex-col px-4 pb-4">

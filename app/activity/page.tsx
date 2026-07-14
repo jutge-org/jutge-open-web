@@ -5,8 +5,6 @@ import { getCurrentClient } from '@/lib/auth'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchStatisticsData } from '@/services/queries/statistics'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Activity — Jutge.org' }
 
 export default async function ActivityPage() {

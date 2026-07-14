@@ -6,8 +6,6 @@ import { getCurrentClient } from '@/lib/auth'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchExamsData } from '@/services/queries/exams'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Exams — Jutge.org' }
 
 export default async function ExamsPage() {

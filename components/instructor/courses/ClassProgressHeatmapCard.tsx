@@ -1,9 +1,8 @@
 'use client'
 
 import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
-import { Button } from '@/components/ui/button'
 import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -13,12 +12,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { HeatmapAxisItem, HeatmapSourceData } from '@/lib/instructor/courseHeatmapSourceData'
+import type { CourseSubmission } from '@/lib/jutge_api_client'
 import { parseProblemKey } from '@/lib/problems'
-import { VERDICT_COLORS } from '@/lib/statistics/colors'
 import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import { serializeSvgElement } from '@/lib/serializeSvgElement'
-import type { CourseSubmission } from '@/lib/jutge_api_client'
+import { VERDICT_COLORS } from '@/lib/statistics/colors'
 import { ChevronDownIcon, CornerUpRightIcon, ImageDownIcon } from 'lucide-react'
 import { forwardRef, useMemo, useRef, useState } from 'react'
 
@@ -853,15 +853,13 @@ function ClassProgressHeatmapCardBase({
             <CardHeader className="gap-4">
                 <CardTitle>{title}</CardTitle>
                 <CardAction>
-                    <TooltipProvider>
-                        <SaveFileIconButton
-                            onClick={saveSvgHandle}
-                            disabled={isEmpty}
-                            tooltip="Save heatmap as SVG"
-                            aria-label="Save heatmap as SVG"
-                            icon={ImageDownIcon}
-                        />
-                    </TooltipProvider>
+                    <SaveFileIconButton
+                        onClick={saveSvgHandle}
+                        disabled={isEmpty}
+                        tooltip="Save heatmap as SVG"
+                        aria-label="Save heatmap as SVG"
+                        icon={ImageDownIcon}
+                    />
                 </CardAction>
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2">
@@ -910,23 +908,21 @@ function ClassProgressHeatmapCardBase({
                 </div>
                 <div className="flex w-full flex-wrap items-center gap-2 pb-2 sm:gap-4">
                     <span className="shrink-0 text-xs text-muted-foreground -mr-4">transpose</span>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-8"
-                                    onClick={() => setTransposed((value) => !value)}
-                                    aria-label="Transpose matrix"
-                                >
-                                    <CornerUpRightIcon className="size-4" aria-hidden />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Transpose matrix</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                onClick={() => setTransposed((value) => !value)}
+                                aria-label="Transpose matrix"
+                            >
+                                <CornerUpRightIcon className="size-4" aria-hidden />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Transpose matrix</TooltipContent>
+                    </Tooltip>
                     <div className="flex items-center gap-2">
                         <span className="shrink-0 text-xs text-muted-foreground">h-zoom</span>
                         <Slider

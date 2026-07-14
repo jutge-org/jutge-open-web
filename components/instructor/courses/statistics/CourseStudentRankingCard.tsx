@@ -5,12 +5,12 @@ import { AgTable } from '@/components/administrator/AgTable'
 import { SaveFileIconButton } from '@/components/instructor/statistics/SaveFileIconButton'
 import { CardAction, CardContent, CardHeader, CardTitle, ResizableCard } from '@/components/ResizableCard'
 import { Toggle } from '@/components/ui/toggle'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
 import { deriveCourseStudentRanking } from '@/lib/instructor/courseStudentRanking'
 import type { Dict } from '@/lib/instructor/utils'
-import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import type { CourseSubmission, InstructorCourse, InstructorList, StudentProfile } from '@/lib/jutge_api_client'
+import { saveFileWithDialog } from '@/lib/saveFileWithDialog'
 import { EyeIcon, EyeOffIcon, FileDownIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -127,39 +127,35 @@ export function CourseStudentRankingCard({ course, profiles, lists, submissions 
             <CardHeader className="p-4">
                 <CardTitle>Students</CardTitle>
                 <CardAction>
-                    <TooltipProvider>
-                        <div className="flex items-center gap-2">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Toggle
-                                        variant="outline"
-                                        className="size-8"
-                                        pressed={blurPersonalData}
-                                        onPressedChange={setBlurPersonalData}
-                                        aria-label={
-                                            blurPersonalData ? 'Show names and emails' : 'Blur names and emails'
-                                        }
-                                    >
-                                        {blurPersonalData ? (
-                                            <EyeOffIcon className="size-4" aria-hidden />
-                                        ) : (
-                                            <EyeIcon className="size-4" aria-hidden />
-                                        )}
-                                    </Toggle>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    {blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
-                                </TooltipContent>
-                            </Tooltip>
-                            <SaveFileIconButton
-                                onClick={saveCsvHandle}
-                                disabled={rows.length === 0}
-                                tooltip="Save table as CSV"
-                                aria-label="Save table as CSV"
-                                icon={FileDownIcon}
-                            />
-                        </div>
-                    </TooltipProvider>
+                    <div className="flex items-center gap-2">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Toggle
+                                    variant="outline"
+                                    className="size-8"
+                                    pressed={blurPersonalData}
+                                    onPressedChange={setBlurPersonalData}
+                                    aria-label={blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
+                                >
+                                    {blurPersonalData ? (
+                                        <EyeOffIcon className="size-4" aria-hidden />
+                                    ) : (
+                                        <EyeIcon className="size-4" aria-hidden />
+                                    )}
+                                </Toggle>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                {blurPersonalData ? 'Show names and emails' : 'Blur names and emails'}
+                            </TooltipContent>
+                        </Tooltip>
+                        <SaveFileIconButton
+                            onClick={saveCsvHandle}
+                            disabled={rows.length === 0}
+                            tooltip="Save table as CSV"
+                            aria-label="Save table as CSV"
+                            icon={FileDownIcon}
+                        />
+                    </div>
                 </CardAction>
             </CardHeader>
             <CardContent className="flex min-h-0 flex-1 flex-col px-4 pb-4">

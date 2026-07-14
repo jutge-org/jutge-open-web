@@ -1,7 +1,30 @@
 'use client'
 
+import {
+    adminFatalizeIEs,
+    adminFatalizePendings,
+    adminResubmitIEs,
+    adminResubmitPendings,
+    fetchAdminQueue,
+    fetchTablesCompilers,
+    fetchTablesVerdicts,
+} from '@/actions/administrator'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { DevIcon } from '@/components/administrator/DevIcon'
+import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { Compiler, SubmissionQueueItems } from '@/lib/jutge_api_client'
 import dayjs from 'dayjs'
 import {
     AudioLinesIcon,
@@ -19,29 +42,6 @@ import {
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import {
-    adminFatalizeIEs,
-    adminFatalizePendings,
-    adminResubmitIEs,
-    adminResubmitPendings,
-    fetchAdminQueue,
-    fetchTablesCompilers,
-    fetchTablesVerdicts,
-} from '@/actions/administrator'
-import { Compiler, SubmissionQueueItems } from '@/lib/jutge_api_client'
-import { Button } from '@/components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useIsMobile } from '@/hooks/use-mobile'
 
 export default function QueueView() {
     //
@@ -131,16 +131,14 @@ export default function QueueView() {
                 flex: 1,
                 cellRenderer: (p: any) => {
                     return (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <span>{p.data.user__name}</span>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{p.data.user_id}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <span>{p.data.user__name}</span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{p.data.user_id}</p>
+                            </TooltipContent>
+                        </Tooltip>
                     )
                 },
             },

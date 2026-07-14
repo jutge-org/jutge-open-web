@@ -14,8 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import Link from 'next/link'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     ActivityIcon,
     Award,
@@ -25,6 +24,7 @@ import {
     LogOut as SignOut,
     User,
 } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 
 type AuthToolbarProps = {
@@ -62,24 +62,22 @@ export function AuthToolbar({
     if (authenticated) {
         return (
             <DropdownMenu>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <DropdownMenuTrigger asChild>
-                                <Button type="button" variant="ghost" size="icon" aria-label="Account menu">
-                                    {administrator ? (
-                                        <CrownIcon className="size-4.5" aria-hidden />
-                                    ) : instructor ? (
-                                        <GraduationCapIcon className="size-4.5" aria-hidden />
-                                    ) : (
-                                        <User className="size-4.5" aria-hidden />
-                                    )}
-                                </Button>
-                            </DropdownMenuTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>Account menu</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <DropdownMenuTrigger asChild>
+                            <Button type="button" variant="ghost" size="icon" aria-label="Account menu">
+                                {administrator ? (
+                                    <CrownIcon className="size-4.5" aria-hidden />
+                                ) : instructor ? (
+                                    <GraduationCapIcon className="size-4.5" aria-hidden />
+                                ) : (
+                                    <User className="size-4.5" aria-hidden />
+                                )}
+                            </Button>
+                        </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Account menu</TooltipContent>
+                </Tooltip>
                 <DropdownMenuContent
                     align="end"
                     className="min-w-48 **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base mr-4"

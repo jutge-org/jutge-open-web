@@ -1,15 +1,15 @@
 'use client'
 
-import { useMemo } from 'react'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 import { AgTableAutoHeight } from '@/components/administrator/AgTable'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { LastSubmissionInfo } from '@/lib/submissions'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { CourseListItemRow } from '@/services/queries/lists'
 
 type CourseListItemsTableProps = {
@@ -150,21 +150,19 @@ export function CourseListItemsTable({ items, languages, statuses, lastSubmissio
     )
 
     return (
-        <TooltipProvider>
-            <AgTableAutoHeight
-                rowData={items}
-                columnDefs={colDefs}
-                rowHeight={ROW_HEIGHT}
-                wrapperBorder={false}
-                themeParams={{
-                    backgroundColor: 'var(--card)',
-                    oddRowBackgroundColor: 'var(--card)',
-                    chromeBackgroundColor: 'var(--card)',
-                }}
-                getRowClass={(params: { data?: CourseListItemRow }) =>
-                    params.data?.kind === 'separator' ? 'bg-muted/30' : undefined
-                }
-            />
-        </TooltipProvider>
+        <AgTableAutoHeight
+            rowData={items}
+            columnDefs={colDefs}
+            rowHeight={ROW_HEIGHT}
+            wrapperBorder={false}
+            themeParams={{
+                backgroundColor: 'var(--card)',
+                oddRowBackgroundColor: 'var(--card)',
+                chromeBackgroundColor: 'var(--card)',
+            }}
+            getRowClass={(params: { data?: CourseListItemRow }) =>
+                params.data?.kind === 'separator' ? 'bg-muted/30' : undefined
+            }
+        />
     )
 }

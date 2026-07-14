@@ -6,8 +6,6 @@ import { ProblemsList } from '@/components/problems/ProblemsList'
 import { getCurrentClient, getPreferredLanguageId, isAuthenticated } from '@/lib/auth'
 import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Problems — Jutge.org' }
 
 export default async function ProblemsPage() {

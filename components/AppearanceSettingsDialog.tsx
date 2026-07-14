@@ -1,7 +1,6 @@
 'use client'
 
 import { HljsThemeSelect } from '@/components/appearance/HljsThemeSelect'
-import { APPEARANCE_SETTINGS_OPEN_EVENT } from '@/lib/appearanceSettings'
 import { MonacoThemeSelect } from '@/components/appearance/MonacoThemeSelect'
 import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
@@ -15,16 +14,17 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { APPEARANCE_SETTINGS_OPEN_EVENT } from '@/lib/appearanceSettings'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type LayoutWidth } from '@/lib/layoutWidth'
 import { READING_FONT_SCALE_PRESETS, readingFontScalePresetFromScales } from '@/lib/readingFontScale'
 import { REDUCED_MOTION_FULL, REDUCED_MOTION_REDUCE, REDUCED_MOTION_SYSTEM } from '@/lib/reducedMotion'
 import { SOUND_EFFECTS_OFF, SOUND_EFFECTS_ON, type SoundEffectsPreference } from '@/lib/soundEffects'
 import { cn } from '@/lib/utils'
 import {
-    AccessibilityIcon,
     AArrowDownIcon,
     AArrowUpIcon,
+    AccessibilityIcon,
     ALargeSmallIcon,
     MonitorIcon,
     MoonIcon,
@@ -37,8 +37,8 @@ import {
     SunIcon,
     Volume2Icon,
     VolumeXIcon,
-    ZapIcon,
     XIcon,
+    ZapIcon,
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState, type ReactNode } from 'react'
@@ -143,18 +143,16 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <DialogTrigger asChild>
-                            <Button type="button" variant="ghost" size={size} aria-label="Appearance settings">
-                                <Settings2Icon className="size-4.5" />
-                            </Button>
-                        </DialogTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Appearance settings</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                        <Button type="button" variant="ghost" size={size} aria-label="Appearance settings">
+                            <Settings2Icon className="size-4.5" />
+                        </Button>
+                    </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Appearance settings</TooltipContent>
+            </Tooltip>
             {mounted ? (
                 <DialogContent className="flex max-h-[75vh] w-full max-w-lg flex-col gap-0 overflow-hidden p-0">
                     <DialogHeader className="shrink-0 px-6 pt-6">

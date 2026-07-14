@@ -20,6 +20,7 @@ import { reducedMotionBootstrapScript } from '@/lib/reducedMotion'
 import type { Metadata } from 'next'
 import './globals.css'
 import { MainBreadcrumbsInLayout } from './MainBreadcrumbsInLayout'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 export const metadata: Metadata = {
     title: 'Jutge.org',
@@ -41,50 +42,52 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <script dangerouslySetInnerHTML={{ __html: layoutWidthBootstrapScript() }} />
                 <script dangerouslySetInnerHTML={{ __html: reducedMotionBootstrapScript() }} />
             </head>
-            <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
+            <body className="min-h-dvh overflow-y-scroll flex flex-col bg-background text-foreground antialiased">
                 <SkipLink />
                 <ThemeProvider>
-                    <LayoutWidthProvider>
-                        <AppearancePreferencesProvider>
-                            <RecentsProvider authenticated={authenticated} userId={currentUser?.id ?? null}>
-                                <RootShell
-                                    header={
-                                        <header className="sticky top-0 z-50 border-b border-border bg-background">
-                                            <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
-                                                <MainBreadcrumbsInLayout
-                                                    authenticated={authenticated}
-                                                    instructor={currentUser?.instructor ?? false}
-                                                    administrator={currentUser?.administrator ?? false}
-                                                    enrolledCoursesNavItems={enrolledCoursesNavItems}
-                                                />
-                                                <div className="flex items-center gap-0">
-                                                    {authenticated ? <ReportIssueButton /> : null}
-                                                    <CommandPalette
+                    <TooltipProvider>
+                        <LayoutWidthProvider>
+                            <AppearancePreferencesProvider>
+                                <RecentsProvider authenticated={authenticated} userId={currentUser?.id ?? null}>
+                                    <RootShell
+                                        header={
+                                            <header className="sticky top-0 z-50 border-b border-border bg-background">
+                                                <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
+                                                    <MainBreadcrumbsInLayout
                                                         authenticated={authenticated}
                                                         instructor={currentUser?.instructor ?? false}
                                                         administrator={currentUser?.administrator ?? false}
+                                                        enrolledCoursesNavItems={enrolledCoursesNavItems}
                                                     />
-                                                    {authenticated ? <RecentMenu /> : null}
-                                                    <AppearanceSettingsDialog />
-                                                    <AuthToolbar
-                                                        authenticated={authenticated}
-                                                        instructor={currentUser?.instructor ?? false}
-                                                        administrator={currentUser?.administrator ?? false}
-                                                        userName={currentUser?.name}
-                                                        userNickname={currentUser?.nickname}
-                                                    />
-                                                </div>
-                                            </LayoutWidthContainer>
-                                        </header>
-                                    }
-                                    footer={<AppFooter />}
-                                >
-                                    {children}
-                                </RootShell>
-                                <AppToaster />
-                            </RecentsProvider>
-                        </AppearancePreferencesProvider>
-                    </LayoutWidthProvider>
+                                                    <div className="flex items-center gap-0">
+                                                        {authenticated ? <ReportIssueButton /> : null}
+                                                        <CommandPalette
+                                                            authenticated={authenticated}
+                                                            instructor={currentUser?.instructor ?? false}
+                                                            administrator={currentUser?.administrator ?? false}
+                                                        />
+                                                        {authenticated ? <RecentMenu /> : null}
+                                                        <AppearanceSettingsDialog />
+                                                        <AuthToolbar
+                                                            authenticated={authenticated}
+                                                            instructor={currentUser?.instructor ?? false}
+                                                            administrator={currentUser?.administrator ?? false}
+                                                            userName={currentUser?.name}
+                                                            userNickname={currentUser?.nickname}
+                                                        />
+                                                    </div>
+                                                </LayoutWidthContainer>
+                                            </header>
+                                        }
+                                        footer={<AppFooter />}
+                                    >
+                                        {children}
+                                    </RootShell>
+                                    <AppToaster />
+                                </RecentsProvider>
+                            </AppearancePreferencesProvider>
+                        </LayoutWidthProvider>
+                    </TooltipProvider>
                 </ThemeProvider>
             </body>
         </html>

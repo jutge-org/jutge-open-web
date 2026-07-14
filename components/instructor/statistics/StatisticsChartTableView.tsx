@@ -2,7 +2,7 @@
 
 import { StatisticsSaveButtonGroup } from '@/components/instructor/statistics/StatisticsSaveButtonGroup'
 import { Toggle } from '@/components/ui/toggle'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { saveStatisticsCsv, saveStatisticsSvg } from '@/lib/saveStatisticsExport'
 import { cn } from '@/lib/utils'
 import { BarChart3Icon, TableIcon, type LucideIcon } from 'lucide-react'
@@ -55,33 +55,27 @@ export function StatisticsChartTableView({
                 <div ref={chartContainerRef}>{children}</div>
             </div>
             <div className={cn(chartVisible && 'hidden')}>{table}</div>
-            <TooltipProvider>
-                <div className="mb-2 flex items-center justify-center gap-2">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Toggle
-                                variant="outline"
-                                className="size-8"
-                                pressed={!chartVisible}
-                                onPressedChange={(pressed) => setChartVisible(!pressed)}
-                                aria-label={chartVisible ? 'Show table' : `Show ${showChartLabel}`}
-                            >
-                                {chartVisible ? (
-                                    <ChartToggleIcon className="size-4" aria-hidden />
-                                ) : (
-                                    <TableIcon className="size-4" aria-hidden />
-                                )}
-                            </Toggle>
-                        </TooltipTrigger>
-                        <TooltipContent>{chartVisible ? 'Show table' : `Show ${showChartLabel}`}</TooltipContent>
-                    </Tooltip>
-                    <StatisticsSaveButtonGroup
-                        onSaveSvg={saveSvgHandle}
-                        onSaveCsv={saveCsvHandle}
-                        disabled={!hasData}
-                    />
-                </div>
-            </TooltipProvider>
+            <div className="mb-2 flex items-center justify-center gap-2">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Toggle
+                            variant="outline"
+                            className="size-8"
+                            pressed={!chartVisible}
+                            onPressedChange={(pressed) => setChartVisible(!pressed)}
+                            aria-label={chartVisible ? 'Show table' : `Show ${showChartLabel}`}
+                        >
+                            {chartVisible ? (
+                                <ChartToggleIcon className="size-4" aria-hidden />
+                            ) : (
+                                <TableIcon className="size-4" aria-hidden />
+                            )}
+                        </Toggle>
+                    </TooltipTrigger>
+                    <TooltipContent>{chartVisible ? 'Show table' : `Show ${showChartLabel}`}</TooltipContent>
+                </Tooltip>
+                <StatisticsSaveButtonGroup onSaveSvg={saveSvgHandle} onSaveCsv={saveCsvHandle} disabled={!hasData} />
+            </div>
         </>
     )
 }

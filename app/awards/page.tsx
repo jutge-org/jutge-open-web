@@ -5,8 +5,6 @@ import { getCurrentClient } from '@/lib/auth'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchAwardsByType } from '@/services/queries/awards'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Awards — Jutge.org' }
 
 export default async function AwardsPage() {

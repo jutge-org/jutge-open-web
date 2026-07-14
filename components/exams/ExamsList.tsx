@@ -1,12 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
 import { PenLineIcon, SearchIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 import { ExamListCard } from '@/components/exams/ExamListCard'
 import { ExamsListToolbar } from '@/components/exams/ExamsListToolbar'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import {
     filterAndSortExams,
     type ExamRow,
@@ -75,13 +74,11 @@ export function ExamsList({ rows }: ExamsListProps) {
                     </EmptyHeader>
                 </Empty>
             ) : (
-                <TooltipProvider>
-                    <div className="flex flex-col gap-4">
-                        {visibleRows.map((row) => (
-                            <ExamListCard key={row.exam_nm} row={row} />
-                        ))}
-                    </div>
-                </TooltipProvider>
+                <div className="flex flex-col gap-4">
+                    {visibleRows.map((row) => (
+                        <ExamListCard key={row.exam_nm} row={row} />
+                    ))}
+                </div>
             )}
         </div>
     )

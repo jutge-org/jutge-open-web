@@ -6,10 +6,9 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { cn, formatDate, includesNocaps } from '@/lib/utils'
-import { ChevronDown, ChevronUp, CircleSlash2, PlusIcon, SearchIcon, SquarePlusIcon, WrenchIcon } from 'lucide-react'
+import { ChevronDown, ChevronUp, CircleSlash2, PlusIcon, SearchIcon, WrenchIcon } from 'lucide-react'
 import Link from 'next/link'
-import { ReactNode, useMemo, useState } from 'react'
-import { LanguageBadgeList } from './LanguageBadge'
+import { ReactNode, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { SharingCell } from './SharingCell'
 import { ProblemRow } from './types'
 
@@ -23,16 +22,17 @@ type ColumnSortFunc = (a: ProblemRow, b: ProblemRow) => number
 
 type ColumnConfig = {
     column: Column
-    size: number
-    align: 'left' | 'right'
+    width?: number
+    flex?: number
+    align: 'start' | 'end' | 'center'
     fixed?: boolean
 }
 
 const allColumns: ColumnConfig[] = [
-    { column: 'id', size: 4, align: 'left' },
-    { column: 'sharing', size: 4.5, align: 'left', fixed: true },
-    { column: 'title', size: 40, align: 'left' },
-    { column: 'updated', size: 5, align: 'right' },
+    { column: 'id', width: 12, align: 'start' },
+    { column: 'sharing', width: 22, align: 'center', fixed: true },
+    { column: 'title', flex: 1, align: 'start' },
+    { column: 'updated', width: 22, align: 'end' },
 ]
 
 const sortFunctions: Record<Column, Record<Direction, ColumnSortFunc> | undefined> = {
@@ -75,32 +75,40 @@ const ColumnHeader = ({
     column,
     orderIcon,
     width,
-    align = 'left',
+    flex,
+    align = 'start',
     onClick,
 }: {
     column: Column
     orderIcon: ReactNode
-    width: number
-    align?: 'left' | 'right'
+    width?: number
+    flex?: number
+    align?: 'start' | 'end' | 'center'
     onClick: (() => void) | undefined
 }) => {
     return (
-        <th style={{ width: `${width}em` }}>
-            <div
-                className={cn('flex flew-row items-center gap-1', align === 'left' ? 'justify-start' : 'justify-end')}
-                onClick={onClick}
-            >
-                {align === 'right' ? (
-                    <>
-                        {orderIcon} {column}
-                    </>
-                ) : (
-                    <>
-                        {column} {orderIcon}
-                    </>
-                )}
-            </div>
-        </th>
+        <div
+            className={cn(
+                'h-8 uppercase text-sm rounded-sm px-1 select-none',
+                onClick !== undefined ? 'hover:bg-foreground/5' : '',
+                'flex flew-row items-center gap-1',
+                width ? `w-${width}` : '',
+                flex ? `flex-${flex}` : '',
+                `justify-${align}`,
+                onClick !== undefined ? 'hover:cursor-pointer' : 'opacity-70',
+            )}
+            onClick={onClick}
+        >
+            {align === 'end' ? (
+                <>
+                    {orderIcon} {column}
+                </>
+            ) : (
+                <>
+                    {column} {orderIcon}
+                </>
+            )}
+        </div>
     )
 }
 
@@ -122,7 +130,7 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
     }, [rows, showDeprecated])
 
     const sortedRows = useMemo(() => {
-        let result = [...filteredRows]
+        const result = [...filteredRows]
         if (order) {
             const sortFns = sortFunctions[order.column]
             if (sortFns) {
@@ -144,66 +152,80 @@ const Table = ({ rows, showDeprecated }: { rows: ProblemRow[]; showDeprecated: b
     }
 
     return (
-        <table className="table-fixed [&_td]:py-1 [&_td]:align-baseline">
-            <thead>
-                <tr className="*:py-2 *:select-none [&_span]:cursor-pointer">
-                    {allColumns.map(({ align, column, size, fixed }) => (
-                        <ColumnHeader
-                            key={column}
-                            orderIcon={orderIcon(column)}
-                            column={column}
-                            width={size}
-                            onClick={fixed ? undefined : toggleOrder(column)}
-                            align={align}
-                        />
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {sortedRows.map((row) => (
-                    <tr key={row.problem_nm} className="border-t">
-                        <td className="font-mono text-sm opacity-60 flex flex-row">{row.problem_nm}</td>
-                        <td className="relative top-[0.1em]">
-                            <SharingCell problem={row} />
-                        </td>
-                        <td className="pr-2 flex flex-row items-center">
-                            <Link
-                                href={`/instructor/problems/${row.problem_nm}/properties`}
-                                className="hover:underline"
-                            >
-                                <span className="line-clamp-1">{row.title}</span>
-                            </Link>
-                            <LanguageBadgeList className="ml-2" problem={row} />
-                        </td>
-                        <td className="text-sm opacity-60 text-right">{formatDate(row.updated_at)}</td>
-                    </tr>
+        <div>
+            <div className="flex flex-row items-center h-10">
+                {allColumns.map(({ align, column, width, flex, fixed }) => (
+                    <ColumnHeader
+                        key={column}
+                        orderIcon={orderIcon(column)}
+                        onClick={fixed ? undefined : toggleOrder(column)}
+                        column={column}
+                        align={align}
+                        width={width}
+                        flex={flex}
+                    />
                 ))}
-                {sortedRows.length === 0 && (
-                    <tr className="border-t h-12">
-                        <td colSpan={4} className="h-12">
-                            <div className="h-full flex flex-row justify-center items-center gap-2 opacity-50">
-                                <CircleSlash2 className="w-4 h-4" /> No results.
-                            </div>
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+            </div>
+            {sortedRows.map((row) => (
+                <div key={row.problem_nm} className="border-t flex flex-row h-9 items-baseline last-of-type:border-b">
+                    <div className="font-mono text-sm opacity-60 flex flex-row items-center w-12 h-9">
+                        {row.problem_nm}
+                    </div>
+                    <div className="flex flex-row items-baseline h-9 w-22 justify-center">
+                        <SharingCell problem={row} className="h-9" />
+                    </div>
+                    <div className="flex flex-row items-center flex-1">
+                        <Link href={`/instructor/problems/${row.problem_nm}/properties`} className="hover:underline">
+                            <span className="line-clamp-1">{row.title}</span>
+                        </Link>
+                        {/* <LanguageBadgeList className="ml-2" problem={row} /> */}
+                    </div>
+                    <div className="text-sm opacity-60 text-right w-20">{formatDate(row.updated_at)}</div>
+                </div>
+            ))}
+            {sortedRows.length === 0 && (
+                <div className="border-t h-12">
+                    <div className="h-full flex flex-row justify-center items-center gap-2 opacity-50">
+                        <CircleSlash2 className="w-4 h-4" /> No results.
+                    </div>
+                </div>
+            )}
+        </div>
     )
 }
 
 export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] }) {
     const [showDeprecated, setShowDeprecated] = useState(false)
     const [search, setSearch] = useState<string>('')
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const filteredRows = useMemo(
         () => rows.filter((row) => includesNocaps(row.problem_nm, search) || includesNocaps(row.title, search)),
         [rows, search],
     )
 
+    const onKeyDown = (e: KeyboardEvent) => {
+        console.log('Key ', e.key)
+        if (e.key === '/') {
+            inputRef.current?.focus()
+        } else if (e.key === 'Escape') {
+            if (inputRef.current) {
+                inputRef.current.value = ''
+            }
+            setSearch('')
+        }
+    }
+
+    useLayoutEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    }, [])
+
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-2 items-center mb-4">
+            <div className="flex flex-row gap-2 items-center mb-4 print:hidden">
                 <Link href="/instructor/problems/new">
                     <Button variant="outline" className="w-36 justify-start" title="Add a new problem">
                         <PlusIcon /> New problem
@@ -216,11 +238,18 @@ export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] })
                 </ExternalLink>
                 <div className="grow" />
             </div>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 print:hidden">
                 <InputGroup>
-                    <InputGroupInput placeholder="ID or title..." onChange={(e) => setSearch(e.target.value)} />
+                    <InputGroupInput
+                        ref={inputRef}
+                        placeholder="ID or title..."
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                     <InputGroupAddon>
                         <SearchIcon />
+                    </InputGroupAddon>
+                    <InputGroupAddon align="inline-end">
+                        {search ? 'Press Escape to clear' : "Press '/' to search"}
                     </InputGroupAddon>
                 </InputGroup>
                 <Label className="text-sm min-w-[20em] flex flex-row justify-end">
@@ -232,6 +261,9 @@ export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] })
             {/* --- Problem Table --- */}
             <Table rows={filteredRows} showDeprecated={showDeprecated} />
             {/* <ComplexTable rows={rows} /> */}
+
+            {/* Blank space */}
+            <div className="h-40" />
         </div>
     )
 }

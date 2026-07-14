@@ -12,8 +12,6 @@ type PageProps = {
     params: Promise<{ key: string; proglang: string }>
 }
 
-export const dynamic = 'force-dynamic'
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { key, proglang } = await params
     const problemId = await resolveProblemId(key)

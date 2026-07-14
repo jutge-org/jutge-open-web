@@ -5,8 +5,6 @@ import { CoursesTabPage } from '@/components/courses/CoursesStudentShell'
 import { isAuthenticated } from '@/lib/auth'
 import { coursesPageTitles, parseCoursesTab } from '@/lib/courses'
 
-export const dynamic = 'force-dynamic'
-
 type PageProps = {
     searchParams: Promise<{ tab?: string | string[] }>
 }

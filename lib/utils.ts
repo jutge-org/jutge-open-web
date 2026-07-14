@@ -18,7 +18,7 @@ export function commandFilter(value: string, search: string): number {
 }
 
 export function formatDate(date: string | number): string {
-    const dateObj = new Date(date);
+    const dateObj = new Date(date)
     return dateObj.toLocaleDateString('es-CA')
 }
 

@@ -4,7 +4,7 @@ import { Pie, PieChart } from 'recharts'
 
 import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { HomepageStats } from '@/lib/jutge_api_client'
 import { cn } from '@/lib/utils'
 
@@ -121,18 +121,16 @@ export function RecentSubmissionsCard({ recentSubmissions, replayKey = 0 }: Rece
             )}
         >
             <div className="grid min-h-16 grid-cols-4 gap-1">
-                <TooltipProvider>
-                    {INTERVALS.map(({ key, minutes, label, period }) => (
-                        <RadialGauge
-                            key={key}
-                            count={recentSubmissions[key]}
-                            minutes={minutes}
-                            label={label}
-                            period={period}
-                            replayKey={replayKey}
-                        />
-                    ))}
-                </TooltipProvider>
+                {INTERVALS.map(({ key, minutes, label, period }) => (
+                    <RadialGauge
+                        key={key}
+                        count={recentSubmissions[key]}
+                        minutes={minutes}
+                        label={label}
+                        period={period}
+                        replayKey={replayKey}
+                    />
+                ))}
             </div>
         </div>
     )

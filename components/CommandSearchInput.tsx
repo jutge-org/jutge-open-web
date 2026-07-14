@@ -6,7 +6,7 @@ import { useCallback, useRef, type ComponentProps } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon } from '@/components/ui/input-group'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -66,26 +66,24 @@ export function CommandSearchInput({ className, onValueChange, value, ...props }
                     {...props}
                 />
                 <InputGroupAddon align="inline-end" className="gap-0">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon-sm"
-                                    className={cn(
-                                        'text-muted-foreground opacity-50 hover:text-muted-foreground',
-                                        isListening && 'text-destructive opacity-100 hover:text-destructive',
-                                    )}
-                                    onClick={toggleListening}
-                                    aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
-                                >
-                                    {isListening ? <MicOffIcon className="size-4" /> : <MicIcon className="size-4" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">{isListening ? 'Stop listening' : 'Voice input'}</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                className={cn(
+                                    'text-muted-foreground opacity-50 hover:text-muted-foreground',
+                                    isListening && 'text-destructive opacity-100 hover:text-destructive',
+                                )}
+                                onClick={toggleListening}
+                                aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+                            >
+                                {isListening ? <MicOffIcon className="size-4" /> : <MicIcon className="size-4" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">{isListening ? 'Stop listening' : 'Voice input'}</TooltipContent>
+                    </Tooltip>
                 </InputGroupAddon>
             </InputGroup>
         </div>

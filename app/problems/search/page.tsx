@@ -4,8 +4,6 @@ import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemsSearchView } from '@/components/problems/ProblemsSearchView'
 import { isAuthenticated } from '@/lib/auth'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Search — Problems — Jutge.org' }
 
 export default async function ProblemsSearchPage() {

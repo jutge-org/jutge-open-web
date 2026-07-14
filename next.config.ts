@@ -1,6 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+    cacheComponents: true,
+    //    productionBrowserSourceMaps: true,
+
     async redirects() {
         return [
             {
@@ -23,8 +26,8 @@ const nextConfig: NextConfig = {
                 destination: '/courses?tab=available',
                 permanent: true,
             },
-        ];
+        ]
     },
-};
+}
 
-export default nextConfig;
+export default nextConfig

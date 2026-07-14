@@ -1,21 +1,21 @@
 'use client'
 
+import { ChevronDownIcon, ChevronUpIcon, EditIcon, EllipsisVerticalIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
-import { ChevronDownIcon, ChevronUpIcon, EditIcon, EllipsisVerticalIcon } from 'lucide-react'
 
 import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { LastSubmissionInfo } from '@/lib/submissions'
-import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
-import { instructorListPropertiesHref } from '@/lib/courses'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
-import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
+import { instructorListPropertiesHref } from '@/lib/courses'
+import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
+import type { LastSubmissionInfo } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
+import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
 
 type CourseListsProps = {
     courseKey: string
@@ -132,72 +132,65 @@ export function CourseLists({ courseKey, lists, languages, statuses, lastSubmiss
     }
 
     return (
-        <TooltipProvider>
-            <div className="flex flex-col gap-4">
-                {lists.map((list) => {
-                    const counts = countsByList.get(list.list_nm) ?? { total: 0, ok: 0, scored: 0, ko: 0 }
-                    const isOpen = openItems.includes(list.list_nm)
-                    const expandLabel = isOpen ? `Collapse ${list.title}` : `Expand ${list.title}`
+        <div className="flex flex-col gap-4">
+            {lists.map((list) => {
+                const counts = countsByList.get(list.list_nm) ?? { total: 0, ok: 0, scored: 0, ko: 0 }
+                const isOpen = openItems.includes(list.list_nm)
+                const expandLabel = isOpen ? `Collapse ${list.title}` : `Expand ${list.title}`
 
-                    return (
-                        <Card
-                            key={list.list_nm}
-                            className={cn('gap-0 pt-2 ring-0 border border-border shadow-sm', isOpen ? 'pb-0' : 'pb-2')}
-                        >
-                            <CardHeader className={cn('px-4 py-2', isOpen && 'border-b border-border')}>
-                                <div className="flex w-full items-center gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => toggleList(list.list_nm)}
-                                        aria-expanded={isOpen}
-                                        className="min-w-0 flex-1 text-left"
-                                    >
-                                        <CardTitle className="text-lg font-semibold">{list.title}</CardTitle>
-                                    </button>
-                                    {list.isOwner ? (
-                                        <CourseListOwnerMenu listNm={list.list_nm} title={list.title} />
-                                    ) : null}
-                                    <button
-                                        type="button"
-                                        onClick={() => toggleList(list.list_nm)}
-                                        aria-label={expandLabel}
-                                        className="flex shrink-0 items-center gap-1.5"
-                                    >
-                                        <ListProblemCountBadges counts={counts} />
-                                        {isOpen ? (
-                                            <ChevronUpIcon
-                                                className="size-4 shrink-0 text-muted-foreground"
-                                                aria-hidden
-                                            />
-                                        ) : (
-                                            <ChevronDownIcon
-                                                className="size-4 shrink-0 text-muted-foreground"
-                                                aria-hidden
-                                            />
-                                        )}
-                                    </button>
-                                </div>
-                            </CardHeader>
-                            {isOpen ? (
-                                <CardContent className="p-0">
-                                    {list.items.length === 0 ? (
-                                        <p className="px-4 py-3 text-sm text-muted-foreground italic">
-                                            This list has no items.
-                                        </p>
+                return (
+                    <Card
+                        key={list.list_nm}
+                        className={cn('gap-0 pt-2 ring-0 border border-border shadow-sm', isOpen ? 'pb-0' : 'pb-2')}
+                    >
+                        <CardHeader className={cn('px-4 py-2', isOpen && 'border-b border-border')}>
+                            <div className="flex w-full items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleList(list.list_nm)}
+                                    aria-expanded={isOpen}
+                                    className="min-w-0 flex-1 text-left"
+                                >
+                                    <CardTitle className="text-lg font-semibold">{list.title}</CardTitle>
+                                </button>
+                                {list.isOwner ? <CourseListOwnerMenu listNm={list.list_nm} title={list.title} /> : null}
+                                <button
+                                    type="button"
+                                    onClick={() => toggleList(list.list_nm)}
+                                    aria-label={expandLabel}
+                                    className="flex shrink-0 items-center gap-1.5"
+                                >
+                                    <ListProblemCountBadges counts={counts} />
+                                    {isOpen ? (
+                                        <ChevronUpIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
                                     ) : (
-                                        <CourseListItemsTable
-                                            items={list.items}
-                                            languages={languages}
-                                            statuses={statuses}
-                                            lastSubmissions={lastSubmissions}
+                                        <ChevronDownIcon
+                                            className="size-4 shrink-0 text-muted-foreground"
+                                            aria-hidden
                                         />
                                     )}
-                                </CardContent>
-                            ) : null}
-                        </Card>
-                    )
-                })}
-            </div>
-        </TooltipProvider>
+                                </button>
+                            </div>
+                        </CardHeader>
+                        {isOpen ? (
+                            <CardContent className="p-0">
+                                {list.items.length === 0 ? (
+                                    <p className="px-4 py-3 text-sm text-muted-foreground italic">
+                                        This list has no items.
+                                    </p>
+                                ) : (
+                                    <CourseListItemsTable
+                                        items={list.items}
+                                        languages={languages}
+                                        statuses={statuses}
+                                        lastSubmissions={lastSubmissions}
+                                    />
+                                )}
+                            </CardContent>
+                        ) : null}
+                    </Card>
+                )
+            })}
+        </div>
     )
 }

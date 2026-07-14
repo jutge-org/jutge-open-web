@@ -13,8 +13,6 @@ type PageProps = {
     params: Promise<{ key: string; submission_id: string }>
 }
 
-export const dynamic = 'force-dynamic'
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { key, submission_id } = await params
     const problemId = await resolveProblemId(key)

@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     formatRecentProblemTitle,
     recentCourseHref,
@@ -63,18 +63,16 @@ export function RecentMenu() {
 
     return (
         <DropdownMenu>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <DropdownMenuTrigger asChild>
-                            <Button type="button" variant="ghost" size="icon" aria-label="Recent items">
-                                <Clock3Icon className="size-4.5" aria-hidden />
-                            </Button>
-                        </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Recent items</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                        <Button type="button" variant="ghost" size="icon" aria-label="Recent items">
+                            <Clock3Icon className="size-4.5" aria-hidden />
+                        </Button>
+                    </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Recent items</TooltipContent>
+            </Tooltip>
             <DropdownMenuContent
                 align="end"
                 className="min-w-64 max-w-80 **:data-[slot=dropdown-menu-item]:py-1.5 **:data-[slot=dropdown-menu-item]:text-base"

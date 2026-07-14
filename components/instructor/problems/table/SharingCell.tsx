@@ -1,5 +1,6 @@
 import { FileBoxIcon, FileCodeIcon, LockIcon, UnlockIcon } from 'lucide-react'
 import { LucideIcon, ProblemRow } from './types'
+import { cn } from '@/lib/utils'
 
 type IconStateInfo = {
     Icon: LucideIcon
@@ -13,9 +14,9 @@ type StateInfo = {
 const ProblemState = ({ state, info }: { state: boolean; info: StateInfo }) => {
     const { Icon, title } = state ? info.positive : info.negative
     return (
-        <span title={title}>
-            <Icon size={14} className={state ? '' : 'opacity-25'} />
-        </span>
+        <div title={title}>
+            <Icon size={10} className={cn('inline-block aspect-square w-3 h-3', state ? '' : 'opacity-25')} />
+        </div>
     )
 }
 
@@ -32,8 +33,8 @@ const sharedSolutionsInfo: StateInfo = {
     negative: { Icon: FileCodeIcon, title: 'Solutions not shared with instructors' },
 }
 
-export const SharingCell = ({ problem }: { problem: ProblemRow }) => (
-    <div className="flex flex-row gap-2">
+export const SharingCell = ({ problem, className }: { problem: ProblemRow; className?: string }) => (
+    <div className={cn('flex flex-row gap-1 items-center', className)}>
         <ProblemState state={!Boolean(problem.passcode)} info={lockInfo} />
         <ProblemState state={problem.shared_testcases} info={sharedTestcasesInfo} />
         <ProblemState state={problem.shared_solutions} info={sharedSolutionsInfo} />

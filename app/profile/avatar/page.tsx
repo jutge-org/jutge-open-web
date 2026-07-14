@@ -2,8 +2,6 @@ import { ProfilePageShell } from '@/components/profile/ProfilePageShell'
 import { UserProfileAvatar } from '@/components/profile/UserProfileAvatar'
 import { renderAuthed } from '@/lib/renderAuthed'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Avatar — Jutge.org' }
 
 export default async function ProfileAvatarPage() {

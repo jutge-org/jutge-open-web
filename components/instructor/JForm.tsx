@@ -1,5 +1,20 @@
 'use client'
 
+import HtmlEditor from '@/components/administrator/HtmlEditor'
+import { CommandSearchInput } from '@/components/CommandSearchInput'
+import { DateTimePicker } from '@/components/instructor/DateTime'
+import { MultiSelect } from '@/components/instructor/MultiSelect'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn, commandFilter } from '@/lib/utils'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import MDEditor from '@uiw/react-md-editor'
 import { filesize } from 'filesize'
@@ -18,21 +33,6 @@ import { Dispatch, JSX, SetStateAction, useState } from 'react'
 import Dropzone from 'shadcn-dropzone'
 import { toast } from 'sonner'
 import { ZodSchema } from 'zod'
-import { cn, commandFilter } from '@/lib/utils'
-import { DateTimePicker } from '@/components/instructor/DateTime'
-import { MultiSelect } from '@/components/instructor/MultiSelect'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { CommandSearchInput } from '@/components/CommandSearchInput'
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import HtmlEditor from '@/components/administrator/HtmlEditor'
 
 export type JFormInputField = {
     type: 'input'
@@ -1003,21 +1003,19 @@ function JFieldComponent(props: JFieldComponentProps) {
         <div className="w-full flex flex-col sm:flex-row gap-2 sm:gap-4">
             <Label className="mt-3 font-bold sm:w-[30ex] sm:text-right">
                 {props.help ? (
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="flex sm:flex-row-reverse gap-1">
-                                    <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>
-                                        {props.label}
-                                    </span>
-                                    <InfoIcon size={12} className="-translate-y-0" />
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <div className="max-w-64">{props.help}</div>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className="flex sm:flex-row-reverse gap-1">
+                                <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>
+                                    {props.label}
+                                </span>
+                                <InfoIcon size={12} className="-translate-y-0" />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <div className="max-w-64">{props.help}</div>
+                        </TooltipContent>
+                    </Tooltip>
                 ) : (
                     <span className={props.error ? 'text-red-700 dark:red-text-400' : ''}>{props.label}</span>
                 )}

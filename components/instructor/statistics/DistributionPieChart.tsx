@@ -5,7 +5,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Toggle } from '@/components/ui/toggle'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { getCategoryColor } from '@/lib/instructor/courseSubmissionStatistics'
 import type { ColorMapping, Distribution } from '@/lib/jutge_api_client'
 import { saveStatisticsCsv, saveStatisticsSvg } from '@/lib/saveStatisticsExport'
@@ -150,33 +150,27 @@ export function DistributionPieChart({ data, category, colors, exportFileName }:
                 {chart}
             </div>
             <div className={cn(chartVisible && 'hidden')}>{table}</div>
-            <TooltipProvider>
-                <div className="mb-2 flex items-center justify-center gap-2">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Toggle
-                                variant="outline"
-                                className="size-8"
-                                pressed={!chartVisible}
-                                onPressedChange={(pressed) => setChartVisible(!pressed)}
-                                aria-label={chartVisible ? 'Show table' : 'Show pie chart'}
-                            >
-                                {chartVisible ? (
-                                    <ChartPieIcon className="size-4" aria-hidden />
-                                ) : (
-                                    <TableIcon className="size-4" aria-hidden />
-                                )}
-                            </Toggle>
-                        </TooltipTrigger>
-                        <TooltipContent>{chartVisible ? 'Show table' : 'Show pie chart'}</TooltipContent>
-                    </Tooltip>
-                    <StatisticsSaveButtonGroup
-                        onSaveSvg={saveSvgHandle}
-                        onSaveCsv={saveCsvHandle}
-                        disabled={!hasData}
-                    />
-                </div>
-            </TooltipProvider>
+            <div className="mb-2 flex items-center justify-center gap-2">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Toggle
+                            variant="outline"
+                            className="size-8"
+                            pressed={!chartVisible}
+                            onPressedChange={(pressed) => setChartVisible(!pressed)}
+                            aria-label={chartVisible ? 'Show table' : 'Show pie chart'}
+                        >
+                            {chartVisible ? (
+                                <ChartPieIcon className="size-4" aria-hidden />
+                            ) : (
+                                <TableIcon className="size-4" aria-hidden />
+                            )}
+                        </Toggle>
+                    </TooltipTrigger>
+                    <TooltipContent>{chartVisible ? 'Show table' : 'Show pie chart'}</TooltipContent>
+                </Tooltip>
+                <StatisticsSaveButtonGroup onSaveSvg={saveSvgHandle} onSaveCsv={saveCsvHandle} disabled={!hasData} />
+            </div>
         </>
     )
 }

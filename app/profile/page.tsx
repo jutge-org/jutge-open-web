@@ -2,8 +2,6 @@ import { ProfilePageShell } from '@/components/profile/ProfilePageShell'
 import { UserProfileView } from '@/components/profile/UserProfileView'
 import { renderAuthed } from '@/lib/renderAuthed'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Profile — Jutge.org' }
 
 export default async function ProfilePage() {

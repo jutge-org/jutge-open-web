@@ -5,8 +5,6 @@ import { getCurrentClient } from '@/lib/auth'
 import { renderAuthed } from '@/lib/renderAuthed'
 import { fetchSubmissionsData } from '@/services/queries/submissions'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata = { title: 'Submissions — Jutge.org' }
 
 export default async function SubmissionsPage() {

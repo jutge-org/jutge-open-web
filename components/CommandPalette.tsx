@@ -22,7 +22,8 @@ import {
     CommandSeparator,
 } from '@/components/ui/command'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import {
     commandPaletteSections,
     filterCommandPaletteSections,
@@ -31,7 +32,6 @@ import {
     getCommandPaletteProfileSections,
     type CommandPaletteSection,
 } from '@/lib/commandPaletteSections'
-import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { courseHref, filterAndSortCourses, publicCourseHref } from '@/lib/courses'
 import { filterAndSortExams, type ExamRow } from '@/lib/exams'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
@@ -321,25 +321,23 @@ export function CommandPalette({ authenticated, instructor = false, administrato
 
     return (
         <>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Quick search"
-                            onClick={() => setOpen(true)}
-                        >
-                            <TerminalIcon className="size-4.5" aria-hidden />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        Quick search
-                        <SearchShortcutHint />
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Quick search"
+                        onClick={() => setOpen(true)}
+                    >
+                        <TerminalIcon className="size-4.5" aria-hidden />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    Quick search
+                    <SearchShortcutHint />
+                </TooltipContent>
+            </Tooltip>
 
             <CommandDialog
                 open={open}

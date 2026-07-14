@@ -1539,6 +1539,7 @@ export class JutgeApiClient {
     readonly testing: Module_testing
 
     constructor() {
+        console.log('new JutgeApiClient')
         this.clients = new Module_clients(this)
         this.auth = new Module_auth(this)
         this.misc = new Module_misc(this)

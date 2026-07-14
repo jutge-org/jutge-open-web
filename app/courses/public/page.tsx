@@ -27,15 +27,11 @@ export default function PublicCoursesPage() {
         void fetchPublicCourses().then(setCourses)
     }, [loading, user])
 
-    if (loading || user || !courses) {
-        return <PageSpinner />
-    }
-
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs breadcrumbs={[{ title: 'Courses', url: '/courses/public' }]} />
             <PageTitle section="/courses" authenticated={false} hidden={false} />
-            <GuestCoursesList courses={courses} />
+            {loading || user || !courses ? <PageSpinner /> : <GuestCoursesList courses={courses} />}
         </div>
     )
 }

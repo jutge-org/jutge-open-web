@@ -87,20 +87,26 @@ export function ProblemsList({
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.problem_nm,
+                headerClass: 'ag-problem-column-header',
+                cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
                 cellRenderer: (params: { data: ProblemRow }) => (
                     <ProblemTitleSummaryTooltip
                         problem_nm={params.data.problem_nm}
                         title={params.data.title}
                         preferredLanguageId={preferredLanguageId}
                     >
-                        <span className="inline-flex items-center gap-1.5">
-                            {params.data.iconUrl ? (
-                                <ProblemIconImage iconUrl={params.data.iconUrl} size="xs" className="translate-y-px" />
-                            ) : null}
-                            <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                        <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
+                            <span className="flex flex-row items-center gap-3">
+                                {params.data.iconUrl ? (
+                                    <ProblemIconImage
+                                        iconUrl={params.data.iconUrl}
+                                        size="xs"
+                                        className="translate-y-px"
+                                    />
+                                ) : null}
                                 {params.data.problem_nm}
-                            </Link>
-                        </span>
+                            </span>
+                        </Link>
                     </ProblemTitleSummaryTooltip>
                 ),
                 valueGetter: (params: { data: ProblemRow }) => params.data.problem_nm,
@@ -224,7 +230,9 @@ export function ProblemsList({
                 </Empty>
             ) : (
                 <TooltipProvider>
-                    <AgTableFull rowData={visibleProblems} columnDefs={colDefs} />
+                    <div className="[&_.ag-problem-column-header_.ag-header-cell-label]:justify-center">
+                        <AgTableFull rowData={visibleProblems} columnDefs={colDefs} />
+                    </div>
                 </TooltipProvider>
             )}
         </div>

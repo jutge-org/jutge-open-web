@@ -3,8 +3,10 @@
 import { BookmarkIcon, BotIcon, LanguagesIcon, ScrollIcon, ScrollTextIcon, SignatureIcon, TagsIcon } from 'lucide-react'
 import { type ReactNode, useCallback, useRef, useState } from 'react'
 
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { fetchProblemAbstractProblem } from '@/lib/data/problemsActions'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { problemIconUrl } from '@/lib/problems'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
 import type { AbstractProblem, ProblemSummary, SolutionTags } from '@/lib/jutge_api_client'
 
@@ -20,15 +22,43 @@ type ProblemTitleSummaryTooltipProps = {
 type ProblemSummaryTooltipBodyProps = {
     problem_nm: string
     title: string
+    iconUrl: string | null
     author: string | null
     translator: string | null
     summary: ProblemSummary | null
     solution_tags: SolutionTags | null
 }
 
+function ProblemNmWithIcon({ problem_nm, iconUrl }: { problem_nm: string; iconUrl: string | null }) {
+    return (
+        <span className="flex shrink-0 items-center gap-1 tabular-nums">
+            {iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="xs" /> : null}
+            {problem_nm}
+        </span>
+    )
+}
+
+function ProblemTitleRow({
+    problem_nm,
+    title,
+    iconUrl,
+}: {
+    problem_nm: string
+    title: string
+    iconUrl: string | null
+}) {
+    return (
+        <div className="flex w-full min-w-0 items-center justify-between gap-3 font-bold">
+            <ProblemNmWithIcon problem_nm={problem_nm} iconUrl={iconUrl} />
+            <span className="min-w-0 truncate">{title || 'Untitled problem'}</span>
+        </div>
+    )
+}
+
 function ProblemSummaryTooltipBody({
     problem_nm,
     title,
+    iconUrl,
     author,
     translator,
     summary,
@@ -36,10 +66,7 @@ function ProblemSummaryTooltipBody({
 }: ProblemSummaryTooltipBodyProps) {
     return (
         <div className="flex w-full flex-col gap-1 text-sm p-2">
-            <div className="flex w-full items-baseline justify-between gap-3 font-bold">
-                <span className="min-w-0 flex-1">{title || 'Untitled problem'}</span>
-                <span className="shrink-0 tabular-nums">{problem_nm}</span>
-            </div>
+            <ProblemTitleRow problem_nm={problem_nm} title={title} iconUrl={iconUrl} />
             {author ? (
                 <div className="flex w-full flex-row">
                     <div className="w-8 shrink-0">
@@ -140,6 +167,7 @@ export function ProblemTitleSummaryTooltip({
     }
 
     const variant = abstractProblem ? getPreferredProblemVariant(abstractProblem, preferredLanguageId) : null
+    const iconUrl = abstractProblem ? problemIconUrl(abstractProblem.icon) : null
 
     return (
         <Tooltip onOpenChange={handleOpenChange}>
@@ -155,16 +183,14 @@ export function ProblemTitleSummaryTooltip({
                     <ProblemSummaryTooltipBody
                         problem_nm={problem_nm}
                         title={variant.title}
+                        iconUrl={iconUrl}
                         author={abstractProblem.author}
                         translator={variant.translator}
                         summary={variant.summary}
                         solution_tags={abstractProblem.solution_tags}
                     />
                 ) : (
-                    <div className="flex w-full items-baseline justify-between gap-3 font-bold">
-                        <span className="min-w-0 flex-1">{title || 'Untitled problem'}</span>
-                        <span className="shrink-0 tabular-nums">{problem_nm}</span>
-                    </div>
+                    <ProblemTitleRow problem_nm={problem_nm} title={title} iconUrl={iconUrl} />
                 )}
             </TooltipContent>
         </Tooltip>

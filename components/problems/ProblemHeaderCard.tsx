@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SignatureIcon } from 'lucide-react'
+import { LanguagesIcon, SignatureIcon } from 'lucide-react'
 
 import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
@@ -37,16 +37,11 @@ export function ProblemHeaderCard({
             <CardContent className="w-full">
                 <TooltipProvider>
                     <div className="flex items-center justify-between gap-4">
-                        <div className="flex min-w-0 flex-1 items-center gap-4">
+                        <div className="flex min-w-0 flex-1 items-center gap-8">
                             {iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="lg" className="shrink-0" /> : null}
-                            <div
-                                className={cn(
-                                    'min-w-0 flex-1 flex flex-col justify-center gap-1',
-                                    iconUrl && 'min-h-24',
-                                )}
-                            >
+                            <div className={cn('flex-1 flex flex-col gap-1', iconUrl && 'min-h-24')}>
                                 <h1
-                                    className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground"
+                                    className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-foreground mt-0 mb-1"
                                     data-recent-problem-icon-url={iconUrl ?? undefined}
                                 >
                                     {showActions && status ? <ProblemStatusIcon status={status} /> : null}
@@ -97,6 +92,12 @@ export function ProblemHeaderCard({
                                     <SignatureIcon className="size-3 shrink-0" aria-hidden />
                                     {problem.abstract_problem.author}
                                 </p>
+                                {problem.translator && (
+                                    <p className="flex items-center gap-1 text-muted-foreground">
+                                        <LanguagesIcon className="size-3 shrink-0" aria-hidden />
+                                        {problem.translator}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         {showActions ? (

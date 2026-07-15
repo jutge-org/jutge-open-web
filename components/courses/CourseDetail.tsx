@@ -32,7 +32,7 @@ type CourseDetailProps = {
 function CourseListCardLoading() {
     return (
         <Card className="gap-0 border border-border pt-2 pb-2 shadow-sm ring-0">
-            <CardHeader className="px-4 py-2">
+            <CardHeader className="flex items-center px-4 py-2">
                 <div className="flex w-full items-center gap-2">
                     <Skeleton className="h-6 w-48" />
                     <div className="ml-auto flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export function CourseListsLoading({ count }: { count: number }) {
             {Array.from({ length: count }, (_, index) =>
                 index === expandedIndex ? (
                     <Card key={index} className="gap-0 border border-border pt-2 pb-0 shadow-sm ring-0">
-                        <CardHeader className="border-b border-border px-4 py-2">
+                        <CardHeader className="flex items-center border-b border-border px-4 py-2 [.border-b]:pb-2">
                             <div className="flex w-full items-center gap-2">
                                 <Skeleton className="h-6 w-56" />
                                 <div className="ml-auto flex items-center gap-1.5">

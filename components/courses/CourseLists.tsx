@@ -154,13 +154,18 @@ export function CourseLists({
                             key={list.list_nm}
                             className="gap-0 overflow-hidden border border-border py-0 shadow-sm ring-0"
                         >
-                            <CardHeader className={cn('bg-card px-3 py-2', isOpen && 'border-b border-border')}>
+                            <CardHeader
+                                className={cn(
+                                    'flex items-center bg-card px-3 py-2 [.border-b]:pb-2',
+                                    isOpen && 'border-b border-border',
+                                )}
+                            >
                                 <div className="flex w-full items-center gap-2">
                                     <button
                                         type="button"
                                         onClick={() => toggleList(list.list_nm)}
                                         aria-expanded={isOpen}
-                                        className="min-w-0 flex-1 text-left"
+                                        className="flex min-w-0 flex-1 items-center text-left"
                                     >
                                         <CardTitle className="text-base font-semibold">{list.title}</CardTitle>
                                     </button>
@@ -176,12 +181,12 @@ export function CourseLists({
                                         <ListProblemCountBadges counts={counts} />
                                         {isOpen ? (
                                             <ChevronUpIcon
-                                                className="size-4 shrink-0 text-muted-foreground"
+                                                className="ml-2 size-4 shrink-0 text-muted-foreground"
                                                 aria-hidden
                                             />
                                         ) : (
                                             <ChevronDownIcon
-                                                className="size-4 shrink-0 text-muted-foreground"
+                                                className="ml-2 size-4 shrink-0 text-muted-foreground"
                                                 aria-hidden
                                             />
                                         )}

@@ -154,7 +154,7 @@ export function CourseLists({
                             key={list.list_nm}
                             className="gap-0 overflow-hidden border border-border py-0 shadow-sm ring-0"
                         >
-                            <CardHeader className="bg-muted/50 px-3 py-2">
+                            <CardHeader className={cn('bg-card px-3 py-2', isOpen && 'border-b border-border')}>
                                 <div className="flex w-full items-center gap-2">
                                     <button
                                         type="button"

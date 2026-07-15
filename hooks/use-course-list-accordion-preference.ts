@@ -27,11 +27,9 @@ export function useCourseListAccordionPreference(courseKey: string, listNames: s
     }, [courseKey, defaultOpen, listNames, ready, storedOpenItems])
 
     function setOpenItems(updater: string[] | ((prev: string[]) => string[])) {
-        setOpenItemsState((prev) => {
-            const next = typeof updater === 'function' ? updater(prev) : updater
-            setCourseListAccordionOpenItems(courseKey, next)
-            return next
-        })
+        const next = typeof updater === 'function' ? updater(openItems) : updater
+        setOpenItemsState(next)
+        setCourseListAccordionOpenItems(courseKey, next)
     }
 
     return [openItems, setOpenItems] as const

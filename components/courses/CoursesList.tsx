@@ -114,7 +114,7 @@ function StudentCourseCard({ course, tab, pendingKey, userId, onAction }: Studen
                 'hover:border-primary/25 hover:bg-accent/40 hover:shadow-lg',
             )}
         >
-            <CardHeader className="">
+            <CardHeader className="-mt-2">
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex min-w-0 flex-1 items-center gap-3">
                         <Link href={courseHref(course.course_key)}>

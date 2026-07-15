@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardRecentLoadAverages } from '@/actions/administrator'
+import { fetchAdminDashboardRecentLoadAverages } from '@/lib/administrator/client'
 import { ServerCogIcon } from 'lucide-react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 

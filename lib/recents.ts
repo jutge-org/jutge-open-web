@@ -16,6 +16,7 @@ export type RecentCourseItem = {
 export type RecentProblemItem = {
     problemNm: string
     title: string
+    iconUrl?: string
     accessedAt: number
 }
 
@@ -58,7 +59,8 @@ function isRecentProblemItem(value: unknown): value is RecentProblemItem {
         value !== null &&
         typeof (value as RecentProblemItem).problemNm === 'string' &&
         typeof (value as RecentProblemItem).title === 'string' &&
-        typeof (value as RecentProblemItem).accessedAt === 'number'
+        typeof (value as RecentProblemItem).accessedAt === 'number' &&
+        ((value as RecentProblemItem).iconUrl === undefined || typeof (value as RecentProblemItem).iconUrl === 'string')
     )
 }
 
@@ -172,20 +174,23 @@ export function enrichRecentCourseIcons(data: RecentsData, iconByKey: ReadonlyMa
     return changed ? { ...data, courses } : data
 }
 
-export function readRecents(userId: string): RecentsData {
-    if (typeof window === 'undefined') {
-        return emptyRecents()
-    }
+export function enrichRecentProblemIcons(data: RecentsData, iconByNm: ReadonlyMap<string, string>): RecentsData {
+    let changed = false
+    const problems = data.problems.map((problem) => {
+        if (problem.iconUrl) {
+            return problem
+        }
 
-    return parseRecentsData(localStorage.getItem(recentsStorageKey(userId)))
-}
+        const iconUrl = iconByNm.get(problem.problemNm)
+        if (!iconUrl) {
+            return problem
+        }
 
-export function writeRecents(userId: string, data: RecentsData): void {
-    if (typeof window === 'undefined') {
-        return
-    }
+        changed = true
+        return { ...problem, iconUrl }
+    })
 
-    localStorage.setItem(recentsStorageKey(userId), serializeRecentsData(data))
+    return changed ? { ...data, problems } : data
 }
 
 export function recentCourseHref(item: RecentCourseItem): string {
@@ -236,6 +241,7 @@ export function commandPaletteRecentItems(recents: RecentsData): CommandPaletteR
             label: formatRecentProblemTitle(item),
             description: item.problemNm,
             href: recentProblemHref(item),
+            iconUrl: item.iconUrl,
             accessedAt: item.accessedAt,
         })),
         ...recents.submissions.map((item) => ({
@@ -272,6 +278,7 @@ export function filterCommandPaletteRecents(
 
 const RECENT_VERDICT_EMOJI_SELECTOR = '[data-recent-verdict-emoji]'
 const RECENT_COURSE_ICON_SELECTOR = '[data-recent-course-icon-url]'
+const RECENT_PROBLEM_ICON_SELECTOR = '[data-recent-problem-icon-url]'
 
 function verdictEmojiFromDocument(): string | undefined {
     const element = document.querySelector(RECENT_VERDICT_EMOJI_SELECTOR)
@@ -282,6 +289,12 @@ function verdictEmojiFromDocument(): string | undefined {
 function courseIconUrlFromDocument(): string | undefined {
     const element = document.querySelector(RECENT_COURSE_ICON_SELECTOR)
     const iconUrl = element?.getAttribute('data-recent-course-icon-url')?.trim()
+    return iconUrl || undefined
+}
+
+function problemIconUrlFromDocument(): string | undefined {
+    const element = document.querySelector(RECENT_PROBLEM_ICON_SELECTOR)
+    const iconUrl = element?.getAttribute('data-recent-problem-icon-url')?.trim()
     return iconUrl || undefined
 }
 
@@ -394,12 +407,18 @@ export function patchRecentsFromDocument(pathname: string, data: RecentsData): R
         }
 
         const index = data.problems.findIndex((entry) => entry.problemNm === problemNm)
-        if (index === -1 || data.problems[index].title === title) {
+        const iconUrl = problemIconUrlFromDocument()
+        if (index === -1) {
+            return null
+        }
+
+        const existing = data.problems[index]
+        if (existing.title === title && existing.iconUrl === iconUrl) {
             return null
         }
 
         const problems = [...data.problems]
-        problems[index] = { ...problems[index], title }
+        problems[index] = { ...existing, title, iconUrl }
         return { ...data, problems }
     }
 
@@ -449,6 +468,7 @@ export function recordRecentFromPathname(pathname: string, data: RecentsData): R
         return addRecentProblem(data, {
             problemNm,
             title: titleFromDocument(problemNm),
+            iconUrl: problemIconUrlFromDocument(),
             accessedAt: Date.now(),
         })
     }
@@ -489,7 +509,7 @@ export function observeRecentPageMetadata(onChange: () => void): () => void {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ['data-recent-verdict-emoji', 'data-recent-course-icon-url'],
+        attributeFilter: ['data-recent-verdict-emoji', 'data-recent-course-icon-url', 'data-recent-problem-icon-url'],
     })
 
     const retryTimeouts = [50, 150, 500, 1000, 2000, 3000].map((delay) => window.setTimeout(handleChange, delay))

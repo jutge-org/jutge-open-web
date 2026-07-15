@@ -1,46 +1,54 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+'use client'
 
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { useAuth } from '@/components/AuthProvider'
+import { PageSpinner } from '@/components/ClientGates'
 import { GuestCourseDetail } from '@/components/courses/GuestCourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { isAuthenticated } from '@/lib/auth'
 import { buildGuestCourseRow, publicCourseHref } from '@/lib/courses'
-import { fetchPublicCourse } from '@/services/queries/courses'
+import { fetchPublicCourse } from '@/lib/data/courses'
+import type { PublicCourse } from '@/lib/jutge_api_client'
 
-type PageProps = {
-    params: Promise<{ course_key: string }>
+type PublicCoursePageData = {
+    courseKey: string
+    course: PublicCourse
+    row: ReturnType<typeof buildGuestCourseRow>
+    href: string
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { course_key: rawCourseKey } = await params
+export default function PublicCoursePage() {
+    const { user, loading: authLoading } = useAuth()
+    const params = useParams<{ course_key: string }>()
+    const [data, setData] = useState<PublicCoursePageData | null | undefined>(undefined)
 
-    try {
-        const result = await fetchPublicCourse(rawCourseKey)
-        if (!result) {
-            return { title: 'Course — Jutge.org' }
-        }
+    useEffect(() => {
+        void (async () => {
+            const result = await fetchPublicCourse(params.course_key)
+            if (!result) {
+                setData(null)
+                return
+            }
 
-        const row = buildGuestCourseRow(result.course, result.courseKey)
-        return { title: `${row.title} — Public courses — Jutge.org` }
-    } catch {
-        return { title: 'Course — Jutge.org' }
+            const { courseKey, course } = result
+            const row = buildGuestCourseRow(course, courseKey)
+            const href = publicCourseHref(courseKey)
+            setData({ courseKey, course, row, href })
+        })()
+    }, [params.course_key])
+
+    if (authLoading || data === undefined) {
+        return <PageSpinner />
     }
-}
 
-export default async function PublicCoursePage({ params }: PageProps) {
-    const { course_key: rawCourseKey } = await params
-    const result = await fetchPublicCourse(rawCourseKey)
-
-    if (!result) {
+    if (!data) {
         notFound()
     }
 
-    const { courseKey, course } = result
-    const row = buildGuestCourseRow(course, courseKey)
-    const href = publicCourseHref(courseKey)
-
-    const authenticated = await isAuthenticated()
+    const { courseKey, course, row, href } = data
+    const authenticated = user !== null
 
     return (
         <div className="flex flex-col gap-6">

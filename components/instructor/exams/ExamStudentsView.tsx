@@ -1,7 +1,7 @@
 'use client'
 
 import { array2csv } from '@/actions/instructor/csv'
-import { fetchInstructorExam, instructorExamUpdateStudents } from '@/actions/instructor'
+import { fetchInstructorExam, instructorExamUpdateStudents } from '@/lib/instructor/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { useEmailsDialog } from '@/components/instructor/EmailsDialog'

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchJutgeaiLlmUsage } from '@/actions/instructor'
+import { fetchJutgeaiLlmUsage } from '@/lib/instructor/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import type { LlmUsageEntry } from '@/lib/jutge_api_client'
 import dayjs from 'dayjs'

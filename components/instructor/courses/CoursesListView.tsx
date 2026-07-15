@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchInstructorCoursesArchived, fetchInstructorCoursesIndex } from '@/actions/instructor'
+import { fetchInstructorCoursesArchived, fetchInstructorCoursesIndex } from '@/lib/instructor/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'

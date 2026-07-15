@@ -1,7 +1,7 @@
 'use client'
 
 import dayjs, { Dayjs } from 'dayjs'
-import { fetchAdminHeatmapCalendar } from '@/actions/administrator'
+import { fetchAdminHeatmapCalendar } from '@/lib/administrator/client'
 import { ReactNode, useEffect, useState } from 'react'
 import type { HeatmapCalendar } from '@/lib/jutge_api_client'
 import { Skeleton } from '@/components/ui/skeleton'

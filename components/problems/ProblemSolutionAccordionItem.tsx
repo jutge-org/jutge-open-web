@@ -3,7 +3,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-import { fetchProblemSolutionAction } from '@/actions/problemSolutions'
+import { fetchProblemSolutionAction } from '@/lib/data/problemSolutionsActions'
 import { DevIcon } from '@/components/administrator/DevIcon'
 import { SolutionSourceCodeToolbar } from '@/components/problems/SolutionSourceCodeToolbar'
 import { HighlightedSourceCode } from '@/components/submissions/HighlightedSourceCode'

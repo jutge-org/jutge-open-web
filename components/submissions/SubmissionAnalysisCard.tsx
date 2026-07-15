@@ -4,15 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { buildSubmissionTestcaseHref } from '@/lib/submissions'
-import type { SubmissionAnalysisRow } from '@/services/queries/submissions'
+import type { SubmissionAnalysisRow } from '@/lib/data/submissions'
 
 type SubmissionAnalysisCardProps = {
     analysis: SubmissionAnalysisRow[]
     problemKey: string
     submissionId: string
+    getTestcaseHref?: (testcase: string) => string | null
 }
 
-export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: SubmissionAnalysisCardProps) {
+export function SubmissionAnalysisCard({
+    analysis,
+    problemKey,
+    submissionId,
+    getTestcaseHref,
+}: SubmissionAnalysisCardProps) {
     return (
         <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
             <CardHeader className="border-b border-border px-4 py-2">
@@ -29,7 +35,9 @@ export function SubmissionAnalysisCard({ analysis, problemKey, submissionId }: S
                     </TableHeader>
                     <TableBody>
                         {analysis.map((row) => {
-                            const href = buildSubmissionTestcaseHref(problemKey, submissionId, row.testcase)
+                            const href = getTestcaseHref
+                                ? getTestcaseHref(row.testcase)
+                                : buildSubmissionTestcaseHref(problemKey, submissionId, row.testcase)
 
                             return (
                                 <TableRow key={row.testcase}>

@@ -1,25 +1,34 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { StatisticsDashboard } from '@/components/statistics/StatisticsDashboard'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchStatisticsData } from '@/services/queries/statistics'
+import jutge from '@/lib/jutge'
+import { fetchStatisticsData, type StatisticsData } from '@/lib/data/statistics'
 
-export const dynamic = 'force-dynamic'
+export default function ActivityPage() {
+    return (
+        <AuthedGate>
+            <ActivityPageContent />
+        </AuthedGate>
+    )
+}
 
-export const metadata = { title: 'Activity — Jutge.org' }
+function ActivityPageContent() {
+    const [data, setData] = useState<StatisticsData | null>(null)
 
-export default async function ActivityPage() {
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const data = await fetchStatisticsData(client)
+    useEffect(() => {
+        void fetchStatisticsData(jutge).then(setData)
+    }, [])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Activity', url: '/activity' }]} />
-                <PageTitle section="/activity" authenticated hidden={false} />
-                <StatisticsDashboard data={data} />
-            </div>
-        )
-    })
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={[{ title: 'Activity', url: '/activity' }]} />
+            <PageTitle section="/activity" authenticated hidden={false} />
+            <StatisticsDashboard data={data} />
+        </div>
+    )
 }

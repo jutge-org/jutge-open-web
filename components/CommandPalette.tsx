@@ -1,14 +1,15 @@
 'use client'
 
-import { signOutAction } from '@/actions/auth'
+import { useAuth } from '@/components/AuthProvider'
 import {
     fetchCommandPaletteCourses,
     fetchCommandPaletteExams,
     fetchCommandPaletteProblems,
     type CommandPaletteCourse,
-} from '@/actions/commandPalette'
+} from '@/lib/data/commandPalette'
 import { CommandSearchInput } from '@/components/CommandSearchInput'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { useRecents } from '@/components/RecentsProvider'
 import { SignInDialog } from '@/components/SignInDialog'
@@ -36,10 +37,9 @@ import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { courseHref, filterAndSortCourses, publicCourseHref, resolveCourseIconUrl } from '@/lib/courses'
 import { filterAndSortExams, type ExamRow } from '@/lib/exams'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE } from '@/lib/layoutWidth'
-import { filterProblems } from '@/lib/problems'
+import { filterProblems, resolveProblemIconUrl } from '@/lib/problems'
 import { filterCommandPaletteRecents, type CommandPaletteRecentItem } from '@/lib/recents'
-import type { SiteNavLinksContext } from '@/lib/siteNavLinks'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
 import {
     BookOpenIcon,
     BookTextIcon,
@@ -60,6 +60,7 @@ import {
     TerminalIcon,
     UserIcon,
 } from 'lucide-react'
+import { useAppearanceThemePreference } from '@/components/AppearancePreferencesProvider'
 import { useTheme } from 'next-themes'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
@@ -83,17 +84,16 @@ function SearchShortcutHint() {
     )
 }
 
-type CommandPaletteProps = SiteNavLinksContext
-
-export function CommandPalette({
-    authenticated,
-    instructor = false,
-    tutor = false,
-    administrator = false,
-}: CommandPaletteProps) {
+export function CommandPalette() {
+    const { user, logout } = useAuth()
+    const authenticated = user !== null
+    const instructor = user?.instructor ?? false
+    const tutor = user?.tutor ?? false
+    const administrator = user?.administrator ?? false
     const router = useRouter()
     const pathname = usePathname()
-    const { resolvedTheme, setTheme } = useTheme()
+    const [, setAppearanceTheme] = useAppearanceThemePreference()
+    const { resolvedTheme } = useTheme()
     const { setLayoutWidth } = useLayoutWidth()
     const { recents } = useRecents()
     const [open, setOpen] = useState(false)
@@ -194,6 +194,16 @@ export function CommandPalette({
         return map
     }, [courses, exams])
 
+    const problemIconByNm = useMemo(() => {
+        const map = new Map<string, string>()
+        for (const problem of problems) {
+            if (problem.iconUrl) {
+                map.set(problem.problem_nm, problem.iconUrl)
+            }
+        }
+        return map
+    }, [problems])
+
     const filteredSections = useMemo(() => {
         if (!trimmedQuery) {
             return { app: [], command: [], profile: [], documentation: [], about: [] }
@@ -240,7 +250,7 @@ export function CommandPalette({
 
     function handleSignOut() {
         startSignOut(async () => {
-            await signOutAction()
+            await logout()
             toast.success('Signed out')
             if (pathname === '/') {
                 router.refresh()
@@ -272,7 +282,7 @@ export function CommandPalette({
                 dispatchOpenAppearanceSettings()
                 return
             case 'toggle-theme':
-                setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+                setAppearanceTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
                 return
             case 'set-layout-width':
                 if (section.layoutWidth) {
@@ -336,9 +346,25 @@ export function CommandPalette({
         return resolveCourseIconUrl(courseKey, courseIconByKey, item.iconUrl)
     }
 
+    function resolveRecentProblemIconUrl(item: CommandPaletteRecentItem): string | null {
+        if (item.kind !== 'problem') {
+            return null
+        }
+
+        const problemNm = item.id.slice('problem:'.length)
+        return resolveProblemIconUrl(problemNm, problemIconByNm, item.iconUrl)
+    }
+
     function renderRecentLeading(item: CommandPaletteRecentItem) {
         if (item.kind === 'course') {
             return <CourseIconImage iconUrl={resolveRecentCourseIconUrl(item)!} className="size-3.5 shrink-0 rounded" />
+        }
+
+        if (item.kind === 'problem') {
+            const iconUrl = resolveRecentProblemIconUrl(item)
+            if (iconUrl) {
+                return <ProblemIconImage iconUrl={iconUrl} className="size-3.5 shrink-0 rounded" />
+            }
         }
 
         const Icon = recentIcon(item)
@@ -386,7 +412,7 @@ export function CommandPalette({
                 onOpenChange={setOpen}
                 title="Quick search"
                 description="Search problems, courses, exams, sections, and documentation"
-                className="max-w-2xl p-4"
+                className="max-w-4xl p-4"
             >
                 <Command shouldFilter={false}>
                     <div className="px-2 pb-2 text-sm font-medium flex flex-row items-center gap-2">
@@ -440,7 +466,14 @@ export function CommandPalette({
                                     >
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                             <div className="flex min-w-0 items-center gap-2">
-                                                <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
+                                                {problem.iconUrl ? (
+                                                    <ProblemIconImage
+                                                        iconUrl={problem.iconUrl}
+                                                        className="size-3.5 shrink-0 rounded"
+                                                    />
+                                                ) : (
+                                                    <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
+                                                )}
                                                 <span className="truncate font-medium">{problem.title}</span>
                                             </div>
                                             <span className="truncate pl-5.5 text-xs text-muted-foreground">

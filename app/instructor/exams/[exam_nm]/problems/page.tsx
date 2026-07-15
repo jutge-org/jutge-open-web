@@ -1,20 +1,21 @@
+'use client'
+
+import { useAuth } from '@/components/AuthProvider'
+import { PageSpinner } from '@/components/ClientGates'
 import { ExamProblemsView } from '@/components/instructor/exams/ExamProblemsView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
-import { getCurrentClient } from '@/lib/auth'
 import { instructorExamSubNav } from '@/lib/instructor/menus'
+import { useParams } from 'next/navigation'
 
-export const metadata = { title: 'Exam problems — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ exam_nm: string }>
-}
-
-export default async function InstructorExamProblemsPage({ params }: Props) {
-    const { exam_nm } = await params
+export default function InstructorExamProblemsPage() {
+    const { exam_nm } = useParams<{ exam_nm: string }>()
+    const { profile } = useAuth()
     const baseHref = `/instructor/exams/${exam_nm}`
-    const client = await getCurrentClient()
-    const profile = await client.student.profile.get()
+
+    if (!profile) {
+        return <PageSpinner />
+    }
 
     return (
         <InstructorPageShell

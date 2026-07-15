@@ -1,8 +1,6 @@
 import { AboutPageShell } from '@/components/about/AboutPageShell'
 import { Prose } from '@/components/documentation/Prose'
 
-export const metadata = { title: 'Terms of Service — About — Jutge.org' }
-
 export default function AboutTermsOfServicePage() {
     return (
         <AboutPageShell

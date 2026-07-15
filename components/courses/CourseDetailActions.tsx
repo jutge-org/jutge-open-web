@@ -14,7 +14,12 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { archiveCourseAction, enrollCourseAction, unarchiveCourseAction, unenrollCourseAction } from '@/actions/courses'
+import {
+    archiveCourseAction,
+    enrollCourseAction,
+    unarchiveCourseAction,
+    unenrollCourseAction,
+} from '@/lib/data/coursesActions'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { SuperviseCourseMenuItem } from '@/components/supervision/SuperviseCourseMenuItem'
 import { Button } from '@/components/ui/button'

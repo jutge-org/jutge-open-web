@@ -27,7 +27,7 @@ import {
     fetchAdminQueue,
     fetchTablesCompilers,
     fetchTablesVerdicts,
-} from '@/actions/administrator'
+} from '@/lib/administrator/client'
 import { Compiler, SubmissionQueueItems } from '@/lib/jutge_api_client'
 import { Button } from '@/components/ui/button'
 import {

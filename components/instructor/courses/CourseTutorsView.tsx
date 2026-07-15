@@ -6,7 +6,7 @@ import {
     fetchInstructorCourseTutorProfiles,
     instructorCourseSendInviteToTutors,
     instructorCourseUpdate,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'

@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { cn } from '@/lib/utils'
 
 const sizeConfig = {
@@ -16,12 +18,13 @@ export function CourseIconImage({ iconUrl, size = 'sm', className }: CourseIconI
     const { className: sizeClassName, width, height } = sizeConfig[size]
 
     return (
-        <img
+        <Image
             src={iconUrl}
             alt=""
             className={cn('shrink-0 rounded-sm object-contain', sizeClassName, className)}
             width={width}
             height={height}
+            loading={size === 'lg' ? 'eager' : undefined}
         />
     )
 }

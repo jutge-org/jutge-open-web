@@ -1,117 +1,168 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
+import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
 import { SubmissionTestcaseAnalysisCard } from '@/components/submissions/SubmissionTestcaseAnalysisCard'
-import { getCurrentClient } from '@/lib/auth'
-import { parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
+import { useProblemShell } from '@/hooks/useProblemShell'
+import jutge from '@/lib/jutge'
+import { problemLoadedBreadcrumbs, problemTrailBreadcrumbs } from '@/lib/problemBreadcrumbs'
 import {
-    fetchProblemDetail,
-    fetchInstructorOwnsProblem,
-    fetchProblemStatus,
-    resolveProblemId,
-} from '@/services/queries/problemDetail'
-import { fetchSubmissionDetail, fetchSubmissionTestcaseAnalysis } from '@/services/queries/submissions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+    fetchSubmissionDetail,
+    fetchSubmissionTestcaseAnalysis,
+    type SubmissionTestcaseAnalysisData,
+} from '@/lib/data/submissions'
 
-type PageProps = {
-    params: Promise<{ key: string; submission_id: string; testcase: string }>
+export default function ProblemSubmissionTestcaseAnalysisPage() {
+    return (
+        <AuthedGate>
+            {(user) => <ProblemSubmissionTestcaseAnalysisPageContent isAdministrator={user.administrator} />}
+        </AuthedGate>
+    )
 }
 
-export const dynamic = 'force-dynamic'
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, submission_id, testcase } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: 'Test case analysis — Jutge.org' }
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: 'Test case analysis — Jutge.org' }
-    }
-
-    return { title: `${testcase} — ${submission_id} — ${data.problem.title} — Jutge.org` }
-}
-
-export default async function ProblemSubmissionTestcaseAnalysisPage({ params }: PageProps) {
-    const { key, submission_id, testcase } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        notFound()
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
+function ProblemSubmissionTestcaseAnalysisPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string; submission_id: string; testcase: string }>()
+    const key = params.key
+    const submission_id = params.submission_id
+    const testcase = params.testcase
     const submissionHref = `/problems/${key}/submissions/${submission_id}`
-    const codeHref = `${submissionHref}/code`
-    const diffHref = `${submissionHref}/diffs/${testcase}/diff`
+    const testcaseHref = `${submissionHref}/diffs/${testcase}`
+    const shell = useProblemShell({ key, isAuthenticated: true })
+    const [testcaseAnalysis, setTestcaseAnalysis] = useState<SubmissionTestcaseAnalysisData | null | undefined>(
+        undefined,
+    )
+    const [submissionCode, setSubmissionCode] = useState<
+        | {
+              code: string
+              codeExtension: string | null
+              codeFilename: string
+          }
+        | null
+        | undefined
+    >(undefined)
 
-    return renderAuthed(async (user) => {
-        const client = await getCurrentClient()
-        const [status, profile, isExamOrContest, testcaseAnalysis, isInstructorOwner] = await Promise.all([
-            fetchProblemStatus(client, problem_nm),
-            client.student.profile.get(),
-            client.student.exam.get().then(
-                () => true,
-                () => false,
-            ),
-            fetchSubmissionTestcaseAnalysis(client, key, submission_id, testcase),
-            fetchInstructorOwnsProblem(problem_nm),
-        ])
+    useEffect(() => {
+        let cancelled = false
+        setTestcaseAnalysis(undefined)
 
-        const submissionDetail = await fetchSubmissionDetail(client, key, submission_id, {
-            isAdministrator: user.administrator,
-            isExamOrContest,
+        void fetchSubmissionTestcaseAnalysis(jutge, key, submission_id, testcase).then((data) => {
+            if (!cancelled) setTestcaseAnalysis(data)
         })
 
-        if (!testcaseAnalysis || !submissionDetail) {
-            notFound()
+        return () => {
+            cancelled = true
         }
+    }, [key, submission_id, testcase])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Problems', url: '/problems' },
-                        { title: data.problem.problem_nm, url: `/problems/${data.problem.problem_nm}` },
-                        { title: data.problem.title, url: `/problems/${key}` },
-                        { title: 'Submissions', url: `/problems/${key}/submissions` },
-                        { title: submission_id, url: submissionHref },
-                        { title: testcase, url: `${submissionHref}/diffs/${testcase}` },
-                    ]}
-                />
+    useEffect(() => {
+        let cancelled = false
+        setSubmissionCode(undefined)
+
+        void (async () => {
+            const isExamOrContest = await jutge.student.exam.get().then(
+                () => true,
+                () => false,
+            )
+            const detail = await fetchSubmissionDetail(jutge, key, submission_id, {
+                isAdministrator,
+                isExamOrContest,
+            })
+            if (cancelled) return
+            if (!detail?.code || !detail.codeFilename) {
+                setSubmissionCode(null)
+                return
+            }
+            setSubmissionCode({
+                code: detail.code,
+                codeExtension: detail.codeExtension,
+                codeFilename: detail.codeFilename,
+            })
+        })()
+
+        return () => {
+            cancelled = true
+        }
+    }, [isAdministrator, key, submission_id])
+
+    if (shell.detail === null) {
+        notFound()
+    }
+
+    if (testcaseAnalysis === null) {
+        notFound()
+    }
+
+    const breadcrumbs =
+        shell.detail && shell.problem_nm
+            ? problemLoadedBreadcrumbs(key, shell.detail.problem.problem_nm, shell.detail.problem.title, [
+                  { title: 'Submissions', url: `/problems/${key}/submissions` },
+                  { title: submission_id, url: submissionHref },
+                  { title: testcase, url: testcaseHref },
+              ])
+            : problemTrailBreadcrumbs(key, [
+                  { title: 'Submissions', url: `/problems/${key}/submissions` },
+                  { title: submission_id, url: submissionHref },
+                  { title: testcase, url: testcaseHref },
+              ])
+
+    const codeHref = `${submissionHref}/code`
+    const diffHref = `${testcaseHref}/diff`
+    const analysisLoading = testcaseAnalysis === undefined
+    const codeLoading = submissionCode === undefined
+
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}
-                    data={data}
-                    status={status}
-                    defaultCompilerId={profile.compiler_id}
-                    isInstructorOwner={isInstructorOwner}
-                    isAdministrator={user.administrator}
+                    data={shell.detail}
+                    status={shell.status}
+                    defaultCompilerId={shell.defaultCompilerId}
+                    isInstructorOwner={shell.isInstructorOwner ?? false}
+                    isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
                 >
                     <div className="flex flex-col gap-6">
-                        <SubmissionTestcaseAnalysisCard data={testcaseAnalysis} diffHref={diffHref} />
-                        {submissionDetail.code && submissionDetail.codeFilename ? (
+                        {analysisLoading ? (
+                            <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />
+                        ) : (
+                            <SubmissionTestcaseAnalysisCard data={testcaseAnalysis!} diffHref={diffHref} />
+                        )}
+                        {codeLoading ? (
+                            <ProblemWidgetCard title="Source code" />
+                        ) : submissionCode ? (
                             <SubmissionSourceCodeCard
-                                code={submissionDetail.code}
-                                codeExtension={submissionDetail.codeExtension}
-                                codeFilename={submissionDetail.codeFilename}
+                                code={submissionCode.code}
+                                codeExtension={submissionCode.codeExtension}
+                                codeFilename={submissionCode.codeFilename}
                                 codeHref={codeHref}
                             />
                         ) : null}
                     </div>
                 </ProblemDetail>
-            </div>
-        )
-    })
+            ) : (
+                <ProblemDetail
+                    loading
+                    pageKey={key}
+                    showStatement={false}
+                    showTestcases={false}
+                    showInformation={false}
+                >
+                    <div className="flex flex-col gap-6">
+                        <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />
+                        <ProblemWidgetCard title="Source code" />
+                    </div>
+                </ProblemDetail>
+            )}
+        </div>
+    )
 }

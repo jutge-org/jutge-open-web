@@ -4,7 +4,8 @@ import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { buildGuestCourseRow, listTitleFromKey } from '@/lib/courses'
+import { CourseGuestLists } from '@/components/courses/CourseGuestLists'
+import { buildGuestCourseRow } from '@/lib/courses'
 import type { PublicCourse } from '@/lib/jutge_api_client'
 
 type GuestCourseDetailProps = {
@@ -57,24 +58,7 @@ export function GuestCourseDetail({ courseKey, course }: GuestCourseDetailProps)
                         </div>
                     </div>
                 ) : null}
-                {course.problem_count > 0 ? (
-                    <>
-                        <h2 className="mt-1.5 text-sm font-medium text-foreground">Number of problems</h2>
-                        <p className="mt-1.5 ml-5.5 text-sm text-muted-foreground">
-                            {course.problem_count} {course.problem_count === 1 ? 'problem' : 'problems'}
-                        </p>
-                    </>
-                ) : null}
-                {course.lists.length > 0 ? (
-                    <>
-                        <h2 className="mt-1.5 text-sm font-medium text-foreground">Lists of problems</h2>
-                        <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                            {course.lists.map((listKey) => (
-                                <li key={listKey}>{listTitleFromKey(listKey)}</li>
-                            ))}
-                        </ul>
-                    </>
-                ) : null}
+                <CourseGuestLists lists={course.lists} problemCount={course.problem_count} />
             </CardContent>
         </Card>
     )

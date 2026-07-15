@@ -6,7 +6,7 @@ import {
     fetchInstructorList,
     fetchInstructorListsIndex,
     instructorCourseUpdate,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { AgTable, AgTableFull } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'

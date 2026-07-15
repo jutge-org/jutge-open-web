@@ -1,25 +1,39 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import { AuthedGate, PageSpinner } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { AwardsList } from '@/components/awards/AwardsList'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchAwardsByType } from '@/services/queries/awards'
+import jutge from '@/lib/jutge'
+import { fetchAwardsByType } from '@/lib/data/awards'
+import type { AwardTypeSummary } from '@/lib/awards'
 
-export const dynamic = 'force-dynamic'
+export default function AwardsPage() {
+    return (
+        <AuthedGate>
+            <AwardsPageContent />
+        </AuthedGate>
+    )
+}
 
-export const metadata = { title: 'Awards — Jutge.org' }
+function AwardsPageContent() {
+    const [awards, setAwards] = useState<AwardTypeSummary[] | null>(null)
 
-export default async function AwardsPage() {
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const awards = await fetchAwardsByType(client)
+    useEffect(() => {
+        void fetchAwardsByType(jutge).then(setAwards)
+    }, [])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Awards', url: '/awards' }]} />
-                <PageTitle section="/awards" authenticated />
-                <AwardsList awards={awards} />
-            </div>
-        )
-    })
+    if (!awards) {
+        return <PageSpinner />
+    }
+
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={[{ title: 'Awards', url: '/awards' }]} />
+            <PageTitle section="/awards" authenticated />
+            <AwardsList awards={awards} />
+        </div>
+    )
 }

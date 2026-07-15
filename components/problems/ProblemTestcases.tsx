@@ -3,15 +3,28 @@
 import { useState } from 'react'
 
 import { ProblemTestcaseAccordionItem } from '@/components/problems/ProblemTestcaseAccordionItem'
+import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { Card, CardDescription, CardHeader } from '@/components/ui/card'
-import type { DecodedTestcase } from '@/services/queries/problemDetail'
+import type { DecodedTestcase } from '@/lib/data/problemDetail'
 
-type ProblemTestcasesProps = {
-    testcases: DecodedTestcase[]
-}
+type ProblemTestcasesProps =
+    | {
+          loading: true
+          testcases?: never
+      }
+    | {
+          loading?: false
+          testcases: DecodedTestcase[]
+      }
 
-export function ProblemTestcases({ testcases }: ProblemTestcasesProps) {
+export function ProblemTestcases(props: ProblemTestcasesProps) {
     const [openItems, setOpenItems] = useState<string[]>([])
+
+    if (props.loading) {
+        return <ProblemWidgetCard title="Test cases" />
+    }
+
+    const { testcases } = props
 
     function toggleTestcase(name: string) {
         setOpenItems((current) =>

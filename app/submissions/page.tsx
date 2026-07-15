@@ -1,25 +1,35 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import { AuthedGate } from '@/components/ClientGates'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { SubmissionsList } from '@/components/submissions/SubmissionsList'
-import { getCurrentClient } from '@/lib/auth'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchSubmissionsData } from '@/services/queries/submissions'
+import jutge from '@/lib/jutge'
+import { fetchSubmissionsData } from '@/lib/data/submissions'
+import type { SubmissionRow } from '@/lib/submissions'
 
-export const dynamic = 'force-dynamic'
+export default function SubmissionsPage() {
+    return (
+        <AuthedGate>
+            <SubmissionsPageContent />
+        </AuthedGate>
+    )
+}
 
-export const metadata = { title: 'Submissions — Jutge.org' }
+function SubmissionsPageContent() {
+    const [rows, setRows] = useState<SubmissionRow[] | null>(null)
 
-export default async function SubmissionsPage() {
-    return renderAuthed(async () => {
-        const client = await getCurrentClient()
-        const rows = await fetchSubmissionsData(client)
+    useEffect(() => {
+        void fetchSubmissionsData(jutge).then(setRows)
+    }, [])
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Submissions', url: '/submissions' }]} />
-                <PageTitle section="/submissions" authenticated />
-                <SubmissionsList rows={rows} showHelp />
-            </div>
-        )
-    })
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs breadcrumbs={[{ title: 'Submissions', url: '/submissions' }]} />
+            <PageTitle section="/submissions" authenticated />
+            <SubmissionsList rows={rows ?? []} showHelp loading={rows === null} />
+        </div>
+    )
 }

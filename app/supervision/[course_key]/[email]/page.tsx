@@ -1,58 +1,45 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+'use client'
 
-import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { SupervisorGate } from '@/components/ClientGates'
 import { PageTitle } from '@/components/general/PageTitle'
-import { SupervisionStudentView } from '@/components/supervision/SupervisionStudentView'
+import { SupervisionPageShell } from '@/components/supervision/SupervisionPageShell'
+import { SupervisionStudentView, SupervisionStudentViewLoading } from '@/components/supervision/SupervisionStudentView'
 import { normalizeCourseKeyParam } from '@/lib/courses'
-import { renderSupervisor } from '@/lib/renderAuthed'
-import { fetchSupervisionStudentPageData } from '@/services/queries/supervision'
+import { fetchSupervisionStudentPageData, type SupervisionStudentPageData } from '@/lib/data/supervision'
+import { supervisionBaseBreadcrumbs } from '@/lib/supervision'
 
-export const dynamic = 'force-dynamic'
-
-type PageProps = {
-    params: Promise<{ course_key: string; email: string }>
+export default function SupervisionStudentPage() {
+    return (
+        <SupervisorGate>
+            <SupervisionStudentPageContent />
+        </SupervisorGate>
+    )
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { course_key: rawCourseKey, email: rawEmail } = await params
-    const courseKey = normalizeCourseKeyParam(rawCourseKey)
-    const email = decodeURIComponent(rawEmail)
+function SupervisionStudentPageContent() {
+    const params = useParams<{ course_key: string; email: string }>()
+    const courseKey = normalizeCourseKeyParam(params.course_key)
+    const email = decodeURIComponent(params.email)
+    const [data, setData] = useState<SupervisionStudentPageData | null | undefined>(undefined)
 
-    const data = await fetchSupervisionStudentPageData(courseKey, email)
-    if (!data) {
-        return { title: 'Supervision — Jutge.org' }
+    useEffect(() => {
+        void fetchSupervisionStudentPageData(courseKey, email).then(setData)
+    }, [courseKey, email])
+
+    if (data === null) {
+        notFound()
     }
 
-    const studentName = data.profile.name?.trim() || email
-    return { title: `${studentName} — ${data.courseTitle} — Supervision — Jutge.org` }
-}
+    const context = data?.supervisionContext ?? { courseKey, email }
+    const breadcrumbs = supervisionBaseBreadcrumbs(context, data?.courseTitle)
 
-export default async function SupervisionStudentPage({ params }: PageProps) {
-    const { course_key: rawCourseKey, email: rawEmail } = await params
-    const courseKey = normalizeCourseKeyParam(rawCourseKey)
-    const email = decodeURIComponent(rawEmail)
-
-    return renderSupervisor(async () => {
-        const data = await fetchSupervisionStudentPageData(courseKey, email)
-        if (!data) {
-            notFound()
-        }
-
-        const studentName = data.profile.name?.trim() || email
-
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Supervision', url: '/supervision' },
-                        { title: data.courseTitle, url: '/supervision' },
-                        { title: studentName, url: `/supervision/${courseKey}/${email}` },
-                    ]}
-                />
-                <PageTitle section="/supervision" authenticated hidden={false} />
-                <SupervisionStudentView data={data} />
-            </div>
-        )
-    })
+    return (
+        <SupervisionPageShell context={context} courseTitle={data?.courseTitle} breadcrumbs={breadcrumbs}>
+            <PageTitle section="/supervision" authenticated hidden={false} />
+            {data === undefined ? <SupervisionStudentViewLoading /> : <SupervisionStudentView data={data} />}
+        </SupervisionPageShell>
+    )
 }

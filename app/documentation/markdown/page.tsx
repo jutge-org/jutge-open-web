@@ -2,8 +2,6 @@ import { ExternalLink } from '@/components/ExternalLink'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
 import { Prose } from '@/components/documentation/Prose'
 
-export const metadata = { title: 'Markdown — Documentation — Jutge.org' }
-
 function MarkdownExample({ source, rendered }: { source: string; rendered: React.ReactNode }) {
     return (
         <div className="grid gap-4 sm:grid-cols-2">

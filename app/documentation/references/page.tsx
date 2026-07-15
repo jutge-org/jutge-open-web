@@ -1,8 +1,6 @@
 import { ExternalLink } from '@/components/ExternalLink'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
 
-export const metadata = { title: 'References — Documentation — Jutge.org' }
-
 const referenceGroups = [
     {
         title: 'C++',

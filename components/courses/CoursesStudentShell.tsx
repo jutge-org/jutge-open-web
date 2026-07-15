@@ -1,30 +1,35 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
 import { CoursesList } from '@/components/courses/CoursesList'
 import { CoursesNav } from '@/components/courses/CoursesNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
-import { getCurrentClient, getCurrentUser } from '@/lib/auth'
+import jutge from '@/lib/jutge'
 import type { CoursesData, CoursesTab } from '@/lib/courses'
-import { fetchCoursesData } from '@/services/queries/courses'
+import { fetchCoursesData } from '@/lib/data/courses'
+
+const emptyCourseCounts: Pick<CoursesData, 'enrolled' | 'available' | 'archived'> = {
+    enrolled: [],
+    available: [],
+    archived: [],
+}
 
 type CoursesStudentShellProps = {
     activeTab: CoursesTab
-    data: CoursesData
+    data?: CoursesData | null
     children: React.ReactNode
 }
 
 export function CoursesStudentShell({ activeTab, data, children }: CoursesStudentShellProps) {
+    const counts = data ?? emptyCourseCounts
+
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs breadcrumbs={[{ title: 'Courses', url: '/courses' }]} />
             <PageTitle section="/courses" authenticated />
-            <CoursesNav
-                activeTab={activeTab}
-                counts={{
-                    enrolled: data.enrolled,
-                    available: data.available,
-                    archived: data.archived,
-                }}
-            />
+            <CoursesNav activeTab={activeTab} counts={counts} />
             {children}
         </div>
     )
@@ -32,15 +37,19 @@ export function CoursesStudentShell({ activeTab, data, children }: CoursesStuden
 
 type CoursesTabPageProps = {
     activeTab: CoursesTab
+    userId: string
 }
 
-export async function CoursesTabPage({ activeTab }: CoursesTabPageProps) {
-    const [client, user] = await Promise.all([getCurrentClient(), getCurrentUser()])
-    const data = await fetchCoursesData(client)
+export function CoursesTabPage({ activeTab, userId }: CoursesTabPageProps) {
+    const [data, setData] = useState<CoursesData | null>(null)
+
+    useEffect(() => {
+        void fetchCoursesData(jutge).then(setData)
+    }, [])
 
     return (
         <CoursesStudentShell activeTab={activeTab} data={data}>
-            <CoursesList tab={activeTab} courses={data[activeTab]} userId={user.id} />
+            <CoursesList tab={activeTab} courses={data?.[activeTab] ?? []} userId={userId} loading={data === null} />
         </CoursesStudentShell>
     )
 }

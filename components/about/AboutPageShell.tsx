@@ -1,8 +1,10 @@
+'use client'
+
+import { useAuth } from '@/components/AuthProvider'
 import { AboutNav } from '@/components/about/AboutNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import type { AboutTab } from '@/lib/about'
-import { isAuthenticated } from '@/lib/auth'
 import type { ReactNode } from 'react'
 
 type AboutPageShellProps = {
@@ -11,13 +13,13 @@ type AboutPageShellProps = {
     children: ReactNode
 }
 
-export async function AboutPageShell({ activeTab, breadcrumbs, children }: AboutPageShellProps) {
-    const authenticated = await isAuthenticated()
+export function AboutPageShell({ activeTab, breadcrumbs, children }: AboutPageShellProps) {
+    const { user } = useAuth()
 
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs breadcrumbs={breadcrumbs} />
-            <PageTitle section="/about" authenticated={authenticated} />
+            <PageTitle section="/about" authenticated={user !== null} />
             <AboutNav activeTab={activeTab} />
             {children}
         </div>

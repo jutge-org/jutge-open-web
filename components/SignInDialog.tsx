@@ -4,12 +4,12 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { signInAction } from '@/actions/auth'
+import { useAuth } from '@/components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { KeyRoundIcon, LogInIcon } from 'lucide-react'
+import { LogInIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export type SignInDialogProps = {
@@ -24,6 +24,7 @@ export type SignInDialogProps = {
 
 export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss, initialEmail }: SignInDialogProps) {
     const router = useRouter()
+    const { login } = useAuth()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -61,7 +62,7 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss, initia
     function handleSignIn() {
         setErrorMessage(null)
         startTransition(async () => {
-            const result = await signInAction(email, password)
+            const result = await login({ email: email.trim(), password })
             if (!result.ok) {
                 setErrorMessage(result.error)
                 return

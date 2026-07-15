@@ -4,7 +4,7 @@ import {
     fetchInstructorSharingSettings,
     instructorProblemSetSharingSettings,
     instructorProblemShareWith,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { showError } from '@/lib/instructor/utils'

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { CircleAlertIcon, KeyRoundIcon } from 'lucide-react'
 
-import { requestPasswordResetAction } from '@/actions/password-reset'
+import { requestPasswordResetAction } from '@/lib/data/passwordResetActions'
 import { ProfileFormRow } from '@/components/profile/ProfileFormRow'
 import { RecaptchaNotice } from '@/components/registration/RecaptchaNotice'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardRecentSubmissions } from '@/actions/administrator'
+import { fetchAdminDashboardRecentSubmissions } from '@/lib/administrator/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { CogIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'

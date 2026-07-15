@@ -1,16 +1,13 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { ExamSubmissionsView } from '@/components/instructor/exams/ExamSubmissionsView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorExamSubNav } from '@/lib/instructor/menus'
 
-export const metadata = { title: 'Exam submissions — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ exam_nm: string }>
-}
-
-export default async function InstructorExamSubmissionsPage({ params }: Props) {
-    const { exam_nm } = await params
+export default function InstructorExamSubmissionsPage() {
+    const { exam_nm } = useParams<{ exam_nm: string }>()
     const baseHref = `/instructor/exams/${exam_nm}`
 
     return (

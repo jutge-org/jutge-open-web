@@ -1,75 +1,95 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
+import { FullscreenEditorLoading } from '@/components/general/FullscreenEditorLoading'
 import { SolutionCodeEditor } from '@/components/problems/SolutionCodeEditor'
-import { getCurrentClient } from '@/lib/auth'
+import jutge from '@/lib/jutge'
 import { parseProblemKey } from '@/lib/problems'
-import { renderAuthed } from '@/lib/renderAuthed'
 import { solutionDownloadHref } from '@/lib/solutions'
-import { fetchInstructorOwnsProblem, fetchProblemDetail, resolveProblemId } from '@/services/queries/problemDetail'
-import { fetchProblemSolutionContent } from '@/services/queries/problemSolutions'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { fetchInstructorOwnsProblem, fetchProblemDetail, resolveProblemId } from '@/lib/data/problemDetail'
+import { fetchProblemSolutionContent } from '@/lib/data/problemSolutions'
 
-type PageProps = {
-    params: Promise<{ key: string; proglang: string }>
+type PageData = {
+    code: string
+    codeExtension: string
+    codeFilename: string
+    codeHref: string
+    title: string
+    proglang: string
 }
 
-export const dynamic = 'force-dynamic'
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key, proglang } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: `${proglang} solution — Jutge.org` }
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: `${proglang} solution — Jutge.org` }
-    }
-
-    return {
-        title: `${data.problem.problem_nm} — ${proglang} solution — Jutge.org`,
-    }
+export default function ProblemSolutionCodeViewPage() {
+    return (
+        <AuthedGate>{(user) => <ProblemSolutionCodeViewPageContent isAdministrator={user.administrator} />}</AuthedGate>
+    )
 }
 
-export default async function ProblemSolutionCodeViewPage({ params }: PageProps) {
-    const { key, proglang } = await params
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
+function ProblemSolutionCodeViewPageContent({ isAdministrator }: { isAdministrator: boolean }) {
+    const params = useParams<{ key: string; proglang: string }>()
+    const key = params.key
+    const proglang = params.proglang
+    const [pageData, setPageData] = useState<PageData | null | undefined>(undefined)
+
+    useEffect(() => {
+        void (async () => {
+            const problemId = await resolveProblemId(key)
+            if (!problemId) {
+                setPageData(null)
+                return
+            }
+
+            const data = await fetchProblemDetail(problemId)
+            if (!data) {
+                setPageData(null)
+                return
+            }
+
+            const parsed = parseProblemKey(problemId)
+            const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
+            const title = `${data.problem.problem_nm} — ${data.problem.title}`
+
+            const isInstructorOwner = await fetchInstructorOwnsProblem(problem_nm)
+            if (!isInstructorOwner && !isAdministrator) {
+                setPageData(null)
+                return
+            }
+
+            const solution = await fetchProblemSolutionContent(jutge, problemId, problem_nm, proglang)
+            if (!solution || !solution.codeFilename) {
+                setPageData(null)
+                return
+            }
+
+            setPageData({
+                code: solution.code,
+                codeExtension: solution.codeExtension ?? '',
+                codeFilename: solution.codeFilename,
+                codeHref: solutionDownloadHref(key, proglang),
+                title,
+                proglang,
+            })
+        })()
+    }, [isAdministrator, key, proglang])
+
+    if (pageData === undefined) {
+        return <FullscreenEditorLoading title={`${key} — ${proglang} solution`} />
+    }
+
+    if (!pageData) {
         notFound()
     }
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    const parsed = parseProblemKey(problemId)
-    const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : data.problem.problem_nm
-    const title = `${data.problem.problem_nm} — ${data.problem.title}`
-
-    return renderAuthed(async (user) => {
-        const isInstructorOwner = await fetchInstructorOwnsProblem(problem_nm)
-        if (!isInstructorOwner && !user.administrator) {
-            notFound()
-        }
-
-        const client = await getCurrentClient()
-        const solution = await fetchProblemSolutionContent(client, problemId, problem_nm, proglang)
-        if (!solution) {
-            notFound()
-        }
-
-        const codeHref = solutionDownloadHref(key, proglang)
-
-        return (
-            <SolutionCodeEditor
-                code={solution.code}
-                codeExtension={solution.codeExtension}
-                codeFilename={solution.codeFilename}
-                codeHref={codeHref}
-                title={title}
-                proglang={proglang}
-            />
-        )
-    })
+    return (
+        <SolutionCodeEditor
+            code={pageData.code}
+            codeExtension={pageData.codeExtension}
+            codeFilename={pageData.codeFilename}
+            codeHref={pageData.codeHref}
+            title={pageData.title}
+            proglang={pageData.proglang}
+        />
+    )
 }

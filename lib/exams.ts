@@ -61,6 +61,7 @@ export type ExamProblemRow = {
     kind: 'problem'
     problem_nm: string
     title: string
+    iconUrl: string | null
     language_ids: string[]
     driver_id: string | null
     author: string | null
@@ -186,6 +187,7 @@ function buildFallbackExamProblemRow(problem_nm: string): ExamProblemRow {
         kind: 'problem',
         problem_nm,
         title: problem_nm,
+        iconUrl: null,
         language_ids: [],
         driver_id: null,
         author: null,

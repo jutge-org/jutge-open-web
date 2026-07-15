@@ -20,6 +20,9 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useAuth } from '@/components/AuthProvider'
+import { fetchEnrolledCoursesNavItems } from '@/lib/data/courses'
+import jutge from '@/lib/jutge'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { ExternalLink } from '@/components/ExternalLink'
 import { aboutNavItems } from '@/lib/about'
@@ -27,13 +30,7 @@ import { administratorIndexItems } from '@/lib/administrator'
 import { documentationNavItems } from '@/lib/documentation'
 import { instructorIndexItems } from '@/lib/instructor'
 import type { CoursesNavItem } from '@/lib/courses'
-import {
-    getSiteNavLinks,
-    homeLink,
-    pathsHrefEqual,
-    type SiteNavLink,
-    type SiteNavLinksContext,
-} from '@/lib/siteNavLinks'
+import { getSiteNavLinks, homeLink, pathsHrefEqual, type SiteNavLink } from '@/lib/siteNavLinks'
 import { cn } from '@/lib/utils'
 import { useMainBreadcrumbs } from '@/store/MainBreadcrumbs'
 import {
@@ -82,17 +79,13 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Fragment, type ComponentType } from 'react'
+import { Fragment, useEffect, useState, type ComponentType } from 'react'
 
 type MainNavSubmenuItem = {
     href: string
     label: string
     external?: boolean
     iconUrl?: string
-}
-
-type MainBreadcrumbsInLayoutProps = SiteNavLinksContext & {
-    enrolledCoursesNavItems?: readonly CoursesNavItem[]
 }
 
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
@@ -319,13 +312,24 @@ function MainNavRoleSubmenu({
     )
 }
 
-export function MainBreadcrumbsInLayout({
-    authenticated,
-    instructor,
-    tutor,
-    administrator,
-    enrolledCoursesNavItems = [],
-}: MainBreadcrumbsInLayoutProps) {
+export function MainBreadcrumbsInLayout() {
+    const { user } = useAuth()
+    const authenticated = user !== null
+    const instructor = user?.instructor ?? false
+    const tutor = user?.tutor ?? false
+    const administrator = user?.administrator ?? false
+    const [enrolledCoursesNavItems, setEnrolledCoursesNavItems] = useState<readonly CoursesNavItem[]>([])
+
+    useEffect(() => {
+        if (!authenticated || !jutge.meta?.token) {
+            setEnrolledCoursesNavItems([])
+            return
+        }
+        void fetchEnrolledCoursesNavItems(jutge)
+            .then(setEnrolledCoursesNavItems)
+            .catch(() => setEnrolledCoursesNavItems([]))
+    }, [authenticated, user?.id])
+
     const breadcrumbs = useMainBreadcrumbs((s) => s.breadcrumbs)
     const pathname = usePathname()
     const navLinks = getSiteNavLinks({ authenticated, instructor, tutor, administrator })

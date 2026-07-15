@@ -3,6 +3,7 @@
 import { AArrowDownIcon, AArrowUpIcon } from 'lucide-react'
 import { useMemo } from 'react'
 
+import { TraditionalDiff } from '@/components/submissions/TraditionalDiff'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -136,13 +137,21 @@ export function CompilationErrorsCard({ data, compilerId }: CompilationErrorsCar
                             return (
                                 <div key={name} className="flex flex-col gap-2 px-6 pb-6 last:pb-6">
                                     <p className="pt-4 text-sm font-medium text-foreground first:pt-0">{name}</p>
-                                    <CompilationErrorBlock
-                                        text={value}
-                                        compilerId={compilerId}
-                                        field={name}
-                                        fontScale={fontScale}
-                                        className="max-h-48 rounded-lg border border-border"
-                                    />
+                                    {name === 'interface' ? (
+                                        <TraditionalDiff
+                                            diff={value}
+                                            fontScale={fontScale}
+                                            className="max-h-48 rounded-lg border border-border"
+                                        />
+                                    ) : (
+                                        <CompilationErrorBlock
+                                            text={value}
+                                            compilerId={compilerId}
+                                            field={name}
+                                            fontScale={fontScale}
+                                            className="max-h-48 rounded-lg border border-border"
+                                        />
+                                    )}
                                 </div>
                             )
                         })}

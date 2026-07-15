@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminRanking } from '@/actions/administrator'
+import { fetchAdminRanking } from '@/lib/administrator/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'
 import type { UserRanking } from '@/lib/jutge_api_client'

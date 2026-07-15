@@ -1,9 +1,9 @@
+'use client'
+
 import { JutgeAIChatView } from '@/components/instructor/jutgeai/JutgeAIChatView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorJutgeaiSubNav } from '@/lib/instructor/menus'
-
-export const metadata = { title: 'JutgeAI Chat — Instructor — Jutge.org' }
 
 const baseHref = '/instructor/jutgeai'
 

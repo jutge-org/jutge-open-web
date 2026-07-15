@@ -2,32 +2,29 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-import {
-    parseStoredSupervisionCourseKey,
-    supervisionCourseStorageKey,
-    type SupervisionCourseOption,
-} from '@/lib/supervision'
+import { parseStoredSupervisionCourseKey, type SupervisionCourseOption } from '@/lib/supervision'
+import { useOpenWebSettingsStore } from '@/store/openWebSettings'
 
-export function useSupervisionCoursePreference(userId: string, courses: SupervisionCourseOption[]) {
+export function useSupervisionCoursePreference(_userId: string, courses: SupervisionCourseOption[]) {
     const courseKeys = useMemo(() => courses.map((course) => course.courseKey), [courses])
+    const ready = useOpenWebSettingsStore((state) => state.ready)
+    const storedCourseKey = useOpenWebSettingsStore((state) => state.settings.ui.supervisionLastCourse)
+    const setSupervisionLastCourse = useOpenWebSettingsStore((state) => state.setSupervisionLastCourse)
+
     const [courseKey, setCourseKeyState] = useState('')
 
     useEffect(() => {
-        const stored = parseStoredSupervisionCourseKey(
-            localStorage.getItem(supervisionCourseStorageKey(userId)),
-            courseKeys,
-        )
+        if (!ready) {
+            return
+        }
+
+        const stored = parseStoredSupervisionCourseKey(storedCourseKey || null, courseKeys)
         setCourseKeyState(stored ?? '')
-    }, [userId, courseKeys])
+    }, [courseKeys, ready, storedCourseKey])
 
     function setCourseKey(next: string) {
         setCourseKeyState(next)
-        const storageKey = supervisionCourseStorageKey(userId)
-        if (next) {
-            localStorage.setItem(storageKey, next)
-            return
-        }
-        localStorage.removeItem(storageKey)
+        setSupervisionLastCourse(next)
     }
 
     return [courseKey, setCourseKey] as const

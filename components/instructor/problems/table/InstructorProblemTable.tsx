@@ -2,6 +2,7 @@
 
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ExternalLink } from '@/components/ExternalLink'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
@@ -17,6 +18,15 @@ import { SharingCell } from './SharingCell'
 import { ProblemRow } from './types'
 
 const problemTableColumnDefs = [
+    {
+        field: 'iconUrl',
+        headerName: '',
+        width: 36,
+        sortable: false,
+        filter: false,
+        cellRenderer: (p: ICellRendererParams<ProblemRow>) =>
+            p.data!.iconUrl ? <ProblemIconImage iconUrl={p.data!.iconUrl} size="xs" className="translate-y-1" /> : null,
+    },
     {
         field: 'problem_nm',
         headerName: 'Id',

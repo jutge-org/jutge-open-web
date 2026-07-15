@@ -1,28 +1,13 @@
-import { CompilerDetail } from '@/components/documentation/CompilerDetail'
+import { CompilerDetailPageContent } from '@/components/documentation/CompilerDetailPageContent'
 import { DocumentationPageShell } from '@/components/documentation/DocumentationPageShell'
-import { findCompilerBySlug } from '@/lib/documentation'
-import { fetchCompilers } from '@/services/queries/tables'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { slugToCompilerId } from '@/lib/documentation'
 
-type PageProps = {
+type DocumentationCompilerDetailPageProps = {
     params: Promise<{ id: string }>
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export default async function DocumentationCompilerDetailPage({ params }: DocumentationCompilerDetailPageProps) {
     const { id } = await params
-    const compilers = await fetchCompilers()
-    const compiler = findCompilerBySlug(compilers, id)
-    if (!compiler) return { title: 'Compiler — Documentation — Jutge.org' }
-    return { title: `${compiler.compiler_id} — Compilers — Documentation — Jutge.org` }
-}
-
-export default async function DocumentationCompilerDetailPage({ params }: PageProps) {
-    const { id } = await params
-    const compilers = await fetchCompilers()
-    const compiler = findCompilerBySlug(compilers, id)
-
-    if (!compiler) notFound()
 
     return (
         <DocumentationPageShell
@@ -30,10 +15,10 @@ export default async function DocumentationCompilerDetailPage({ params }: PagePr
             breadcrumbs={[
                 { title: 'Documentation', url: '/documentation' },
                 { title: 'Compilers', url: '/documentation/compilers' },
-                { title: compiler.compiler_id, url: `/documentation/compilers/${id}` },
+                { title: slugToCompilerId(id), url: `/documentation/compilers/${id}` },
             ]}
         >
-            <CompilerDetail compiler={compiler} />
+            <CompilerDetailPageContent id={id} />
         </DocumentationPageShell>
     )
 }

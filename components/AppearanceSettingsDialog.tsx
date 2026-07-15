@@ -3,7 +3,7 @@
 import { HljsThemeSelect } from '@/components/appearance/HljsThemeSelect'
 import { APPEARANCE_SETTINGS_OPEN_EVENT } from '@/lib/appearanceSettings'
 import { MonacoThemeSelect } from '@/components/appearance/MonacoThemeSelect'
-import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
+import { useAppearancePreferences, useAppearanceThemePreference } from '@/components/AppearancePreferencesProvider'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,6 +20,7 @@ import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type La
 import { READING_FONT_SCALE_PRESETS, readingFontScalePresetFromScales } from '@/lib/readingFontScale'
 import { REDUCED_MOTION_FULL, REDUCED_MOTION_REDUCE, REDUCED_MOTION_SYSTEM } from '@/lib/reducedMotion'
 import { SOUND_EFFECTS_OFF, SOUND_EFFECTS_ON, type SoundEffectsPreference } from '@/lib/soundEffects'
+import type { ThemePreference } from '@/lib/openWebSettings'
 import { cn } from '@/lib/utils'
 import {
     AccessibilityIcon,
@@ -40,7 +41,6 @@ import {
     ZapIcon,
     XIcon,
 } from 'lucide-react'
-import { useTheme } from 'next-themes'
 import { useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
@@ -99,7 +99,7 @@ function SegmentedOption({ value, label, icon, className }: SegmentedOptionProps
 }
 
 export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDialogProps) {
-    const { theme, setTheme } = useTheme()
+    const [theme, setTheme] = useAppearanceThemePreference()
     const { layoutWidth, setLayoutWidth } = useLayoutWidth()
     const {
         monacoTheme,
@@ -170,7 +170,7 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                                 variant="outline"
                                 spacing={0}
                                 value={theme ?? 'system'}
-                                onValueChange={(value) => value && setTheme(value)}
+                                onValueChange={(value) => value && setTheme(value as ThemePreference)}
                                 className="grid w-full grid-cols-3"
                             >
                                 <SegmentedOption

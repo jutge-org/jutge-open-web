@@ -4,22 +4,20 @@ import { ProblemHealthCard } from '@/components/problems/ProblemHealthCard'
 import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemNav } from '@/components/problems/ProblemNav'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
+import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
+import { WidgetSpinner } from '@/components/general/WidgetSpinner'
+import { Card, CardContent } from '@/components/ui/card'
 import { isGameProblem } from '@/lib/problems'
 import { showInstructorProblemTabs } from '@/lib/problemNav'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
-import type { ProblemDetailData } from '@/services/queries/problemDetail'
+import type { ProblemDetailData } from '@/lib/data/problemDetail'
+import type { SupervisionContext } from '@/lib/supervision'
 
 import type { ReactNode } from 'react'
 
-type ProblemDetailProps = {
+type ProblemDetailBaseProps = {
     pageKey: string
-    data: ProblemDetailData
-    /** Present for authenticated users (may be null if the status request failed). */
-    status?: AbstractStatus | null
-    defaultCompilerId?: string | null
-    isInstructorOwner?: boolean
-    isAdministrator?: boolean
     showStatement?: boolean
     showTestcases?: boolean
     showInformation?: boolean
@@ -27,23 +25,68 @@ type ProblemDetailProps = {
     children?: ReactNode
 }
 
-export function ProblemDetail({
-    pageKey,
-    data,
-    status,
-    defaultCompilerId,
-    isInstructorOwner = false,
-    isAdministrator = false,
-    showStatement = true,
-    showTestcases = true,
-    showInformation = true,
-    showNav = true,
-    children,
-}: ProblemDetailProps) {
+type ProblemDetailLoadingProps = ProblemDetailBaseProps & {
+    loading: true
+}
+
+type ProblemDetailLoadedProps = ProblemDetailBaseProps & {
+    loading?: false
+    data: ProblemDetailData
+    status?: AbstractStatus | null
+    defaultCompilerId?: string | null
+    isInstructorOwner?: boolean
+    isAdministrator?: boolean
+    readOnly?: boolean
+    supervisionContext?: SupervisionContext
+}
+
+type ProblemDetailProps = ProblemDetailLoadingProps | ProblemDetailLoadedProps
+
+function ProblemHeaderCardLoading() {
+    return (
+        <Card className="ring-0 border border-border shadow-sm">
+            <CardContent className="w-full py-6">
+                <WidgetSpinner label="Loading problem" />
+            </CardContent>
+        </Card>
+    )
+}
+
+export function ProblemDetail(props: ProblemDetailProps) {
+    const {
+        pageKey,
+        showStatement = true,
+        showTestcases = true,
+        showInformation = true,
+        showNav = true,
+        children,
+    } = props
+
+    if (props.loading) {
+        return (
+            <div className="flex flex-col gap-6">
+                <ProblemHeaderCardLoading />
+                {showNav ? <ProblemNav pageKey={pageKey} showInstructorTabs={false} /> : null}
+                {children}
+                {showStatement ? <ProblemWidgetCard title="Statement" /> : null}
+                {showTestcases ? <ProblemWidgetCard title="Public test cases" /> : null}
+                {showInformation ? <ProblemWidgetCard title="Information" /> : null}
+            </div>
+        )
+    }
+
+    const {
+        data,
+        status,
+        defaultCompilerId,
+        isInstructorOwner = false,
+        isAdministrator = false,
+        readOnly = false,
+        supervisionContext,
+    } = props
     const { problem } = data
     const isGame = isGameProblem(problem.abstract_problem.driver_id)
-    const showActions = status !== undefined && !isGame
-
+    const showActions = !readOnly && status !== undefined && !isGame
     const showInstructorTabs = showInstructorProblemTabs(isInstructorOwner, isAdministrator)
 
     return (
@@ -55,6 +98,7 @@ export function ProblemDetail({
                 status={status}
                 defaultCompilerId={defaultCompilerId}
                 showActions={showActions}
+                supervisionContext={supervisionContext}
             />
 
             {showNav ? <ProblemNav pageKey={pageKey} showInstructorTabs={showInstructorTabs} /> : null}
@@ -66,6 +110,7 @@ export function ProblemDetail({
             {showStatement ? (
                 <ProblemStatement
                     pageKey={pageKey}
+                    problemId={problem.problem_id}
                     shortHtmlStatement={data.shortHtmlStatement}
                     templates={data.templates}
                 />

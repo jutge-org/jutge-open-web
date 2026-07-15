@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { UserPlusIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { registerAction } from '@/actions/registration'
+import { registerAction } from '@/lib/data/registrationActions'
 import { RecaptchaNotice } from '@/components/registration/RecaptchaNotice'
 import { CompleteNameHelpDialog } from '@/components/registration/CompleteNameHelpDialog'
 import { HonorCodeDialog } from '@/components/registration/HonorCodeDialog'

@@ -7,9 +7,10 @@ import { PENDING_SUBMISSION_REFRESH_INTERVAL_MS, PENDING_SUBMISSION_REFRESH_MAX_
 
 type SubmissionPendingRefreshProps = {
     isPending: boolean
+    onRefresh?: () => void | Promise<void>
 }
 
-export function SubmissionPendingRefresh({ isPending }: SubmissionPendingRefreshProps) {
+export function SubmissionPendingRefresh({ isPending, onRefresh }: SubmissionPendingRefreshProps) {
     const router = useRouter()
     const refreshCountRef = useRef(0)
 
@@ -21,7 +22,12 @@ export function SubmissionPendingRefresh({ isPending }: SubmissionPendingRefresh
 
         const intervalId = window.setInterval(() => {
             refreshCountRef.current += 1
-            router.refresh()
+
+            if (onRefresh) {
+                void onRefresh()
+            } else {
+                router.refresh()
+            }
 
             if (refreshCountRef.current >= PENDING_SUBMISSION_REFRESH_MAX_COUNT) {
                 window.clearInterval(intervalId)
@@ -29,7 +35,7 @@ export function SubmissionPendingRefresh({ isPending }: SubmissionPendingRefresh
         }, PENDING_SUBMISSION_REFRESH_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
-    }, [isPending, router])
+    }, [isPending, onRefresh, router])
 
     return null
 }

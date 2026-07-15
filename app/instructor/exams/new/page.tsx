@@ -1,7 +1,7 @@
+'use client'
+
 import { ExamsNewView } from '@/components/instructor/exams/ExamsNewView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
-
-export const metadata = { title: 'Add exam — Instructor — Jutge.org' }
 
 export default function InstructorExamsNewPage() {
     return (

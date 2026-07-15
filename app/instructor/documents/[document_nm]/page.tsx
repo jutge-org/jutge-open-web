@@ -1,18 +1,11 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { DocumentPropertiesView } from '@/components/instructor/documents/DocumentPropertiesView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 
-type PageProps = {
-    params: Promise<{ document_nm: string }>
-}
-
-export async function generateMetadata({ params }: PageProps) {
-    const { document_nm } = await params
-    return { title: `${document_nm} — Documents — Instructor — Jutge.org` }
-}
-
-export default async function InstructorDocumentPage({ params }: PageProps) {
-    const { document_nm } = await params
-
+export default function InstructorDocumentPage() {
+    const { document_nm } = useParams<{ document_nm: string }>()
     return (
         <InstructorPageShell
             breadcrumbs={[

@@ -5,12 +5,14 @@ import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 
 import { AgTableFull } from '@/components/administrator/AgTable'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
 import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSummaryTooltip'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
 import { ProblemsListToolbar } from '@/components/problems/ProblemsListToolbar'
 import { Badge } from '@/components/ui/badge'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     DEFAULT_PROBLEMS_COLUMN_VISIBILITY,
@@ -19,7 +21,7 @@ import {
     type ProblemsColumnVisibility,
 } from '@/lib/problems'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
 
 type ProblemsListProps = {
     problems: ProblemRow[]
@@ -28,6 +30,7 @@ type ProblemsListProps = {
     showAdvancedSearch?: boolean
     showHelp?: boolean
     preferredLanguageId?: string | null
+    loading?: boolean
 }
 
 export function ProblemsList({
@@ -37,6 +40,7 @@ export function ProblemsList({
     showAdvancedSearch = false,
     showHelp = false,
     preferredLanguageId = null,
+    loading = false,
 }: ProblemsListProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [columnVisibility, setColumnVisibility] = useState<ProblemsColumnVisibility>(
@@ -83,6 +87,8 @@ export function ProblemsList({
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.problem_nm,
+                headerClass: 'ag-problem-column-header',
+                cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
                 cellRenderer: (params: { data: ProblemRow }) => (
                     <ProblemTitleSummaryTooltip
                         problem_nm={params.data.problem_nm}
@@ -90,7 +96,16 @@ export function ProblemsList({
                         preferredLanguageId={preferredLanguageId}
                     >
                         <Link href={`/problems/${params.data.problem_nm}`} className="tabular-nums text-sm">
-                            {params.data.problem_nm}
+                            <span className="flex flex-row items-center gap-3">
+                                {params.data.iconUrl ? (
+                                    <ProblemIconImage
+                                        iconUrl={params.data.iconUrl}
+                                        size="xs"
+                                        className="translate-y-px"
+                                    />
+                                ) : null}
+                                {params.data.problem_nm}
+                            </span>
                         </Link>
                     </ProblemTitleSummaryTooltip>
                 ),
@@ -107,7 +122,9 @@ export function ProblemsList({
                         problem_nm={params.data.problem_nm}
                         title={params.data.title}
                         preferredLanguageId={preferredLanguageId}
-                    />
+                    >
+                        <span className="inline-flex items-center gap-1.5">{params.data.title}</span>
+                    </ProblemTitleSummaryTooltip>
                 ),
             },
             {
@@ -164,6 +181,29 @@ export function ProblemsList({
         [columnVisibility, languages, preferredLanguageId, statuses],
     )
 
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4">
+                <ProblemsListToolbar
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    columnVisibility={columnVisibility}
+                    onColumnVisibilityChange={handleColumnVisibilityChange}
+                    showStatusColumn={statuses !== undefined}
+                    showAdvancedSearch={showAdvancedSearch}
+                    showHelp={showHelp}
+                />
+                <div
+                    aria-busy="true"
+                    aria-label="Loading problems"
+                    className="flex min-h-64 items-center justify-center border border-dashed border-border bg-muted/20"
+                >
+                    <Spinner className="size-8 text-muted-foreground" />
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col gap-4">
             <ProblemsListToolbar
@@ -190,7 +230,9 @@ export function ProblemsList({
                 </Empty>
             ) : (
                 <TooltipProvider>
-                    <AgTableFull rowData={visibleProblems} columnDefs={colDefs} />
+                    <div className="[&_.ag-problem-column-header_.ag-header-cell-label]:justify-center">
+                        <AgTableFull rowData={visibleProblems} columnDefs={colDefs} />
+                    </div>
                 </TooltipProvider>
             )}
         </div>

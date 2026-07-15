@@ -4,9 +4,9 @@ import {
     fetchInstructorCourseStudentProfiles,
     fetchInstructorCourseSubmissions,
     fetchMiscHexColors,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import { buildHeatmapSourceData, type HeatmapSourceData } from '@/lib/instructor/courseHeatmapSourceData'
-import { fetchInstructorListsMany } from '@/services/queries/lists'
+import { fetchInstructorListsMany } from '@/lib/data/lists'
 import type { Dict } from '@/lib/instructor/utils'
 import type {
     AbstractProblem,

@@ -1,8 +1,6 @@
 import { AboutPageShell } from '@/components/about/AboutPageShell'
 import { MarkdownDoc } from '@/components/documentation/MarkdownDoc'
 
-export const metadata = { title: 'Accessibility — About — Jutge.org' }
-
 export default function AboutAccessibilityPage() {
     return (
         <AboutPageShell

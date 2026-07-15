@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
-import { type CSSProperties, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 import { AArrowDownIcon, AArrowUpIcon, FileArchiveIcon, FileIcon, FileTextIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,10 +10,17 @@ import { Toggle } from '@/components/ui/toggle'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, STATEMENT_FONT_SCALE_KEY } from '@/lib/fontScale'
+import {
+    downloadProblemPdf,
+    downloadProblemTemplate,
+    downloadProblemZip,
+    fetchProblemPdfBlobUrl,
+} from '@/lib/downloadProblemAssets'
 import { cn } from '@/lib/utils'
 
 type ProblemStatementProps = {
     pageKey: string
+    problemId: string
     shortHtmlStatement: string
     templates: string[]
 }
@@ -29,9 +36,47 @@ function getTemplateIconClassName(template: string) {
         : 'size-10 text-green-600 dark:text-green-400'
 }
 
-export function ProblemStatement({ pageKey, shortHtmlStatement, templates }: ProblemStatementProps) {
+export function ProblemStatement({ problemId, shortHtmlStatement, templates }: ProblemStatementProps) {
     const [fontScale, setFontScale] = useFontScalePreference(STATEMENT_FONT_SCALE_KEY)
     const [showPdf, setShowPdf] = useState(false)
+    const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!showPdf) {
+            return
+        }
+
+        let cancelled = false
+        let objectUrl: string | null = null
+        void fetchProblemPdfBlobUrl(problemId)
+            .then((url) => {
+                objectUrl = url
+                if (!cancelled) setPdfBlobUrl(url)
+            })
+            .catch(() => {
+                if (!cancelled) toast.error('Failed to load PDF statement.')
+            })
+
+        return () => {
+            cancelled = true
+            if (objectUrl) URL.revokeObjectURL(objectUrl)
+        }
+    }, [showPdf, problemId])
+
+    useEffect(() => {
+        if (!showPdf && pdfBlobUrl) {
+            URL.revokeObjectURL(pdfBlobUrl)
+            setPdfBlobUrl(null)
+        }
+    }, [showPdf, pdfBlobUrl])
+
+    async function handleDownload(fn: () => Promise<void>) {
+        try {
+            await fn()
+        } catch {
+            toast.error('Download failed.')
+        }
+    }
 
     // hack to get correct HTML statement for games, because they contain <html> and <body> tags
     shortHtmlStatement = shortHtmlStatement.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? shortHtmlStatement
@@ -109,8 +154,9 @@ export function ProblemStatement({ pageKey, shortHtmlStatement, templates }: Pro
                 <CardContent className={cn('flex flex-col gap-2 pt-0', showPdf && 'gap-0 px-0 pb-0')}>
                     {!showPdf ? (
                         <div className="flex flex-wrap gap-4">
-                            <Link
-                                href={`/problems/${pageKey}/pdf`}
+                            <button
+                                type="button"
+                                onClick={() => handleDownload(() => downloadProblemPdf(problemId))}
                                 aria-label="Download problem statement as PDF"
                                 className={downloadTileClassName}
                             >
@@ -120,9 +166,10 @@ export function ProblemStatement({ pageKey, shortHtmlStatement, templates }: Pro
                                     strokeWidth={0.7}
                                 />
                                 <span className={downloadTileLabelClassName}>pdf</span>
-                            </Link>
-                            <Link
-                                href={`/problems/${pageKey}/zip`}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleDownload(() => downloadProblemZip(problemId))}
                                 aria-label="Download problem files as ZIP"
                                 className={downloadTileClassName}
                             >
@@ -132,11 +179,12 @@ export function ProblemStatement({ pageKey, shortHtmlStatement, templates }: Pro
                                     strokeWidth={0.7}
                                 />
                                 <span className={downloadTileLabelClassName}>zip</span>
-                            </Link>
+                            </button>
                             {templates.map((template) => (
-                                <Link
+                                <button
                                     key={template}
-                                    href={`/problems/${pageKey}/template?file=${encodeURIComponent(template)}`}
+                                    type="button"
+                                    onClick={() => handleDownload(() => downloadProblemTemplate(problemId, template))}
                                     aria-label={`Download ${template}`}
                                     className={downloadTileClassName}
                                 >
@@ -146,16 +194,20 @@ export function ProblemStatement({ pageKey, shortHtmlStatement, templates }: Pro
                                         strokeWidth={0.7}
                                     />
                                     <span className={downloadTileLabelClassName}>{template}</span>
-                                </Link>
+                                </button>
                             ))}
                         </div>
                     ) : null}
                     {showPdf ? (
-                        <iframe
-                            src={`/problems/${pageKey}/pdf?inline=1`}
-                            title="Problem statement PDF"
-                            className="min-h-[70vh] w-full border-0"
-                        />
+                        pdfBlobUrl ? (
+                            <iframe
+                                src={pdfBlobUrl}
+                                title="Problem statement PDF"
+                                className="min-h-[70vh] w-full border-0"
+                            />
+                        ) : (
+                            <p className="px-4 py-8 text-center text-muted-foreground">Loading PDF…</p>
+                        )
                     ) : (
                         <div
                             className="statement-section text-foreground"

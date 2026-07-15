@@ -1,16 +1,13 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { ListPropertiesView } from '@/components/instructor/lists/ListPropertiesView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorListSubNav } from '@/lib/instructor/menus'
 
-export const metadata = { title: 'List properties — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ list_nm: string }>
-}
-
-export default async function InstructorListPropertiesPage({ params }: Props) {
-    const { list_nm } = await params
+export default function InstructorListPropertiesPage() {
+    const { list_nm } = useParams<{ list_nm: string }>()
     const baseHref = `/instructor/lists/${list_nm}`
 
     return (

@@ -1,6 +1,22 @@
 import { includesForSearch } from '@/lib/utils'
 import type { Problem } from '@/lib/jutge_api_client'
-import type { ProblemRow } from '@/services/queries/problems'
+import type { ProblemRow } from '@/lib/data/problems'
+
+export function problemIconUrl(icon: string | null | undefined): string | null {
+    if (!icon) {
+        return null
+    }
+
+    return `https://jutge.org/img/problem-icons/${icon}`
+}
+
+export function resolveProblemIconUrl(
+    problemNm: string,
+    iconByNm: ReadonlyMap<string, string>,
+    storedIconUrl?: string | null,
+): string | null {
+    return storedIconUrl ?? iconByNm.get(problemNm) ?? null
+}
 
 export type ProblemsColumnField = 'status' | 'problem_nm' | 'title' | 'author' | 'language_ids' | 'driver_id'
 

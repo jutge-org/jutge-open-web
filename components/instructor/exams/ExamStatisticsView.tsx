@@ -5,7 +5,7 @@ import {
     fetchInstructorExam,
     fetchInstructorExamStatistics,
     fetchMiscHexColors,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { Warning } from '@/components/instructor/Warning'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

@@ -1,7 +1,7 @@
+'use client'
+
 import { ProblemsNewTerminalView } from '@/components/instructor/problems/ProblemsNewTerminalView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
-
-export const metadata = { title: 'Creating problem — Problems — Instructor — Jutge.org' }
 
 export default function InstructorProblemsNewTerminalPage() {
     return (

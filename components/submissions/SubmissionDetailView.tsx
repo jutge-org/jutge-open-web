@@ -2,6 +2,9 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ChevronUpIcon } from 'lucide-react'
 
+import { CircuitErrorReportCard } from '@/components/submissions/CircuitErrorReportCard'
+import { CircuitErrorTraceCard } from '@/components/submissions/CircuitErrorTraceCard'
+import { CircuitModulesCard } from '@/components/submissions/CircuitModulesCard'
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
 import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
 import { ScoringCard } from '@/components/submissions/ScoringCard'
@@ -10,13 +13,14 @@ import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsC
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionNavButton } from '@/components/submissions/SubmissionNavButton'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
+import { WidgetSpinner } from '@/components/general/WidgetSpinner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { hasDebugInformation } from '@/lib/debugInformation'
 import { parseSubmissionTime, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
-import type { ScoringRow, SubmissionDetailData } from '@/services/queries/submissions'
+import type { ScoringRow, SubmissionDetailData } from '@/lib/data/submissions'
 import type { ReactNode } from 'react'
 
 dayjs.extend(relativeTime)
@@ -31,13 +35,26 @@ function scoringTotals(scoring: ScoringRow[]): { obtained: number; total: number
     )
 }
 
-type SubmissionDetailViewProps = {
-    data: SubmissionDetailData
-    codeHref: string
-    debugHref: string
-    problemKey: string
-    navigation?: SubmissionNavLinks | null
-}
+type SubmissionDetailViewProps =
+    | {
+          loading: true
+          submissionId?: string
+          data?: never
+          codeHref?: never
+          debugHref?: never
+          problemKey?: never
+          navigation?: never
+          getTestcaseHref?: never
+      }
+    | {
+          loading?: false
+          data: SubmissionDetailData
+          codeHref: string
+          debugHref?: string
+          problemKey: string
+          navigation?: SubmissionNavLinks | null
+          getTestcaseHref?: (testcase: string) => string | null
+      }
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
     return (
@@ -48,7 +65,35 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
     )
 }
 
-export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, navigation }: SubmissionDetailViewProps) {
+function SubmissionDetailViewLoading({ submissionId }: { submissionId?: string }) {
+    return (
+        <div className="flex flex-col gap-6">
+            <Card className="ring-0 border border-border shadow-sm">
+                <CardHeader className="border-b border-border">
+                    <CardTitle className="text-lg font-semibold">{submissionId ?? 'Submission'}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <WidgetSpinner label="Loading submission" />
+                </CardContent>
+            </Card>
+            <Card className="ring-0 border border-border shadow-sm">
+                <CardHeader className="border-b border-border">
+                    <CardTitle>Source code</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <WidgetSpinner label="Loading source code" />
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+
+export function SubmissionDetailView(props: SubmissionDetailViewProps) {
+    if (props.loading) {
+        return <SubmissionDetailViewLoading submissionId={props.submissionId} />
+    }
+
+    const { data, codeHref, debugHref, problemKey, navigation, getTestcaseHref } = props
     const { submission } = data
     const isPending = submission.state !== 'done'
     const submittedAt = dayjs(parseSubmissionTime(submission.time_in))
@@ -155,10 +200,31 @@ export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, na
                         analysis={data.analysis}
                         problemKey={problemKey}
                         submissionId={submission.submission_id}
+                        getTestcaseHref={getTestcaseHref}
                     />
                 ) : null}
 
                 {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}
+
+                {data.circuitModules ? (
+                    <CircuitModulesCard
+                        modules={data.circuitModules}
+                        problemKey={problemKey}
+                        submissionId={submission.submission_id}
+                    />
+                ) : null}
+
+                {data.circuitErrorReports?.map((trace, index) => (
+                    <CircuitErrorReportCard key={index + 1} index={index + 1} trace={trace} />
+                ))}
+
+                {data.circuitErrorTraces?.map((svg, index) => (
+                    <CircuitErrorTraceCard key={index + 1} index={index + 1} svg={svg} />
+                ))}
+
+                {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (
+                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
+                ) : null}
 
                 {data.code && data.codeFilename ? (
                     <>
@@ -169,10 +235,6 @@ export function SubmissionDetailView({ data, codeHref, debugHref, problemKey, na
                             codeHref={codeHref}
                         />
                     </>
-                ) : null}
-
-                {hasDebugInformation(data.debugInformation) && data.debugInformation ? (
-                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
                 ) : null}
             </div>
         </TooltipProvider>

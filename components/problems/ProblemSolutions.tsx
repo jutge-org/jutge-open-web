@@ -3,17 +3,33 @@
 import { useState } from 'react'
 
 import { ProblemSolutionAccordionItem } from '@/components/problems/ProblemSolutionAccordionItem'
+import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { Card, CardDescription, CardHeader } from '@/components/ui/card'
 
-type ProblemSolutionsProps = {
-    pageKey: string
-    problemId: string
-    problem_nm: string
-    proglangs: string[]
-}
+type ProblemSolutionsProps =
+    | {
+          loading: true
+          pageKey?: string
+          problemId?: string
+          problem_nm?: string
+          proglangs?: never
+      }
+    | {
+          loading?: false
+          pageKey: string
+          problemId: string
+          problem_nm: string
+          proglangs: string[]
+      }
 
-export function ProblemSolutions({ pageKey, problemId, problem_nm, proglangs }: ProblemSolutionsProps) {
+export function ProblemSolutions(props: ProblemSolutionsProps) {
     const [openItems, setOpenItems] = useState<string[]>([])
+
+    if (props.loading) {
+        return <ProblemWidgetCard title="Solutions" />
+    }
+
+    const { pageKey, problemId, problem_nm, proglangs } = props
 
     function toggleProglang(proglang: string) {
         setOpenItems((current) =>

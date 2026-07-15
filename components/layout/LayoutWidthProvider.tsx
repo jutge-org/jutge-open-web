@@ -1,7 +1,8 @@
 'use client'
 
-import { DEFAULT_LAYOUT_WIDTH, LAYOUT_WIDTH_STORAGE_KEY, parseLayoutWidth, type LayoutWidth } from '@/lib/layoutWidth'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { DEFAULT_LAYOUT_WIDTH, type LayoutWidth } from '@/lib/layoutWidth'
+import { useOpenWebLayoutWidth, useOpenWebSettingsStore } from '@/store/openWebSettings'
+import { createContext, useContext, type ReactNode } from 'react'
 
 type LayoutWidthContextValue = {
     layoutWidth: LayoutWidth
@@ -14,26 +15,12 @@ function syncLayoutWidthDataset(layoutWidth: LayoutWidth) {
     document.documentElement.dataset.layoutWidth = layoutWidth
 }
 
-function readStoredLayoutWidth(): LayoutWidth {
-    if (typeof window === 'undefined') {
-        return DEFAULT_LAYOUT_WIDTH
-    }
-
-    return parseLayoutWidth(localStorage.getItem(LAYOUT_WIDTH_STORAGE_KEY)) ?? DEFAULT_LAYOUT_WIDTH
-}
-
 export function LayoutWidthProvider({ children }: { children: ReactNode }) {
-    const [layoutWidth, setLayoutWidthState] = useState<LayoutWidth>(DEFAULT_LAYOUT_WIDTH)
-
-    useEffect(() => {
-        const stored = readStoredLayoutWidth()
-        setLayoutWidthState(stored)
-        syncLayoutWidthDataset(stored)
-    }, [])
+    const layoutWidth = useOpenWebLayoutWidth()
+    const setLayoutWidthInStore = useOpenWebSettingsStore((state) => state.setLayoutWidth)
 
     function setLayoutWidth(next: LayoutWidth) {
-        setLayoutWidthState(next)
-        localStorage.setItem(LAYOUT_WIDTH_STORAGE_KEY, next)
+        setLayoutWidthInStore(next)
         syncLayoutWidthDataset(next)
     }
 
@@ -48,3 +35,5 @@ export function useLayoutWidth() {
 
     return context
 }
+
+export { DEFAULT_LAYOUT_WIDTH }

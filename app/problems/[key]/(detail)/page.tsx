@@ -1,144 +1,125 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { useAuth } from '@/components/AuthProvider'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { QuizProblemUnsupportedCard } from '@/components/problems/QuizProblemUnsupportedCard'
-import { getCurrentClient, getPreferredLanguageId, isAuthenticated, tryGetCurrentUser } from '@/lib/auth'
+import { useProblemShell } from '@/hooks/useProblemShell'
+import { getPreferredLanguageId } from '@/lib/data/auth'
+import { fetchAbstractProblem } from '@/lib/data/problemDetail'
 import { getPreferredProblemVariant } from '@/lib/problemVariants'
-import { isGameProblem, isQuizProblem, parseProblemKey } from '@/lib/problems'
-import {
-    fetchAbstractProblem,
-    fetchInstructorOwnsProblem,
-    fetchProblemDetail,
-    fetchProblemStatus,
-    resolveProblemId,
-} from '@/services/queries/problemDetail'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { isQuizProblem, parseProblemKey } from '@/lib/problems'
+import { problemBaseBreadcrumbs, problemLoadedBreadcrumbs } from '@/lib/problemBreadcrumbs'
 
-type PageProps = {
-    params: Promise<{ key: string }>
+type QuizData = {
+    problem_nm: string
+    title: string
+    author: string | null
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { key } = await params
-    const parsed = parseProblemKey(key)
-    if (parsed.kind === 'invalid') {
-        return { title: 'Problem — Jutge.org' }
-    }
+export default function ProblemPage() {
+    const { user, loading: authLoading } = useAuth()
+    const params = useParams<{ key: string }>()
+    const key = params.key
+    const authenticated = user !== null
 
-    const abstractProblem = await fetchAbstractProblem(parsed.problem_nm)
-    if (!abstractProblem) {
-        return { title: 'Problem — Jutge.org' }
-    }
+    const [quiz, setQuiz] = useState<QuizData | null | undefined>(undefined)
+    const shell = useProblemShell({ key, isAuthenticated: authenticated })
 
-    if (isQuizProblem(abstractProblem.driver_id)) {
-        const preferredLanguageId = await getPreferredLanguageId()
-        const title = getPreferredProblemVariant(abstractProblem, preferredLanguageId)?.title ?? parsed.problem_nm
-        return { title: `${title} — Problems — Jutge.org` }
-    }
+    useEffect(() => {
+        if (authLoading) return
 
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        return { title: 'Problem — Jutge.org' }
-    }
+        let cancelled = false
+        setQuiz(undefined)
 
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        return { title: 'Problem — Jutge.org' }
-    }
+        void (async () => {
+            const parsed = parseProblemKey(key)
+            if (parsed.kind === 'invalid') {
+                if (!cancelled) setQuiz(null)
+                return
+            }
 
-    return { title: `${data.problem.title} — Problems — Jutge.org` }
-}
+            const abstractProblem = await fetchAbstractProblem(parsed.problem_nm)
+            if (cancelled) return
+            if (!abstractProblem) {
+                setQuiz(null)
+                return
+            }
 
-export default async function ProblemPage({ params }: PageProps) {
-    const { key } = await params
-    const parsed = parseProblemKey(key)
-    if (parsed.kind === 'invalid') {
+            if (!isQuizProblem(abstractProblem.driver_id)) {
+                setQuiz(null)
+                return
+            }
+
+            const preferredLanguageId = await getPreferredLanguageId()
+            if (cancelled) return
+
+            const variant = getPreferredProblemVariant(abstractProblem, preferredLanguageId)
+            setQuiz({
+                problem_nm: parsed.problem_nm,
+                title: variant?.title ?? parsed.problem_nm,
+                author: abstractProblem.author,
+            })
+        })()
+
+        return () => {
+            cancelled = true
+        }
+    }, [authLoading, key])
+
+    const quizResolved = quiz !== undefined
+    const isQuiz = quizResolved && quiz !== null
+    const shellActive = quizResolved && quiz === null
+    const loading = authLoading || !quizResolved || (shellActive && shell.detail === undefined)
+
+    if (!loading && shellActive && shell.detail === null) {
         notFound()
     }
 
-    const { problem_nm } = parsed
-    const abstractProblem = await fetchAbstractProblem(problem_nm)
-    if (!abstractProblem) {
-        notFound()
-    }
-
-    const authenticated = await isAuthenticated()
-
-    if (isQuizProblem(abstractProblem.driver_id)) {
-        const preferredLanguageId = await getPreferredLanguageId()
-        const variant = getPreferredProblemVariant(abstractProblem, preferredLanguageId)
-        const title = variant?.title ?? problem_nm
-
+    if (isQuiz && quiz) {
         return (
             <div className="flex flex-col gap-6">
                 <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Problems', url: authenticated ? '/problems' : '/problems/public' },
-                        { title: problem_nm, url: `/problems/${problem_nm}` },
-                        { title, url: `/problems/${key}` },
-                    ]}
+                    breadcrumbs={problemLoadedBreadcrumbs(key, quiz.problem_nm, quiz.title, [], authenticated)}
                 />
                 {!authenticated ? <PageTitle section="/problems" authenticated={false} hidden={false} /> : null}
-                <QuizProblemUnsupportedCard title={title} problemNm={problem_nm} author={abstractProblem.author} />
+                <QuizProblemUnsupportedCard title={quiz.title} problemNm={quiz.problem_nm} author={quiz.author} />
             </div>
         )
     }
 
-    const problemId = await resolveProblemId(key)
-    if (!problemId) {
-        notFound()
-    }
-
-    const data = await fetchProblemDetail(problemId)
-    if (!data) {
-        notFound()
-    }
-
-    const { problem } = data
-
-    let status: Awaited<ReturnType<typeof fetchProblemStatus>> | undefined
-    let defaultCompilerId: string | null | undefined
-    let isInstructorOwner = false
-    let isAdministrator = false
-
-    if (authenticated && !isGameProblem(abstractProblem.driver_id)) {
-        const client = await getCurrentClient()
-        const [statusResult, profile, ownsProblem, user] = await Promise.all([
-            fetchProblemStatus(client, problem.problem_nm),
-            client.student.profile.get(),
-            fetchInstructorOwnsProblem(problem.problem_nm),
-            tryGetCurrentUser(),
-        ])
-        status = statusResult
-        defaultCompilerId = profile.compiler_id
-        isInstructorOwner = ownsProblem
-        isAdministrator = user?.administrator ?? false
-    } else {
-        const user = authenticated ? await tryGetCurrentUser() : null
-        isInstructorOwner = await fetchInstructorOwnsProblem(problem.problem_nm)
-        isAdministrator = user?.administrator ?? false
-    }
+    const breadcrumbs =
+        shellActive && shell.detail
+            ? problemLoadedBreadcrumbs(
+                  key,
+                  shell.detail.problem.problem_nm,
+                  shell.detail.problem.title,
+                  [],
+                  authenticated,
+              )
+            : problemBaseBreadcrumbs(key, authenticated)
 
     return (
         <div className="flex flex-col gap-6">
-            <MainBreadcrumbs
-                breadcrumbs={[
-                    { title: 'Problems', url: authenticated ? '/problems' : '/problems/public' },
-                    { title: problem.problem_nm, url: `/problems/${problem.problem_nm}` },
-                    { title: problem.title, url: `/problems/${key}` },
-                ]}
-            />
+            <MainBreadcrumbs breadcrumbs={breadcrumbs} />
             {!authenticated ? <PageTitle section="/problems" authenticated={false} hidden={false} /> : null}
-            <ProblemDetail
-                pageKey={key}
-                data={data}
-                status={status}
-                defaultCompilerId={defaultCompilerId}
-                isInstructorOwner={isInstructorOwner}
-                isAdministrator={isAdministrator}
-                showNav={authenticated}
-            />
+            {shellActive && shell.detail ? (
+                <ProblemDetail
+                    pageKey={key}
+                    data={shell.detail}
+                    status={shell.status}
+                    defaultCompilerId={shell.defaultCompilerId}
+                    isInstructorOwner={shell.isInstructorOwner ?? false}
+                    isAdministrator={user?.administrator ?? false}
+                    showNav={authenticated}
+                />
+            ) : (
+                <ProblemDetail loading pageKey={key} showNav={authenticated} />
+            )}
         </div>
     )
 }

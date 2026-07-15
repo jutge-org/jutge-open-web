@@ -6,11 +6,12 @@ import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
-import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/actions/submissions'
+import { fetchProblemSubmissionsRowsAction, fetchSubmissionsRowsAction } from '@/lib/data/submissionsActions'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { ProblemIdLabel } from '@/components/problems/ProblemIdLabel'
 import { SubmissionsListToolbar } from '@/components/submissions/SubmissionsListToolbar'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     DEFAULT_SUBMISSIONS_COLUMN_VISIBILITY,
@@ -32,16 +33,29 @@ type SubmissionsListProps =
           rows: SubmissionRow[]
           variant?: 'default'
           showHelp?: boolean
+          loading?: boolean
+          onRefreshPending?: () => Promise<SubmissionRow[]>
+          emptyMessage?: string
       }
     | {
           rows: ProblemSubmissionRow[]
           variant: 'problem'
           problemNm: string
           showHelp?: boolean
+          loading?: boolean
+          onRefreshPending?: () => Promise<ProblemSubmissionRow[]>
+          emptyMessage?: string
       }
 
 export function SubmissionsList(props: SubmissionsListProps) {
-    const { rows: initialRows, variant = 'default', showHelp = false } = props
+    const {
+        rows: initialRows,
+        variant = 'default',
+        showHelp = false,
+        loading = false,
+        onRefreshPending,
+        emptyMessage,
+    } = props
     const problemNm = props.variant === 'problem' ? props.problemNm : undefined
     const [rows, setRows] = useState(initialRows)
     const [searchQuery, setSearchQuery] = useState('')
@@ -63,10 +77,11 @@ export function SubmissionsList(props: SubmissionsListProps) {
         const intervalId = window.setInterval(async () => {
             refreshCount += 1
 
-            const nextRows =
-                problemNm !== undefined
-                    ? await fetchProblemSubmissionsRowsAction(problemNm)
-                    : await fetchSubmissionsRowsAction()
+            const nextRows = onRefreshPending
+                ? await onRefreshPending()
+                : problemNm !== undefined
+                  ? await fetchProblemSubmissionsRowsAction(problemNm)
+                  : await fetchSubmissionsRowsAction()
 
             setRows(nextRows)
 
@@ -79,7 +94,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
         }, PENDING_SUBMISSION_REFRESH_INTERVAL_MS)
 
         return () => window.clearInterval(intervalId)
-    }, [hasPending, problemNm])
+    }, [hasPending, onRefreshPending, problemNm])
 
     const visibleRows = useMemo(() => {
         if (variant === 'problem') {
@@ -242,12 +257,37 @@ export function SubmissionsList(props: SubmissionsListProps) {
         [columnVisibility, variant],
     )
 
+    if (loading) {
+        return (
+            <div className="flex flex-col gap-4">
+                <SubmissionsListToolbar
+                    variant={variant}
+                    searchQuery={searchQuery}
+                    onSearchQueryChange={setSearchQuery}
+                    verdictFilter={verdictFilter}
+                    onVerdictFilterChange={setVerdictFilter}
+                    columnVisibility={columnVisibility}
+                    onColumnVisibilityChange={handleColumnVisibilityChange}
+                    showHelp={showHelp}
+                />
+                <div
+                    aria-busy="true"
+                    aria-label="Loading submissions"
+                    className="flex min-h-64 items-center justify-center border border-dashed border-border bg-muted/20"
+                >
+                    <Spinner className="size-8 text-muted-foreground" />
+                </div>
+            </div>
+        )
+    }
+
     if (rows.length === 0) {
         return (
             <p className="w-full border p-12 text-sm text-muted-foreground text-center">
-                {variant === 'problem'
-                    ? 'You have not submitted any solution to this problem yet.'
-                    : 'No submissions yet.'}
+                {emptyMessage ??
+                    (variant === 'problem'
+                        ? 'You have not submitted any solution to this problem yet.'
+                        : 'No submissions yet.')}
             </p>
         )
     }

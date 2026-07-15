@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAbstractProblem, fetchInstructorProblemDownload } from '@/actions/instructor'
+import { fetchAbstractProblem, fetchInstructorProblemDownload } from '@/lib/instructor/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { JForm, type JFormFields } from '@/components/instructor/JForm'
 import { mapmap, offerDownloadFile } from '@/lib/instructor/utils'

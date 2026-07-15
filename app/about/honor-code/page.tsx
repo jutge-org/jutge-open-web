@@ -1,8 +1,6 @@
 import { AboutPageShell } from '@/components/about/AboutPageShell'
 import { Prose } from '@/components/documentation/Prose'
 
-export const metadata = { title: 'Honor Code — About — Jutge.org' }
-
 export default function AboutHonorCodePage() {
     return (
         <AboutPageShell

@@ -20,7 +20,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE } from '@/lib/fontScale'
 import { DEFAULT_HLJS_THEME, formatHljsThemeLabel, HLJS_THEMES, type HljsThemeSelection } from '@/lib/hljsThemes'
-import { solutionDownloadHref, solutionViewHref } from '@/lib/solutions'
+import { solutionViewHref } from '@/lib/solutions'
 import { includesForSearch } from '@/lib/utils'
 
 type SolutionSourceCodeToolbarProps = {
@@ -49,7 +49,6 @@ export function SolutionSourceCodeToolbar({
     const [themeSearch, setThemeSearch] = useState('')
 
     const viewHref = solutionViewHref(pageKey, proglang)
-    const downloadHref = solutionDownloadHref(pageKey, proglang)
 
     const filteredThemes = useMemo(() => {
         const query = themeSearch.trim()
@@ -83,16 +82,8 @@ export function SolutionSourceCodeToolbar({
     }
 
     function downloadCode() {
-        void fetch(downloadHref)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Download failed')
-                }
-
-                return response.blob()
-            })
-            .then((blob) => saveAs(blob, codeFilename))
-            .catch(() => toast.error('Failed to download'))
+        const blob = new Blob([code], { type: 'text/plain;charset=utf-8' })
+        saveAs(blob, codeFilename)
     }
 
     return (

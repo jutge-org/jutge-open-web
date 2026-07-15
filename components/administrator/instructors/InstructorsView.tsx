@@ -1,6 +1,6 @@
 'use client'
 
-import { adminAddInstructor, adminRemoveInstructor, fetchAdminInstructors } from '@/actions/administrator'
+import { adminAddInstructor, adminRemoveInstructor, fetchAdminInstructors } from '@/lib/administrator/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useConfirmDialog } from '@/components/administrator/ConfirmDialog'
 import { useAddInstructorDialog } from '@/components/administrator/instructors/AddInstructorDialog'

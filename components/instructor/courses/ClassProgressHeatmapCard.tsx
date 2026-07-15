@@ -9,6 +9,8 @@ import {
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,6 +26,7 @@ import { forwardRef, useMemo, useRef, useState } from 'react'
 
 type CellStatus = 'OK' | 'KO' | 'NT' | 'SC'
 type ColumnMode = 'problems' | 'lists'
+type StudentLabelMode = 'label' | 'name' | 'email'
 type StudentSortField = 'name' | 'email' | 'ok' | 'sc' | 'ko' | 'nt' | 'completion'
 type ProblemSortField = 'listOrder' | 'course' | 'problemNm' | 'title' | 'ok' | 'sc' | 'ko' | 'nt' | 'completion'
 type ColumnSortField = ProblemSortField
@@ -326,8 +329,21 @@ function isStudentAxisItem(item: AxisItem): boolean {
     return !item.listNm && item.problemNms.length === 0
 }
 
-function withStudentEmailLabels(data: HeatmapData): HeatmapData {
-    const relabel = (item: AxisItem): AxisItem => (isStudentAxisItem(item) ? { ...item, label: item.subtitle } : item)
+function studentDisplayLabel(item: AxisItem, mode: StudentLabelMode): string {
+    if (!isStudentAxisItem(item)) return item.label
+    switch (mode) {
+        case 'name':
+            return item.title
+        case 'email':
+            return item.subtitle
+        case 'label':
+            return item.label
+    }
+}
+
+function withStudentDisplayLabels(data: HeatmapData, mode: StudentLabelMode): HeatmapData {
+    const relabel = (item: AxisItem): AxisItem =>
+        isStudentAxisItem(item) ? { ...item, label: studentDisplayLabel(item, mode) } : item
 
     return {
         ...data,
@@ -360,6 +376,12 @@ function measureColLabelHeight(colItems: AxisItem[], scaleX: number, scaleY: num
 function measureProblemColLabelRise(fontSize: number, scaleY: number): number {
     const textWidth = estimateTextWidth('0'.repeat(PROBLEM_NM_CHARS), fontSize)
     return textWidth * Math.SQRT1_2 + 2 * scaleY
+}
+
+const STUDENT_LABEL_MODE_LABELS: Record<StudentLabelMode, string> = {
+    label: 'Label (S*)',
+    name: 'Name',
+    email: 'Email',
 }
 
 const STUDENT_SORT_LABELS: Record<StudentSortField, string> = {
@@ -714,6 +736,40 @@ type ListFilterDropdownProps = {
     onSelectedListNmsChange: (listNms: string[]) => void
 }
 
+type StudentLabelDropdownProps = {
+    mode: StudentLabelMode
+    onModeChange: (mode: StudentLabelMode) => void
+}
+
+function StudentLabelDropdown({ mode, onModeChange }: StudentLabelDropdownProps) {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-44 justify-between px-3 font-normal"
+                    aria-label="Show students by"
+                >
+                    <span className="truncate">{STUDENT_LABEL_MODE_LABELS[mode]}</span>
+                    <ChevronDownIcon className="size-4 shrink-0 opacity-50" aria-hidden />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+                <DropdownMenuLabel>Show students by</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={mode} onValueChange={(value) => onModeChange(value as StudentLabelMode)}>
+                    {(Object.keys(STUDENT_LABEL_MODE_LABELS) as StudentLabelMode[]).map((option) => (
+                        <DropdownMenuRadioItem key={option} value={option}>
+                            {STUDENT_LABEL_MODE_LABELS[option]}
+                        </DropdownMenuRadioItem>
+                    ))}
+                </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
 function ListFilterDropdown({ options, selectedListNms, onSelectedListNmsChange }: ListFilterDropdownProps) {
     const selectedSet = new Set(selectedListNms)
 
@@ -788,6 +844,7 @@ function ClassProgressHeatmapCardBase({
     listColumns,
 }: ClassProgressHeatmapCardBaseProps) {
     const [transposed, setTransposed] = useState(defaultTransposed)
+    const [studentLabelMode, setStudentLabelMode] = useState<StudentLabelMode>('label')
     const [studentSort, setStudentSort] = useState<StudentSortField>('name')
     const [columnSort, setColumnSort] = useState<ColumnSortField>(
         defaultColumnSort ?? (columnMode === 'lists' ? 'course' : 'listOrder'),
@@ -831,7 +888,10 @@ function ClassProgressHeatmapCardBase({
     }, [showListBrackets, transposed, sortedData.rowItems, sortedData.colItems])
     const bracketPosition = transposed ? 'left' : 'top'
 
-    const exportData = useMemo(() => withStudentEmailLabels(sortedData), [sortedData])
+    const displayData = useMemo(
+        () => withStudentDisplayLabels(sortedData, studentLabelMode),
+        [sortedData, studentLabelMode],
+    )
 
     const isEmpty = sortedData.rowItems.length === 0 || sortedData.colItems.length === 0
 
@@ -864,6 +924,10 @@ function ClassProgressHeatmapCardBase({
                     </TooltipProvider>
                 </CardAction>
                 <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Show students</span>
+                        <StudentLabelDropdown mode={studentLabelMode} onModeChange={setStudentLabelMode} />
+                    </div>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">Sort students</span>
                         <Select
@@ -968,10 +1032,10 @@ function ClassProgressHeatmapCardBase({
                         className={`${scrollAreaClassName} w-full overflow-auto rounded-md border border-border p-3 pt-4`}
                     >
                         <HeatmapSvg
-                            rowItems={sortedData.rowItems}
-                            colItems={sortedData.colItems}
-                            cells={sortedData.cells}
-                            listProportions={sortedData.listProportions}
+                            rowItems={displayData.rowItems}
+                            colItems={displayData.colItems}
+                            cells={displayData.cells}
+                            listProportions={displayData.listProportions}
                             columnMode={columnMode}
                             zoomX={zoomX}
                             zoomY={zoomY}
@@ -982,10 +1046,10 @@ function ClassProgressHeatmapCardBase({
                         <div aria-hidden className="pointer-events-none fixed -left-[10000px] top-0 opacity-0">
                             <HeatmapSvg
                                 ref={exportSvgRef}
-                                rowItems={exportData.rowItems}
-                                colItems={exportData.colItems}
-                                cells={exportData.cells}
-                                listProportions={exportData.listProportions}
+                                rowItems={displayData.rowItems}
+                                colItems={displayData.colItems}
+                                cells={displayData.cells}
+                                listProportions={displayData.listProportions}
                                 columnMode={columnMode}
                                 zoomX={zoomX}
                                 zoomY={zoomY}

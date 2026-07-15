@@ -1,16 +1,13 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { ProblemDangerZoneView } from '@/components/instructor/problems/ProblemDangerZoneView'
 import { InstructorPageShell } from '@/components/instructor/InstructorPageShell'
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorProblemSubNav } from '@/lib/instructor/menus'
 
-export const metadata = { title: 'Problem danger zone — Instructor — Jutge.org' }
-
-type Props = {
-    params: Promise<{ problem_nm: string }>
-}
-
-export default async function InstructorProblemDangerZonePage({ params }: Props) {
-    const { problem_nm } = await params
+export default function InstructorProblemDangerZonePage() {
+    const { problem_nm } = useParams<{ problem_nm: string }>()
     const baseHref = `/instructor/problems/${problem_nm}`
 
     return (

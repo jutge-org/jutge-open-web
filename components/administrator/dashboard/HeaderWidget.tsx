@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardZombies, fetchHomepageStats } from '@/actions/administrator'
+import { fetchAdminDashboardZombies, fetchHomepageStats } from '@/lib/administrator/client'
 import SimpleSpinner from '@/components/administrator/SimpleSpinner'
 import { cn } from '@/lib/utils'
 import { AlertTriangleIcon, FileBracesCornerIcon, SendIcon, UsersIcon } from 'lucide-react'

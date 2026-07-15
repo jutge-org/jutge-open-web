@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminUserProfiles } from '@/actions/administrator'
+import { fetchAdminUserProfiles } from '@/lib/administrator/client'
 import { AgTableFull } from '@/components/administrator/AgTable'
 import { useProfileDialog } from '@/components/administrator/users/ProfileDialog'
 import { emailRenderer } from '@/lib/administrator/grid-renderers'

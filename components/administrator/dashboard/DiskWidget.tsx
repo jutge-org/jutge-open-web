@@ -1,6 +1,6 @@
 'use client'
 
-import { fetchAdminDashboardFreeDiskSpace } from '@/actions/administrator'
+import { fetchAdminDashboardFreeDiskSpace } from '@/lib/administrator/client'
 import { SaveIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FreeDiskSpace } from '@/lib/jutge_api_client'

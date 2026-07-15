@@ -1,98 +1,191 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+'use client'
 
-import { CourseDetail } from '@/components/courses/CourseDetail'
+import { useEffect, useState } from 'react'
+import { notFound, useParams } from 'next/navigation'
+
+import { AuthedGate } from '@/components/ClientGates'
+import { CourseDetail, CourseDetailLoading } from '@/components/courses/CourseDetail'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
-import { getCurrentClient, getPreferredLanguageId } from '@/lib/auth'
+import jutge from '@/lib/jutge'
 import { buildCourseRow, courseHref, isCourseOwnedByUser, isCourseTutor } from '@/lib/courses'
 import type { LastSubmissionInfo } from '@/lib/submissions'
-import { renderAuthed } from '@/lib/renderAuthed'
-import { fetchCourse } from '@/services/queries/courses'
-import { fetchCourseListsData } from '@/services/queries/lists'
-import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/services/queries/problems'
-import { fetchLastSubmissionsByProblemNm } from '@/services/queries/submissions'
+import { getPreferredLanguageId } from '@/lib/data/auth'
+import { fetchCourse, fetchPublicCourse } from '@/lib/data/courses'
+import { fetchCourseListsData, type CourseListData } from '@/lib/data/lists'
+import { fetchAllAbstractProblems, fetchLanguages, fetchStudentProblemStatuses } from '@/lib/data/problems'
+import { fetchLastSubmissionsByProblemNm } from '@/lib/data/submissions'
+import type { Course, Language, AbstractStatus, Profile } from '@/lib/jutge_api_client'
+import type { CourseStatus } from '@/lib/courses'
 
-export const dynamic = 'force-dynamic'
-
-type PageProps = {
-    params: Promise<{ course_key: string }>
+type CourseCoreData = {
+    courseKey: string
+    course: Course
+    status: CourseStatus
+    isOwner: boolean
+    isTutor: boolean
+    row: ReturnType<typeof buildCourseRow>
+    problemCount?: number
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { course_key: rawCourseKey } = await params
+type CourseListsData = {
+    lists: CourseListData[]
+    languages: Record<string, Language>
+    statuses?: Record<string, AbstractStatus>
+    lastSubmissions?: Record<string, LastSubmissionInfo>
+}
 
-    try {
-        const client = await getCurrentClient()
-        const result = await fetchCourse(client, rawCourseKey)
-        if (!result) {
-            return { title: 'Course — Jutge.org' }
+export default function CoursePage() {
+    return <AuthedGate>{(user) => <CoursePageContent userId={user.id} />}</AuthedGate>
+}
+
+function CoursePageContent({ userId }: { userId: string }) {
+    const params = useParams<{ course_key: string }>()
+    const [courseData, setCourseData] = useState<CourseCoreData | null | undefined>(undefined)
+    const [listsData, setListsData] = useState<CourseListsData | undefined>(undefined)
+    const [listsLoading, setListsLoading] = useState(false)
+
+    useEffect(() => {
+        let cancelled = false
+
+        setCourseData(undefined)
+        setListsData(undefined)
+        setListsLoading(false)
+
+        void (async () => {
+            const [result, profile] = await Promise.all([
+                fetchCourse(jutge, params.course_key),
+                jutge.student.profile.get(),
+            ])
+            if (cancelled) {
+                return
+            }
+
+            if (!result) {
+                setCourseData(null)
+                return
+            }
+
+            const { courseKey, course, status } = result
+            const isOwner = isCourseOwnedByUser(course.owner, profile)
+            const isTutor = isCourseTutor(course, isOwner)
+            const row = buildCourseRow(course, status, courseKey, isOwner)
+
+            let problemCount: number | undefined
+            if (status === 'available' && course.public !== 0) {
+                const publicCourse = await fetchPublicCourse(courseKey)
+                if (!cancelled && publicCourse) {
+                    problemCount = publicCourse.course.problem_count
+                }
+            }
+
+            setCourseData({
+                courseKey,
+                course,
+                status,
+                isOwner,
+                isTutor,
+                row,
+                problemCount,
+            })
+
+            if (status === 'available') {
+                return
+            }
+
+            setListsLoading(true)
+            void loadCourseLists({
+                course,
+                profile,
+                isCancelled: () => cancelled,
+                setListsData,
+                setListsLoading,
+            })
+        })()
+
+        return () => {
+            cancelled = true
         }
+    }, [params.course_key])
 
-        const row = buildCourseRow(result.course, result.status, result.courseKey)
-        return { title: `${row.title} — Courses — Jutge.org` }
-    } catch {
-        return { title: 'Course — Jutge.org' }
+    if (courseData === null) {
+        notFound()
     }
+
+    const href = courseHref(params.course_key)
+
+    return (
+        <div className="flex flex-col gap-6">
+            <MainBreadcrumbs
+                breadcrumbs={[
+                    { title: 'Courses', url: '/courses' },
+                    { title: courseData?.row.title ?? '…', url: href },
+                ]}
+            />
+            {courseData === undefined ? (
+                <CourseDetailLoading />
+            ) : (
+                <CourseDetail
+                    courseKey={courseData.courseKey}
+                    course={courseData.course}
+                    status={courseData.status}
+                    isOwner={courseData.isOwner}
+                    isTutor={courseData.isTutor}
+                    userId={userId}
+                    lists={listsData?.lists ?? []}
+                    languages={listsData?.languages ?? {}}
+                    statuses={listsData?.statuses}
+                    lastSubmissions={listsData?.lastSubmissions}
+                    listsLoading={listsLoading}
+                    problemCount={courseData.problemCount}
+                />
+            )}
+        </div>
+    )
 }
 
-export default async function CoursePage({ params }: PageProps) {
-    const { course_key: rawCourseKey } = await params
-
-    return renderAuthed(async (user) => {
-        const client = await getCurrentClient()
-        const [result, profile] = await Promise.all([fetchCourse(client, rawCourseKey), client.student.profile.get()])
-        if (!result) {
-            notFound()
+async function loadCourseLists({
+    course,
+    profile,
+    isCancelled,
+    setListsData,
+    setListsLoading,
+}: {
+    course: Course
+    profile: Profile
+    isCancelled: () => boolean
+    setListsData: (data: CourseListsData) => void
+    setListsLoading: (loading: boolean) => void
+}) {
+    try {
+        const [preferredLanguageId, languages, statuses, lastSubmissionsByProblemNm] = await Promise.all([
+            getPreferredLanguageId(),
+            fetchLanguages(),
+            fetchStudentProblemStatuses(jutge),
+            fetchLastSubmissionsByProblemNm(jutge),
+        ])
+        if (isCancelled()) {
+            return
         }
 
-        const { courseKey, course, status } = result
-        const isOwner = isCourseOwnedByUser(course.owner, profile)
-        const isTutor = isCourseTutor(course, isOwner)
-        const row = buildCourseRow(course, status, courseKey, isOwner)
-        const href = courseHref(courseKey)
-
-        const isEnrolled = status !== 'available'
-        let lists: Awaited<ReturnType<typeof fetchCourseListsData>> = []
-        let languages: Awaited<ReturnType<typeof fetchLanguages>> = {}
-        let statuses: Awaited<ReturnType<typeof fetchStudentProblemStatuses>> | undefined
-        let lastSubmissions: Record<string, LastSubmissionInfo> | undefined
-
-        if (isEnrolled) {
-            const [preferredLanguageId, languagesResult, statusesResult, lastSubmissionsByProblemNm] =
-                await Promise.all([
-                    getPreferredLanguageId(),
-                    fetchLanguages(),
-                    fetchStudentProblemStatuses(client),
-                    fetchLastSubmissionsByProblemNm(client),
-                ])
-            const problems = await fetchAllAbstractProblems(preferredLanguageId)
-            lists = await fetchCourseListsData(client, course.lists, problems, profile)
-            languages = languagesResult
-            statuses = statusesResult
-            lastSubmissions = Object.fromEntries(lastSubmissionsByProblemNm)
+        const problems = await fetchAllAbstractProblems(preferredLanguageId)
+        if (isCancelled()) {
+            return
         }
 
-        return (
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs
-                    breadcrumbs={[
-                        { title: 'Courses', url: '/courses' },
-                        { title: row.title, url: href },
-                    ]}
-                />
-                <CourseDetail
-                    courseKey={courseKey}
-                    course={course}
-                    status={status}
-                    isOwner={isOwner}
-                    isTutor={isTutor}
-                    userId={user.id}
-                    lists={lists}
-                    languages={languages}
-                    statuses={statuses}
-                    lastSubmissions={lastSubmissions}
-                />
-            </div>
-        )
-    })
+        const lists = await fetchCourseListsData(jutge, course.lists, problems, profile)
+        if (isCancelled()) {
+            return
+        }
+
+        setListsData({
+            lists,
+            languages,
+            statuses,
+            lastSubmissions: Object.fromEntries(lastSubmissionsByProblemNm),
+        })
+    } finally {
+        if (!isCancelled()) {
+            setListsLoading(false)
+        }
+    }
 }

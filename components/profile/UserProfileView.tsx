@@ -1,29 +1,42 @@
-import { ExternalLink } from '@/components/ExternalLink'
-import type { ReactNode } from 'react'
+'use client'
 
-import { getCurrentClient, type SessionUser } from '@/lib/auth'
+import { useEffect, useState, type ReactNode } from 'react'
+
+import { PageSpinner } from '@/components/ClientGates'
+import { ExternalLink } from '@/components/ExternalLink'
 import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { fetchProfilePageData } from '@/services/queries/users'
+import jutge from '@/lib/jutge'
+import { fetchProfilePageData } from '@/lib/data/users'
+import type { SessionUser } from '@/lib/session'
 import { CrownIcon, GraduationCapIcon, UsersIcon } from 'lucide-react'
 
 type UserProfileViewProps = {
     user: SessionUser
 }
 
+type ProfilePageData = Awaited<ReturnType<typeof fetchProfilePageData>>
+
 function formatOptional(value: string | null | undefined): string {
     const trimmed = value?.trim()
     return trimmed ? trimmed : '—'
 }
 
-export async function UserProfileView({ user }: UserProfileViewProps) {
-    const client = await getCurrentClient()
-    const { profile, countries, languageName, compilerName, avatarDataUrl } = await fetchProfilePageData(client)
+export function UserProfileView({ user }: UserProfileViewProps) {
+    const [data, setData] = useState<ProfilePageData | null>(null)
 
+    useEffect(() => {
+        void fetchProfilePageData(jutge).then(setData)
+    }, [])
+
+    if (!data) {
+        return <PageSpinner />
+    }
+
+    const { profile, countries, languageName, compilerName, avatarDataUrl } = data
     const country = profile.country_id ? countries.find((entry) => entry.country_id === profile.country_id) : null
     const countryName = country?.eng_name ?? '—'
-
     const description = profile.description?.trim()
 
     return (

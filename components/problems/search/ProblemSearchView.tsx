@@ -4,7 +4,7 @@ import {
     fetchInstructorAnonymousSubmissions,
     fetchInstructorProblemPopularityBuckets,
     fetchMiscHexColors,
-} from '@/actions/instructor'
+} from '@/lib/instructor/client'
 import {
     BookmarkIcon,
     BotIcon,
@@ -42,6 +42,7 @@ import {
     YAxis,
 } from 'recharts'
 import StatementDialog from '@/components/instructor/StatementDialog'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { SearchInput } from '@/components/SearchInput'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -74,6 +75,7 @@ export type ProblemSearchActions = {
     fetchTextStatement: (problem_id: string) => Promise<string>
 }
 import { offerDownloadFile } from '@/lib/instructor/utils'
+import { problemIconUrl } from '@/lib/problems'
 
 type ProblemSearchViewProps = {
     actions: ProblemSearchActions
@@ -894,6 +896,7 @@ function Result(props: ResultProps) {
     const [isStatementDialogOpen, setIsStatementDialogOpen] = useState(false)
 
     const abspbm = props.allAbstractProblems[props.result.problem_nm]
+    const iconUrl = problemIconUrl(abspbm.icon)
     const [pbm, setPbm] = useState(
         Object.values(abspbm.problems).find((p) => p.original_language_id === p.language_id)!,
     )
@@ -938,6 +941,7 @@ function Result(props: ResultProps) {
     return (
         <div className="border rounded-lg px-4 py-3 flex flex-col">
             <div className="mb-1 flex flex-row gap-2">
+                {iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="sm" className="mt-0.5" /> : null}
                 <a href={`/problems/${props.result.problem_nm}`} className="font-bold text-primary hover:underline">
                     {props.result.problem_nm}
                 </a>

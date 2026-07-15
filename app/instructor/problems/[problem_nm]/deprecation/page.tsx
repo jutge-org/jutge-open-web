@@ -1,10 +1,15 @@
-import { redirect } from 'next/navigation'
+'use client'
 
-type Props = {
-    params: Promise<{ problem_nm: string }>
-}
+import { useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 
-export default async function InstructorProblemDeprecationRedirectPage({ params }: Props) {
-    const { problem_nm } = await params
-    redirect(`/instructor/problems/${problem_nm}/dangerzone`)
+export default function InstructorProblemDeprecationRedirectPage() {
+    const { problem_nm } = useParams<{ problem_nm: string }>()
+    const router = useRouter()
+
+    useEffect(() => {
+        router.replace(`/instructor/problems/${problem_nm}/dangerzone`)
+    }, [problem_nm, router])
+
+    return null
 }

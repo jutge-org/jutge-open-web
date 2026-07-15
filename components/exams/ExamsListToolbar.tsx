@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, FunnelIcon } from 'lucide-react'
+import { ArrowDownWideNarrowIcon, FunnelIcon, HelpCircleIcon } from 'lucide-react'
 
 import { ExamsHelpDialog } from '@/components/exams/ExamsHelpDialog'
 import { SearchInput } from '@/components/SearchInput'
@@ -30,6 +30,7 @@ type ExamsListToolbarProps = {
     visibleCount?: number
     totalCount?: number
     showHelp?: boolean
+    disabled?: boolean
 }
 
 export function ExamsListToolbar({
@@ -44,6 +45,7 @@ export function ExamsListToolbar({
     visibleCount,
     totalCount,
     showHelp = false,
+    disabled = false,
 }: ExamsListToolbarProps) {
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
 
@@ -56,63 +58,75 @@ export function ExamsListToolbar({
                     </Badge>
                 ) : null}
                 <ButtonGroup>
-                    <DropdownMenu>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <DropdownMenuTrigger asChild>
-                                    <Button type="button" variant="outline" size="icon" aria-label="Filter exams">
-                                        <FunnelIcon aria-hidden />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">Filter exams</TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent align="end" className="w-44">
-                            <DropdownMenuLabel>Type</DropdownMenuLabel>
-                            <DropdownMenuRadioGroup
-                                value={typeFilter}
-                                onValueChange={(value) => onTypeFilterChange(value as ExamsTypeFilter)}
-                            >
-                                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="exam">Exams</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="contest">Contests</DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                            <DropdownMenuLabel>Status</DropdownMenuLabel>
-                            <DropdownMenuRadioGroup
-                                value={statusFilter}
-                                onValueChange={(value) => onStatusFilterChange(value as ExamsStatusFilter)}
-                            >
-                                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="upcoming">Upcoming</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="in-progress">In progress</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="finished">Finished</DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <DropdownMenu>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <DropdownMenuTrigger asChild>
-                                    <Button type="button" variant="outline" size="icon" aria-label="Sort exams">
-                                        <ArrowDownWideNarrowIcon aria-hidden />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">Sort exams</TooltipContent>
-                        </Tooltip>
-                        <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                            <DropdownMenuRadioGroup
-                                value={sortField}
-                                onValueChange={(value) => onSortFieldChange(value as ExamsSortField)}
-                            >
-                                <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="title">Title</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="course">Course</DropdownMenuRadioItem>
-                                <DropdownMenuRadioItem value="instructor">Instructor</DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    {disabled ? (
+                        <Button type="button" variant="outline" size="icon" aria-label="Filter exams" disabled>
+                            <FunnelIcon aria-hidden />
+                        </Button>
+                    ) : (
+                        <DropdownMenu>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button type="button" variant="outline" size="icon" aria-label="Filter exams">
+                                            <FunnelIcon aria-hidden />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">Filter exams</TooltipContent>
+                            </Tooltip>
+                            <DropdownMenuContent align="end" className="w-44">
+                                <DropdownMenuLabel>Type</DropdownMenuLabel>
+                                <DropdownMenuRadioGroup
+                                    value={typeFilter}
+                                    onValueChange={(value) => onTypeFilterChange(value as ExamsTypeFilter)}
+                                >
+                                    <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="exam">Exams</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="contest">Contests</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                                <DropdownMenuLabel>Status</DropdownMenuLabel>
+                                <DropdownMenuRadioGroup
+                                    value={statusFilter}
+                                    onValueChange={(value) => onStatusFilterChange(value as ExamsStatusFilter)}
+                                >
+                                    <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="upcoming">Upcoming</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="in-progress">In progress</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="finished">Finished</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+                    {disabled ? (
+                        <Button type="button" variant="outline" size="icon" aria-label="Sort exams" disabled>
+                            <ArrowDownWideNarrowIcon aria-hidden />
+                        </Button>
+                    ) : (
+                        <DropdownMenu>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button type="button" variant="outline" size="icon" aria-label="Sort exams">
+                                            <ArrowDownWideNarrowIcon aria-hidden />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">Sort exams</TooltipContent>
+                            </Tooltip>
+                            <DropdownMenuContent align="end" className="w-40">
+                                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                                <DropdownMenuRadioGroup
+                                    value={sortField}
+                                    onValueChange={(value) => onSortFieldChange(value as ExamsSortField)}
+                                >
+                                    <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title">Title</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="course">Course</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="instructor">Instructor</DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </ButtonGroup>
                 <SearchInput
                     showSearchIcon
@@ -121,8 +135,17 @@ export function ExamsListToolbar({
                     placeholder="Search…"
                     className="w-64 shrink-0"
                     aria-label="Search exams"
+                    disabled={disabled}
                 />
-                {showHelp ? <ExamsHelpDialog /> : null}
+                {showHelp ? (
+                    disabled ? (
+                        <Button type="button" variant="outline" size="icon" aria-label="About exams" disabled>
+                            <HelpCircleIcon aria-hidden />
+                        </Button>
+                    ) : (
+                        <ExamsHelpDialog />
+                    )
+                ) : null}
             </div>
         </TooltipProvider>
     )

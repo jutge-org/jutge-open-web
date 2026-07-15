@@ -14,8 +14,10 @@ import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import { instructorListPropertiesHref } from '@/lib/courses'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
-import type { CourseListData, CourseListItemRow } from '@/services/queries/lists'
+import type { CourseListData, CourseListItemRow } from '@/lib/data/lists'
 import { cn } from '@/lib/utils'
+
+import type { SupervisionContext } from '@/lib/supervision'
 
 type CourseListsProps = {
     courseKey: string
@@ -23,6 +25,7 @@ type CourseListsProps = {
     languages: Record<string, Language>
     statuses?: Record<string, AbstractStatus>
     lastSubmissions?: Record<string, LastSubmissionInfo>
+    supervisionContext?: SupervisionContext
 }
 
 type ListProblemCounts = {
@@ -112,7 +115,14 @@ function CourseListOwnerMenu({ listNm, title }: CourseListOwnerMenuProps) {
     )
 }
 
-export function CourseLists({ courseKey, lists, languages, statuses, lastSubmissions }: CourseListsProps) {
+export function CourseLists({
+    courseKey,
+    lists,
+    languages,
+    statuses,
+    lastSubmissions,
+    supervisionContext,
+}: CourseListsProps) {
     const listNames = useMemo(() => lists.map((list) => list.list_nm), [lists])
     const [openItems, setOpenItems] = useCourseListAccordionPreference(courseKey, listNames)
 
@@ -190,6 +200,7 @@ export function CourseLists({ courseKey, lists, languages, statuses, lastSubmiss
                                             languages={languages}
                                             statuses={statuses}
                                             lastSubmissions={lastSubmissions}
+                                            supervisionContext={supervisionContext}
                                         />
                                     )}
                                 </CardContent>

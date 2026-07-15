@@ -38,9 +38,7 @@ export function ProblemHeaderCard({
                 <TooltipProvider>
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex min-w-0 flex-1 items-center gap-4">
-                            {iconUrl ? (
-                                <ProblemIconImage iconUrl={iconUrl} size="lg" className="shrink-0" />
-                            ) : null}
+                            {iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="lg" className="shrink-0" /> : null}
                             <div
                                 className={cn(
                                     'min-w-0 flex-1 flex flex-col justify-center gap-1',

@@ -29,7 +29,7 @@ function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow,
     return row.kind === 'problem'
 }
 
-const ROW_HEIGHT = 36
+const ROW_HEIGHT = 32
 
 export function CourseListItemsTable({
     items,
@@ -193,6 +193,7 @@ export function CourseListItemsTable({
                     rowData={items}
                     columnDefs={colDefs}
                     rowHeight={ROW_HEIGHT}
+                    headerHeight={32}
                     wrapperBorder={false}
                     themeParams={{
                         backgroundColor: 'var(--card)',

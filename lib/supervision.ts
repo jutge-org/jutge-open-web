@@ -73,11 +73,7 @@ export function supervisionProblemSubmissionsHref(ctx: SupervisionContext, key: 
     return `${supervisionProblemHref(ctx, key)}/submissions`
 }
 
-export function supervisionSubmissionHref(
-    ctx: SupervisionContext,
-    problem_id: string,
-    submission_id: string,
-): string {
+export function supervisionSubmissionHref(ctx: SupervisionContext, problem_id: string, submission_id: string): string {
     return `${supervisionProblemHref(ctx, problem_id)}/submissions/${submission_id}`
 }
 
@@ -126,7 +122,11 @@ export function supervisionProblemNavItems(ctx: SupervisionContext, pageKey: str
     ]
 }
 
-export function supervisionProblemTabFromPathname(pathname: string, pageKey: string, ctx: SupervisionContext): SupervisionProblemTab {
+export function supervisionProblemTabFromPathname(
+    pathname: string,
+    pageKey: string,
+    ctx: SupervisionContext,
+): SupervisionProblemTab {
     const base = supervisionProblemHref(ctx, pageKey)
 
     if (pathname.startsWith(`${base}/submissions`)) {
@@ -195,10 +195,7 @@ export function buildSupervisionSubmissionNavLinks(
     }
 }
 
-export function supervisionBaseBreadcrumbs(
-    ctx: SupervisionContext,
-    courseTitle?: string,
-): MainBreadcrumbSegment[] {
+export function supervisionBaseBreadcrumbs(ctx: SupervisionContext, courseTitle?: string): MainBreadcrumbSegment[] {
     const studentLabel = ctx.studentName?.trim() || ctx.email
     return [
         { title: 'Supervision', url: '/supervision' },

@@ -758,10 +758,7 @@ function StudentLabelDropdown({ mode, onModeChange }: StudentLabelDropdownProps)
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-44">
                 <DropdownMenuLabel>Show students by</DropdownMenuLabel>
-                <DropdownMenuRadioGroup
-                    value={mode}
-                    onValueChange={(value) => onModeChange(value as StudentLabelMode)}
-                >
+                <DropdownMenuRadioGroup value={mode} onValueChange={(value) => onModeChange(value as StudentLabelMode)}>
                     {(Object.keys(STUDENT_LABEL_MODE_LABELS) as StudentLabelMode[]).map((option) => (
                         <DropdownMenuRadioItem key={option} value={option}>
                             {STUDENT_LABEL_MODE_LABELS[option]}

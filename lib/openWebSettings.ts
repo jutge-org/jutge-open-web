@@ -1,4 +1,9 @@
-import { DEFAULT_HLJS_THEME, HLJS_THEME_STORAGE_KEY, parseHljsThemeSelection, type HljsThemeSelection } from '@/lib/hljsThemes'
+import {
+    DEFAULT_HLJS_THEME,
+    HLJS_THEME_STORAGE_KEY,
+    parseHljsThemeSelection,
+    type HljsThemeSelection,
+} from '@/lib/hljsThemes'
 import { parseCourseStatisticsPeriod, serializeCourseStatisticsPeriod } from '@/lib/instructor/courseStatisticsPeriod'
 import { DEFAULT_LAYOUT_WIDTH, LAYOUT_WIDTH_STORAGE_KEY, parseLayoutWidth, type LayoutWidth } from '@/lib/layoutWidth'
 import {
@@ -7,15 +12,26 @@ import {
     parseMonacoThemeSelection,
     type MonacoThemeSelection,
 } from '@/lib/monaco/themes'
-import { parseFontScale, SOURCE_CODE_FONT_SCALE_KEY, STATEMENT_FONT_SCALE_KEY, TESTCASES_FONT_SCALE_KEY } from '@/lib/fontScale'
 import {
-    createDefaultFontScales,
-    READING_FONT_SCALE_KEYS,
-    type ReadingFontScaleKey,
-} from '@/lib/readingFontScale'
-import { DEFAULT_REDUCED_MOTION, parseReducedMotion, REDUCED_MOTION_STORAGE_KEY, type ReducedMotionPreference } from '@/lib/reducedMotion'
+    parseFontScale,
+    SOURCE_CODE_FONT_SCALE_KEY,
+    STATEMENT_FONT_SCALE_KEY,
+    TESTCASES_FONT_SCALE_KEY,
+} from '@/lib/fontScale'
+import { createDefaultFontScales, READING_FONT_SCALE_KEYS, type ReadingFontScaleKey } from '@/lib/readingFontScale'
+import {
+    DEFAULT_REDUCED_MOTION,
+    parseReducedMotion,
+    REDUCED_MOTION_STORAGE_KEY,
+    type ReducedMotionPreference,
+} from '@/lib/reducedMotion'
 import { emptyRecents, parseRecentsData, type RecentsData } from '@/lib/recents'
-import { DEFAULT_SOUND_EFFECTS, parseSoundEffects, SOUND_EFFECTS_STORAGE_KEY, type SoundEffectsPreference } from '@/lib/soundEffects'
+import {
+    DEFAULT_SOUND_EFFECTS,
+    parseSoundEffects,
+    SOUND_EFFECTS_STORAGE_KEY,
+    type SoundEffectsPreference,
+} from '@/lib/soundEffects'
 
 export const OPENWEB_SETTINGS_API_KEY = 'openweb'
 export const LOCAL_SETTINGS_STORAGE_KEY = 'settings'
@@ -175,14 +191,15 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
             fontScales: parseFontScales(appearance?.fontScales),
             reducedMotion:
                 parseReducedMotion(String(appearance?.reducedMotion ?? '')) ?? defaults.appearance.reducedMotion,
-            soundEffects:
-                parseSoundEffects(String(appearance?.soundEffects ?? '')) ?? defaults.appearance.soundEffects,
+            soundEffects: parseSoundEffects(String(appearance?.soundEffects ?? '')) ?? defaults.appearance.soundEffects,
         },
         ui: {
             courseListAccordions: parseCourseListAccordions(ui?.courseListAccordions),
             courseStatisticsPeriod: parseCourseStatisticsPeriodMap(ui?.courseStatisticsPeriod),
             supervisionLastCourse:
-                typeof ui?.supervisionLastCourse === 'string' ? ui.supervisionLastCourse : defaults.ui.supervisionLastCourse,
+                typeof ui?.supervisionLastCourse === 'string'
+                    ? ui.supervisionLastCourse
+                    : defaults.ui.supervisionLastCourse,
             supervisionLastStudentByCourse: parseSupervisionLastStudentByCourse(ui?.supervisionLastStudentByCourse),
         },
         recents: parseRecentsData(JSON.stringify(parsed.recents ?? defaults.recents)),
@@ -222,8 +239,7 @@ function readLegacyAppearanceSettings(): OpenWebAppearanceSettings {
     return {
         theme: parseThemePreference(localStorage.getItem(LEGACY_THEME_STORAGE_KEY)),
         layoutWidth: parseLayoutWidth(localStorage.getItem(LAYOUT_WIDTH_STORAGE_KEY)) ?? defaults.layoutWidth,
-        monacoTheme:
-            parseMonacoThemeSelection(localStorage.getItem(MONACO_THEME_STORAGE_KEY)) ?? defaults.monacoTheme,
+        monacoTheme: parseMonacoThemeSelection(localStorage.getItem(MONACO_THEME_STORAGE_KEY)) ?? defaults.monacoTheme,
         hljsTheme: parseHljsThemeSelection(localStorage.getItem(HLJS_THEME_STORAGE_KEY)) ?? defaults.hljsTheme,
         fontScales,
         reducedMotion: parseReducedMotion(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)) ?? defaults.reducedMotion,
@@ -248,7 +264,9 @@ function readLegacyUiSettings(): OpenWebUiSettings {
             try {
                 const parsed: unknown = JSON.parse(localStorage.getItem(key) ?? '')
                 if (Array.isArray(parsed)) {
-                    ui.courseListAccordions[courseKey] = parsed.filter((item): item is string => typeof item === 'string')
+                    ui.courseListAccordions[courseKey] = parsed.filter(
+                        (item): item is string => typeof item === 'string',
+                    )
                 }
             } catch {
                 // ignore invalid legacy value

@@ -319,8 +319,7 @@ export async function fetchSubmissionDetail(
     const defaultExtension = compilerMeta?.extension ?? 'txt'
     const decodedCode = codeB64 ? decodeSubmissionCodeBase64(codeB64, submission.compiler_id, defaultExtension) : null
 
-    const isCircuitsSubmission =
-        submission.compiler_id === CIRCUITS_COMPILER_ID && submission.state === 'done'
+    const isCircuitsSubmission = submission.compiler_id === CIRCUITS_COMPILER_ID && submission.state === 'done'
 
     const [codeMetrics, compilationErrors, circuitModules, circuitTracesJson, circuitTracesSvg] = await Promise.all([
         shouldShowCodeMetrics({
@@ -339,7 +338,7 @@ export async function fetchSubmissionDetail(
         isCircuitsSubmission
             ? client.student.submissions
                   .getCircuitModules({ problem_id: submission.problem_id, submission_id })
-                  .catch(() => ({} as Record<string, string>))
+                  .catch(() => ({}) as Record<string, string>)
             : Promise.resolve(null as Record<string, string> | null),
         isCircuitsSubmission && verdict === 'WA'
             ? client.student.submissions
@@ -383,8 +382,7 @@ export async function fetchSubmissionDetail(
         compilationErrors,
         awards,
         debugInformation,
-        circuitModules:
-            circuitModules && Object.keys(circuitModules).length > 0 ? circuitModules : null,
+        circuitModules: circuitModules && Object.keys(circuitModules).length > 0 ? circuitModules : null,
         circuitErrorReports: circuitErrorReports.length > 0 ? circuitErrorReports : null,
         circuitErrorTraces: circuitErrorTraces.length > 0 ? circuitErrorTraces : null,
     }

@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 
-import { parseCourseStatisticsPeriod, serializeCourseStatisticsPeriod, type CourseStatisticsPeriod } from '@/lib/instructor/courseStatisticsPeriod'
+import {
+    parseCourseStatisticsPeriod,
+    serializeCourseStatisticsPeriod,
+    type CourseStatisticsPeriod,
+} from '@/lib/instructor/courseStatisticsPeriod'
 import { DEFAULT_LAYOUT_WIDTH, type LayoutWidth } from '@/lib/layoutWidth'
 import type { MonacoThemeSelection } from '@/lib/monaco/themes'
 import type { HljsThemeSelection } from '@/lib/hljsThemes'
-import {
-    createDefaultOpenWebSettings,
-    type OpenWebSettings,
-    type ThemePreference,
-} from '@/lib/openWebSettings'
+import { createDefaultOpenWebSettings, type OpenWebSettings, type ThemePreference } from '@/lib/openWebSettings'
 import { createDefaultFontScales, READING_FONT_SCALE_KEYS, type ReadingFontScaleKey } from '@/lib/readingFontScale'
 import {
     clearAllRecents,

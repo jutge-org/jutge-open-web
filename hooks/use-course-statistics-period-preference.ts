@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import {
-    courseStatisticsPeriodFromSettings,
-    useOpenWebSettingsStore,
-} from '@/store/openWebSettings'
+import { courseStatisticsPeriodFromSettings, useOpenWebSettingsStore } from '@/store/openWebSettings'
 import type { CourseStatisticsPeriod } from '@/lib/instructor/courseStatisticsPeriod'
 
 export function useCourseStatisticsPeriodPreference(courseKey: string, defaultStartDate: Date, defaultEndDate: Date) {

@@ -42,9 +42,7 @@ export function CourseProblemRankingCard({
                 filter: false,
                 cellRenderer: (params: ICellRendererParams<{ problem_nm: string }>) => {
                     const iconUrl = problemIconUrl(abstractProblems[params.data!.problem_nm]?.icon)
-                    return iconUrl ? (
-                        <ProblemIconImage iconUrl={iconUrl} size="xs" className="translate-y-1" />
-                    ) : null
+                    return iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="xs" className="translate-y-1" /> : null
                 },
             },
             {

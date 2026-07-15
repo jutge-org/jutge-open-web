@@ -112,10 +112,7 @@ export async function fetchSupervisionStudentPageData(
     }
 }
 
-export async function fetchSupervisionStudentProfile(
-    courseKey: string,
-    email: string,
-): Promise<PublicProfile | null> {
+export async function fetchSupervisionStudentProfile(courseKey: string, email: string): Promise<PublicProfile | null> {
     try {
         return await withSupervisorClient((client) => client.tutor.profile.get(email))
     } catch {

@@ -143,7 +143,7 @@ export function CourseLists({
 
     return (
         <TooltipProvider>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
                 {lists.map((list) => {
                     const counts = countsByList.get(list.list_nm) ?? { total: 0, ok: 0, scored: 0, ko: 0 }
                     const isOpen = openItems.includes(list.list_nm)
@@ -152,9 +152,9 @@ export function CourseLists({
                     return (
                         <Card
                             key={list.list_nm}
-                            className={cn('gap-0 pt-2 ring-0 border border-border shadow-sm', isOpen ? 'pb-0' : 'pb-2')}
+                            className="gap-0 overflow-hidden border border-border py-0 shadow-sm ring-0"
                         >
-                            <CardHeader className={cn('px-4 py-2', isOpen && 'border-b border-border')}>
+                            <CardHeader className={cn('bg-card px-3 py-2', isOpen && 'border-b border-border')}>
                                 <div className="flex w-full items-center gap-2">
                                     <button
                                         type="button"
@@ -162,7 +162,7 @@ export function CourseLists({
                                         aria-expanded={isOpen}
                                         className="min-w-0 flex-1 text-left"
                                     >
-                                        <CardTitle className="text-lg font-semibold">{list.title}</CardTitle>
+                                        <CardTitle className="text-base font-semibold">{list.title}</CardTitle>
                                     </button>
                                     {list.isOwner ? (
                                         <CourseListOwnerMenu listNm={list.list_nm} title={list.title} />

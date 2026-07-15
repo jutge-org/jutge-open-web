@@ -75,10 +75,6 @@ function ProblemSubmissionCircuitModuleViewPageContent() {
     }
 
     return (
-        <CircuitModuleEditor
-            submissionId={pageData.submissionId}
-            moduleName={pageData.moduleName}
-            svg={pageData.svg}
-        />
+        <CircuitModuleEditor submissionId={pageData.submissionId} moduleName={pageData.moduleName} svg={pageData.svg} />
     )
 }

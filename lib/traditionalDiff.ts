@@ -84,9 +84,7 @@ function parseUnifiedDiff(lines: string[]): TraditionalDiffLine[] {
 }
 
 function isUnifiedDiff(text: string, lines: string[]): boolean {
-    return (
-        (/^--- /m.test(text) && /^\+\+\+ /m.test(text)) || lines.some((line) => UNIFIED_HUNK_HEADER.test(line))
-    )
+    return (/^--- /m.test(text) && /^\+\+\+ /m.test(text)) || lines.some((line) => UNIFIED_HUNK_HEADER.test(line))
 }
 
 function isClassicDiff(lines: string[]): boolean {

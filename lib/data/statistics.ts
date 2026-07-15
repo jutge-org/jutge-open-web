@@ -1,7 +1,14 @@
 import { getPreferredLanguageId } from '@/lib/data/auth'
 import { fetchStudentProblemStatuses } from '@/lib/data/problems'
 import { buildSolvedProblems, type SolvedProblemRow } from '@/lib/statistics/data'
-import type { AbstractProblem, AllTables, ColorMapping, Dashboard, JutgeApiClient, Submission } from '@/lib/jutge_api_client'
+import type {
+    AbstractProblem,
+    AllTables,
+    ColorMapping,
+    Dashboard,
+    JutgeApiClient,
+    Submission,
+} from '@/lib/jutge_api_client'
 
 export type StatisticsData = {
     dashboard: Dashboard

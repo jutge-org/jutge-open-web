@@ -29,10 +29,7 @@ function normalizeSvgDimensions(svgElement: SVGSVGElement): { width: number; hei
     const widthAttr = svgElement.getAttribute('width')
     const heightAttr = svgElement.getAttribute('height')
     const usesRelativeDimensions =
-        widthAttr?.includes('%') ||
-        heightAttr?.includes('%') ||
-        widthAttr === '100%' ||
-        heightAttr === '100%'
+        widthAttr?.includes('%') || heightAttr?.includes('%') || widthAttr === '100%' || heightAttr === '100%'
 
     let width = usesRelativeDimensions ? 0 : svgElement.width.baseVal.value
     let height = usesRelativeDimensions ? 0 : svgElement.height.baseVal.value

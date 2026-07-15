@@ -26,20 +26,13 @@ const LINE_STYLES: Record<TraditionalDiffLine['kind'], string> = {
     plain: 'text-foreground',
 }
 
-function isCodeLine(line: TraditionalDiffLine): line is Extract<
-    TraditionalDiffLine,
-    { kind: 'remove' | 'add' | 'context' }
-> {
+function isCodeLine(
+    line: TraditionalDiffLine,
+): line is Extract<TraditionalDiffLine, { kind: 'remove' | 'add' | 'context' }> {
     return line.kind === 'remove' || line.kind === 'add' || line.kind === 'context'
 }
 
-function TraditionalDiffLineView({
-    line,
-    codeExtension,
-}: {
-    line: TraditionalDiffLine
-    codeExtension: string | null
-}) {
+function TraditionalDiffLineView({ line, codeExtension }: { line: TraditionalDiffLine; codeExtension: string | null }) {
     const highlightedContent = useMemo(() => {
         if (!isCodeLine(line) || !line.text) {
             return null
@@ -68,12 +61,7 @@ function TraditionalDiffLineView({
     )
 }
 
-export function TraditionalDiff({
-    diff,
-    fontScale = 1,
-    className,
-    codeExtension = 'v',
-}: TraditionalDiffProps) {
+export function TraditionalDiff({ diff, fontScale = 1, className, codeExtension = 'v' }: TraditionalDiffProps) {
     const lines = useMemo(() => parseTraditionalDiff(diff), [diff])
     const { resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)

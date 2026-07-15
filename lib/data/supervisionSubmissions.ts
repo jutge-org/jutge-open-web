@@ -15,11 +15,7 @@ import {
     submissionVerdict,
     type ProblemSubmissionRow,
 } from '@/lib/submissions'
-import {
-    supervisionProblemHref,
-    supervisionSubmissionHref,
-    type SupervisionContext,
-} from '@/lib/supervision'
+import { supervisionProblemHref, supervisionSubmissionHref, type SupervisionContext } from '@/lib/supervision'
 import { withSupervisorClient } from '@/lib/supervisor/client'
 import jutge from '@/lib/jutge'
 import type {
@@ -74,9 +70,7 @@ async function resolveSupervisionSubmission(
 ): Promise<TutorSubmission | null> {
     return withSupervisorClient(async (client) => {
         try {
-            return await client.tutor.submissions.get(
-                tutorSubmissionParams(ctx, resolvedProblemId, submission_id),
-            )
+            return await client.tutor.submissions.get(tutorSubmissionParams(ctx, resolvedProblemId, submission_id))
         } catch {
             const parsed = parseProblemKey(resolvedProblemId)
             if (parsed.kind !== 'problem_id' && parsed.kind !== 'problem_nm') {
@@ -118,10 +112,7 @@ export async function fetchSupervisionProblemSubmissionsData(
         ])
 
         return submissions.map((submission) =>
-            withSupervisionHrefs(
-                buildProblemSubmissionRow(submission as Submission, tables, languageTitles),
-                ctx,
-            ),
+            withSupervisionHrefs(buildProblemSubmissionRow(submission as Submission, tables, languageTitles), ctx),
         )
     })
 }
@@ -192,28 +183,26 @@ export async function fetchSupervisionSubmissionDetail(
 
     const params = tutorSubmissionParams(ctx, submission.problem_id, submission_id)
 
-    const [tables, codeB64, analysis, scoring, compilationErrorsResult] = await withSupervisorClient(
-        async (client) => {
-            const verdict = submissionVerdict(submission)
-            const [tablesResult, code, analysisResult, scoringResult, compilationErrors] = await Promise.all([
-                client.tables.get(),
-                submission.state === 'done'
-                    ? client.tutor.submissions.getCodeAsB64(params).catch(() => null)
-                    : Promise.resolve(null),
-                submission.state === 'done'
-                    ? client.tutor.submissions.getAnalysis(params).catch(() => [] as SubmissionAnalysis[])
-                    : Promise.resolve([] as SubmissionAnalysis[]),
-                submission.state === 'done'
-                    ? client.tutor.submissions.getScoring(params).catch(() => null)
-                    : Promise.resolve(null as Scoring),
-                verdict === 'CE' && submission.state === 'done'
-                    ? client.tutor.submissions.getCompilationErrors(params).catch(() => null)
-                    : Promise.resolve(null as CompilationErrors | null),
-            ])
+    const [tables, codeB64, analysis, scoring, compilationErrorsResult] = await withSupervisorClient(async (client) => {
+        const verdict = submissionVerdict(submission)
+        const [tablesResult, code, analysisResult, scoringResult, compilationErrors] = await Promise.all([
+            client.tables.get(),
+            submission.state === 'done'
+                ? client.tutor.submissions.getCodeAsB64(params).catch(() => null)
+                : Promise.resolve(null),
+            submission.state === 'done'
+                ? client.tutor.submissions.getAnalysis(params).catch(() => [] as SubmissionAnalysis[])
+                : Promise.resolve([] as SubmissionAnalysis[]),
+            submission.state === 'done'
+                ? client.tutor.submissions.getScoring(params).catch(() => null)
+                : Promise.resolve(null as Scoring),
+            verdict === 'CE' && submission.state === 'done'
+                ? client.tutor.submissions.getCompilationErrors(params).catch(() => null)
+                : Promise.resolve(null as CompilationErrors | null),
+        ])
 
-            return [tablesResult, code, analysisResult, scoringResult, compilationErrors] as const
-        },
-    )
+        return [tablesResult, code, analysisResult, scoringResult, compilationErrors] as const
+    })
 
     const parsed = parseProblemKey(submission.problem_id)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id

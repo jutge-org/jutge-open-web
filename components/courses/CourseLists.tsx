@@ -194,7 +194,7 @@ export function CourseLists({
                                 </div>
                             </CardHeader>
                             {isOpen ? (
-                                <CardContent className="p-0">
+                                <CardContent className="!p-0">
                                     {list.items.length === 0 ? (
                                         <p className="px-4 py-3 text-sm text-muted-foreground italic">
                                             This list has no items.

@@ -51,11 +51,11 @@ export function ProblemInformation({ data }: ProblemInformationProps) {
     const { problem } = data
 
     return (
-        <Card size="sm" className="ring-0 border border-border shadow-sm">
-            <CardHeader className="border-b pb-2">
+        <Card className="ring-0 border border-border shadow-sm">
+            <CardHeader className="border-b">
                 <CardTitle>Information</CardTitle>
             </CardHeader>
-            <CardContent className="pt-2">
+            <CardContent>
                 <dl className="flex flex-col gap-1.5">
                     <InfoRow label="Author">
                         {problem.abstract_problem.author ? (

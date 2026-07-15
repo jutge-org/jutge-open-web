@@ -151,7 +151,7 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                         </div>
                     </CardAction>
                 </CardHeader>
-                <CardContent className={cn('flex flex-col gap-2 pt-0', showPdf && 'gap-0 px-0 pb-0')}>
+                <CardContent className={cn('flex flex-col gap-2', showPdf && 'gap-0 px-0 pb-0 pt-0')}>
                     {!showPdf ? (
                         <div className="flex flex-wrap gap-4">
                             <button

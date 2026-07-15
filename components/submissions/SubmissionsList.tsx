@@ -134,7 +134,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
                 ? {
                       field: 'language_id',
                       headerName: 'Language',
-                      width: 112,
+                      width: 120,
                       sortable: true,
                       filter: true,
                       hide: !columnVisibility.language_id,
@@ -178,7 +178,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
             {
                 field: 'submission_id',
                 headerName: 'Submission',
-                width: 112,
+                width: 130,
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.submission_id,
@@ -191,7 +191,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
             {
                 field: 'verdict',
                 headerName: 'Verdict',
-                width: 96,
+                width: 100,
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.verdict,
@@ -208,7 +208,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
             {
                 field: 'compiler_id',
                 headerName: 'Compiler',
-                width: 112,
+                width: 120,
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.compiler_id,
@@ -225,7 +225,7 @@ export function SubmissionsList(props: SubmissionsListProps) {
             {
                 field: 'time_inMs',
                 headerName: 'Time',
-                width: 176,
+                width: 180,
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.time_inMs,

@@ -273,6 +273,8 @@ export async function fetchSupervisionSubmissionDetail(
         awards: [],
         debugInformation: null,
         circuitModules: null,
+        circuitErrorReports: null,
+        circuitErrorTraces: null,
     }
 }
 

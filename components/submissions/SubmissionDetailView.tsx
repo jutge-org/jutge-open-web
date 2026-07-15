@@ -2,6 +2,8 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ChevronUpIcon } from 'lucide-react'
 
+import { CircuitErrorReportCard } from '@/components/submissions/CircuitErrorReportCard'
+import { CircuitErrorTraceCard } from '@/components/submissions/CircuitErrorTraceCard'
 import { CircuitModulesCard } from '@/components/submissions/CircuitModulesCard'
 import { CompilationErrorsCard } from '@/components/submissions/CompilationErrorsCard'
 import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
@@ -204,6 +206,26 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
 
                 {data.codeMetrics ? <SubmissionCodeMetricsCard data={data.codeMetrics} /> : null}
 
+                {data.circuitModules ? (
+                    <CircuitModulesCard
+                        modules={data.circuitModules}
+                        problemKey={problemKey}
+                        submissionId={submission.submission_id}
+                    />
+                ) : null}
+
+                {data.circuitErrorReports?.map((trace, index) => (
+                    <CircuitErrorReportCard key={index + 1} index={index + 1} trace={trace} />
+                ))}
+
+                {data.circuitErrorTraces?.map((svg, index) => (
+                    <CircuitErrorTraceCard key={index + 1} index={index + 1} svg={svg} />
+                ))}
+
+                {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (
+                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
+                ) : null}
+
                 {data.code && data.codeFilename ? (
                     <>
                         <SubmissionSourceCodeCard
@@ -213,18 +235,6 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                             codeHref={codeHref}
                         />
                     </>
-                ) : null}
-
-                {data.circuitModules ? (
-                    <CircuitModulesCard
-                        modules={data.circuitModules}
-                        problemKey={problemKey}
-                        submissionId={submission.submission_id}
-                    />
-                ) : null}
-
-                {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (
-                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
                 ) : null}
             </div>
         </TooltipProvider>

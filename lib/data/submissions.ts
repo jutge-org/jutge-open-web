@@ -5,7 +5,7 @@ import {
     shouldShowCodeMetrics,
     type SubmissionCodeMetricsData,
 } from '@/lib/codeMetrics'
-import { CIRCUITS_COMPILER_ID } from '@/lib/circuits'
+import { CIRCUITS_COMPILER_ID, parseCircuitTracesJson, parseCircuitTracesSvg, type CircuitTrace } from '@/lib/circuits'
 import { decodeSubmissionCodeBase64, MAKE_PRO2_COMPILER_ID } from '@/lib/makePro2SourceCode'
 import { isGraphicProblem, parseProblemKey } from '@/lib/problems'
 import {
@@ -117,6 +117,8 @@ export type SubmissionDetailData = {
     awards: AwardRow[]
     debugInformation: DebugInformation | null
     circuitModules: Record<string, string> | null
+    circuitErrorReports: CircuitTrace[] | null
+    circuitErrorTraces: string[] | null
 }
 
 export type SubmissionCodeData = {
@@ -317,7 +319,10 @@ export async function fetchSubmissionDetail(
     const defaultExtension = compilerMeta?.extension ?? 'txt'
     const decodedCode = codeB64 ? decodeSubmissionCodeBase64(codeB64, submission.compiler_id, defaultExtension) : null
 
-    const [codeMetrics, compilationErrors, circuitModules] = await Promise.all([
+    const isCircuitsSubmission =
+        submission.compiler_id === CIRCUITS_COMPILER_ID && submission.state === 'done'
+
+    const [codeMetrics, compilationErrors, circuitModules, circuitTracesJson, circuitTracesSvg] = await Promise.all([
         shouldShowCodeMetrics({
             submission,
             verdict,
@@ -331,12 +336,25 @@ export async function fetchSubmissionDetail(
                   .getCompilationErrors({ problem_id: submission.problem_id, submission_id })
                   .catch(() => null)
             : Promise.resolve(null),
-        submission.compiler_id === CIRCUITS_COMPILER_ID && submission.state === 'done'
+        isCircuitsSubmission
             ? client.student.submissions
                   .getCircuitModules({ problem_id: submission.problem_id, submission_id })
                   .catch(() => ({} as Record<string, string>))
             : Promise.resolve(null as Record<string, string> | null),
+        isCircuitsSubmission && verdict === 'WA'
+            ? client.student.submissions
+                  .getCircuitTracesJson({ problem_id: submission.problem_id, submission_id })
+                  .catch(() => null)
+            : Promise.resolve(null),
+        isCircuitsSubmission && verdict === 'WA'
+            ? client.student.submissions
+                  .getCircuitTracesSvg({ problem_id: submission.problem_id, submission_id })
+                  .catch(() => null)
+            : Promise.resolve(null),
     ])
+
+    const circuitErrorReports = circuitTracesJson ? parseCircuitTracesJson(circuitTracesJson) : []
+    const circuitErrorTraces = circuitTracesSvg ? parseCircuitTracesSvg(circuitTracesSvg) : []
 
     return {
         submission,
@@ -367,6 +385,8 @@ export async function fetchSubmissionDetail(
         debugInformation,
         circuitModules:
             circuitModules && Object.keys(circuitModules).length > 0 ? circuitModules : null,
+        circuitErrorReports: circuitErrorReports.length > 0 ? circuitErrorReports : null,
+        circuitErrorTraces: circuitErrorTraces.length > 0 ? circuitErrorTraces : null,
     }
 }
 

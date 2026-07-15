@@ -25,6 +25,76 @@ const SHADOW_STYLES = `
 }
 `
 
+function normalizeSvgDimensions(svgElement: SVGSVGElement): { width: number; height: number } {
+    const widthAttr = svgElement.getAttribute('width')
+    const heightAttr = svgElement.getAttribute('height')
+    const usesRelativeDimensions =
+        widthAttr?.includes('%') ||
+        heightAttr?.includes('%') ||
+        widthAttr === '100%' ||
+        heightAttr === '100%'
+
+    let width = usesRelativeDimensions ? 0 : svgElement.width.baseVal.value
+    let height = usesRelativeDimensions ? 0 : svgElement.height.baseVal.value
+    const viewBox = svgElement.viewBox.baseVal
+
+    if ((width <= 0 || height <= 0) && viewBox.width > 0 && viewBox.height > 0) {
+        width = viewBox.width
+        height = viewBox.height
+        svgElement.setAttribute('width', String(width))
+        svgElement.setAttribute('height', String(height))
+    }
+
+    if (width <= 0 || height <= 0) {
+        try {
+            const boundingBox = svgElement.getBBox()
+            if (boundingBox.width > 0 && boundingBox.height > 0) {
+                width = boundingBox.width
+                height = boundingBox.height
+                svgElement.setAttribute('width', String(width))
+                svgElement.setAttribute('height', String(height))
+            }
+        } catch {
+            // SVG may not be measurable yet.
+        }
+    }
+
+    if (width <= 0 || height <= 0) {
+        width = 800
+        height = 600
+        svgElement.setAttribute('width', String(width))
+        svgElement.setAttribute('height', String(height))
+    }
+
+    svgElement.style.maxWidth = 'none'
+    svgElement.style.maxHeight = 'none'
+
+    return { width, height }
+}
+
+function fitSvgToContainer(
+    svgElement: SVGSVGElement,
+    container: HTMLElement,
+    setScale: (scale: number) => void,
+    setOffset: (offset: PanOffset) => void,
+) {
+    const { width, height } = normalizeSvgDimensions(svgElement)
+    const containerWidth = container.clientWidth
+    const containerHeight = container.clientHeight
+
+    if (containerWidth <= 0 || containerHeight <= 0) {
+        return
+    }
+
+    const fitScale = Math.min(containerWidth / width, containerHeight / height, 1)
+
+    setScale(fitScale)
+    setOffset({
+        x: (containerWidth - width * fitScale) / 2,
+        y: (containerHeight - height * fitScale) / 2,
+    })
+}
+
 type PanOffset = {
     x: number
     y: number
@@ -35,9 +105,20 @@ type CircuitModuleViewerProps = {
     svg: string
     variant?: 'embedded' | 'fullscreen'
     viewHref?: string
+    showTitle?: boolean
+    className?: string
+    viewportClassName?: string
 }
 
-export function CircuitModuleViewer({ moduleName, svg, variant = 'embedded', viewHref }: CircuitModuleViewerProps) {
+export function CircuitModuleViewer({
+    moduleName,
+    svg,
+    variant = 'embedded',
+    viewHref,
+    showTitle = true,
+    className,
+    viewportClassName,
+}: CircuitModuleViewerProps) {
     const hostRef = useRef<HTMLDivElement>(null)
     const [scale, setScale] = useState(1)
     const [offset, setOffset] = useState<PanOffset>({ x: 0, y: 0 })
@@ -48,6 +129,7 @@ export function CircuitModuleViewer({ moduleName, svg, variant = 'embedded', vie
         originX: number
         originY: number
     } | null>(null)
+    const fitViewRef = useRef<(() => void) | null>(null)
     const isFullscreen = variant === 'fullscreen'
 
     useEffect(() => {
@@ -73,9 +155,25 @@ export function CircuitModuleViewer({ moduleName, svg, variant = 'embedded', vie
         }
 
         viewport.innerHTML = svg
+
+        requestAnimationFrame(() => {
+            const svgElement = viewport.querySelector('svg')
+            const container = host.parentElement
+            if (!svgElement || !container) {
+                return
+            }
+
+            fitViewRef.current = () => fitSvgToContainer(svgElement, container, setScale, setOffset)
+            fitViewRef.current()
+        })
     }, [svg])
 
     const resetView = useCallback(() => {
+        if (fitViewRef.current) {
+            fitViewRef.current()
+            return
+        }
+
         setScale(1)
         setOffset({ x: 0, y: 0 })
     }, [])
@@ -204,14 +302,21 @@ export function CircuitModuleViewer({ moduleName, svg, variant = 'embedded', vie
     )
 
     return (
-        <div className={cn('flex flex-col items-center gap-2', isFullscreen ? 'h-full min-h-0 w-full' : 'w-64')}>
-            {!isFullscreen ? (
+        <div
+            className={cn(
+                'flex flex-col items-center gap-2',
+                isFullscreen ? 'h-full min-h-0 w-full' : 'w-64',
+                className,
+            )}
+        >
+            {!isFullscreen && showTitle ? (
                 <p className="w-full truncate text-center text-sm font-medium text-foreground">{moduleName}</p>
             ) : null}
             <div
                 className={cn(
                     'relative touch-none overflow-hidden rounded-lg border border-border bg-white cursor-grab active:cursor-grabbing',
                     isFullscreen ? 'min-h-0 w-full flex-1' : 'h-64 w-64',
+                    viewportClassName,
                 )}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
@@ -220,7 +325,7 @@ export function CircuitModuleViewer({ moduleName, svg, variant = 'embedded', vie
             >
                 <div
                     ref={hostRef}
-                    className="inline-block origin-top-left"
+                    className="absolute inset-0 origin-top-left"
                     style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}
                 />
             </div>

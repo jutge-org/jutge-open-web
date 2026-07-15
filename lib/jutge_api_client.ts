@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-14T12:55:06.868Z
+ * This file has been automatically generated at 2026-07-15T08:15:30.887Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -1593,6 +1593,7 @@ export class JutgeApiClient {
         this.clientTTLs.set("tables.getTimezones", 3600)
         this.clientTTLs.set("courses.indexPublic", 300)
         this.clientTTLs.set("problems.getAllAbstractProblems", 3600)
+        this.clientTTLs.set("problems.getAllAbstractProblemsRaw", 3600)
     }
 }
 
@@ -2151,6 +2152,18 @@ class Module_problems {
      */
     async getAllAbstractProblems(): Promise<Record<string, AbstractProblem>> {
         const [output, ofiles] = await this.root.execute("problems.getAllAbstractProblems", null)
+        return output
+    }
+
+    /**
+     * Test of getting abstract problems
+     *
+     * 🔐 Authentication: any
+     * No warnings
+     * Bla bla
+     */
+    async getAllAbstractProblemsRaw(): Promise<Record<string, AbstractProblem>> {
+        const [output, ofiles] = await this.root.execute("problems.getAllAbstractProblemsRaw", null)
         return output
     }
 
@@ -2927,6 +2940,30 @@ class Module_student_submissions {
      */
     async getCircuitModules(data: GetGameResultIn): Promise<Record<string, string>> {
         const [output, ofiles] = await this.root.execute("student.submissions.getCircuitModules", data)
+        return output
+    }
+
+    /**
+     * Get the error report traces of a circuit submission.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getCircuitTracesJson(data: GetGameResultIn): Promise<Settings> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getCircuitTracesJson", data)
+        return output
+    }
+
+    /**
+     * Get the error report traces of a circuit submission.
+     *
+     * 🔐 Authentication: user
+     * No warnings
+     *
+     */
+    async getCircuitTracesSvg(data: GetGameResultIn): Promise<Record<string, string>> {
+        const [output, ofiles] = await this.root.execute("student.submissions.getCircuitTracesSvg", data)
         return output
     }
 

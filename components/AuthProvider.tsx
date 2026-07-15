@@ -16,6 +16,10 @@ export type AuthContextValue = {
     logout(): Promise<void>
 }
 
+function warmAbstractProblemsCache() {
+    void jutge.problems.getAllAbstractProblems().catch(() => {})
+}
+
 const AuthContext = createContext<AuthContextValue>({
     user: null,
     profile: null,
@@ -42,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (now.isAfter(expirationDate)) return false
 
             jutge.meta = { token, user_uid: localStorage.getItem('user_uid') ?? '' }
+            warmAbstractProblemsCache()
             const fetchedProfile = await jutge.student.profile.get()
             setProfile(fetchedProfile)
             setUser(profileToSessionUser(fetchedProfile))
@@ -71,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (!jutge.meta?.token) {
                 return { ok: false as const, error: 'Sign in failed.' }
             }
+            warmAbstractProblemsCache()
             const fetchedProfile = await jutge.student.profile.get()
             setProfile(fetchedProfile)
             setUser(profileToSessionUser(fetchedProfile))

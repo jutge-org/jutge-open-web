@@ -36,8 +36,6 @@ function useAgTheme(wrapperBorder = true, themeParams?: Record<string, string>) 
     return Object.keys(params).length > 0 ? baseTheme.withParams(params) : baseTheme
 }
 
-const BOTTOM_PADDING_PX = 60
-
 const AG_TABLE_CLASS = 'w-full [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-muted-foreground/50'
 
 function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) {
@@ -50,11 +48,13 @@ function useViewportTableHeight(containerRef: RefObject<HTMLDivElement | null>) 
         function updateHeight() {
             const el = containerRef.current
             const footerEl = document.querySelector('footer')
+            const mainEl = document.querySelector('main')
             if (!el) return
 
             const top = el.getBoundingClientRect().top
-            const footerHeight = footerEl?.getBoundingClientRect().height ?? 0
-            setHeight(Math.max(0, window.innerHeight - top - footerHeight - BOTTOM_PADDING_PX))
+            const footerTop = footerEl?.getBoundingClientRect().top ?? window.innerHeight
+            const mainPaddingBottom = mainEl ? parseFloat(getComputedStyle(mainEl).paddingBottom) || 0 : 0
+            setHeight(Math.max(0, footerTop - top - mainPaddingBottom))
         }
 
         updateHeight()

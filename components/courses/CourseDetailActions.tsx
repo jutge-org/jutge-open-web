@@ -108,7 +108,7 @@ export function CourseDetailActions({
     }
 
     const showEnrollButton = status === 'available'
-    const showUnenrollButton = status !== 'available' && !isOwner
+    const showUnenrollMenuItem = status !== 'available' && !isOwner
     const hasMenuItems = isOwner || status === 'enrolled' || status === 'archived'
 
     return (
@@ -123,17 +123,6 @@ export function CourseDetailActions({
                     >
                         {isPending ? <Loader2 className="animate-spin" aria-hidden /> : <LogInIcon aria-hidden />}
                         Enroll this course
-                    </Button>
-                ) : null}
-                {showUnenrollButton ? (
-                    <Button
-                        type="button"
-                        onClick={() => handleAction('unenroll')}
-                        disabled={isPending}
-                        className="bg-blue-600 text-white hover:bg-blue-700"
-                    >
-                        {isPending ? <Loader2 className="animate-spin" aria-hidden /> : <LogOutIcon aria-hidden />}
-                        Unenroll this course
                     </Button>
                 ) : null}
                 {hasMenuItems ? (
@@ -167,16 +156,32 @@ export function CourseDetailActions({
                                 </DropdownMenuItem>
                             ) : null}
                             {status === 'enrolled' ? (
-                                <DropdownMenuItem onClick={() => handleAction('archive')}>
-                                    <ArchiveIcon aria-hidden />
-                                    Archive
-                                </DropdownMenuItem>
+                                <>
+                                    {showUnenrollMenuItem ? (
+                                        <DropdownMenuItem onClick={() => handleAction('unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
+                                        </DropdownMenuItem>
+                                    ) : null}
+                                    <DropdownMenuItem onClick={() => handleAction('archive')}>
+                                        <ArchiveIcon aria-hidden />
+                                        Archive
+                                    </DropdownMenuItem>
+                                </>
                             ) : null}
                             {status === 'archived' ? (
-                                <DropdownMenuItem onClick={() => handleAction('unarchive')}>
-                                    <ArchiveRestoreIcon aria-hidden />
-                                    Unarchive
-                                </DropdownMenuItem>
+                                <>
+                                    {showUnenrollMenuItem ? (
+                                        <DropdownMenuItem onClick={() => handleAction('unenroll')}>
+                                            <LogOutIcon aria-hidden />
+                                            Unenroll
+                                        </DropdownMenuItem>
+                                    ) : null}
+                                    <DropdownMenuItem onClick={() => handleAction('unarchive')}>
+                                        <ArchiveRestoreIcon aria-hidden />
+                                        Unarchive
+                                    </DropdownMenuItem>
+                                </>
                             ) : null}
                         </DropdownMenuContent>
                     </DropdownMenu>

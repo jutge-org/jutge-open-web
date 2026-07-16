@@ -19,6 +19,7 @@ import {
     type RecentsData,
 } from '@/lib/recents'
 import type { ReducedMotionPreference } from '@/lib/reducedMotion'
+import type { PageBackgroundPreference } from '@/lib/pageBackground'
 import type { SoundEffectsPreference } from '@/lib/soundEffects'
 
 type HydrateOptions = {
@@ -40,6 +41,7 @@ type OpenWebSettingsStore = {
     setReadingFontScalePreset: (scale: number) => void
     setReducedMotion: (preference: ReducedMotionPreference) => void
     setSoundEffects: (preference: SoundEffectsPreference) => void
+    setBackground: (background: PageBackgroundPreference) => void
     resetAppearanceDefaults: () => void
     setCourseListAccordionOpenItems: (courseKey: string, openItems: string[]) => void
     setCourseStatisticsPeriod: (courseKey: string, period: CourseStatisticsPeriod) => void
@@ -182,6 +184,16 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
             settings: patchSettings(state.settings, (settings) => ({
                 ...settings,
                 appearance: { ...settings.appearance, soundEffects: preference },
+            })),
+            dirty: true,
+        }))
+    },
+
+    setBackground: (background) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                appearance: { ...settings.appearance, background },
             })),
             dirty: true,
         }))

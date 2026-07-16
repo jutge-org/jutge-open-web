@@ -18,25 +18,27 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
 
     return (
         <RecentsProvider>
-            <RootShell
-                header={
-                    <header className="sticky top-0 z-50 border-b border-border bg-background">
-                        <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
-                            <MainBreadcrumbsInLayout />
-                            <div className="flex items-center gap-0">
-                                {authenticated ? <ReportIssueButton /> : null}
-                                <CommandPalette />
-                                {authenticated ? <RecentMenu /> : null}
-                                <AppearanceSettingsDialog />
-                                <AuthToolbar />
-                            </div>
-                        </LayoutWidthContainer>
-                    </header>
-                }
-                footer={<AppFooter />}
-            >
-                {children}
-            </RootShell>
+            <div className="relative z-10 flex min-h-dvh flex-1 flex-col">
+                <RootShell
+                    header={
+                        <header className="sticky top-0 z-50 border-b border-border bg-background">
+                            <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
+                                <MainBreadcrumbsInLayout />
+                                <div className="flex items-center gap-0">
+                                    {authenticated ? <ReportIssueButton /> : null}
+                                    <CommandPalette />
+                                    {authenticated ? <RecentMenu /> : null}
+                                    <AppearanceSettingsDialog />
+                                    <AuthToolbar />
+                                </div>
+                            </LayoutWidthContainer>
+                        </header>
+                    }
+                    footer={<AppFooter />}
+                >
+                    {children}
+                </RootShell>
+            </div>
         </RecentsProvider>
     )
 }

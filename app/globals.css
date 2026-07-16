@@ -437,6 +437,34 @@ html[data-reduced-motion='reduce'] *::after {
     scroll-behavior: auto !important;
 }
 
+html[data-page-background],
+html[data-page-background] body {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Frosted cards over the photo: translucent by default, solid on hover. */
+html[data-page-background],
+html[data-page-background].dark,
+html[data-page-background][data-color-theme] {
+    --card: color-mix(in oklab, var(--background) 72%, transparent);
+}
+
+html[data-page-background] header,
+html[data-page-background] footer {
+    background-color: color-mix(in oklab, var(--background) 85%, transparent);
+    backdrop-filter: blur(10px);
+}
+
+html[data-page-background] .bg-card {
+    backdrop-filter: blur(10px);
+}
+
+html[data-page-background] .bg-card:hover {
+    background-color: var(--background);
+    backdrop-filter: blur(12px);
+}
+
 .home-page-logos .rfm-marquee,
 .home-page-logos .rfm-initial-child-container {
     align-items: flex-start !important;

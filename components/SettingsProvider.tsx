@@ -7,6 +7,7 @@ import {
     resetOpenWebSettingsPersistence,
     teardownOpenWebSettingsPersistence,
 } from '@/lib/settingsPersistence'
+import { syncPageBackground } from '@/lib/pageBackground'
 import { syncReducedMotionDataset } from '@/lib/reducedMotion'
 import { useOpenWebSettingsStore } from '@/store/openWebSettings'
 import { useTheme } from 'next-themes'
@@ -76,7 +77,8 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         setTheme(appearance.theme)
         syncLayoutWidthDataset(appearance.layoutWidth)
         syncReducedMotionDataset(appearance.reducedMotion)
-    }, [appearance.layoutWidth, appearance.reducedMotion, appearance.theme, ready, setTheme])
+        syncPageBackground(appearance.background)
+    }, [appearance.background, appearance.layoutWidth, appearance.reducedMotion, appearance.theme, ready, setTheme])
 
     return children
 }

@@ -14,9 +14,15 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
+import { Slider } from '@/components/ui/slider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type LayoutWidth } from '@/lib/layoutWidth'
+import {
+    MAX_PAGE_BACKGROUND,
+    MIN_PAGE_BACKGROUND,
+    pageBackgroundImageUrl,
+} from '@/lib/pageBackground'
 import { READING_FONT_SCALE_PRESETS, readingFontScalePresetFromScales } from '@/lib/readingFontScale'
 import { REDUCED_MOTION_FULL, REDUCED_MOTION_REDUCE, REDUCED_MOTION_SYSTEM } from '@/lib/reducedMotion'
 import { SOUND_EFFECTS_OFF, SOUND_EFFECTS_ON, type SoundEffectsPreference } from '@/lib/soundEffects'
@@ -112,6 +118,8 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
         setReducedMotion,
         soundEffects,
         setSoundEffects,
+        background,
+        setBackground,
         resetAppearanceDefaults,
     } = useAppearancePreferences()
     const [open, setOpen] = useState(false)
@@ -254,6 +262,33 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                                 <p className="text-xs text-muted-foreground">
                                     Custom sizes are set per page. Choose a preset to apply the same size everywhere.
                                 </p>
+                            ) : null}
+                        </SettingSection>
+                        <SettingSection
+                            title="Background"
+                            description="Choose a page background image. Set to 0 for none."
+                        >
+                            <div className="flex items-center gap-3">
+                                <Slider
+                                    min={MIN_PAGE_BACKGROUND}
+                                    max={MAX_PAGE_BACKGROUND}
+                                    step={1}
+                                    value={[background]}
+                                    onValueChange={(value) => setBackground(value[0] ?? MIN_PAGE_BACKGROUND)}
+                                    aria-label="Background"
+                                    className="flex-1"
+                                />
+                                <span className="w-10 shrink-0 text-right text-sm tabular-nums text-muted-foreground">
+                                    {background === 0 ? 'None' : background}
+                                </span>
+                            </div>
+                            {background > 0 ? (
+                                <div
+                                    className="mt-1 h-20 w-full overflow-hidden rounded-md border border-border bg-muted bg-cover bg-center"
+                                    style={{ backgroundImage: `url(${pageBackgroundImageUrl(background)})` }}
+                                    role="img"
+                                    aria-label={`Background preview ${background}`}
+                                />
                             ) : null}
                         </SettingSection>
                         <SettingSection

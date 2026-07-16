@@ -27,6 +27,11 @@ import {
 } from '@/lib/reducedMotion'
 import { emptyRecents, parseRecentsData, type RecentsData } from '@/lib/recents'
 import {
+    DEFAULT_PAGE_BACKGROUND,
+    parsePageBackground,
+    type PageBackgroundPreference,
+} from '@/lib/pageBackground'
+import {
     DEFAULT_SOUND_EFFECTS,
     parseSoundEffects,
     SOUND_EFFECTS_STORAGE_KEY,
@@ -47,6 +52,7 @@ export type OpenWebAppearanceSettings = {
     fontScales: Record<ReadingFontScaleKey, number>
     reducedMotion: ReducedMotionPreference
     soundEffects: SoundEffectsPreference
+    background: PageBackgroundPreference
 }
 
 export type OpenWebUiSettings = {
@@ -81,6 +87,7 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
             fontScales: createDefaultFontScales(),
             reducedMotion: DEFAULT_REDUCED_MOTION,
             soundEffects: DEFAULT_SOUND_EFFECTS,
+            background: DEFAULT_PAGE_BACKGROUND,
         },
         ui: {
             courseListAccordions: {},
@@ -192,6 +199,7 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
             reducedMotion:
                 parseReducedMotion(String(appearance?.reducedMotion ?? '')) ?? defaults.appearance.reducedMotion,
             soundEffects: parseSoundEffects(String(appearance?.soundEffects ?? '')) ?? defaults.appearance.soundEffects,
+            background: parsePageBackground(appearance?.background) ?? defaults.appearance.background,
         },
         ui: {
             courseListAccordions: parseCourseListAccordions(ui?.courseListAccordions),
@@ -244,6 +252,7 @@ function readLegacyAppearanceSettings(): OpenWebAppearanceSettings {
         fontScales,
         reducedMotion: parseReducedMotion(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)) ?? defaults.reducedMotion,
         soundEffects: parseSoundEffects(localStorage.getItem(SOUND_EFFECTS_STORAGE_KEY)) ?? defaults.soundEffects,
+        background: defaults.background,
     }
 }
 

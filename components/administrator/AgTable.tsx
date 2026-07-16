@@ -15,16 +15,19 @@ type GridProps = {
     [key: string]: any
 }
 
-const myThemeLight = themeQuartz.withPart(colorSchemeLight).withParams({
+const sharedThemeParams = {
     fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
     accentColor: 'gray',
-})
+    backgroundColor: 'var(--background)',
+    chromeBackgroundColor: 'var(--background)',
+    headerBackgroundColor: 'var(--background)',
+    foregroundColor: 'var(--foreground)',
+    borderColor: 'var(--border)',
+}
 
-const myThemeDark = themeQuartz.withPart(colorSchemeDark).withParams({
-    fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    accentColor: 'gray',
-    backgroundColor: '#0b0a0b',
-})
+const myThemeLight = themeQuartz.withPart(colorSchemeLight).withParams(sharedThemeParams)
+
+const myThemeDark = themeQuartz.withPart(colorSchemeDark).withParams(sharedThemeParams)
 
 function useAgTheme(wrapperBorder = true, themeParams?: Record<string, string>) {
     const { resolvedTheme } = useTheme()

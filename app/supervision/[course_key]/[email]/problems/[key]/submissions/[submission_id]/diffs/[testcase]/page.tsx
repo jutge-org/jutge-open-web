@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { notFound, useParams } from 'next/navigation'
 
 import { SupervisorGate } from '@/components/ClientGates'
-import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
@@ -138,7 +137,6 @@ function SupervisionSubmissionTestcaseAnalysisPageContent() {
 
     return (
         <SupervisionPageShell context={context} courseTitle={meta?.courseTitle} breadcrumbs={breadcrumbs}>
-            <PageTitle section="/supervision" authenticated hidden={false} />
             {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { notFound, useParams } from 'next/navigation'
 
 import { SupervisorGate } from '@/components/ClientGates'
-import { PageTitle } from '@/components/general/PageTitle'
 import { SupervisionPageShell } from '@/components/supervision/SupervisionPageShell'
 import { SupervisionStudentView, SupervisionStudentViewLoading } from '@/components/supervision/SupervisionStudentView'
 import { normalizeCourseKeyParam } from '@/lib/courses'
@@ -38,7 +37,6 @@ function SupervisionStudentPageContent() {
 
     return (
         <SupervisionPageShell context={context} courseTitle={data?.courseTitle} breadcrumbs={breadcrumbs}>
-            <PageTitle section="/supervision" authenticated hidden={false} />
             {data === undefined ? <SupervisionStudentViewLoading /> : <SupervisionStudentView data={data} />}
         </SupervisionPageShell>
     )

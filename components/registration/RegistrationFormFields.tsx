@@ -17,7 +17,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { buildHomeWelcomeUrl } from '@/components/general/HomeWelcomeMessage'
 import { RECAPTCHA_REGISTRATION_ACTION } from '@/lib/recaptcha'
 import type { Country } from '@/lib/jutge_api_client'
 import Link from 'next/link'
@@ -152,7 +151,7 @@ export function RegistrationFormFields({
 
             setErrorMessage(null)
             toast.success(`An email has been sent to ${result.email}. You are now signed in as ${result.userName}.`)
-            router.push(buildHomeWelcomeUrl())
+            router.push('/')
         } finally {
             setPending(false)
         }

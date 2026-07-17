@@ -27,6 +27,8 @@ type CourseDetailProps = {
     lastSubmissions?: Record<string, LastSubmissionInfo>
     listsLoading?: boolean
     problemCount?: number
+    /** Called after enrolling, archiving, etc. so the page can fetch the course again. */
+    onCourseChanged?: () => void
 }
 
 function CourseListCardLoading() {
@@ -120,6 +122,7 @@ export function CourseDetail({
     lastSubmissions,
     listsLoading = false,
     problemCount,
+    onCourseChanged,
 }: CourseDetailProps) {
     const row = buildCourseRow(course, status, courseKey, isOwner)
 
@@ -145,6 +148,7 @@ export function CourseDetail({
                                     isOwner={isOwner}
                                     isTutor={isTutor}
                                     userId={userId}
+                                    onCourseChanged={onCourseChanged}
                                 />
                             </div>
                             <div className="mt-1.5 flex items-center justify-between gap-2">

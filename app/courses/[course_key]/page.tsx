@@ -43,6 +43,9 @@ function CoursePageContent({ userId }: { userId: string }) {
     const [courseData, setCourseData] = useState<CourseCoreData | null | undefined>(undefined)
     const [listsData, setListsData] = useState<CourseListsData | undefined>(undefined)
     const [listsLoading, setListsLoading] = useState(false)
+    // Bumped when the enrollment changes, to fetch the course again: the status decides whether
+    // the lists are loaded at all, so it cannot be left stale.
+    const [reloadToken, setReloadToken] = useState(0)
 
     useEffect(() => {
         let cancelled = false
@@ -105,7 +108,7 @@ function CoursePageContent({ userId }: { userId: string }) {
         return () => {
             cancelled = true
         }
-    }, [params.course_key])
+    }, [params.course_key, reloadToken])
 
     if (courseData === null) {
         notFound()
@@ -137,6 +140,7 @@ function CoursePageContent({ userId }: { userId: string }) {
                     lastSubmissions={listsData?.lastSubmissions}
                     listsLoading={listsLoading}
                     problemCount={courseData.problemCount}
+                    onCourseChanged={() => setReloadToken((token) => token + 1)}
                 />
             )}
         </div>

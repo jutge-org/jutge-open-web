@@ -45,6 +45,11 @@ type CourseDetailActionsProps = {
     isOwner: boolean
     isTutor: boolean
     userId: string
+    /**
+     * Reload the course. The page fetches on the client, where router.refresh() has nothing to
+     * re-run, so enrolling has to ask it to fetch again for the lists to appear.
+     */
+    onCourseChanged?: () => void
 }
 
 export function CourseDetailActions({
@@ -55,6 +60,7 @@ export function CourseDetailActions({
     isOwner,
     isTutor,
     userId,
+    onCourseChanged,
 }: CourseDetailActionsProps) {
     const router = useRouter()
     const [isPending, setIsPending] = useState(false)
@@ -100,6 +106,7 @@ export function CourseDetailActions({
             if (result.ok) {
                 toast.success(courseActionSuccessMessage(action, title, ownerName))
                 router.refresh()
+                onCourseChanged?.()
                 return
             }
 

@@ -28,10 +28,22 @@ export type RecentSubmissionItem = {
     accessedAt: number
 }
 
+/**
+ * Students have no list route — lists are accordions inside a course page — so a list counts as
+ * accessed when its accordion is expanded, and is recorded from there rather than from the URL.
+ */
+export type RecentListItem = {
+    listNm: string
+    title: string
+    courseKey: string | null
+    accessedAt: number
+}
+
 export type RecentsData = {
     courses: RecentCourseItem[]
     problems: RecentProblemItem[]
     submissions: RecentSubmissionItem[]
+    lists: RecentListItem[]
 }
 
 export function recentsStorageKey(userId: string): string {
@@ -39,7 +51,7 @@ export function recentsStorageKey(userId: string): string {
 }
 
 export function emptyRecents(): RecentsData {
-    return { courses: [], problems: [], submissions: [] }
+    return { courses: [], problems: [], submissions: [], lists: [] }
 }
 
 function isRecentCourseItem(value: unknown): value is RecentCourseItem {
@@ -79,6 +91,20 @@ function isRecentSubmissionItem(value: unknown): value is RecentSubmissionItem {
     )
 }
 
+function isRecentListItem(value: unknown): value is RecentListItem {
+    if (typeof value !== 'object' || value === null) {
+        return false
+    }
+
+    const item = value as RecentListItem
+    return (
+        typeof item.listNm === 'string' &&
+        typeof item.title === 'string' &&
+        typeof item.accessedAt === 'number' &&
+        (item.courseKey === null || typeof item.courseKey === 'string')
+    )
+}
+
 function parseRecentItems<T>(value: unknown, guard: (item: unknown) => item is T): T[] {
     if (!Array.isArray(value)) {
         return []
@@ -102,6 +128,7 @@ export function parseRecentsData(raw: string | null): RecentsData {
             courses: parseRecentItems((parsed as RecentsData).courses, isRecentCourseItem),
             problems: parseRecentItems((parsed as RecentsData).problems, isRecentProblemItem),
             submissions: parseRecentItems((parsed as RecentsData).submissions, isRecentSubmissionItem),
+            lists: parseRecentItems((parsed as RecentsData).lists, isRecentListItem),
         }
     } catch {
         return emptyRecents()
@@ -139,6 +166,13 @@ export function addRecentSubmission(data: RecentsData, item: RecentSubmissionIte
     }
 }
 
+export function addRecentList(data: RecentsData, item: RecentListItem): RecentsData {
+    return {
+        ...data,
+        lists: upsertByKey(data.lists, item, (entry) => entry.listNm),
+    }
+}
+
 export function clearRecentCourses(data: RecentsData): RecentsData {
     return { ...data, courses: [] }
 }
@@ -155,39 +189,61 @@ export function clearAllRecents(): RecentsData {
     return emptyRecents()
 }
 
-export function enrichRecentCourseIcons(data: RecentsData, iconByKey: ReadonlyMap<string, string>): RecentsData {
+export type RecentCourseMeta = {
+    title: string
+    iconUrl?: string
+}
+
+/**
+ * Fill in course titles and icons from the API. The stored title is whatever the page happened to
+ * show when it was visited — often just the course key — so the API value wins.
+ */
+export function enrichRecentCourses(data: RecentsData, metaByKey: ReadonlyMap<string, RecentCourseMeta>): RecentsData {
     let changed = false
     const courses = data.courses.map((course) => {
-        if (course.iconUrl) {
+        const meta = metaByKey.get(course.courseKey)
+        if (!meta) {
             return course
         }
 
-        const iconUrl = iconByKey.get(course.courseKey)
-        if (!iconUrl) {
+        const title = meta.title || course.title
+        const iconUrl = meta.iconUrl ?? course.iconUrl
+        if (title === course.title && iconUrl === course.iconUrl) {
             return course
         }
 
         changed = true
-        return { ...course, iconUrl }
+        return { ...course, title, iconUrl }
     })
 
     return changed ? { ...data, courses } : data
 }
 
-export function enrichRecentProblemIcons(data: RecentsData, iconByNm: ReadonlyMap<string, string>): RecentsData {
+export type RecentProblemMeta = {
+    title: string
+    iconUrl?: string
+}
+
+/**
+ * Fill in problem titles and icons from the API. The stored title is whatever the page happened to
+ * show when it was visited, so it can be stale or just the problem name; the API value wins.
+ */
+export function enrichRecentProblems(data: RecentsData, metaByNm: ReadonlyMap<string, RecentProblemMeta>): RecentsData {
     let changed = false
     const problems = data.problems.map((problem) => {
-        if (problem.iconUrl) {
+        const meta = metaByNm.get(problem.problemNm)
+        if (!meta) {
             return problem
         }
 
-        const iconUrl = iconByNm.get(problem.problemNm)
-        if (!iconUrl) {
+        const title = meta.title || problem.title
+        const iconUrl = meta.iconUrl ?? problem.iconUrl
+        if (title === problem.title && iconUrl === problem.iconUrl) {
             return problem
         }
 
         changed = true
-        return { ...problem, iconUrl }
+        return { ...problem, title, iconUrl }
     })
 
     return changed ? { ...data, problems } : data

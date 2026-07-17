@@ -14,6 +14,7 @@ import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
 import { instructorListPropertiesHref } from '@/lib/courses'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
+import { useRecents } from '@/components/RecentsProvider'
 import type { CourseListData, CourseListItemRow } from '@/lib/data/lists'
 import { cn } from '@/lib/utils'
 
@@ -125,6 +126,7 @@ export function CourseLists({
 }: CourseListsProps) {
     const listNames = useMemo(() => lists.map((list) => list.list_nm), [lists])
     const [openItems, setOpenItems] = useCourseListAccordionPreference(courseKey, listNames)
+    const { recordList } = useRecents()
 
     const countsByList = useMemo(
         () => new Map(lists.map((list) => [list.list_nm, computeListProblemCounts(list.items, statuses)])),
@@ -132,6 +134,18 @@ export function CourseLists({
     )
 
     function toggleList(listNm: string) {
+        // Expanding a list is the closest thing students have to visiting one. Not recorded while
+        // supervising, where the lists on screen belong to the student being looked at.
+        if (!openItems.includes(listNm) && !supervisionContext) {
+            const list = lists.find((entry) => entry.list_nm === listNm)
+            recordList({
+                listNm,
+                title: list?.title ?? listNm,
+                courseKey,
+                accessedAt: Date.now(),
+            })
+        }
+
         setOpenItems((current) =>
             current.includes(listNm) ? current.filter((item) => item !== listNm) : [...current, listNm],
         )

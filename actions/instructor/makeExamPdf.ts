@@ -36,10 +36,15 @@ export async function makeExamPdf(data: { exam_nm: string; token: string; extra:
     for (const examProblem of exam.problems) {
         const abstractProblem = await jutge.problems.getAbstractProblem(examProblem.problem_nm)
         for (const problem_id in abstractProblem.problems) {
-            pdfs.push(problem_id)
-            const download = await jutge.problems.getPdfStatement(problem_id)
-            const path = `${tmp}/${problem_id}.pdf`
-            await writeFile(path, download.data)
+            try {
+                const download = await jutge.problems.getPdfStatement(problem_id)
+                const path = `${tmp}/${problem_id}.pdf`
+                await writeFile(path, download.data)
+                pdfs.push(problem_id)
+            } catch (error) {
+                // TODO: report error to the user
+                console.error(`Error downloading problem ${problem_id}:`, error)
+            }
         }
     }
 

@@ -17,10 +17,7 @@ type ProblemIconImageProps = {
 
 export function ProblemIconImage({ iconUrl, size = 'sm', className }: ProblemIconImageProps) {
     const { className: sizeClassName, width, height } = sizeConfig[size]
-    if (size) {
-        // TODO: i do not know why icons that are resized look so bad
-        // iconUrl = iconUrl.replace('problem-icons/', `problem-icons/${size}/`)
-    }
+    iconUrl = iconUrl.replace('problem-icons/', `problem-icons/sm/`)
 
     return (
         <Image

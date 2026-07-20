@@ -1,7 +1,6 @@
 'use client'
 
 import { AuthToolbar } from '@/components/AuthToolbar'
-import { ReportIssueButton } from '@/components/ReportIssueButton'
 import { CommandPalette } from '@/components/CommandPalette'
 import { AppearanceSettingsDialog } from '@/components/AppearanceSettingsDialog'
 import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
@@ -58,11 +57,9 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                     <header className={headerBarClassName(pathname, gradientsEnabled)}>
                         <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
                             <MainBreadcrumbsInLayout />
-                            <div className="flex items-center gap-0">
-                                {authenticated ? <ReportIssueButton /> : null}
+                            <div className="flex items-center gap-1">
                                 <CommandPalette />
                                 {authenticated ? <RecentMenu /> : null}
-                                <AppearanceSettingsDialog />
                                 <AuthToolbar />
                             </div>
                         </LayoutWidthContainer>
@@ -72,6 +69,8 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             >
                 {children}
             </RootShell>
+            {/* Headless: opened from the Account menu and the command palette */}
+            <AppearanceSettingsDialog />
         </RecentsProvider>
     )
 }

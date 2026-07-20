@@ -89,9 +89,10 @@ type MainNavSubmenuItem = {
 }
 
 function orderMainNavMenuLinks(links: readonly SiteNavLink[]): SiteNavLink[] {
-    const documentation = links.find((l) => l.href === '/documentation')
-    const about = links.find((l) => l.href === '/about')
-    const withoutMeta = links.filter((l) => l.href !== '/about' && l.href !== '/documentation')
+    const withoutProfile = links.filter((l) => l.href !== '/profile')
+    const documentation = withoutProfile.find((l) => l.href === '/documentation')
+    const about = withoutProfile.find((l) => l.href === '/about')
+    const withoutMeta = withoutProfile.filter((l) => l.href !== '/about' && l.href !== '/documentation')
     const metaLinks = [documentation, about].filter((l): l is SiteNavLink => l != null)
     return [homeLink, ...withoutMeta, ...metaLinks]
 }
@@ -449,18 +450,29 @@ export function MainBreadcrumbsInLayout() {
                                 ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        {menuAnchor ? (
-                            <BreadcrumbLink asChild>
-                                <Link
-                                    href={menuAnchor.url}
-                                    className="min-w-0 flex-1 truncate font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
-                                >
-                                    {menuAnchor.title}
-                                </Link>
-                            </BreadcrumbLink>
-                        ) : (
-                            <span className="min-w-0 flex-1 truncate font-bold text-foreground">Navigate</span>
-                        )}
+                        <BreadcrumbLink asChild>
+                            <Link
+                                href="/"
+                                className="shrink-0 font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
+                            >
+                                Jutge.org
+                            </Link>
+                        </BreadcrumbLink>
+                        {menuAnchor && menuAnchor.url !== '/' ? (
+                            <>
+                                <span aria-hidden className="shrink-0 text-muted-foreground">
+                                    ·
+                                </span>
+                                <BreadcrumbLink asChild>
+                                    <Link
+                                        href={menuAnchor.url}
+                                        className="min-w-0 flex-1 truncate font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
+                                    >
+                                        {menuAnchor.title}
+                                    </Link>
+                                </BreadcrumbLink>
+                            </>
+                        ) : null}
                     </div>
                 </BreadcrumbItem>
 

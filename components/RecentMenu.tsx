@@ -23,7 +23,7 @@ import {
     type RecentSubmissionItem,
 } from '@/lib/recents'
 import { courseIconUrl } from '@/lib/courses'
-import { BookOpenIcon, Clock3Icon, FileBracesCornerIcon, SendIcon, Trash2Icon } from 'lucide-react'
+import { ActivityIcon, BookOpenIcon, FileBracesCornerIcon, SendIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -71,8 +71,7 @@ function RecentSection<T>({
 }
 
 export function RecentMenu() {
-    const { recents, clearCourses, clearProblems, clearSubmissions, clearAll } = useRecents()
-    const hasAnyRecents = recents.courses.length > 0 || recents.problems.length > 0 || recents.submissions.length > 0
+    const { recents } = useRecents()
 
     return (
         <DropdownMenu>
@@ -81,7 +80,7 @@ export function RecentMenu() {
                     <TooltipTrigger asChild>
                         <DropdownMenuTrigger asChild>
                             <Button type="button" variant="ghost" size="icon" aria-label="Recent items">
-                                <Clock3Icon className="size-4.5" aria-hidden />
+                                <ActivityIcon className="size-4.5" aria-hidden />
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -139,33 +138,6 @@ export function RecentMenu() {
                     )}
                     emptyLabel="No recent submissions"
                 />
-                {hasAnyRecents ? (
-                    <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                            <Trash2Icon className="size-4" aria-hidden />
-                            Clear
-                        </DropdownMenuLabel>
-                        {recents.courses.length > 0 ? (
-                            <DropdownMenuItem className="text-muted-foreground" onClick={clearCourses}>
-                                Clear recent courses
-                            </DropdownMenuItem>
-                        ) : null}
-                        {recents.problems.length > 0 ? (
-                            <DropdownMenuItem className="text-muted-foreground" onClick={clearProblems}>
-                                Clear recent problems
-                            </DropdownMenuItem>
-                        ) : null}
-                        {recents.submissions.length > 0 ? (
-                            <DropdownMenuItem className="text-muted-foreground" onClick={clearSubmissions}>
-                                Clear recent submissions
-                            </DropdownMenuItem>
-                        ) : null}
-                        <DropdownMenuItem className="text-muted-foreground" onClick={clearAll}>
-                            Clear all
-                        </DropdownMenuItem>
-                    </>
-                ) : null}
             </DropdownMenuContent>
         </DropdownMenu>
     )

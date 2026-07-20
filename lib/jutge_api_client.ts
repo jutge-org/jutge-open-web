@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-17T09:16:44.473Z
+ * This file has been automatically generated at 2026-07-20T10:15:23.721Z
  *
  * Name:    Jutge API
  * Version: 2.0.0
@@ -1537,7 +1537,7 @@ export class JutgeApiClient {
     }): Promise<CredentialsOut> {
         const [credentials, _] = await this.execute("auth.loginExam", { email, password, exam, exam_password })
         if (credentials.error) throw new UnauthorizedError(credentials.error)
-        this.meta = { token: credentials.token }
+        this.meta = { token: credentials.token, user_uid: credentials.user_uid }
         return credentials
     }
 

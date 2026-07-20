@@ -32,6 +32,11 @@ import {
     SOUND_EFFECTS_STORAGE_KEY,
     type SoundEffectsPreference,
 } from '@/lib/soundEffects'
+import {
+    DEFAULT_CONTEXTUAL_HEADER_GRADIENTS,
+    parseContextualHeaderGradients,
+    type ContextualHeaderGradientsPreference,
+} from '@/lib/contextualHeaderGradients'
 
 export const OPENWEB_SETTINGS_API_KEY = 'openweb'
 export const LOCAL_SETTINGS_STORAGE_KEY = 'settings'
@@ -47,6 +52,7 @@ export type OpenWebAppearanceSettings = {
     fontScales: Record<ReadingFontScaleKey, number>
     reducedMotion: ReducedMotionPreference
     soundEffects: SoundEffectsPreference
+    contextualHeaderGradients: ContextualHeaderGradientsPreference
 }
 
 export type OpenWebUiSettings = {
@@ -81,6 +87,7 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
             fontScales: createDefaultFontScales(),
             reducedMotion: DEFAULT_REDUCED_MOTION,
             soundEffects: DEFAULT_SOUND_EFFECTS,
+            contextualHeaderGradients: DEFAULT_CONTEXTUAL_HEADER_GRADIENTS,
         },
         ui: {
             courseListAccordions: {},
@@ -192,6 +199,9 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
             reducedMotion:
                 parseReducedMotion(String(appearance?.reducedMotion ?? '')) ?? defaults.appearance.reducedMotion,
             soundEffects: parseSoundEffects(String(appearance?.soundEffects ?? '')) ?? defaults.appearance.soundEffects,
+            contextualHeaderGradients:
+                parseContextualHeaderGradients(String(appearance?.contextualHeaderGradients ?? '')) ??
+                defaults.appearance.contextualHeaderGradients,
         },
         ui: {
             courseListAccordions: parseCourseListAccordions(ui?.courseListAccordions),
@@ -244,6 +254,7 @@ function readLegacyAppearanceSettings(): OpenWebAppearanceSettings {
         fontScales,
         reducedMotion: parseReducedMotion(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)) ?? defaults.reducedMotion,
         soundEffects: parseSoundEffects(localStorage.getItem(SOUND_EFFECTS_STORAGE_KEY)) ?? defaults.soundEffects,
+        contextualHeaderGradients: defaults.contextualHeaderGradients,
     }
 }
 

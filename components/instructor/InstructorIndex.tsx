@@ -36,7 +36,7 @@ export function InstructorIndex() {
 
                 return (
                     <Link key={item.href} href={item.href} className={className}>
-                        <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border-l-4 border-l-rose-500 bg-muted/80 text-rose-600 dark:text-rose-400">
+                        <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border-l-4 border-l-orange-500 bg-muted/80 text-orange-600 dark:text-orange-400">
                             <Icon className="size-7 group-hover:animate-pulse" aria-hidden />
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col gap-0.5">

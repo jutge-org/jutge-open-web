@@ -20,6 +20,7 @@ import {
 } from '@/lib/recents'
 import type { ReducedMotionPreference } from '@/lib/reducedMotion'
 import type { SoundEffectsPreference } from '@/lib/soundEffects'
+import type { ContextualHeaderGradientsPreference } from '@/lib/contextualHeaderGradients'
 
 type HydrateOptions = {
     dirty?: boolean
@@ -40,6 +41,7 @@ type OpenWebSettingsStore = {
     setReadingFontScalePreset: (scale: number) => void
     setReducedMotion: (preference: ReducedMotionPreference) => void
     setSoundEffects: (preference: SoundEffectsPreference) => void
+    setContextualHeaderGradients: (preference: ContextualHeaderGradientsPreference) => void
     resetAppearanceDefaults: () => void
     setCourseListAccordionOpenItems: (courseKey: string, openItems: string[]) => void
     setCourseStatisticsPeriod: (courseKey: string, period: CourseStatisticsPeriod) => void
@@ -182,6 +184,16 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
             settings: patchSettings(state.settings, (settings) => ({
                 ...settings,
                 appearance: { ...settings.appearance, soundEffects: preference },
+            })),
+            dirty: true,
+        }))
+    },
+
+    setContextualHeaderGradients: (preference) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                appearance: { ...settings.appearance, contextualHeaderGradients: preference },
             })),
             dirty: true,
         }))

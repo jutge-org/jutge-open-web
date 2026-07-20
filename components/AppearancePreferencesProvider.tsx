@@ -13,6 +13,7 @@ import type { MonacoThemeSelection } from '@/lib/monaco/themes'
 import type { ReadingFontScaleKey } from '@/lib/readingFontScale'
 import type { ReducedMotionPreference } from '@/lib/reducedMotion'
 import type { SoundEffectsPreference } from '@/lib/soundEffects'
+import type { ContextualHeaderGradientsPreference } from '@/lib/contextualHeaderGradients'
 
 type FontScales = Record<ReadingFontScaleKey, number>
 
@@ -28,6 +29,8 @@ type AppearancePreferencesContextValue = {
     setReducedMotion: (preference: ReducedMotionPreference) => void
     soundEffects: SoundEffectsPreference
     setSoundEffects: (preference: SoundEffectsPreference) => void
+    contextualHeaderGradients: ContextualHeaderGradientsPreference
+    setContextualHeaderGradients: (preference: ContextualHeaderGradientsPreference) => void
     resetAppearanceDefaults: () => void
 }
 
@@ -42,6 +45,7 @@ export function AppearancePreferencesProvider({ children }: { children: ReactNod
     const setReadingFontScalePreset = useOpenWebSettingsStore((state) => state.setReadingFontScalePreset)
     const setReducedMotion = useOpenWebSettingsStore((state) => state.setReducedMotion)
     const setSoundEffects = useOpenWebSettingsStore((state) => state.setSoundEffects)
+    const setContextualHeaderGradients = useOpenWebSettingsStore((state) => state.setContextualHeaderGradients)
     const resetAppearanceDefaultsInStore = useOpenWebSettingsStore((state) => state.resetAppearanceDefaults)
     const setLayoutWidth = useOpenWebSettingsStore((state) => state.setLayoutWidth)
     const setStoredTheme = useOpenWebSettingsStore((state) => state.setTheme)
@@ -73,6 +77,8 @@ export function AppearancePreferencesProvider({ children }: { children: ReactNod
                 setReducedMotion: setReducedMotionPreference,
                 soundEffects: appearance.soundEffects,
                 setSoundEffects,
+                contextualHeaderGradients: appearance.contextualHeaderGradients,
+                setContextualHeaderGradients,
                 resetAppearanceDefaults,
             }}
         >

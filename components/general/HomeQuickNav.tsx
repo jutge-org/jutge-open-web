@@ -64,9 +64,9 @@ const cardAccent: Record<string, string> = {
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
-    '/supervision': 'border-l-4 border-l-teal-500 text-teal-600 dark:text-teal-400',
-    '/instructor': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
-    '/administrator': 'border-l-4 border-l-slate-500 text-slate-600 dark:text-slate-400',
+    '/supervision': 'border-l-4 border-l-emerald-500 text-emerald-600 dark:text-emerald-400',
+    '/instructor': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
+    '/administrator': 'border-l-4 border-l-purple-500 text-purple-600 dark:text-purple-400',
     '/documentation': 'border-l-4 border-l-amber-400 text-amber-600 dark:text-amber-400',
     '/about': 'border-l-4 border-l-violet-500 text-violet-600 dark:text-violet-400',
 }

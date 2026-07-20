@@ -20,6 +20,11 @@ import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type La
 import { READING_FONT_SCALE_PRESETS, readingFontScalePresetFromScales } from '@/lib/readingFontScale'
 import { REDUCED_MOTION_FULL, REDUCED_MOTION_REDUCE, REDUCED_MOTION_SYSTEM } from '@/lib/reducedMotion'
 import { SOUND_EFFECTS_OFF, SOUND_EFFECTS_ON, type SoundEffectsPreference } from '@/lib/soundEffects'
+import {
+    CONTEXTUAL_HEADER_GRADIENTS_OFF,
+    CONTEXTUAL_HEADER_GRADIENTS_ON,
+    type ContextualHeaderGradientsPreference,
+} from '@/lib/contextualHeaderGradients'
 import type { ThemePreference } from '@/lib/openWebSettings'
 import { cn } from '@/lib/utils'
 import {
@@ -27,6 +32,7 @@ import {
     AArrowDownIcon,
     AArrowUpIcon,
     ALargeSmallIcon,
+    BlendIcon,
     MonitorIcon,
     MoonIcon,
     RectangleHorizontalIcon,
@@ -112,6 +118,8 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
         setReducedMotion,
         soundEffects,
         setSoundEffects,
+        contextualHeaderGradients,
+        setContextualHeaderGradients,
         resetAppearanceDefaults,
     } = useAppearancePreferences()
     const [open, setOpen] = useState(false)
@@ -330,6 +338,32 @@ export function AppearanceSettingsDialog({ size = 'icon' }: AppearanceSettingsDi
                                     onValueChange={setMonacoTheme}
                                 />
                             </div>
+                        </SettingSection>
+                        <SettingSection
+                            title="Contextual header"
+                            description="Tint the header bar on administrator, instructor, and supervision pages."
+                        >
+                            <ToggleGroup
+                                type="single"
+                                variant="outline"
+                                spacing={0}
+                                value={contextualHeaderGradients}
+                                onValueChange={(value) =>
+                                    value && setContextualHeaderGradients(value as ContextualHeaderGradientsPreference)
+                                }
+                                className="grid w-full grid-cols-2"
+                            >
+                                <SegmentedOption
+                                    value={CONTEXTUAL_HEADER_GRADIENTS_ON}
+                                    label="On"
+                                    icon={<BlendIcon className="size-4" aria-hidden />}
+                                />
+                                <SegmentedOption
+                                    value={CONTEXTUAL_HEADER_GRADIENTS_OFF}
+                                    label="Off"
+                                    icon={<SquareIcon className="size-4" aria-hidden />}
+                                />
+                            </ToggleGroup>
                         </SettingSection>
                     </div>
                     <div className="shrink-0 border-t border-border px-6 py-4">

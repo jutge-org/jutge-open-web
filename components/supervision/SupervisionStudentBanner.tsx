@@ -17,11 +17,11 @@ export function SupervisionStudentBanner({ context, courseTitle }: SupervisionSt
 
     return (
         <div
-            className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-teal-500/30 bg-teal-500/5 px-4 py-3 text-sm"
+            className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-4 py-3 text-sm"
             role="status"
             aria-label={`Supervising ${studentLabel}`}
         >
-            <EyeIcon className="size-4 shrink-0 text-teal-600 dark:text-teal-400" aria-hidden />
+            <EyeIcon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
             <span className="text-muted-foreground">Supervising</span>
             <Link href={overviewHref} className="font-medium text-foreground hover:text-primary hover:underline">
                 {studentLabel}
@@ -32,7 +32,7 @@ export function SupervisionStudentBanner({ context, courseTitle }: SupervisionSt
                     <span className="text-foreground">{courseTitle}</span>
                 </>
             ) : null}
-            <Badge variant="outline" className="ml-auto border-teal-500/40 text-teal-700 dark:text-teal-300">
+            <Badge variant="outline" className="ml-auto border-emerald-500/40 text-emerald-700 dark:text-emerald-300">
                 Read-only
             </Badge>
         </div>

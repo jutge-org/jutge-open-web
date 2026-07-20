@@ -95,7 +95,9 @@ export function HomepageStatsDashboard({ stats }: HomepageStatsDashboardProps) {
                         replayKey={replayKey}
                     />
                 ))}
-                <RecentSubmissionsCard recentSubmissions={stats.recent_submissions} replayKey={replayKey} />
+                {stats.recent_submissions && (
+                    <RecentSubmissionsCard recentSubmissions={stats.recent_submissions} replayKey={replayKey} />
+                )}
             </div>
         </section>
     )

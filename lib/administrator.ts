@@ -1,3 +1,49 @@
+export type AdministratorTab =
+    | 'index'
+    | 'dashboard'
+    | 'queue'
+    | 'exams'
+    | 'users'
+    | 'instructors'
+    | 'courses'
+    | 'statistics'
+    | 'heatmaps'
+    | 'ranking'
+
+export type AdministratorNavItem = {
+    tab: AdministratorTab
+    label: string
+    href: string
+}
+
+export const administratorNavItems: AdministratorNavItem[] = [
+    { tab: 'index', label: 'Index', href: '/administrator' },
+    { tab: 'dashboard', label: 'Dashboard', href: '/administrator/dashboard' },
+    { tab: 'queue', label: 'Queue', href: '/administrator/queue' },
+    { tab: 'exams', label: 'Exams', href: '/administrator/exams' },
+    { tab: 'users', label: 'Users', href: '/administrator/users' },
+    { tab: 'instructors', label: 'Instructors', href: '/administrator/instructors' },
+    { tab: 'courses', label: 'Courses', href: '/administrator/courses' },
+    { tab: 'statistics', label: 'Statistics', href: '/administrator/statistics' },
+    { tab: 'heatmaps', label: 'Heatmaps', href: '/administrator/heatmaps' },
+    { tab: 'ranking', label: 'Ranking', href: '/administrator/ranking' },
+]
+
+export function administratorTabFromPathname(pathname: string): AdministratorTab {
+    if (pathname === '/administrator' || pathname === '/administrator/') {
+        return 'index'
+    }
+
+    for (const item of administratorNavItems) {
+        if (item.tab === 'index') continue
+        if (pathname === item.href || pathname.startsWith(`${item.href}/`)) {
+            return item.tab
+        }
+    }
+
+    return 'index'
+}
+
 export const administratorIndexItems = [
     {
         href: '/administrator/dashboard',

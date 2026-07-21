@@ -1,16 +1,15 @@
 'use client'
 
 import { AdministratorIndex } from '@/components/administrator/AdministratorIndex'
+import { AdministratorPageShell } from '@/components/administrator/AdministratorPageShell'
 import { AdministratorGate } from '@/components/ClientGates'
-import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 
 export default function AdministratorPage() {
     return (
         <AdministratorGate>
-            <div className="flex flex-col gap-6">
-                <MainBreadcrumbs breadcrumbs={[{ title: 'Administrator', url: '/administrator' }]} />
+            <AdministratorPageShell breadcrumbs={[{ title: 'Administrator', url: '/administrator' }]}>
                 <AdministratorIndex />
-            </div>
+            </AdministratorPageShell>
         </AdministratorGate>
     )
 }

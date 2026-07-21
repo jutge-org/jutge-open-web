@@ -1,3 +1,6 @@
+'use client'
+
+import { AdministratorNav } from '@/components/administrator/AdministratorNav'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import type { ReactNode } from 'react'
 
@@ -10,6 +13,7 @@ export function AdministratorPageShell({ breadcrumbs, children }: AdministratorP
     return (
         <div className="w-full">
             <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            <AdministratorNav />
             {children}
         </div>
     )

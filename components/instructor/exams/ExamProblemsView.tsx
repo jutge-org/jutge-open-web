@@ -302,7 +302,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                 >
                     <ClipboardPasteIcon /> Paste problems
                 </Button>
-                <div className="flex-grow" />
+                <div className="grow" />
                 <Button className="w-28 justify-start" onClick={add} title="Add a problem">
                     <PlusCircleIcon /> Add
                 </Button>
@@ -489,7 +489,7 @@ function ExamIcons(props: ExamIconsProps) {
                                 </div>
                             )}
                         </div>
-                        <div className="flex-grow" />
+                        <div className="grow" />
                         {props.value !== null && (
                             <Button
                                 onClick={() => props.setValue(null)}
@@ -582,7 +582,7 @@ function ProblemsCombobox(props: ProblemsComboboxProps) {
                 <PopoverTrigger asChild>
                     <Input className="w-full text-left" value={inputValue} />
                 </PopoverTrigger>
-                <PopoverContent className="w-[400px] p-0 shadow-xl">
+                <PopoverContent className="w-100 p-0 shadow-xl">
                     <Command shouldFilter={false}>
                         <CommandSearchInput
                             placeholder="Search problem..."

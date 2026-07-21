@@ -12,19 +12,19 @@ import { RootShell } from '@/components/RootShell'
 import { MainBreadcrumbsInLayout } from '@/app/MainBreadcrumbsInLayout'
 import { useAuth } from '@/components/AuthProvider'
 import { SubNavInLayout } from '@/components/layout/SubNavInLayout'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { isContextualHeaderGradientsEnabled } from '@/lib/contextualHeaderGradients'
 import { cn } from '@/lib/utils'
+import { Settings2Icon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 function headerBarClassName(pathname: string, gradientsEnabled: boolean): string {
     const base = 'sticky top-0 z-50 border-b border-border'
 
     if (gradientsEnabled && pathname.startsWith('/administrator')) {
-        return cn(
-            base,
-            'bg-gradient-to-r from-orange-300 to-yellow-100',
-            'dark:from-orange-950 dark:to-yellow-950/60',
-        )
+        return cn(base, 'bg-gradient-to-r from-orange-300 to-yellow-100', 'dark:from-orange-950 dark:to-yellow-950/60')
     }
     if (gradientsEnabled && pathname.startsWith('/instructor')) {
         return cn(
@@ -34,11 +34,7 @@ function headerBarClassName(pathname: string, gradientsEnabled: boolean): string
         )
     }
     if (gradientsEnabled && pathname.startsWith('/supervision')) {
-        return cn(
-            base,
-            'bg-gradient-to-r from-emerald-300 to-green-100',
-            'dark:from-emerald-950 dark:to-green-950/60',
-        )
+        return cn(base, 'bg-gradient-to-r from-emerald-300 to-green-100', 'dark:from-emerald-950 dark:to-green-950/60')
     }
 
     return cn(base, 'bg-background')
@@ -61,6 +57,22 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                             <div className="flex shrink-0 items-center gap-1">
                                 <CommandPalette />
                                 {authenticated ? <RecentMenu /> : null}
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="icon"
+                                                aria-label="Settings"
+                                                onClick={dispatchOpenAppearanceSettings}
+                                            >
+                                                <Settings2Icon className="size-4.5" aria-hidden />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>Appearance settings</TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                                 <AuthToolbar />
                             </div>
                         </LayoutWidthContainer>
@@ -71,7 +83,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             >
                 {children}
             </RootShell>
-            {/* Headless: opened from the Account menu and the command palette */}
+            {/* Headless: opened from the Settings button, Account menu, and command palette */}
             <AppearanceSettingsDialog />
         </RecentsProvider>
     )

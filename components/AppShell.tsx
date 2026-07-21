@@ -22,22 +22,22 @@ function headerBarClassName(pathname: string, gradientsEnabled: boolean): string
     if (gradientsEnabled && pathname.startsWith('/administrator')) {
         return cn(
             base,
-            'bg-gradient-to-r from-purple-300 via-violet-200 to-fuchsia-100',
-            'dark:from-purple-950 dark:via-violet-900/80 dark:to-fuchsia-950/60',
+            'bg-gradient-to-r from-purple-300 to-fuchsia-100',
+            'dark:from-purple-950 dark:to-fuchsia-950/60',
         )
     }
     if (gradientsEnabled && pathname.startsWith('/instructor')) {
         return cn(
             base,
-            'bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-100',
-            'dark:from-orange-950 dark:via-amber-900/80 dark:to-yellow-950/60',
+            'bg-gradient-to-r from-orange-300 to-yellow-100',
+            'dark:from-orange-950 dark:to-yellow-950/60',
         )
     }
     if (gradientsEnabled && pathname.startsWith('/supervision')) {
         return cn(
             base,
-            'bg-gradient-to-r from-emerald-300 via-teal-200 to-green-100',
-            'dark:from-emerald-950 dark:via-teal-900/80 dark:to-green-950/60',
+            'bg-gradient-to-r from-emerald-300 to-green-100',
+            'dark:from-emerald-950 dark:to-green-950/60',
         )
     }
 

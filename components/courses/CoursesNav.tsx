@@ -1,10 +1,11 @@
 'use client'
 
-import Link from 'next/link'
+import { useMemo } from 'react'
 
+import { SubNav } from '@/components/general/SubNav'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { coursesNavItems, type CoursesData, type CoursesTab } from '@/lib/courses'
+import type { SubNavItem } from '@/store/SubNav'
 
 type CoursesNavProps = {
     activeTab: CoursesTab
@@ -17,29 +18,34 @@ const countByTab: Record<CoursesTab, keyof Pick<CoursesData, 'enrolled' | 'archi
     available: 'available',
 }
 
+/** Registers course section links in the sticky header sub-nav. */
 export function CoursesNav({ activeTab, counts }: CoursesNavProps) {
-    return (
-        <nav aria-label="Course sections" className="w-full">
-            <Tabs value={activeTab}>
-                <TabsList className="w-full min-w-max">
-                    {coursesNavItems.map(({ tab, label, href }) => {
-                        const count = counts[countByTab[tab]].length
+    const enrolledCount = counts.enrolled.length
+    const archivedCount = counts.archived.length
+    const availableCount = counts.available.length
 
-                        return (
-                            <TabsTrigger key={tab} value={tab} asChild>
-                                <Link href={href} aria-current={tab === activeTab ? 'page' : undefined}>
-                                    {label}
-                                    {count > 0 ? (
-                                        <Badge variant="secondary" className="ml-1.5 px-1.5">
-                                            {count}
-                                        </Badge>
-                                    ) : null}
-                                </Link>
-                            </TabsTrigger>
-                        )
-                    })}
-                </TabsList>
-            </Tabs>
-        </nav>
-    )
+    const items = useMemo((): readonly SubNavItem[] => {
+        const lengths = {
+            enrolled: enrolledCount,
+            archived: archivedCount,
+            available: availableCount,
+        }
+
+        return coursesNavItems.map(({ tab, label, href }) => {
+            const count = lengths[countByTab[tab]]
+            return {
+                key: tab,
+                label,
+                href,
+                badge:
+                    count > 0 ? (
+                        <Badge variant="secondary" className="px-1.5">
+                            {count}
+                        </Badge>
+                    ) : undefined,
+            }
+        })
+    }, [enrolledCount, archivedCount, availableCount])
+
+    return <SubNav ariaLabel="Course sections" activeKey={activeTab} items={items} />
 }

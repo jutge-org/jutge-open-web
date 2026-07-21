@@ -24,7 +24,7 @@ export function SubNavInLayout() {
                     {items.map((item) => {
                         const isActive = item.key === activeKey
                         const className = cn(
-                            'inline-flex h-10 shrink-0 items-center gap-1.5 border-b-2 px-3 text-sm font-medium whitespace-nowrap transition-colors',
+                            'inline-flex h-10 shrink-0 items-center gap-1.5 border-b-2 px-3 text-sm font-medium whitespace-nowrap transition-colors -mt-1',
                             isActive
                                 ? 'border-foreground text-foreground'
                                 : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',

@@ -26,14 +26,14 @@ type ProblemStatementProps = {
 }
 
 const downloadTileClassName =
-    'inline-flex flex-col items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-4 transition-colors hover:bg-muted'
+    'w-28 inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 transition-colors hover:bg-muted'
 
-const downloadTileLabelClassName = 'max-w-24 truncate text-center text-xs text-muted-foreground'
+const downloadTileLabelClassName = 'max-w-32 truncate text-xs text-muted-foreground'
 
 function getTemplateIconClassName(template: string) {
     return template.startsWith('main')
-        ? 'size-10 text-sky-600 dark:text-sky-400'
-        : 'size-10 text-green-600 dark:text-green-400'
+        ? 'size-4 shrink-0 text-sky-600 dark:text-sky-400'
+        : 'size-4 shrink-0 text-green-600 dark:text-green-400'
 }
 
 export function ProblemStatement({ problemId, shortHtmlStatement, templates }: ProblemStatementProps) {
@@ -153,18 +153,14 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                 </CardHeader>
                 <CardContent className={cn('flex flex-col gap-2', showPdf && 'gap-0 px-0 pb-0 pt-0')}>
                     {!showPdf ? (
-                        <div className="flex flex-wrap gap-4">
+                        <div className="flex flex-wrap gap-2">
                             <button
                                 type="button"
                                 onClick={() => handleDownload(() => downloadProblemPdf(problemId))}
                                 aria-label="Download problem statement as PDF"
                                 className={downloadTileClassName}
                             >
-                                <FileTextIcon
-                                    className="size-10 text-red-600 dark:text-red-400"
-                                    aria-hidden
-                                    strokeWidth={0.7}
-                                />
+                                <FileTextIcon className="size-4 shrink-0 text-red-600 dark:text-red-400" aria-hidden />
                                 <span className={downloadTileLabelClassName}>pdf</span>
                             </button>
                             <button
@@ -174,9 +170,8 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                                 className={downloadTileClassName}
                             >
                                 <FileArchiveIcon
-                                    className="size-10 text-amber-600 dark:text-amber-400"
+                                    className="size-4 shrink-0 text-amber-600 dark:text-amber-400"
                                     aria-hidden
-                                    strokeWidth={0.7}
                                 />
                                 <span className={downloadTileLabelClassName}>zip</span>
                             </button>
@@ -188,11 +183,7 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                                     aria-label={`Download ${template}`}
                                     className={downloadTileClassName}
                                 >
-                                    <FileIcon
-                                        className={getTemplateIconClassName(template)}
-                                        aria-hidden
-                                        strokeWidth={0.7}
-                                    />
+                                    <FileIcon className={getTemplateIconClassName(template)} aria-hidden />
                                     <span className={downloadTileLabelClassName}>{template}</span>
                                 </button>
                             ))}

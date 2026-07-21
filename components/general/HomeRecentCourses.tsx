@@ -58,7 +58,8 @@ function RecentCourseRow({ course }: { course: RecentCourseItem }) {
                 >
                     <CourseIconImage
                         iconUrl={course.iconUrl ?? courseIconUrl(null)}
-                        className="size-7 shrink-0 rounded-md"
+                        size="2sm"
+                        className="rounded-md"
                     />
                     <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                         {recentCourseTitle(course)}

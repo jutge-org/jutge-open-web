@@ -5,14 +5,14 @@ import { useMemo } from 'react'
 import { ChevronDownIcon, ChevronUpIcon, EditIcon, EllipsisVerticalIcon } from 'lucide-react'
 
 import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
-import { Badge } from '@/components/ui/badge'
+import { ProblemCountBadge } from '@/components/courses/ProblemCountBadge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { LastSubmissionInfo } from '@/lib/submissions'
 import type { AbstractStatus, Language } from '@/lib/jutge_api_client'
-import { instructorListPropertiesHref } from '@/lib/courses'
+import { instructorListPropertiesHref, tallyProblemStatuses, type ProblemStatusCounts } from '@/lib/courses'
 import { useCourseListAccordionPreference } from '@/hooks/use-course-list-accordion-preference'
 import { useRecents } from '@/components/RecentsProvider'
 import type { CourseListData, CourseListItemRow } from '@/lib/data/lists'
@@ -29,13 +29,6 @@ type CourseListsProps = {
     supervisionContext?: SupervisionContext
 }
 
-type ListProblemCounts = {
-    total: number
-    ok: number
-    scored: number
-    ko: number
-}
-
 function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow, { kind: 'problem' }> {
     return row.kind === 'problem'
 }
@@ -43,39 +36,20 @@ function isProblemRow(row: CourseListItemRow): row is Extract<CourseListItemRow,
 function computeListProblemCounts(
     items: CourseListItemRow[],
     statuses?: Record<string, AbstractStatus>,
-): ListProblemCounts {
-    const problems = items.filter(isProblemRow)
-    let ok = 0
-    let scored = 0
-    let ko = 0
-
-    if (statuses) {
-        for (const problem of problems) {
-            const status = statuses[problem.problem_nm]?.status
-            if (status === 'accepted') {
-                ok++
-            } else if (status === 'scored') {
-                scored++
-            } else if (status === 'rejected') {
-                ko++
-            }
-        }
-    }
-
-    return { total: problems.length, ok, scored, ko }
+): ProblemStatusCounts {
+    return tallyProblemStatuses(
+        items.filter(isProblemRow).map((problem) => problem.problem_nm),
+        statuses,
+    )
 }
 
-function ListProblemCountBadges({ counts, className }: { counts: ListProblemCounts; className?: string }) {
+function ListProblemCountBadges({ counts, className }: { counts: ProblemStatusCounts; className?: string }) {
     return (
         <div className={cn('flex items-center gap-1.5', className)}>
-            {counts.ok > 0 ? (
-                <Badge className="bg-emerald-600 text-white hover:bg-emerald-600">{counts.ok}</Badge>
-            ) : null}
-            {counts.scored > 0 ? (
-                <Badge className="bg-orange-400 text-white hover:bg-orange-400">{counts.scored}</Badge>
-            ) : null}
-            {counts.ko > 0 ? <Badge className="bg-red-500 text-white hover:bg-red-500">{counts.ko}</Badge> : null}
-            {counts.total > 0 ? <Badge className="ml-2">{counts.total}</Badge> : null}
+            {counts.ok > 0 ? <ProblemCountBadge tone="ok" count={counts.ok} /> : null}
+            {counts.scored > 0 ? <ProblemCountBadge tone="scored" count={counts.scored} /> : null}
+            {counts.ko > 0 ? <ProblemCountBadge tone="ko" count={counts.ko} /> : null}
+            {counts.total > 0 ? <ProblemCountBadge tone="total" count={counts.total} className="ml-2" /> : null}
         </div>
     )
 }

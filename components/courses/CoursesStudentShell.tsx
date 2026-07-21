@@ -9,6 +9,7 @@ import { PageTitle } from '@/components/general/PageTitle'
 import jutge from '@/lib/jutge'
 import type { CoursesData, CoursesTab } from '@/lib/courses'
 import { fetchCoursesData } from '@/lib/data/courses'
+import { fetchCoursesProgress, type CourseProgress } from '@/lib/data/coursesProgress'
 
 const emptyCourseCounts: Pick<CoursesData, 'enrolled' | 'available' | 'archived'> = {
     enrolled: [],
@@ -42,14 +43,58 @@ type CoursesTabPageProps = {
 
 export function CoursesTabPage({ activeTab, userId }: CoursesTabPageProps) {
     const [data, setData] = useState<CoursesData | null>(null)
+    const [progress, setProgress] = useState<Record<string, CourseProgress> | undefined>(undefined)
+    const [progressLoading, setProgressLoading] = useState(false)
 
     useEffect(() => {
-        void fetchCoursesData(jutge).then(setData)
+        let cancelled = false
+
+        void (async () => {
+            const coursesData = await fetchCoursesData(jutge)
+            if (cancelled) {
+                return
+            }
+
+            // Show the cards straight away; progress is a second, slower pass.
+            setData(coursesData)
+
+            // Archived courses are still enrolled, so both tabs can show progress.
+            const courseKeys = [...coursesData.enrolled, ...coursesData.archived].map((course) => course.course_key)
+            if (courseKeys.length === 0) {
+                return
+            }
+
+            setProgressLoading(true)
+            try {
+                const coursesProgress = await fetchCoursesProgress(jutge, courseKeys)
+                if (!cancelled) {
+                    setProgress(coursesProgress)
+                }
+            } finally {
+                if (!cancelled) {
+                    setProgressLoading(false)
+                }
+            }
+        })()
+
+        return () => {
+            cancelled = true
+        }
     }, [])
+
+    // Available courses carry no progress: the student has not worked on them yet.
+    const tabHasProgress = activeTab !== 'available'
 
     return (
         <CoursesStudentShell activeTab={activeTab} data={data}>
-            <CoursesList tab={activeTab} courses={data?.[activeTab] ?? []} userId={userId} loading={data === null} />
+            <CoursesList
+                tab={activeTab}
+                courses={data?.[activeTab] ?? []}
+                userId={userId}
+                loading={data === null}
+                progress={tabHasProgress ? progress : undefined}
+                progressLoading={tabHasProgress && progressLoading}
+            />
         </CoursesStudentShell>
     )
 }

@@ -1093,7 +1093,6 @@ export function ClassProgressHeatmapCards({ course_nm, heatmap }: ClassProgressH
                 nameSortLabel="Name (list_nm)"
                 defaultColumnSort="course"
                 defaultTransposed
-                scrollAreaClassName="h-[min(35vh,240px)]"
                 saveFileName={`${course_nm}-class-progress-by-lists.svg`}
                 {...heatmap}
             />

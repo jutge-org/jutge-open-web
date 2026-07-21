@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { PlusIcon } from 'lucide-react'
 
+import { useAuth } from '@/components/AuthProvider'
 import { SubmissionDialog } from '@/components/problems/SubmissionDialog'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -15,7 +16,12 @@ type ProblemSubmitButtonProps = {
 }
 
 export function ProblemSubmitButton({ problemId, compilers, defaultCompilerId }: ProblemSubmitButtonProps) {
+    const { user, loading } = useAuth()
     const [dialogOpen, setDialogOpen] = useState(false)
+
+    if (loading || !user) {
+        return null
+    }
 
     return (
         <>

@@ -77,7 +77,7 @@ export function useProblemShell({ key, isAuthenticated }: UseProblemShellOptions
                     if (!cancelled) setDefaultCompilerId(profile.compiler_id)
                 })
             } else {
-                setStatus(null)
+                // Leave status undefined when logged out so ProblemDetail hides submit actions.
                 setDefaultCompilerId(null)
             }
         })()

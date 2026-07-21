@@ -115,6 +115,7 @@ export default function ProblemPage() {
                     defaultCompilerId={shell.defaultCompilerId}
                     isInstructorOwner={shell.isInstructorOwner ?? false}
                     isAdministrator={user?.administrator ?? false}
+                    readOnly={!authenticated}
                     showNav={authenticated}
                     overlapHeader={authenticated}
                 />

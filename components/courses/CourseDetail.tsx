@@ -16,7 +16,7 @@ import type { CourseListData } from '@/lib/data/lists'
 
 /** PageTitle-style shell: transparent, overlaps the sticky header. */
 const courseTitleShellClassName =
-    '-mt-6 flex min-h-22 flex-col gap-2 rounded-2xl border border-border px-6 py-5 text-left shadow-sm'
+    '-mt-6 flex min-h-22 flex-col gap-2 rounded-2xl border border-border px-4 py-5 text-left shadow-sm'
 
 type CourseDetailProps = {
     courseKey: string
@@ -197,9 +197,7 @@ export function CourseDetail({
                         <MarkdownText>{row.description}</MarkdownText>
                     </div>
                 ) : null}
-                {status === 'available' ? (
-                    <CourseGuestLists lists={course.lists} problemCount={problemCount} />
-                ) : null}
+                {status === 'available' ? <CourseGuestLists lists={course.lists} problemCount={problemCount} /> : null}
             </div>
 
             {status !== 'available' && listsLoading ? (

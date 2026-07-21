@@ -16,14 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import Link from 'next/link'
-import {
-    CrownIcon,
-    GraduationCapIcon,
-    LogIn as SignIn,
-    LogOut as SignOut,
-    Settings2Icon,
-    User,
-} from 'lucide-react'
+import { CrownIcon, GraduationCapIcon, LogIn as SignIn, LogOut as SignOut, Settings2Icon, User } from 'lucide-react'
 import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { toast } from 'sonner'
 
@@ -58,7 +51,7 @@ export function AuthToolbar() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <Button type="button" variant="outline" size="icon" aria-label="Account menu">
+                                <Button type="button" variant="outline" size="icon" aria-label="User menu">
                                     {administrator ? (
                                         <CrownIcon className="size-4.5" aria-hidden />
                                     ) : instructor ? (
@@ -69,7 +62,7 @@ export function AuthToolbar() {
                                 </Button>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
-                        <TooltipContent>Account menu</TooltipContent>
+                        <TooltipContent>User menu</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
                 <DropdownMenuContent
@@ -109,7 +102,13 @@ export function AuthToolbar() {
 
     return (
         <>
-            <Button variant="outline" size="icon" type="button" aria-label="Sign in" onClick={() => setDialogOpen(true)}>
+            <Button
+                variant="outline"
+                size="icon"
+                type="button"
+                aria-label="Sign in"
+                onClick={() => setDialogOpen(true)}
+            >
                 <SignIn aria-hidden />
             </Button>
 

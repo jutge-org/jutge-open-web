@@ -10,6 +10,10 @@ export type RecentCourseItem = {
     courseKey: string
     title: string
     iconUrl?: string
+    /** Course owner display name; filled in by RecentsProvider enrichment when available. */
+    ownerName?: string
+    /** Course description; filled in by RecentsProvider enrichment when available. */
+    description?: string
     accessedAt: number
 }
 
@@ -61,7 +65,10 @@ function isRecentCourseItem(value: unknown): value is RecentCourseItem {
         typeof (value as RecentCourseItem).courseKey === 'string' &&
         typeof (value as RecentCourseItem).title === 'string' &&
         typeof (value as RecentCourseItem).accessedAt === 'number' &&
-        ((value as RecentCourseItem).iconUrl === undefined || typeof (value as RecentCourseItem).iconUrl === 'string')
+        ((value as RecentCourseItem).iconUrl === undefined || typeof (value as RecentCourseItem).iconUrl === 'string') &&
+        ((value as RecentCourseItem).ownerName === undefined || typeof (value as RecentCourseItem).ownerName === 'string') &&
+        ((value as RecentCourseItem).description === undefined ||
+            typeof (value as RecentCourseItem).description === 'string')
     )
 }
 
@@ -192,11 +199,13 @@ export function clearAllRecents(): RecentsData {
 export type RecentCourseMeta = {
     title: string
     iconUrl?: string
+    ownerName?: string
+    description?: string
 }
 
 /**
- * Fill in course titles and icons from the API. The stored title is whatever the page happened to
- * show when it was visited — often just the course key — so the API value wins.
+ * Fill in course titles, icons, author, and description from the API. The stored title is whatever
+ * the page happened to show when it was visited — often just the course key — so the API value wins.
  */
 export function enrichRecentCourses(data: RecentsData, metaByKey: ReadonlyMap<string, RecentCourseMeta>): RecentsData {
     let changed = false
@@ -208,12 +217,19 @@ export function enrichRecentCourses(data: RecentsData, metaByKey: ReadonlyMap<st
 
         const title = meta.title || course.title
         const iconUrl = meta.iconUrl ?? course.iconUrl
-        if (title === course.title && iconUrl === course.iconUrl) {
+        const ownerName = meta.ownerName ?? course.ownerName
+        const description = meta.description ?? course.description
+        if (
+            title === course.title &&
+            iconUrl === course.iconUrl &&
+            ownerName === course.ownerName &&
+            description === course.description
+        ) {
             return course
         }
 
         changed = true
-        return { ...course, title, iconUrl }
+        return { ...course, title, iconUrl, ownerName, description }
     })
 
     return changed ? { ...data, courses } : data

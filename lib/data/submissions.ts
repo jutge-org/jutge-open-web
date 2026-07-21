@@ -30,7 +30,7 @@ import type {
     TestcaseAnalysis,
 } from '@/lib/jutge_api_client'
 
-import { abstractProblemsToTitleMap } from './problems'
+import { abstractProblemsToIconUrlMap, abstractProblemsToTitleMap } from './problems'
 import { fetchSubmissionAwards } from './awards'
 import { fetchAbstractProblem, resolveProblemId } from './problemDetail'
 
@@ -52,17 +52,21 @@ async function submissionsToRows(client: JutgeApiClient, submissions: Submission
 
     const problemNms = submissionProblemNms(submissions)
     let problemTitles = new Map<string, string>()
+    let problemIconUrls = new Map<string, string | null>()
 
     if (problemNms.length > 0) {
         try {
             const abstractProblems = await client.problems.getAbstractProblems(problemNms.join(','))
             problemTitles = abstractProblemsToTitleMap(abstractProblems, preferredLanguageId)
+            problemIconUrls = abstractProblemsToIconUrlMap(abstractProblems)
         } catch {
             // Titles fall back to the problem id in buildSubmissionRow.
         }
     }
 
-    return submissions.map((submission) => buildSubmissionRow(submission, tables, problemTitles))
+    return submissions.map((submission) =>
+        buildSubmissionRow(submission, tables, problemTitles, problemIconUrls),
+    )
 }
 
 export async function fetchSubmissionsData(client: JutgeApiClient): Promise<SubmissionRow[]> {

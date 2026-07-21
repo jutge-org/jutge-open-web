@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/components/AuthProvider'
 import { HomeWidgetCard, HomeWidgetLoading, HomeWidgetMessage } from '@/components/general/HomeWidgetCard'
+import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSummaryTooltip'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { fetchSubmissionsData } from '@/lib/data/submissions'
@@ -19,12 +20,6 @@ dayjs.extend(relativeTime)
 
 const MAX_RECENT_SUBMISSIONS = 10
 const ROW_HEIGHT_REM = 2
-
-function verdictClassName(verdict: string): string {
-    if (verdict === 'AC') return 'text-emerald-600 dark:text-emerald-400'
-    if (verdict === 'Pending') return 'animate-pulse text-muted-foreground'
-    return 'text-rose-600 dark:text-rose-400'
-}
 
 function RecentSubmissionRow({ row, preferredLanguageId }: { row: SubmissionRow; preferredLanguageId: string | null }) {
     return (
@@ -42,14 +37,25 @@ function RecentSubmissionRow({ row, preferredLanguageId }: { row: SubmissionRow;
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
                 )}
             >
-                <span aria-hidden className="shrink-0 text-sm leading-none">
+                {row.iconUrl ? (
+                    <ProblemIconImage iconUrl={row.iconUrl} size="xs" />
+                ) : (
+                    <span className="size-4 shrink-0" aria-hidden />
+                )}
+                <span className="min-w-0 flex-1 truncate font-medium text-foreground">{row.problemTitle}</span>
+                <span className="w-9 shrink-0 text-right text-muted-foreground tabular-nums">{row.submission_id}</span>
+                <span
+                    className={cn(
+                        'inline-flex w-5 shrink-0 justify-center text-sm leading-none',
+                        row.verdict === 'Pending' && 'animate-pulse',
+                    )}
+                    title={row.verdictFullName}
+                    aria-label={row.verdictFullName}
+                >
                     {row.verdictEmoji ?? '—'}
                 </span>
-                <span className="min-w-0 flex-1 truncate font-medium text-foreground">{row.problemTitle}</span>
-                <span className="shrink-0 text-muted-foreground tabular-nums">{row.submission_id}</span>
-                <span className={cn('shrink-0 font-semibold', verdictClassName(row.verdict))}>{row.verdict}</span>
-                <span className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
-                    {dayjs(row.time_inMs).fromNow(true)}
+                <span className="w-[5.75rem] shrink-0 whitespace-nowrap text-right text-muted-foreground tabular-nums">
+                    {dayjs(row.time_inMs).fromNow()}
                 </span>
             </Link>
         </ProblemTitleSummaryTooltip>
@@ -82,7 +88,7 @@ export function HomeRecentSubmissions() {
             title="Recent submissions"
             href="/submissions"
             accentClassName="border-t-blue-500"
-            icon={<SendIcon className="size-3.5 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />}
+            icon={<SendIcon className="size-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />}
         >
             {rows === null ? (
                 <HomeWidgetLoading label="Loading recent submissions" />

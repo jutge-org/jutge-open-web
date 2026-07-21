@@ -374,15 +374,15 @@ export function MainBreadcrumbsInLayout() {
                                                 aria-haspopup="menu"
                                                 aria-label={
                                                     menuAnchor
-                                                        ? `Open main navigation (current section: ${menuAnchor.title})`
-                                                        : 'Open main navigation'
+                                                        ? `Open main menu (current section: ${menuAnchor.title})`
+                                                        : 'Open main menu'
                                                 }
                                             >
                                                 <MenuIcon className="size-4 shrink-0" aria-hidden />
                                             </Button>
                                         </DropdownMenuTrigger>
                                     </TooltipTrigger>
-                                    <TooltipContent>Main navigation</TooltipContent>
+                                    <TooltipContent>Main menu</TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
                             <DropdownMenuContent
@@ -463,12 +463,23 @@ export function MainBreadcrumbsInLayout() {
                                 ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <BreadcrumbLink asChild>
-                            <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="/logos/jutge.svg" alt="Jutge.org" className="ml-3 h-6 w-auto dark:invert" />
-                            </Link>
-                        </BreadcrumbLink>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <BreadcrumbLink asChild>
+                                        <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src="/logos/jutge.svg"
+                                                alt="Jutge.org"
+                                                className="ml-3 h-6 w-auto dark:invert"
+                                            />
+                                        </Link>
+                                    </BreadcrumbLink>
+                                </TooltipTrigger>
+                                <TooltipContent>Home</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                         {menuAnchor && menuAnchor.url !== '/' ? (
                             <>
                                 <BreadcrumbLink asChild className="ml-3">

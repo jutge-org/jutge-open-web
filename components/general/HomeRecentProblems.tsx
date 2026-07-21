@@ -31,10 +31,10 @@ export function HomeRecentProblems() {
 
     return (
         <HomeWidgetCard
-            title="Recently visited problems"
+            title="Recent problems"
             href="/problems"
             accentClassName="border-t-violet-500"
-            icon={<FileCodeIcon className="size-3.5 shrink-0 text-violet-600 dark:text-violet-400" aria-hidden />}
+            icon={<FileCodeIcon className="size-4 shrink-0 text-violet-600 dark:text-violet-400" aria-hidden />}
         >
             {recents.problems.length === 0 ? (
                 <HomeWidgetMessage>No recent problems.</HomeWidgetMessage>

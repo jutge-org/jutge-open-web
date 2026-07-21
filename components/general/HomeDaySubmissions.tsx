@@ -33,7 +33,7 @@ export function HomeDaySubmissions({ dayTs, rows, onClose }: HomeDaySubmissionsP
     const preferredLanguageId = profile?.language_id ?? null
 
     return (
-        <Card className="h-full gap-4 rounded-2xl border border-border shadow-sm">
+        <Card className="h-full rounded-2xl border border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0">
                 <CardTitle className="text-base font-semibold">Submissions on {formatDayLabel(dayTs)}</CardTitle>
                 <TooltipProvider>
@@ -57,7 +57,7 @@ export function HomeDaySubmissions({ dayTs, rows, onClose }: HomeDaySubmissionsP
 
             {/* The card is sized by the calendar beside it, so the list scrolls inside instead of
                 changing the card's height. */}
-            <CardContent className="min-h-0 flex-1 overflow-hidden">
+            <CardContent className="min-h-0 flex-1 overflow-hidden border-t border-border/60">
                 {rows === null ? (
                     <div
                         aria-busy="true"

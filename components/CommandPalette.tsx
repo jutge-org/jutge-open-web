@@ -23,6 +23,7 @@ import {
     CommandSeparator,
 } from '@/components/ui/command'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     commandPaletteSections,
     filterCommandPaletteSections,
@@ -386,18 +387,25 @@ export function CommandPalette() {
 
     return (
         <>
-            <button
-                type="button"
-                aria-label="Quick search"
-                onClick={() => setOpen(true)}
-                className="inline-flex h-8 w-40 items-center gap-2 rounded-md border border-input bg-muted/40 px-2.5 text-sm text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-56 md:w-64"
-            >
-                <SearchIcon className="size-4 shrink-0" aria-hidden />
-                <span className="min-w-0 flex-1 truncate text-left">Search…</span>
-                <span className="hidden shrink-0 sm:inline-flex">
-                    <SearchShortcutHint />
-                </span>
-            </button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            type="button"
+                            aria-label="Quick search"
+                            onClick={() => setOpen(true)}
+                            className="inline-flex h-8 w-40 items-center gap-2 rounded-md border border-input bg-muted/40 px-2.5 text-sm text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-56 md:w-64"
+                        >
+                            <SearchIcon className="size-4 shrink-0" aria-hidden />
+                            <span className="min-w-0 flex-1 truncate text-left">Search…</span>
+                            <span className="hidden shrink-0 sm:inline-flex">
+                                <SearchShortcutHint />
+                            </span>
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent>Quick search</TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
 
             <CommandDialog
                 open={open}

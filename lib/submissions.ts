@@ -209,6 +209,7 @@ export type SubmissionRow = {
     problem_nm: string
     problemTitle: string
     problemHref: string
+    iconUrl: string | null
     verdict: string
     verdictFullName: string
     verdictEmoji?: string
@@ -229,6 +230,7 @@ export function buildSubmissionRow(
     submission: Submission,
     tables: AllTables,
     problemTitles: Map<string, string>,
+    problemIconUrls: Map<string, string | null> = new Map(),
 ): SubmissionRow {
     const parsed = parseProblemKey(submission.problem_id)
     const problem_nm = parsed.kind === 'problem_id' ? parsed.problem_nm : submission.problem_id
@@ -236,6 +238,8 @@ export function buildSubmissionRow(
         problemTitles.get(submission.problem_id) ?? problemTitles.get(problem_nm) ?? submission.problem_id
     const problemHref =
         parsed.kind === 'problem_id' ? `/problems/${parsed.problem_nm}` : `/problems/${submission.problem_id}`
+    const iconUrl =
+        problemIconUrls.get(submission.problem_id) ?? problemIconUrls.get(problem_nm) ?? null
 
     const verdict = submissionVerdict(submission)
     const verdictMeta = tables.verdicts[verdict]
@@ -249,6 +253,7 @@ export function buildSubmissionRow(
         problem_nm,
         problemTitle,
         problemHref,
+        iconUrl,
         verdict,
         verdictFullName: verdictMeta?.name ?? verdict,
         verdictEmoji: verdictMeta?.emoji,

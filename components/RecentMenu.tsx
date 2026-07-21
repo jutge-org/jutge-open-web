@@ -23,7 +23,7 @@ import {
     type RecentSubmissionItem,
 } from '@/lib/recents'
 import { courseIconUrl } from '@/lib/courses'
-import { ActivityIcon, BookOpenIcon, FileBracesCornerIcon, SendIcon } from 'lucide-react'
+import { HistoryIcon, BookOpenIcon, FileBracesCornerIcon, SendIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -80,7 +80,7 @@ export function RecentMenu() {
                     <TooltipTrigger asChild>
                         <DropdownMenuTrigger asChild>
                             <Button type="button" variant="outline" size="icon" aria-label="Recent items">
-                                <ActivityIcon className="size-4.5" aria-hidden />
+                                <HistoryIcon className="size-4.5" aria-hidden />
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -98,11 +98,7 @@ export function RecentMenu() {
                     renderHref={recentCourseHref}
                     renderTitle={(item) => item.title}
                     renderLeading={(item) => (
-                        <CourseIconImage
-                            iconUrl={item.iconUrl ?? courseIconUrl(null)}
-                            size="xs"
-                            className="rounded"
-                        />
+                        <CourseIconImage iconUrl={item.iconUrl ?? courseIconUrl(null)} size="xs" className="rounded" />
                     )}
                     emptyLabel="No recent courses"
                 />
@@ -114,9 +110,7 @@ export function RecentMenu() {
                     renderHref={recentProblemHref}
                     renderTitle={formatRecentProblemTitle}
                     renderLeading={(item) =>
-                        item.iconUrl ? (
-                            <ProblemIconImage iconUrl={item.iconUrl} size="xs" className="rounded" />
-                        ) : null
+                        item.iconUrl ? <ProblemIconImage iconUrl={item.iconUrl} size="xs" className="rounded" /> : null
                     }
                     emptyLabel="No recent problems"
                 />

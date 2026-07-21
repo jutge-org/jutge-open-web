@@ -34,6 +34,22 @@ export function abstractProblemsToTitleMap(
     return titles
 }
 
+export function abstractProblemsToIconUrlMap(
+    abstractProblems: Record<string, AbstractProblem>,
+): Map<string, string | null> {
+    const icons = new Map<string, string | null>()
+
+    for (const ap of Object.values(abstractProblems)) {
+        const iconUrl = problemIconUrl(ap.icon)
+        icons.set(ap.problem_nm, iconUrl)
+        for (const variant of Object.values(ap.problems)) {
+            icons.set(variant.problem_id, iconUrl)
+        }
+    }
+
+    return icons
+}
+
 export type AbstractProblemRowOptions = {
     allLanguageTitles?: boolean
 }

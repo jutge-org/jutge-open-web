@@ -40,13 +40,12 @@ export function HomePageUser({ user }: HomePageUserProps) {
                         </Link>
                     </div>
                 </div>
-                <Separator />
             </div>
 
             <div className="flex flex-col gap-6 pb-12">
                 {/* Two rows of equal-height widget cards: where you were working on top,
                     what you did and where to go next below. */}
-                <div className="grid items-start gap-4 sm:grid-cols-2">
+                <div className="grid auto-rows-fr gap-4 sm:grid-cols-2">
                     <HomeRecentCourses />
                     <HomeRecentProblems />
                     <HomeRecentSubmissions />

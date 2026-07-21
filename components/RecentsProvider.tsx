@@ -68,8 +68,16 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             return
         }
 
-        // The title is unresolved when it still equals the course key.
-        if (!recents.courses.some((course) => !course.iconUrl || course.title === course.courseKey)) {
+        // Unresolved when the title is still the course key, or icon/author/description are missing.
+        if (
+            !recents.courses.some(
+                (course) =>
+                    !course.iconUrl ||
+                    course.title === course.courseKey ||
+                    course.ownerName === undefined ||
+                    course.description === undefined,
+            )
+        ) {
             return
         }
 
@@ -81,7 +89,15 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             }
 
             const metaByKey = new Map(
-                allCourses.map((course) => [course.course_key, { title: course.title, iconUrl: course.iconUrl }]),
+                allCourses.map((course) => [
+                    course.course_key,
+                    {
+                        title: course.title,
+                        iconUrl: course.iconUrl,
+                        ownerName: course.ownerName,
+                        description: course.description,
+                    },
+                ]),
             )
             setRecents((current) => enrichRecentCourses(current, metaByKey))
         })

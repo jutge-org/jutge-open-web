@@ -67,7 +67,7 @@ export function HomeSuggestedProblems() {
         <HomeWidgetCard
             title="Suggested problems"
             accentClassName="border-t-emerald-500"
-            icon={<SparklesIcon className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />}
+            icon={<SparklesIcon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />}
             action={<ModeMenu mode={mode} onSelect={setMode} disabled={!loaded} />}
         >
             {!loaded ? (

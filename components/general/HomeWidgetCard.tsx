@@ -8,10 +8,9 @@ import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
 /**
- * Body height shared by every home widget card, so the band always lines up regardless of how
- * many rows each card has. Rows scroll inside it rather than changing the card's height.
+ * Shared shell for the four home dashboard widgets. The body uses a fixed `h-32` so every card
+ * is the same height; extra rows scroll inside rather than stretching the card.
  */
-export const HOME_WIDGET_BODY_REM = 8
 
 type HomeWidgetCardProps = {
     title: string
@@ -28,13 +27,13 @@ type HomeWidgetCardProps = {
 export function HomeWidgetCard({ title, icon, accentClassName, href, action, children }: HomeWidgetCardProps) {
     const heading = (
         <>
-            <h2 className="flex min-w-0 items-center gap-1.5 text-sm font-semibold tracking-tight text-foreground">
+            <h2 className="flex min-h-7 min-w-0 items-center gap-2 font-heading text-base font-semibold leading-snug text-foreground">
                 {icon}
                 <span className="truncate">{title}</span>
             </h2>
             {href ? (
                 <ArrowRightIcon
-                    className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                    className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
                     aria-hidden
                 />
             ) : (
@@ -47,25 +46,22 @@ export function HomeWidgetCard({ title, icon, accentClassName, href, action, chi
         <section
             aria-label={title}
             className={cn(
-                'flex flex-col overflow-hidden rounded-xl border border-border border-t-2 bg-card shadow-sm',
+                'flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border border-t-2 bg-card shadow-sm',
                 accentClassName,
             )}
         >
             {href ? (
                 <Link
                     href={href}
-                    className="group flex items-center justify-between gap-2 px-3 py-2 transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                    className="group flex shrink-0 items-center justify-between gap-2 px-4 py-2 transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                 >
                     {heading}
                 </Link>
             ) : (
-                <div className="flex items-center justify-between gap-2 px-3 py-2">{heading}</div>
+                <div className="flex shrink-0 items-center justify-between gap-2 px-4 py-2">{heading}</div>
             )}
 
-            <div
-                className="overflow-y-auto overscroll-contain border-t border-border/60"
-                style={{ height: `${HOME_WIDGET_BODY_REM}rem` }}
-            >
+            <div className="h-32 shrink-0 overflow-y-auto overscroll-contain border-t border-border/60">
                 {children}
             </div>
         </section>

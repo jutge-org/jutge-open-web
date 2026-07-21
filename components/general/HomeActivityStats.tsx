@@ -1,5 +1,7 @@
 'use client'
 
+import { ActivityIcon, ArrowRightIcon, CalendarIcon } from 'lucide-react'
+import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 
 import { HomeDaySubmissions } from '@/components/general/HomeDaySubmissions'
@@ -69,11 +71,14 @@ export function HomeActivityStats() {
 
     return (
         <div className="grid gap-4 lg:grid-cols-5">
-            <Card className="gap-4 rounded-2xl border border-border shadow-sm lg:col-span-3">
+            <Card className="rounded-2xl border border-border shadow-sm lg:col-span-3">
                 <CardHeader>
-                    <CardTitle className="text-base font-semibold">Submission calendar</CardTitle>
+                    <CardTitle className="gap-2 text-base font-semibold">
+                        <CalendarIcon className="size-4 shrink-0 text-rose-600 dark:text-rose-400" aria-hidden />
+                        Submission calendar
+                    </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="border-t border-border/60">
                     {heatmap === null ? (
                         <div
                             aria-busy="true"
@@ -109,11 +114,23 @@ export function HomeActivityStats() {
 /** Compact stacked variant of the activity summary, sized to sit beside the calendar. */
 function SummaryMetricsCard({ summary }: { summary: DashboardSummary | null }) {
     return (
-        <Card className="h-full gap-4 rounded-2xl border border-border shadow-sm">
-            <CardHeader>
-                <CardTitle className="text-base font-semibold">Activity</CardTitle>
+        <Card className="h-full rounded-2xl border border-border shadow-sm">
+            <CardHeader className="p-0">
+                <Link
+                    href="/activity"
+                    className="group flex min-h-11 items-center justify-between gap-2 px-4 py-2 transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                >
+                    <CardTitle className="gap-2 text-base font-semibold">
+                        <ActivityIcon className="size-4 shrink-0 text-sky-600 dark:text-sky-400" aria-hidden />
+                        Activity
+                    </CardTitle>
+                    <ArrowRightIcon
+                        className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                        aria-hidden
+                    />
+                </Link>
             </CardHeader>
-            <CardContent className="flex min-h-0 flex-1 flex-col justify-around gap-3 overflow-y-auto">
+            <CardContent className="flex min-h-0 flex-1 flex-col justify-around gap-3 overflow-y-auto border-t border-border/60">
                 {SUMMARY_METRICS.map(({ key, label, icon: Icon, iconAccent }) => (
                     <div key={key} className="flex items-center gap-3">
                         <Icon className={cn('size-5 shrink-0 opacity-80', iconAccent)} aria-hidden />

@@ -58,7 +58,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                     <header className={headerBarClassName(pathname, gradientsEnabled)}>
                         <LayoutWidthContainer className="flex h-11 items-center justify-between gap-4 px-4 sm:px-6">
                             <MainBreadcrumbsInLayout />
-                            <div className="flex items-center gap-1">
+                            <div className="flex shrink-0 items-center gap-1">
                                 <CommandPalette />
                                 {authenticated ? <RecentMenu /> : null}
                                 <AuthToolbar />

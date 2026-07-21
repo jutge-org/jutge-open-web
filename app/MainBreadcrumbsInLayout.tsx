@@ -1,6 +1,13 @@
 'use client'
 
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -73,7 +80,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Fragment, useEffect, useState, type ComponentType } from 'react'
+import { Fragment, useEffect, useRef, useState, type ComponentType } from 'react'
 
 type MainNavSubmenuItem = {
     href: string
@@ -329,9 +336,17 @@ export function MainBreadcrumbsInLayout() {
     const pathname = usePathname()
     const navLinks = getSiteNavLinks({ authenticated, instructor, tutor, administrator })
     const mainMenuLinks = orderMainNavMenuLinks(navLinks)
+    const scrollRef = useRef<HTMLElement>(null)
 
     /** First crumb encodes the main-menu section shown next to Jutge.org. */
     const menuAnchor = breadcrumbs[0]
+    const trail = breadcrumbs.length > 0 ? breadcrumbs.slice(1) : []
+
+    useEffect(() => {
+        const el = scrollRef.current
+        if (!el) return
+        el.scrollLeft = el.scrollWidth
+    }, [breadcrumbs])
 
     function linkIsCurrentMainSection(linkHref: string): boolean {
         if (menuAnchor) return pathsHrefEqual(menuAnchor.url, linkHref)
@@ -340,10 +355,13 @@ export function MainBreadcrumbsInLayout() {
     }
 
     return (
-        <Breadcrumb className="min-w-0 font-bold tracking-tight">
-            <BreadcrumbList className="gap-2 text-lg text-foreground sm:gap-2">
-                <BreadcrumbItem className="min-w-0 max-w-48 sm:max-w-xs">
-                    <div className="flex max-w-full min-w-0 items-center gap-1">
+        <Breadcrumb
+            ref={scrollRef}
+            className="min-w-0 flex-1 overflow-x-auto font-bold tracking-tight [scrollbar-width:thin]"
+        >
+            <BreadcrumbList className="flex-nowrap gap-2 text-lg text-foreground sm:gap-2">
+                <BreadcrumbItem className="shrink-0">
+                    <div className="flex items-center gap-1">
                         <DropdownMenu>
                             <TooltipProvider>
                                 <Tooltip>
@@ -455,13 +473,13 @@ export function MainBreadcrumbsInLayout() {
                         </BreadcrumbLink>
                         {menuAnchor && menuAnchor.url !== '/' ? (
                             <>
-                                <span aria-hidden className="shrink-0 text-muted-foreground mx-2">
+                                <span aria-hidden className="mx-2 shrink-0 text-muted-foreground">
                                     ·
                                 </span>
                                 <BreadcrumbLink asChild>
                                     <Link
                                         href={menuAnchor.url}
-                                        className="min-w-0 flex-1 truncate font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
+                                        className="shrink-0 font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
                                     >
                                         {menuAnchor.title}
                                     </Link>
@@ -470,6 +488,30 @@ export function MainBreadcrumbsInLayout() {
                         ) : null}
                     </div>
                 </BreadcrumbItem>
+
+                {trail.map((segment, index) => {
+                    const isLast = index === trail.length - 1
+
+                    return (
+                        <Fragment key={`${segment.url}::${index}`}>
+                            <BreadcrumbSeparator className="shrink-0" />
+                            <BreadcrumbItem className="min-w-0 max-w-48 shrink-0 sm:max-w-md">
+                                {isLast ? (
+                                    <BreadcrumbPage className="truncate font-bold">{segment.title}</BreadcrumbPage>
+                                ) : (
+                                    <BreadcrumbLink asChild>
+                                        <Link
+                                            href={segment.url}
+                                            className="truncate font-bold text-foreground hover:text-primary hover:underline hover:underline-offset-4"
+                                        >
+                                            {segment.title}
+                                        </Link>
+                                    </BreadcrumbLink>
+                                )}
+                            </BreadcrumbItem>
+                        </Fragment>
+                    )
+                })}
             </BreadcrumbList>
         </Breadcrumb>
     )

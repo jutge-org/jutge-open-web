@@ -481,17 +481,17 @@ export function MainBreadcrumbsInLayout() {
                             </Tooltip>
                         </TooltipProvider>
                         {menuAnchor && menuAnchor.url !== '/' ? (
-                            <>
-                                <BreadcrumbLink asChild className="ml-3">
-                                    <Link
-                                        href={menuAnchor.url}
-                                        className="shrink-0 font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
-                                    >
-                                        {menuAnchor.title}
-                                    </Link>
-                                </BreadcrumbLink>
-                            </>
-                        ) : null}
+                            <BreadcrumbLink asChild className="ml-3">
+                                <Link
+                                    href={menuAnchor.url}
+                                    className="shrink-0 font-semibold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
+                                >
+                                    {menuAnchor.title}
+                                </Link>
+                            </BreadcrumbLink>
+                        ) : (
+                            <BreadcrumbPage className="ml-3 shrink-0 font-bold">Jutge.org</BreadcrumbPage>
+                        )}
                     </div>
                 </BreadcrumbItem>
 
@@ -503,12 +503,12 @@ export function MainBreadcrumbsInLayout() {
                             <BreadcrumbSeparator className="shrink-0" />
                             <BreadcrumbItem className="min-w-0 max-w-48 shrink-0 sm:max-w-md">
                                 {isLast ? (
-                                    <BreadcrumbPage className="truncate font-bold">{segment.title}</BreadcrumbPage>
+                                    <BreadcrumbPage className="truncate font-semibold">{segment.title}</BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink asChild>
                                         <Link
                                             href={segment.url}
-                                            className="truncate font-bold text-foreground hover:text-primary hover:underline hover:underline-offset-4"
+                                            className="truncate font-semibold text-foreground hover:text-primary hover:underline hover:underline-offset-4"
                                         >
                                             {segment.title}
                                         </Link>

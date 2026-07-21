@@ -22,15 +22,15 @@ function headerBarClassName(pathname: string, gradientsEnabled: boolean): string
     if (gradientsEnabled && pathname.startsWith('/administrator')) {
         return cn(
             base,
-            'bg-gradient-to-r from-purple-300 to-fuchsia-100',
-            'dark:from-purple-950 dark:to-fuchsia-950/60',
+            'bg-gradient-to-r from-orange-300 to-yellow-100',
+            'dark:from-orange-950 dark:to-yellow-950/60',
         )
     }
     if (gradientsEnabled && pathname.startsWith('/instructor')) {
         return cn(
             base,
-            'bg-gradient-to-r from-orange-300 to-yellow-100',
-            'dark:from-orange-950 dark:to-yellow-950/60',
+            'bg-gradient-to-r from-purple-300 to-fuchsia-100',
+            'dark:from-purple-950 dark:to-fuchsia-950/60',
         )
     }
     if (gradientsEnabled && pathname.startsWith('/supervision')) {

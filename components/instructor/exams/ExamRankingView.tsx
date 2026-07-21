@@ -104,7 +104,7 @@ export function ExamRankingView() {
                                 {examProblems.map((problem, index) => (
                                     <td
                                         key={index}
-                                        className="bg-neutral-100 border-2 border-white rounded-lg h-12 w-12"
+                                        className="bg-muted border-2 border-background rounded-lg h-12 w-12"
                                     >
                                         <div className="flex flex-col justify-center items-center">
                                             <Image
@@ -123,13 +123,13 @@ export function ExamRankingView() {
                             <td></td>
                             <td></td>
                             {exam.avatars && <td></td>}
-                            <td className="bg-neutral-100 border-2 border-white rounded-lg h-12 px-4 text-center font-bold">
+                            <td className="bg-muted border-2 border-background rounded-lg h-12 px-4 text-center font-bold">
                                 Score
                             </td>
                             {examProblems.map((problem, index) => (
                                 <td
                                     key={index}
-                                    className="bg-neutral-100 border-2 border-white rounded-lg w-40 h-12 px-4 text-center "
+                                    className="bg-muted border-2 border-background rounded-lg w-40 h-12 px-4 text-center "
                                 >
                                     <ExternalLink
                                         href={`https://jutge.org/problems/${problem.problem_nm}`}
@@ -146,21 +146,21 @@ export function ExamRankingView() {
                                     )}
                                 </td>
                             ))}
-                            <td className="bg-neutral-100 border-2 border-white rounded-lg px-4 text-center font-bold">
+                            <td className="bg-muted border-2 border-background rounded-lg px-4 text-center font-bold">
                                 Score
                             </td>
                         </tr>
 
                         {ranking.map((row, index) => (
                             <tr key={index}>
-                                <td className="bg-neutral-100 border-2 border-white rounded-lg px-2 text-right">
+                                <td className="bg-muted border-2 border-background rounded-lg px-2 text-right">
                                     {row.position}
                                 </td>
-                                <td className="bg-neutral-100 border-2 border-white rounded-lg px-2 truncate">
+                                <td className="bg-muted border-2 border-background rounded-lg px-2 truncate">
                                     {row.name}
                                 </td>
                                 {exam.avatars && (
-                                    <td className="bg-neutral-100 border-2 border-white rounded-lg px-2 h-12 w-12">
+                                    <td className="bg-muted border-2 border-background rounded-lg px-2 h-12 w-12">
                                         <Image
                                             src={`https://jutge.org/avatars/${exam.avatars}/${row.avatar}`}
                                             alt={row.avatar || 'Avatar'}
@@ -170,7 +170,7 @@ export function ExamRankingView() {
                                     </td>
                                 )}
 
-                                <td className="bg-neutral-100 border-2 border-white rounded-lg px-4">
+                                <td className="bg-muted border-2 border-background rounded-lg px-4">
                                     <div className="flex flex-col gap-0 items-center">
                                         <div className="font-bold">{row.score}</div>
                                         <div className="text-xs">{Math.floor(row.time)}</div>
@@ -180,13 +180,13 @@ export function ExamRankingView() {
                                 {row.rankingResults.map((result, index) => (
                                     <td
                                         key={index}
-                                        className="bg-neutral-100 border-2 border-white rounded-lg w-40 px-2 text-center"
+                                        className="bg-muted border-2 border-background rounded-lg w-40 px-2 text-center"
                                     >
                                         <Score result={result} colors={colors} />
                                     </td>
                                 ))}
 
-                                <td className="bg-neutral-100 border-2 border-white rounded-lg px-4">
+                                <td className="bg-muted border-2 border-background rounded-lg px-4">
                                     <div className="flex flex-col gap-0 items-center">
                                         <div className="font-bold">{row.score}</div>
                                         <div className="text-xs">{Math.floor(row.time)}</div>
@@ -204,20 +204,23 @@ export function ExamRankingView() {
 function Score({ result, colors }: { result: RankingResult; colors: ColorMapping }) {
     if (result.verdict === null) return null
 
+    // API EE blue is too dark on muted dark backgrounds.
+    const darkColorClass = result.verdict === 'EE' ? 'dark:!text-[#6ea8fe]' : undefined
+
     if (result.verdict === 'AC')
         return (
-            <div className="" style={{ color: colors.verdicts.AC }}>
+            <div style={{ color: colors.verdicts.AC }}>
                 {Math.floor(result.time)}
                 {result.wrongs !== 0 && <span className="text-xs">&nbsp;({result.wrongs})</span>}
             </div>
         )
 
     return (
-        <div className="" style={{ color: colors.verdicts[result.verdict] }}>
+        <div className={darkColorClass} style={{ color: colors.verdicts[result.verdict] }}>
             {Math.floor(result.time)}
             {result.wrongs !== 0 && <span className="text-xs">&nbsp;({result.wrongs})</span>}
             <br />
-            <span className="">{result.verdict}</span>
+            <span>{result.verdict}</span>
         </div>
     )
 }

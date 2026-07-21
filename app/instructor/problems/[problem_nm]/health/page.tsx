@@ -6,7 +6,7 @@ import { InstructorPageShell } from '@/components/instructor/InstructorPageShell
 import { InstructorSubNav } from '@/components/instructor/InstructorSubNav'
 import { instructorProblemSubNav } from '@/lib/instructor/menus'
 
-export default function InstructorProblemCheckingPage() {
+export default function InstructorProblemHealthPage() {
     const { problem_nm } = useParams<{ problem_nm: string }>()
     const baseHref = `/instructor/problems/${problem_nm}`
 
@@ -21,7 +21,7 @@ export default function InstructorProblemCheckingPage() {
             <InstructorSubNav
                 items={instructorProblemSubNav(problem_nm)}
                 baseHref={baseHref}
-                activeSegment="checking"
+                activeSegment="health"
             />
             <ProblemCheckingView />
         </InstructorPageShell>

@@ -7,7 +7,7 @@ import { mapmap, offerDownloadFile } from '@/lib/instructor/utils'
 import type { AbstractProblem } from '@/lib/jutge_api_client'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
-import { BotIcon, BugIcon, CloudDownloadIcon } from 'lucide-react'
+import { BotIcon, BugIcon, CloudDownloadIcon, EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -128,6 +128,22 @@ export function ProblemPropertiesView() {
                 </div>
             ),
             value: abstractProblem.solution_tags?.tags.replaceAll(',', ', ') || '—',
+        },
+        view: {
+            type: 'free',
+            label: 'View problem',
+            content: (
+                <Button
+                    asChild
+                    variant="outline"
+                    className="mt-0 h-16 w-16"
+                    title="Open the problem page in a new tab"
+                >
+                    <Link href={`/problems/${problem_nm}`} target="_blank" rel="noopener noreferrer">
+                        <EyeIcon className="size-12" strokeWidth={0.8} />
+                    </Link>
+                </Button>
+            ),
         },
         download: {
             type: 'free',

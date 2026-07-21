@@ -115,36 +115,16 @@ function EditProblemForm({ info }: ProblemFormProps) {
             label: 'Statement',
             content: (
                 <div className="flex flex-row gap-2">
-                    <Button
-                        variant="outline"
-                        className="mt-1 mb-1 h-16 w-16"
-                        title="PDF"
-                        onClick={pdfAction}
-                    >
+                    <Button variant="outline" className="mt-1 mb-1 h-16 w-16" title="PDF" onClick={pdfAction}>
                         <FileTextIcon className="size-12" strokeWidth={0.8} />
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="mt-1 mb-1 h-16 w-16"
-                        title="HTML"
-                        onClick={htmlAction}
-                    >
+                    <Button variant="outline" className="mt-1 mb-1 h-16 w-16" title="HTML" onClick={htmlAction}>
                         <FileCodeIcon className="size-12" strokeWidth={0.8} />
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="mt-1 mb-1 h-16 w-16"
-                        title="Markdown"
-                        onClick={markdownAction}
-                    >
+                    <Button variant="outline" className="mt-1 mb-1 h-16 w-16" title="Markdown" onClick={markdownAction}>
                         <FileTerminalIcon className="size-12" strokeWidth={0.8} />
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="mt-1 mb-1 h-16 w-16"
-                        title="Text"
-                        onClick={textAction}
-                    >
+                    <Button variant="outline" className="mt-1 mb-1 h-16 w-16" title="Text" onClick={textAction}>
                         <FileTypeIcon className="size-12" strokeWidth={0.8} />
                     </Button>
                 </div>
@@ -196,9 +176,7 @@ function EditProblemForm({ info }: ProblemFormProps) {
             label: 'View',
             content: (
                 <div className="rounded-lg border p-2 text-sm">
-                    <ExternalLink href={`https://jutge.org/problems/${info.problem.problem_id}`}>
-                        {info.problem.problem_id}
-                    </ExternalLink>
+                    <ExternalLink href={`/problems/${info.problem.problem_id}`}>{info.problem.problem_id}</ExternalLink>
                 </div>
             ),
         },

@@ -98,9 +98,7 @@ export function ExamProblemsView({ profile }: ExamProblemsViewProps) {
                 sortable: false,
                 rowDrag: true,
                 cellRenderer: (p: { data: InstructorExamProblem }) => (
-                    <ExternalLink href={`https://jutge.org/problems/${p.data.problem_nm}`}>
-                        {p.data.problem_nm}↗
-                    </ExternalLink>
+                    <ExternalLink href={`/problems/${p.data.problem_nm}`}>{p.data.problem_nm}↗</ExternalLink>
                 ),
                 valueGetter: (p: { data: InstructorExamProblem }) => p.data.problem_nm,
             },

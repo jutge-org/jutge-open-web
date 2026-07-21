@@ -41,7 +41,7 @@ export const instructorProblemSubNav = (problem_nm: string): InstructorSubNavIte
     void problem_nm
     return [
         { key: 'properties', label: 'Properties', segment: 'properties' },
-        { key: 'checking', label: 'Checking', segment: 'checking' },
+        { key: 'health', label: 'Health', segment: 'health' },
         { key: 'sharing', label: 'Sharing', segment: 'sharing' },
         { key: 'statistics', label: 'Statistics', segment: 'statistics' },
         { key: 'update', label: 'Update', segment: 'update' },

@@ -44,7 +44,7 @@ export function ListItemsView({ profile }: ListItemsViewProps) {
             cellRenderer: (p: { data: Item }) =>
                 p.data.problem_nm ? (
                     <div className="flex flex-row">
-                        <ExternalLink className="w-24" href={`https://jutge.org/problems/${p.data.problem_nm}`}>
+                        <ExternalLink className="w-24" href={`/problems/${p.data.problem_nm}`}>
                             {p.data.problem_nm}↗
                         </ExternalLink>
                         {p.data.title}
@@ -215,9 +215,7 @@ function DialogToAddProblems({
             width: 120,
             filter: true,
             cellRenderer: (p: { data: ProblemItem }) => (
-                <ExternalLink href={`https://jutge.org/problems/${p.data.problem_nm}`}>
-                    {p.data.problem_nm}↗
-                </ExternalLink>
+                <ExternalLink href={`/problems/${p.data.problem_nm}`}>{p.data.problem_nm}↗</ExternalLink>
             ),
         },
         { field: 'title', flex: 1, filter: true },

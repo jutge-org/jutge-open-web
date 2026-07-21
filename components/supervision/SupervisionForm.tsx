@@ -71,7 +71,7 @@ function CourseCombobox({
                 >
                     <span className="flex min-w-0 items-center gap-2">
                         {selectedCourse ? (
-                            <CourseIconImage iconUrl={selectedCourse.iconUrl} className="size-5 rounded" />
+                            <CourseIconImage iconUrl={selectedCourse.iconUrl} size="xs" className="rounded" />
                         ) : null}
                         <span className="truncate">{selectedCourse?.title ?? placeholder}</span>
                     </span>
@@ -94,7 +94,7 @@ function CourseCombobox({
                                         setSearch('')
                                     }}
                                 >
-                                    <CourseIconImage iconUrl={course.iconUrl} className="size-5 rounded" />
+                                    <CourseIconImage iconUrl={course.iconUrl} size="xs" className="rounded" />
                                     <span className="truncate">{course.title}</span>
                                 </CommandItem>
                             ))}

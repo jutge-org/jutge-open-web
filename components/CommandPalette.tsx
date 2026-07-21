@@ -357,13 +357,13 @@ export function CommandPalette() {
 
     function renderRecentLeading(item: CommandPaletteRecentItem) {
         if (item.kind === 'course') {
-            return <CourseIconImage iconUrl={resolveRecentCourseIconUrl(item)!} className="size-3.5 shrink-0 rounded" />
+            return <CourseIconImage iconUrl={resolveRecentCourseIconUrl(item)!} size="2xs" className="rounded" />
         }
 
         if (item.kind === 'problem') {
             const iconUrl = resolveRecentProblemIconUrl(item)
             if (iconUrl) {
-                return <ProblemIconImage iconUrl={iconUrl} className="size-3.5 shrink-0 rounded" />
+                return <ProblemIconImage iconUrl={iconUrl} size="2xs" className="rounded" />
             }
         }
 
@@ -469,7 +469,8 @@ export function CommandPalette() {
                                                 {problem.iconUrl ? (
                                                     <ProblemIconImage
                                                         iconUrl={problem.iconUrl}
-                                                        className="size-3.5 shrink-0 rounded"
+                                                        size="2xs"
+                                                        className="rounded"
                                                     />
                                                 ) : (
                                                     <FileBracesCornerIcon className="size-3.5 shrink-0" aria-hidden />
@@ -504,7 +505,8 @@ export function CommandPalette() {
                                             <div className="flex min-w-0 items-center gap-2">
                                                 <CourseIconImage
                                                     iconUrl={course.iconUrl}
-                                                    className="size-3.5 shrink-0 rounded"
+                                                    size="2xs"
+                                                    className="rounded"
                                                 />
                                                 <span className="truncate font-medium">{course.title}</span>
                                             </div>
@@ -535,7 +537,8 @@ export function CommandPalette() {
                                             <div className="flex min-w-0 items-center gap-1.5 pl-5.5 text-xs text-muted-foreground">
                                                 <CourseIconImage
                                                     iconUrl={exam.courseIconUrl}
-                                                    className="size-3.5 shrink-0 rounded"
+                                                    size="2xs"
+                                                    className="rounded"
                                                 />
                                                 <span className="truncate">
                                                     {exam.courseTitle} · {exam.ownerName}

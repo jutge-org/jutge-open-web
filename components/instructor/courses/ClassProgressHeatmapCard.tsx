@@ -910,7 +910,7 @@ function ClassProgressHeatmapCardBase({
 
     return (
         <ResizableCard defaultHeight={420}>
-            <CardHeader className="gap-4">
+            <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 <CardAction>
                     <TooltipProvider>
@@ -923,6 +923,8 @@ function ClassProgressHeatmapCardBase({
                         />
                     </TooltipProvider>
                 </CardAction>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">Show students</span>
@@ -972,7 +974,7 @@ function ClassProgressHeatmapCardBase({
                         </div>
                     ) : null}
                 </div>
-                <div className="flex w-full flex-wrap items-center gap-2 pb-2 sm:gap-4">
+                <div className="flex w-full flex-wrap items-center gap-2 sm:gap-4">
                     <span className="shrink-0 text-xs text-muted-foreground -mr-4">transpose</span>
                     <TooltipProvider>
                         <Tooltip>
@@ -1022,8 +1024,6 @@ function ClassProgressHeatmapCardBase({
                         </span>
                     </div>
                 </div>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
                 {columnMode === 'lists' ? <ListCompletionLegend /> : <StatusLegend />}
                 {isEmpty ? (
                     <p className="text-sm text-muted-foreground">No students or columns to display.</p>

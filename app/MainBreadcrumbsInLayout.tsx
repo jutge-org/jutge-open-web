@@ -137,7 +137,7 @@ function MainNavSubmenuItemIcon({
     SubItemIcon: ComponentType<{ href: string }>
 }) {
     if (item.iconUrl) {
-        return <CourseIconImage iconUrl={item.iconUrl} className="size-4 rounded" />
+        return <CourseIconImage iconUrl={item.iconUrl} size="xs" className="rounded" />
     }
 
     return <SubItemIcon href={item.href} />

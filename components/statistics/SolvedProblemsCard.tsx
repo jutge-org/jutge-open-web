@@ -53,7 +53,8 @@ function SolvedProblemDialog({
                             alt=""
                             width={512}
                             height={512}
-                            className="h-auto w-full max-w-[512px] object-contain"
+                            className="w-full max-w-[512px] object-contain"
+                            style={{ width: '100%', height: 'auto' }}
                         />
                     ) : (
                         <span className="flex aspect-square w-full max-w-[512px] items-center justify-center rounded-sm bg-muted px-4 text-center text-2xl font-medium">

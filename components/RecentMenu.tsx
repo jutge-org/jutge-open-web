@@ -101,7 +101,8 @@ export function RecentMenu() {
                     renderLeading={(item) => (
                         <CourseIconImage
                             iconUrl={item.iconUrl ?? courseIconUrl(null)}
-                            className="size-4 shrink-0 rounded"
+                            size="xs"
+                            className="rounded"
                         />
                     )}
                     emptyLabel="No recent courses"
@@ -115,7 +116,7 @@ export function RecentMenu() {
                     renderTitle={formatRecentProblemTitle}
                     renderLeading={(item) =>
                         item.iconUrl ? (
-                            <ProblemIconImage iconUrl={item.iconUrl} className="size-4 shrink-0 rounded" />
+                            <ProblemIconImage iconUrl={item.iconUrl} size="xs" className="rounded" />
                         ) : null
                     }
                     emptyLabel="No recent problems"

@@ -3,10 +3,11 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 const sizeConfig = {
-    xs: { className: 'size-4', width: 16, height: 16 },
-    sm: { className: 'size-5', width: 20, height: 20 },
-    md: { className: 'size-8', width: 32, height: 32 },
-    lg: { className: 'size-28', width: 112, height: 112 },
+    '2xs': { width: 14, height: 14 },
+    xs: { width: 16, height: 16 },
+    sm: { width: 20, height: 20 },
+    md: { width: 32, height: 32 },
+    lg: { width: 112, height: 112 },
 } as const
 
 type ProblemIconImageProps = {
@@ -16,16 +17,17 @@ type ProblemIconImageProps = {
 }
 
 export function ProblemIconImage({ iconUrl, size = 'sm', className }: ProblemIconImageProps) {
-    const { className: sizeClassName, width, height } = sizeConfig[size]
+    const { width, height } = sizeConfig[size]
     iconUrl = iconUrl.replace('problem-icons/', `problem-icons/sm/`)
 
     return (
         <Image
             src={iconUrl}
             alt=""
-            className={cn('block shrink-0 rounded-sm object-contain', sizeClassName, className)}
+            className={cn('block max-w-none shrink-0 rounded-sm object-contain', className)}
             width={width}
             height={height}
+            style={{ width, height }}
             loading={size === 'lg' ? 'eager' : undefined}
         />
     )

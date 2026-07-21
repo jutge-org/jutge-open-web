@@ -19,21 +19,19 @@ import { ProblemRow } from './types'
 
 const problemTableColumnDefs = [
     {
-        field: 'iconUrl',
-        headerName: '',
-        width: 36,
-        sortable: false,
-        filter: false,
-        cellRenderer: (p: ICellRendererParams<ProblemRow>) =>
-            p.data!.iconUrl ? <ProblemIconImage iconUrl={p.data!.iconUrl} size="xs" className="translate-y-1" /> : null,
-    },
-    {
         field: 'problem_nm',
         headerName: 'Id',
         cellRenderer: (p: ICellRendererParams<ProblemRow>) => (
-            <Link href={`/instructor/problems/${p.data!.problem_nm}/properties`}>{p.data!.problem_nm}</Link>
+            <Link href={`/instructor/problems/${p.data!.problem_nm}/properties`}>
+                <span className="flex flex-row items-center gap-2">
+                    {p.data!.iconUrl ? (
+                        <ProblemIconImage iconUrl={p.data!.iconUrl} size="xs" className="translate-y-px" />
+                    ) : null}
+                    {p.data!.problem_nm}
+                </span>
+            </Link>
         ),
-        width: 80,
+        width: 120,
         filter: true,
         valueGetter: (p: ICellRendererParams<ProblemRow>) => p.data!.problem_nm,
     },
@@ -96,9 +94,9 @@ export default function InstructorProblemTable({ rows }: { rows: ProblemRow[] })
 
     return (
         <>
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row-reverse gap-2 items-center">
                 <Link href="/instructor/problems/new">
-                    <Button variant="outline" className="w-36 justify-start" title="Add a new problem">
+                    <Button className="w-36 justify-start" title="Add a new problem">
                         <SquarePlusIcon /> New problem
                     </Button>
                 </Link>

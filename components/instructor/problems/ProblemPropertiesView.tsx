@@ -135,11 +135,11 @@ export function ProblemPropertiesView() {
             content: (
                 <Button
                     variant="outline"
-                    className="mt-0 h-16 w-16 [&_svg]:size-12"
+                    className="mt-0 h-16 w-16"
                     onClick={downloadAction}
                     title="Download problem archive as a ZIP file"
                 >
-                    <CloudDownloadIcon strokeWidth={0.8} />
+                    <CloudDownloadIcon className="size-12" strokeWidth={0.8} />
                 </Button>
             ),
         },

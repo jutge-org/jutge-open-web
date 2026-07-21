@@ -140,6 +140,12 @@
     }
 }
 
+/* Instructor routes: enlarge default button icons (Button defaults to size-4). */
+[data-instructor-shell] [data-slot='button'] svg:where(:not([class*='size-']):not([class*='h-']), .size-4, .h-4) {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
 /* Jutge problem HTML statement styles (from jutge-web) */
 .statement-section {
     font-size: calc(0.875rem * var(--statement-scale, 1));

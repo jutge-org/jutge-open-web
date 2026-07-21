@@ -499,7 +499,7 @@ function ExamIcons(props: ExamIconsProps) {
                                 className="text-gray-500"
                                 variant={'outline'}
                             >
-                                <XCircleIcon size={24} />
+                                <XCircleIcon className="size-6" />
                             </Button>
                         )}
                     </div>

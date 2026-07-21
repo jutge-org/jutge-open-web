@@ -19,7 +19,6 @@ export function ProblemsListView() {
 
     return (
         <>
-            <h1>Authored Problems</h1>
             <InstructorProblemTable rows={rows} />
         </>
     )

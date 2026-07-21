@@ -8,7 +8,7 @@ type InstructorPageShellProps = {
 
 export function InstructorPageShell({ breadcrumbs, children }: InstructorPageShellProps) {
     return (
-        <div className="flex-1 flex flex-col w-full">
+        <div data-instructor-shell className="flex-1 flex flex-col w-full">
             <MainBreadcrumbs breadcrumbs={breadcrumbs} />
             <div className="flex-1 flex flex-col gap-4">{children}</div>
         </div>

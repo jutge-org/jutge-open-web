@@ -117,35 +117,35 @@ function EditProblemForm({ info }: ProblemFormProps) {
                 <div className="flex flex-row gap-2">
                     <Button
                         variant="outline"
-                        className="mt-1 mb-1 h-16 w-16 [&_svg]:size-12"
+                        className="mt-1 mb-1 h-16 w-16"
                         title="PDF"
                         onClick={pdfAction}
                     >
-                        <FileTextIcon strokeWidth={0.8} />
+                        <FileTextIcon className="size-12" strokeWidth={0.8} />
                     </Button>
                     <Button
                         variant="outline"
-                        className="mt-1 mb-1 h-16 w-16 [&_svg]:size-12"
+                        className="mt-1 mb-1 h-16 w-16"
                         title="HTML"
                         onClick={htmlAction}
                     >
-                        <FileCodeIcon strokeWidth={0.8} />
+                        <FileCodeIcon className="size-12" strokeWidth={0.8} />
                     </Button>
                     <Button
                         variant="outline"
-                        className="mt-1 mb-1 h-16 w-16 [&_svg]:size-12"
+                        className="mt-1 mb-1 h-16 w-16"
                         title="Markdown"
                         onClick={markdownAction}
                     >
-                        <FileTerminalIcon strokeWidth={0.8} />
+                        <FileTerminalIcon className="size-12" strokeWidth={0.8} />
                     </Button>
                     <Button
                         variant="outline"
-                        className="mt-1 mb-1 h-16 w-16 [&_svg]:size-12"
+                        className="mt-1 mb-1 h-16 w-16"
                         title="Text"
                         onClick={textAction}
                     >
-                        <FileTypeIcon strokeWidth={0.8} />
+                        <FileTypeIcon className="size-12" strokeWidth={0.8} />
                     </Button>
                 </div>
             ),

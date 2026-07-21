@@ -99,8 +99,11 @@ function EditDocumentForm(props: DocumentFormProps) {
             type: 'free',
             label: `Current ${typeLabel}`,
             content: (
-                <Button variant="outline" className="h-16 w-16 [&_svg]:size-12" onClick={download}>
-                    {createElement(getDocumentFileIcon(props.document.type), { strokeWidth: 0.6 })}
+                <Button variant="outline" className="h-16 w-16" onClick={download}>
+                    {createElement(getDocumentFileIcon(props.document.type), {
+                        className: 'size-12',
+                        strokeWidth: 0.6,
+                    })}
                 </Button>
             ),
         },

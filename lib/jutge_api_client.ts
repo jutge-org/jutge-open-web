@@ -1,5 +1,5 @@
 /**
- * This file has been automatically generated at 2026-07-20T10:15:23.721Z
+ * This file has been automatically generated at 2026-07-21T13:15:45.021Z
  *
  * Name:    Jutge API
  * Version: 2.0.0

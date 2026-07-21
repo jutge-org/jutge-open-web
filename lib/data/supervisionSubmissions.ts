@@ -7,7 +7,7 @@ import {
     shouldShowCodeMetrics,
     type SubmissionCodeMetricsData,
 } from '@/lib/codeMetrics'
-import { decodeSubmissionCodeBase64, MAKE_PRO2_COMPILER_ID } from '@/lib/makePro2SourceCode'
+import { decodeSubmissionCodeBase64 } from '@/lib/makePro2SourceCode'
 import { isGraphicProblem, parseProblemKey } from '@/lib/problems'
 import {
     buildProblemSubmissionRow,
@@ -252,10 +252,10 @@ export async function fetchSupervisionSubmissionDetail(
         })),
         scoring: scoring
             ? scoring.map((row) => ({
-                  ...row,
-                  verdictEmoji: tables.verdicts[row.verdict]?.emoji,
-                  verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
-              }))
+                ...row,
+                verdictEmoji: tables.verdicts[row.verdict]?.emoji,
+                verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
+            }))
             : null,
         codeMetrics,
         compilationErrors: compilationErrorsResult,

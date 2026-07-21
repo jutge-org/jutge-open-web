@@ -9,7 +9,6 @@ import { HomeSuggestedProblems } from '@/components/general/HomeSuggestedProblem
 import { HomeYearsGithubCorner } from '@/components/general/HomeYearsGithubCorner'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { canAccessSupervision, type SessionUser } from '@/lib/session'
 
 type HomePageUserProps = {

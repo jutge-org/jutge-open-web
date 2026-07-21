@@ -58,7 +58,7 @@ export function AuthToolbar() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <Button type="button" variant="ghost" size="icon" aria-label="Account menu">
+                                <Button type="button" variant="outline" size="icon" aria-label="Account menu">
                                     {administrator ? (
                                         <CrownIcon className="size-4.5" aria-hidden />
                                     ) : instructor ? (
@@ -109,7 +109,7 @@ export function AuthToolbar() {
 
     return (
         <>
-            <Button variant="ghost" size="icon" type="button" aria-label="Sign in" onClick={() => setDialogOpen(true)}>
+            <Button variant="outline" size="icon" type="button" aria-label="Sign in" onClick={() => setDialogOpen(true)}>
                 <SignIn aria-hidden />
             </Button>
 

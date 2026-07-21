@@ -1,27 +1,29 @@
 'use client'
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SubNav } from '@/components/general/SubNav'
 import { documentationNavItems, type DocumentationTab } from '@/lib/documentation'
-import Link from 'next/link'
+import type { SubNavItem } from '@/store/SubNav'
+
+const documentationSubNavItems: readonly SubNavItem[] = documentationNavItems.map(
+    ({ tab, label, href, external }) => ({
+        key: tab,
+        label,
+        href,
+        external,
+    }),
+)
 
 type DocumentationNavProps = {
     activeTab: DocumentationTab
 }
 
+/** Registers documentation section links in the sticky header sub-nav. */
 export function DocumentationNav({ activeTab }: DocumentationNavProps) {
     return (
-        <nav aria-label="Documentation sections" className="w-full">
-            <Tabs value={activeTab}>
-                <TabsList className="w-full min-w-max">
-                    {documentationNavItems.map(({ tab, label, href }) => (
-                        <TabsTrigger key={tab} value={tab} asChild>
-                            <Link href={href} aria-current={tab === activeTab ? 'page' : undefined}>
-                                {label}
-                            </Link>
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-            </Tabs>
-        </nav>
+        <SubNav
+            ariaLabel="Documentation sections"
+            activeKey={activeTab}
+            items={documentationSubNavItems}
+        />
     )
 }

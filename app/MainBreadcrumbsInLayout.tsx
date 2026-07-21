@@ -1,13 +1,7 @@
 'use client'
 
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -336,10 +330,8 @@ export function MainBreadcrumbsInLayout() {
     const navLinks = getSiteNavLinks({ authenticated, instructor, tutor, administrator })
     const mainMenuLinks = orderMainNavMenuLinks(navLinks)
 
-    /** First crumb encodes main-menu section — shown only on the opener, not duplicated in the trail. */
+    /** First crumb encodes the main-menu section shown next to Jutge.org. */
     const menuAnchor = breadcrumbs[0]
-    const trail = breadcrumbs.length > 0 ? breadcrumbs.slice(1) : []
-    const isSingleBreadcrumb = trail.length === 0
 
     function linkIsCurrentMainSection(linkHref: string): boolean {
         if (menuAnchor) return pathsHrefEqual(menuAnchor.url, linkHref)
@@ -349,24 +341,27 @@ export function MainBreadcrumbsInLayout() {
 
     return (
         <Breadcrumb className="min-w-0 font-bold tracking-tight">
-            <BreadcrumbList className={cn('gap-2 text-foreground sm:gap-2', isSingleBreadcrumb && 'text-lg')}>
+            <BreadcrumbList className="gap-2 text-lg text-foreground sm:gap-2">
                 <BreadcrumbItem className="min-w-0 max-w-48 sm:max-w-xs">
                     <div className="flex max-w-full min-w-0 items-center gap-1">
                         <DropdownMenu>
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <DropdownMenuTrigger
-                                            type="button"
-                                            className="inline-flex size-9 shrink-0 items-center justify-center rounded-md text-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                                            aria-haspopup="menu"
-                                            aria-label={
-                                                menuAnchor
-                                                    ? `Open main navigation (current section: ${menuAnchor.title})`
-                                                    : 'Open main navigation'
-                                            }
-                                        >
-                                            <MenuIcon className="size-4 shrink-0" aria-hidden />
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="icon"
+                                                aria-haspopup="menu"
+                                                aria-label={
+                                                    menuAnchor
+                                                        ? `Open main navigation (current section: ${menuAnchor.title})`
+                                                        : 'Open main navigation'
+                                                }
+                                            >
+                                                <MenuIcon className="size-4 shrink-0" aria-hidden />
+                                            </Button>
                                         </DropdownMenuTrigger>
                                     </TooltipTrigger>
                                     <TooltipContent>Main navigation</TooltipContent>
@@ -460,7 +455,7 @@ export function MainBreadcrumbsInLayout() {
                         </BreadcrumbLink>
                         {menuAnchor && menuAnchor.url !== '/' ? (
                             <>
-                                <span aria-hidden className="shrink-0 text-muted-foreground">
+                                <span aria-hidden className="shrink-0 text-muted-foreground mx-2">
                                     ·
                                 </span>
                                 <BreadcrumbLink asChild>
@@ -475,30 +470,6 @@ export function MainBreadcrumbsInLayout() {
                         ) : null}
                     </div>
                 </BreadcrumbItem>
-
-                {trail.map((segment, index) => {
-                    const isLast = index === trail.length - 1
-
-                    return (
-                        <Fragment key={`${segment.url}::${index}`}>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem className="min-w-0 max-w-40 sm:max-w-md">
-                                {isLast ? (
-                                    <BreadcrumbPage className="truncate font-bold">{segment.title}</BreadcrumbPage>
-                                ) : (
-                                    <BreadcrumbLink asChild>
-                                        <Link
-                                            href={segment.url}
-                                            className="truncate font-bold text-foreground hover:text-primary hover:underline hover:underline-offset-4"
-                                        >
-                                            {segment.title}
-                                        </Link>
-                                    </BreadcrumbLink>
-                                )}
-                            </BreadcrumbItem>
-                        </Fragment>
-                    )
-                })}
             </BreadcrumbList>
         </Breadcrumb>
     )

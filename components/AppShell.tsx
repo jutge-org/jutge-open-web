@@ -11,6 +11,7 @@ import { LayoutWidthContainer } from '@/components/layout/LayoutWidthContainer'
 import { RootShell } from '@/components/RootShell'
 import { MainBreadcrumbsInLayout } from '@/app/MainBreadcrumbsInLayout'
 import { useAuth } from '@/components/AuthProvider'
+import { SubNavInLayout } from '@/components/layout/SubNavInLayout'
 import { isContextualHeaderGradientsEnabled } from '@/lib/contextualHeaderGradients'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
@@ -63,6 +64,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                                 <AuthToolbar />
                             </div>
                         </LayoutWidthContainer>
+                        <SubNavInLayout />
                     </header>
                 }
                 footer={<AppFooter />}

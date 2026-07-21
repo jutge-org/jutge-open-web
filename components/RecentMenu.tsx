@@ -79,7 +79,7 @@ export function RecentMenu() {
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <DropdownMenuTrigger asChild>
-                            <Button type="button" variant="ghost" size="icon" aria-label="Recent items">
+                            <Button type="button" variant="outline" size="icon" aria-label="Recent items">
                                 <ActivityIcon className="size-4.5" aria-hidden />
                             </Button>
                         </DropdownMenuTrigger>

@@ -464,19 +464,14 @@ export function MainBreadcrumbsInLayout() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         <BreadcrumbLink asChild>
-                            <Link
-                                href="/"
-                                className="shrink-0 font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"
-                            >
-                                Jutge.org
+                            <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src="/logos/jutge.svg" alt="Jutge.org" className="ml-3 h-6 w-auto dark:invert" />
                             </Link>
                         </BreadcrumbLink>
                         {menuAnchor && menuAnchor.url !== '/' ? (
                             <>
-                                <span aria-hidden className="mx-2 shrink-0 text-muted-foreground">
-                                    ·
-                                </span>
-                                <BreadcrumbLink asChild>
+                                <BreadcrumbLink asChild className="ml-3">
                                     <Link
                                         href={menuAnchor.url}
                                         className="shrink-0 font-bold text-foreground transition-colors hover:text-primary hover:underline hover:underline-offset-4"

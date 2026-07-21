@@ -120,6 +120,7 @@ export type GuestCourseRow = {
     isOfficial: boolean
     isPublic: boolean
     problemCount: number
+    lists: string[]
 }
 
 function displayText(value: string | null): string {
@@ -203,8 +204,8 @@ export function sortCourseRows(rows: CourseRow[]): CourseRow[] {
     return [...rows].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
 }
 
-export function publicCourseHref(courseKey: string): string {
-    return `/courses/public/${courseKey}`
+export function publicCourseHref(courseKey?: string): string {
+    return courseKey ? `/courses/public#${courseKey}` : '/courses/public'
 }
 
 export function listTitleFromKey(listKey: string): string {
@@ -226,6 +227,7 @@ export function buildGuestCourseRow(course: PublicCourse, courseKey?: string): G
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
         problemCount: course.problem_count,
+        lists: course.lists,
     }
 }
 

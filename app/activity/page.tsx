@@ -27,7 +27,6 @@ function ActivityPageContent() {
     return (
         <div className="flex flex-col gap-6">
             <MainBreadcrumbs breadcrumbs={[{ title: 'Activity', url: '/activity' }]} />
-            <PageTitle section="/activity" authenticated hidden={false} />
             <StatisticsDashboard data={data} />
         </div>
     )

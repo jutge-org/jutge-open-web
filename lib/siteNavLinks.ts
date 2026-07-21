@@ -95,7 +95,7 @@ export function pathsHrefEqual(a: string, b: string): boolean {
 const guestCoursesLink: SiteNavLink = {
     href: '/courses/public',
     label: 'Courses',
-    match: (pathname) => pathname === '/courses/public' || pathname.startsWith('/courses/public/'),
+    match: (pathname) => pathname === '/courses/public' || pathname.startsWith('/courses/public'),
 }
 
 const guestProblemsLink: SiteNavLink = {

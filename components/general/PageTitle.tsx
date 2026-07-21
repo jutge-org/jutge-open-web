@@ -157,7 +157,7 @@ export function PageTitle({
     if (hidden) return null
 
     return (
-        <div className="flex min-h-22 items-center gap-5 rounded-2xl border border-border bg-card px-6 py-5 text-left shadow-sm">
+        <div className="-mt-6 flex min-h-22 items-center gap-5 rounded-2xl border border-border px-6 py-5 text-left shadow-sm ">
             <span
                 className={cn(
                     'flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted/80',
@@ -166,9 +166,9 @@ export function PageTitle({
             >
                 <SectionIcon section={section} />
             </span>
-            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <h1 className="text-lg font-semibold tracking-tight text-foreground">{title}</h1>
-                <p className="text-sm font-normal leading-snug text-muted-foreground">
+            <span className="flex flex-col min-w-0 ">
+                <h1 className="my-0 text-lg font-semibold tracking-tight text-foreground">{title}</h1>
+                <p className="text-sm font-normal text-muted-foreground">
                     {!authenticated ? (
                         <PageTitleGuestDescription section={section} fallback={description} />
                     ) : (

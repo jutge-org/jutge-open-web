@@ -22,7 +22,7 @@ export function CourseGuestLists({ lists, problemCount }: CourseGuestListsProps)
             ) : null}
             {lists.length > 0 ? (
                 <>
-                    <h2 className="mt-1.5 text-sm font-medium text-foreground">Lists of problems</h2>
+                    <h2 className="-mt-2 text-sm font-medium text-foreground">Lists of problems</h2>
                     <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                         {lists.map((listKey) => (
                             <li key={listKey}>{listTitleFromKey(listKey)}</li>

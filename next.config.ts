@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
                 destination: '/courses?tab=available',
                 permanent: true,
             },
+            {
+                source: '/courses/public/:course_key',
+                destination: '/courses/public',
+                permanent: true,
+            },
         ];
     },
 };

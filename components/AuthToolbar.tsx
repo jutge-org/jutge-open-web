@@ -17,16 +17,14 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import Link from 'next/link'
 import {
-    ActivityIcon,
-    Award,
     CrownIcon,
     GraduationCapIcon,
     LogIn as SignIn,
     LogOut as SignOut,
-    RefreshCwIcon,
+    Settings2Icon,
     User,
 } from 'lucide-react'
-import jutge from '@/lib/jutge'
+import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { toast } from 'sonner'
 
 export function AuthToolbar() {
@@ -40,12 +38,6 @@ export function AuthToolbar() {
     const pathname = usePathname()
     const [dialogOpen, setDialogOpen] = useState(false)
     const [signOutPending, startSignOut] = useTransition()
-
-    function handleResetCache() {
-        jutge.clearCache()
-        toast.success('Client cache cleared')
-        window.location.reload()
-    }
 
     function handleSignOut() {
         startSignOut(async () => {
@@ -96,27 +88,14 @@ export function AuthToolbar() {
                         </>
                     ) : null}
                     <DropdownMenuItem asChild>
-                        <Link href="/activity">
-                            <ActivityIcon aria-hidden />
-                            Activity
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/awards">
-                            <Award aria-hidden />
-                            Awards
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                         <Link href="/profile">
                             <User aria-hidden />
                             Profile
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleResetCache}>
-                        <RefreshCwIcon aria-hidden />
-                        Clear cache
+                    <DropdownMenuItem onClick={dispatchOpenAppearanceSettings}>
+                        <Settings2Icon aria-hidden />
+                        Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem disabled={signOutPending} onClick={handleSignOut}>

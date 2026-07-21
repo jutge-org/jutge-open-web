@@ -47,12 +47,8 @@ function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
     return [...nms].sort()
 }
 
-export async function fetchSubmissionsData(client: JutgeApiClient): Promise<SubmissionRow[]> {
-    const [submissions, tables, preferredLanguageId] = await Promise.all([
-        client.student.submissions.getAll(),
-        client.tables.get(),
-        getPreferredLanguageId(),
-    ])
+async function submissionsToRows(client: JutgeApiClient, submissions: Submission[]): Promise<SubmissionRow[]> {
+    const [tables, preferredLanguageId] = await Promise.all([client.tables.get(), getPreferredLanguageId()])
 
     const problemNms = submissionProblemNms(submissions)
     let problemTitles = new Map<string, string>()
@@ -67,6 +63,50 @@ export async function fetchSubmissionsData(client: JutgeApiClient): Promise<Subm
     }
 
     return submissions.map((submission) => buildSubmissionRow(submission, tables, problemTitles))
+}
+
+export async function fetchSubmissionsData(client: JutgeApiClient): Promise<SubmissionRow[]> {
+    const submissions = await client.student.submissions.getAll()
+    return submissionsToRows(client, submissions)
+}
+
+/** The format student.submissions.getRange expects for its bounds. */
+function formatRangeBound(date: Date): string {
+    const pad = (value: number) => String(value).padStart(2, '0')
+    return (
+        `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+        `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+    )
+}
+
+/**
+ * Submissions between two instants, newest first.
+ *
+ * The API reads the bounds in the account's own timezone, so they are formatted as wall-clock
+ * time rather than converted to UTC.
+ */
+export async function fetchSubmissionsInRange(
+    client: JutgeApiClient,
+    start: Date,
+    end: Date,
+): Promise<SubmissionRow[]> {
+    const submissions = await client.student.submissions.getRange({
+        start_time: formatRangeBound(start),
+        end_time: formatRangeBound(end),
+    })
+
+    return submissionsToRows(client, submissions)
+}
+
+/** Submissions of a single calendar day, for a day key coming from the heatmap. */
+export async function fetchSubmissionsForDay(client: JutgeApiClient, dayTs: number): Promise<SubmissionRow[]> {
+    // Day keys label a calendar date as a UTC midnight, so read the date back in UTC and then
+    // ask for that wall-clock day.
+    const date = new Date(dayTs * 1000)
+    const start = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0)
+    const end = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59)
+
+    return fetchSubmissionsInRange(client, start, end)
 }
 
 export async function fetchLastSubmissionsByProblemNm(

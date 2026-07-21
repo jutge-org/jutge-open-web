@@ -1,7 +1,44 @@
-import type { BriefCourse, Profile, PublicCourse, PublicProfile } from '@/lib/jutge_api_client'
+import type { AbstractStatus, BriefCourse, Profile, PublicCourse, PublicProfile } from '@/lib/jutge_api_client'
 import { includesForSearch } from '@/lib/utils'
 
 export type CourseStatus = 'enrolled' | 'available' | 'archived'
+
+/** How many problems of a set have been accepted, partially scored or rejected. */
+export type ProblemStatusCounts = {
+    total: number
+    ok: number
+    scored: number
+    ko: number
+}
+
+/**
+ * Tallies problem statuses. `problemNms` may repeat — a problem can belong to several
+ * lists of the same course — so it is deduplicated before counting.
+ */
+export function tallyProblemStatuses(
+    problemNms: Iterable<string>,
+    statuses?: Record<string, AbstractStatus>,
+): ProblemStatusCounts {
+    const distinct = new Set(problemNms)
+    let ok = 0
+    let scored = 0
+    let ko = 0
+
+    if (statuses) {
+        for (const problemNm of distinct) {
+            const status = statuses[problemNm]?.status
+            if (status === 'accepted') {
+                ok++
+            } else if (status === 'scored') {
+                scored++
+            } else if (status === 'rejected') {
+                ko++
+            }
+        }
+    }
+
+    return { total: distinct.size, ok, scored, ko }
+}
 
 const DEFAULT_COURSE_ICON_URL = 'https://jutge.org/img/course-icons/default/jutge-neon.png'
 
@@ -34,6 +71,8 @@ export type CourseRow = {
     isOwner: boolean
     isTutor: boolean
     status: CourseStatus
+    /** Only known for public courses, which expose it through the public index. */
+    problemCount?: number
 }
 
 export type CoursesData = {
@@ -80,6 +119,7 @@ export type GuestCourseRow = {
     iconUrl: string
     isOfficial: boolean
     isPublic: boolean
+    problemCount: number
 }
 
 function displayText(value: string | null): string {
@@ -185,6 +225,7 @@ export function buildGuestCourseRow(course: PublicCourse, courseKey?: string): G
         iconUrl: courseIconUrl(readCourseIcon(course)),
         isOfficial: course.official !== 0,
         isPublic: course.public !== 0,
+        problemCount: course.problem_count,
     }
 }
 

@@ -13,7 +13,6 @@ import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { useRecents } from '@/components/RecentsProvider'
 import { SignInDialog } from '@/components/SignInDialog'
-import { Button } from '@/components/ui/button'
 import {
     Command,
     CommandDialog,
@@ -24,7 +23,6 @@ import {
     CommandSeparator,
 } from '@/components/ui/command'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
     commandPaletteSections,
     filterCommandPaletteSections,
@@ -52,6 +50,7 @@ import {
     EyeIcon,
     RectangleHorizontalIcon,
     SchoolIcon,
+    SearchIcon,
     SendIcon,
     Settings2Icon,
     SquareIcon,
@@ -387,25 +386,18 @@ export function CommandPalette() {
 
     return (
         <>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Quick search"
-                            onClick={() => setOpen(true)}
-                        >
-                            <TerminalIcon className="size-4.5" aria-hidden />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        Quick search
-                        <SearchShortcutHint />
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+            <button
+                type="button"
+                aria-label="Quick search"
+                onClick={() => setOpen(true)}
+                className="inline-flex h-8 w-40 items-center gap-2 rounded-md border border-input bg-muted/40 px-2.5 text-sm text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-56 md:w-64"
+            >
+                <SearchIcon className="size-4 shrink-0" aria-hidden />
+                <span className="min-w-0 flex-1 truncate text-left">Search…</span>
+                <span className="hidden shrink-0 sm:inline-flex">
+                    <SearchShortcutHint />
+                </span>
+            </button>
 
             <CommandDialog
                 open={open}
@@ -416,7 +408,7 @@ export function CommandPalette() {
             >
                 <Command shouldFilter={false}>
                     <div className="px-2 pb-2 text-sm font-medium flex flex-row items-center gap-2">
-                        <TerminalIcon className="size-4.5" aria-hidden />
+                        <SearchIcon className="size-4.5" aria-hidden />
                         Quick search
                         <div className="flex-1"></div>
                         <SearchShortcutHint />

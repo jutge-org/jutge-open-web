@@ -199,8 +199,14 @@ export function buildSubmissionNavLinks(
 
 export type SubmissionRow = {
     submission_id: string
+    /**
+     * Unique across submissions. submission_id restarts at S001 for every problem, so it
+     * repeats in any list that spans problems and cannot be used alone as a React key.
+     */
+    rowKey: string
     submissionHref: string
     problem_id: string
+    problem_nm: string
     problemTitle: string
     problemHref: string
     verdict: string
@@ -237,8 +243,10 @@ export function buildSubmissionRow(
 
     return {
         submission_id: submission.submission_id,
+        rowKey: `${submission.problem_id}:${submission.submission_id}`,
         submissionHref: buildSubmissionHref(submission.problem_id, submission.submission_id),
         problem_id: submission.problem_id,
+        problem_nm,
         problemTitle,
         problemHref,
         verdict,

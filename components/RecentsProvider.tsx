@@ -3,19 +3,23 @@
 import { useAuth } from '@/components/AuthProvider'
 import { fetchCommandPaletteCourses, fetchCommandPaletteProblems } from '@/lib/data/commandPalette'
 import {
-    enrichRecentCourseIcons,
-    enrichRecentProblemIcons,
+    addRecentList,
+    enrichRecentCourses,
+    enrichRecentProblems,
     emptyRecents,
     observeRecentPageMetadata,
     syncRecentsFromPage,
+    type RecentListItem,
     type RecentsData,
 } from '@/lib/recents'
 import { useOpenWebRecents, useOpenWebSettingsReady, useOpenWebSettingsStore } from '@/store/openWebSettings'
 import { usePathname } from 'next/navigation'
-import { createContext, useContext, useEffect, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, type ReactNode } from 'react'
 
 type RecentsContextValue = {
     recents: RecentsData
+    /** Lists have no route of their own, so pages record them explicitly. */
+    recordList: (item: RecentListItem) => void
     clearCourses: () => void
     clearProblems: () => void
     clearSubmissions: () => void
@@ -64,7 +68,8 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             return
         }
 
-        if (!recents.courses.some((course) => !course.iconUrl)) {
+        // The title is unresolved when it still equals the course key.
+        if (!recents.courses.some((course) => !course.iconUrl || course.title === course.courseKey)) {
             return
         }
 
@@ -75,8 +80,10 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
                 return
             }
 
-            const iconByKey = new Map(allCourses.map((course) => [course.course_key, course.iconUrl]))
-            setRecents((current) => enrichRecentCourseIcons(current, iconByKey))
+            const metaByKey = new Map(
+                allCourses.map((course) => [course.course_key, { title: course.title, iconUrl: course.iconUrl }]),
+            )
+            setRecents((current) => enrichRecentCourses(current, metaByKey))
         })
 
         return () => {
@@ -89,7 +96,8 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
             return
         }
 
-        if (!recents.problems.some((problem) => !problem.iconUrl)) {
+        // The title is unresolved when it still equals the problem name.
+        if (!recents.problems.some((problem) => !problem.iconUrl || problem.title === problem.problemNm)) {
             return
         }
 
@@ -100,12 +108,13 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
                 return
             }
 
-            const iconByNm = new Map(
-                allProblems.flatMap((problem) =>
-                    problem.iconUrl ? [[problem.problem_nm, problem.iconUrl] as const] : [],
+            const metaByNm = new Map(
+                allProblems.map(
+                    (problem) =>
+                        [problem.problem_nm, { title: problem.title, iconUrl: problem.iconUrl ?? undefined }] as const,
                 ),
             )
-            setRecents((current) => enrichRecentProblemIcons(current, iconByNm))
+            setRecents((current) => enrichRecentProblems(current, metaByNm))
         })
 
         return () => {
@@ -115,10 +124,22 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
 
     const visibleRecents = authenticated ? recents : emptyRecents()
 
+    const recordList = useCallback(
+        (item: RecentListItem) => {
+            if (!authenticated || !ready) {
+                return
+            }
+
+            setRecents((current) => addRecentList(current, item))
+        },
+        [authenticated, ready, setRecents],
+    )
+
     return (
         <RecentsContext.Provider
             value={{
                 recents: visibleRecents,
+                recordList,
                 clearCourses: clearRecentCourses,
                 clearProblems: clearRecentProblems,
                 clearSubmissions: clearRecentSubmissions,

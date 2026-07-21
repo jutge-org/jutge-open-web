@@ -59,12 +59,29 @@ async function resolveAvailableCourseKey(client: JutgeApiClient, courseKeyParam:
     return null
 }
 
+/**
+ * Problem counts of every public course, keyed both by index key and by owner:course_nm,
+ * since the public and available indexes are not guaranteed to agree on the key.
+ */
+async function fetchPublicProblemCounts(): Promise<Map<string, number>> {
+    const publicCourses = await loadPublicCoursesIndex()
+    const counts = new Map<string, number>()
+
+    for (const [apiKey, course] of Object.entries(publicCourses)) {
+        counts.set(apiKey, course.problem_count)
+        counts.set(buildCourseKey(course.owner, course.course_nm), course.problem_count)
+    }
+
+    return counts
+}
+
 export async function fetchCoursesData(client: JutgeApiClient): Promise<CoursesData> {
-    const [enrolledMap, availableMap, archivedKeys, profile] = await Promise.all([
+    const [enrolledMap, availableMap, archivedKeys, profile, publicProblemCounts] = await Promise.all([
         client.student.courses.indexEnrolled(),
         client.student.courses.indexAvailable(),
         client.student.courses.getArchivedKeys(),
         client.student.profile.get(),
+        fetchPublicProblemCounts(),
     ])
 
     const archivedKeySet = new Set(archivedKeys)
@@ -88,9 +105,10 @@ export async function fetchCoursesData(client: JutgeApiClient): Promise<CoursesD
     const enrolled = sortCourseRows(enrolledRows)
     const archived = sortCourseRows(archivedRows)
     const available = sortCourseRows(
-        Object.entries(availableMap).map(([apiKey, course]) =>
-            buildCourseRow(course, 'available', apiKey, isCourseOwnedByUser(course.owner, profile)),
-        ),
+        Object.entries(availableMap).map(([apiKey, course]) => {
+            const row = buildCourseRow(course, 'available', apiKey, isCourseOwnedByUser(course.owner, profile))
+            return { ...row, problemCount: publicProblemCounts.get(row.course_key) }
+        }),
     )
 
     return { enrolled, available, archived }

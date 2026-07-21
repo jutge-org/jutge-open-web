@@ -19,6 +19,24 @@ export type StatisticsData = {
     solvedProblems: SolvedProblemRow[]
 }
 
+export type DashboardOverview = {
+    dashboard: Dashboard
+    level: string
+}
+
+/**
+ * The summary row and submission calendar only need the dashboard itself, so the home page
+ * skips the submissions, tables and solved-problem lookups that fetchStatisticsData does.
+ */
+export async function fetchDashboardOverview(client: JutgeApiClient): Promise<DashboardOverview> {
+    const [dashboard, level] = await Promise.all([
+        client.student.dashboard.getDashboard(),
+        client.student.dashboard.getLevel(),
+    ])
+
+    return { dashboard, level }
+}
+
 export async function fetchStatisticsData(client: JutgeApiClient): Promise<StatisticsData> {
     const [dashboard, level, tables, hexColors, submissions, statuses, preferredLanguageId] = await Promise.all([
         client.student.dashboard.getDashboard(),

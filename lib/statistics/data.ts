@@ -46,6 +46,8 @@ export type AccuracyPoint = {
 
 export type RecentSubmissionRow = {
     submission_id: string
+    /** Unique across problems: submission_id restarts at S001 for each one. */
+    rowKey: string
     problemHref: string
     problemLabel: string
     verdict: string
@@ -205,6 +207,7 @@ export function buildRecentSubmissions(
 
         return {
             submission_id: submission.submission_id,
+            rowKey: `${submission.problem_id}:${submission.submission_id}`,
             problemHref,
             problemLabel,
             verdict,
@@ -310,7 +313,14 @@ export function buildSolvedProblems(
         })
 }
 
-export function dashboardSummary(dashboard: Dashboard, level: string) {
+export type DashboardSummary = {
+    acceptedProblems: number
+    rejectedProblems: number
+    submissions: number
+    level: string
+}
+
+export function dashboardSummary(dashboard: Dashboard, level: string): DashboardSummary {
     const stats = dashboard.stats
     return {
         acceptedProblems: stats.number_of_accepted_problems ?? 0,

@@ -2,7 +2,6 @@
 
 import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { Gavel, Send, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Cell, Legend, Line, LineChart, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from 'recharts'
 
 import { Badge } from '@/components/ui/badge'
@@ -12,7 +11,9 @@ import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { SolvedProblemsCard } from '@/components/statistics/SolvedProblemsCard'
-import { buildHeatmapWeekGrid, HEATMAP_ROW_LABELS } from '@/lib/statistics/heatmap'
+import { StatisticsSummaryCards } from '@/components/statistics/StatisticsSummaryCards'
+import { SubmissionCalendar } from '@/components/statistics/SubmissionCalendar'
+import { buildHeatmapWeekGrid } from '@/lib/statistics/heatmap'
 import {
     buildAcceptedProblemsSeries,
     buildAccuracySeries,
@@ -28,47 +29,6 @@ import type { StatisticsData } from '@/lib/data/statistics'
 
 type StatisticsDashboardProps = {
     data: StatisticsData | null
-}
-
-const summaryCards = [
-    {
-        key: 'acceptedProblems' as const,
-        label: 'Accepted problems',
-        icon: ThumbsUp,
-        borderAccent: 'border-t-emerald-500',
-        iconAccent: 'text-emerald-600 dark:text-emerald-400',
-    },
-    {
-        key: 'rejectedProblems' as const,
-        label: 'Rejected problems',
-        icon: ThumbsDown,
-        borderAccent: 'border-t-red-500',
-        iconAccent: 'text-red-600 dark:text-red-400',
-    },
-    {
-        key: 'submissions' as const,
-        label: 'Submissions',
-        icon: Send,
-        borderAccent: 'border-t-orange-500',
-        iconAccent: 'text-orange-600 dark:text-orange-400',
-    },
-    {
-        key: 'level' as const,
-        label: 'Judge level',
-        icon: Gavel,
-        borderAccent: 'border-t-blue-500',
-        iconAccent: 'text-blue-600 dark:text-blue-400',
-    },
-]
-
-const weekdayShort: Record<string, string> = {
-    monday: 'Mon',
-    tuesday: 'Tue',
-    wednesday: 'Wed',
-    thursday: 'Thu',
-    friday: 'Fri',
-    saturday: 'Sat',
-    sunday: 'Sun',
 }
 
 function WidgetSpinner({ className }: { className?: string }) {
@@ -103,25 +63,7 @@ function PanelCard({
 function StatisticsDashboardLoading() {
     return (
         <div className="flex flex-col gap-6">
-            <section aria-label="Summary" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {summaryCards.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
-                    <div
-                        key={key}
-                        className={cn(
-                            'flex flex-col rounded-2xl border border-border border-t-4 bg-card shadow-sm',
-                            borderAccent,
-                        )}
-                    >
-                        <div className="flex flex-1 items-center justify-between gap-3 px-5 py-5">
-                            <div className="flex min-w-0 flex-col gap-1">
-                                <span className="text-sm font-medium text-muted-foreground">{label}</span>
-                                <Spinner className="size-8 text-muted-foreground" />
-                            </div>
-                            <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />
-                        </div>
-                    </div>
-                ))}
-            </section>
+            <StatisticsSummaryCards summary={null} />
 
             <section className="grid gap-4 xl:grid-cols-3">
                 <PanelCard title="Verdict distribution" loading />
@@ -150,12 +92,6 @@ function StatisticsDashboardLoading() {
             <SolvedProblemsCard problems={[]} loading />
         </div>
     )
-}
-
-function heatColor(value: number, max: number): string {
-    if (value === 0) return 'var(--color-muted)'
-    const intensity = 0.2 + (value / Math.max(max, 1)) * 0.8
-    return `color-mix(in srgb, var(--color-chart-1) ${Math.round(intensity * 100)}%, transparent)`
 }
 
 export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
@@ -187,31 +123,9 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
         compilerSlices.map((slice) => [slice.key, { label: slice.label, color: slice.color }]),
     )
 
-    const weekCount = heatmap.grid[0]?.length ?? 0
-
     return (
         <div className="flex flex-col gap-6">
-            <section aria-label="Summary" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {summaryCards.map(({ key, label, icon: Icon, borderAccent, iconAccent }) => (
-                    <div
-                        key={key}
-                        className={cn(
-                            'flex flex-col rounded-2xl border border-border border-t-4 bg-card shadow-sm',
-                            borderAccent,
-                        )}
-                    >
-                        <div className="flex flex-1 items-center justify-between gap-3 px-5 py-5">
-                            <div className="flex min-w-0 flex-col gap-1">
-                                <span className="text-sm font-medium text-muted-foreground">{label}</span>
-                                <span className="text-3xl font-semibold tracking-tight tabular-nums">
-                                    {key === 'level' ? summary.level : summary[key].toLocaleString()}
-                                </span>
-                            </div>
-                            <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />
-                        </div>
-                    </div>
-                ))}
-            </section>
+            <StatisticsSummaryCards summary={summary} />
 
             <section className="grid gap-4 xl:grid-cols-3">
                 <PanelCard title="Verdict distribution">
@@ -307,50 +221,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
             </section>
 
             <PanelCard title="Submission calendar">
-                {weekCount > 0 ? (
-                    <div className="overflow-x-auto pb-2">
-                        <div className="inline-flex min-w-0 flex-col gap-1">
-                            <div className="flex gap-2 pl-8">
-                                {heatmap.monthLabels.map((label, index) =>
-                                    label ? (
-                                        <span
-                                            key={`${label}-${index}`}
-                                            className="text-[10px] font-medium text-muted-foreground"
-                                            style={{ width: 14, minWidth: 14 }}
-                                        >
-                                            {label}
-                                        </span>
-                                    ) : (
-                                        <span key={index} style={{ width: 14, minWidth: 14 }} />
-                                    ),
-                                )}
-                            </div>
-                            {heatmap.grid.map((row, rowIndex) => (
-                                <div key={HEATMAP_ROW_LABELS[rowIndex]} className="flex items-center gap-2">
-                                    <span className="w-6 shrink-0 text-[10px] text-muted-foreground">
-                                        {weekdayShort[HEATMAP_ROW_LABELS[rowIndex]!]?.slice(0, 3)}
-                                    </span>
-                                    <div className="flex gap-[3px]">
-                                        {row.map((cell, colIndex) => (
-                                            <span
-                                                key={colIndex}
-                                                title={
-                                                    cell.dateLabel
-                                                        ? `${cell.dateLabel}: ${cell.value} submission${cell.value === 1 ? '' : 's'}`
-                                                        : undefined
-                                                }
-                                                className="size-3.5 rounded-sm border border-border/40"
-                                                style={{ backgroundColor: heatColor(cell.value, heatmap.maxValue) }}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ) : (
-                    <p className="text-sm text-muted-foreground">No submission activity yet.</p>
-                )}
+                <SubmissionCalendar heatmap={heatmap} />
             </PanelCard>
 
             <section className="grid gap-4 lg:grid-cols-2">
@@ -387,7 +258,7 @@ export function StatisticsDashboard({ data }: StatisticsDashboardProps) {
                             </TableHeader>
                             <TableBody>
                                 {recent.map((row) => (
-                                    <TableRow key={row.submission_id}>
+                                    <TableRow key={row.rowKey}>
                                         <TableCell>
                                             <span
                                                 className="inline-block size-2.5 rounded-full"

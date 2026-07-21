@@ -64,12 +64,13 @@ function SupervisionProblemPageContent() {
                     status={shell.status}
                     readOnly
                     showNav={false}
+                    overlapHeader={false}
                     supervisionContext={context}
                 >
                     <SupervisionProblemNav pageKey={key} context={context} />
                 </ProblemDetail>
             ) : (
-                <ProblemDetail loading pageKey={key} showNav={false} />
+                <ProblemDetail loading pageKey={key} showNav={false} overlapHeader={false} />
             )}
         </SupervisionPageShell>
     )

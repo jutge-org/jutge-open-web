@@ -109,6 +109,7 @@ function SupervisionProblemSubmissionsPageContent() {
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
+                    overlapHeader={false}
                     supervisionContext={context}
                 >
                     <div className="flex flex-col gap-6">
@@ -140,6 +141,7 @@ function SupervisionProblemSubmissionsPageContent() {
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
+                    overlapHeader={false}
                 >
                     <SubmissionsList
                         rows={[]}

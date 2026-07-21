@@ -149,6 +149,7 @@ function SupervisionSubmissionTestcaseAnalysisPageContent() {
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
+                    overlapHeader={false}
                     supervisionContext={context}
                 >
                     <div className="flex flex-col gap-6">
@@ -178,6 +179,7 @@ function SupervisionSubmissionTestcaseAnalysisPageContent() {
                     showStatement={false}
                     showTestcases={false}
                     showInformation={false}
+                    overlapHeader={false}
                 >
                     <div className="flex flex-col gap-6">
                         <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />

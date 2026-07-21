@@ -7,9 +7,9 @@ import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
 import { PublicTestcases } from '@/components/problems/PublicTestcases'
 import { WidgetSpinner } from '@/components/general/WidgetSpinner'
-import { Card, CardContent } from '@/components/ui/card'
 import { isGameProblem } from '@/lib/problems'
 import { showInstructorProblemTabs } from '@/lib/problemNav'
+import { cn } from '@/lib/utils'
 import type { AbstractStatus } from '@/lib/jutge_api_client'
 import type { ProblemDetailData } from '@/lib/data/problemDetail'
 import type { SupervisionContext } from '@/lib/supervision'
@@ -22,6 +22,8 @@ type ProblemDetailBaseProps = {
     showTestcases?: boolean
     showInformation?: boolean
     showNav?: boolean
+    /** Pull the header card into the sticky navbar (PageTitle-style). Disable when a PageTitle sits above. */
+    overlapHeader?: boolean
     children?: ReactNode
 }
 
@@ -42,13 +44,16 @@ type ProblemDetailLoadedProps = ProblemDetailBaseProps & {
 
 type ProblemDetailProps = ProblemDetailLoadingProps | ProblemDetailLoadedProps
 
-function ProblemHeaderCardLoading() {
+function ProblemHeaderCardLoading({ overlapHeader }: { overlapHeader: boolean }) {
     return (
-        <Card className="ring-0 border border-border shadow-sm">
-            <CardContent className="w-full py-6">
-                <WidgetSpinner label="Loading problem" />
-            </CardContent>
-        </Card>
+        <div
+            className={cn(
+                'flex min-h-22 items-center justify-center rounded-2xl border border-border px-6 py-5 shadow-sm',
+                overlapHeader && '-mt-6',
+            )}
+        >
+            <WidgetSpinner label="Loading problem" />
+        </div>
     )
 }
 
@@ -59,13 +64,14 @@ export function ProblemDetail(props: ProblemDetailProps) {
         showTestcases = true,
         showInformation = true,
         showNav = true,
+        overlapHeader = true,
         children,
     } = props
 
     if (props.loading) {
         return (
             <div className="flex flex-col gap-6">
-                <ProblemHeaderCardLoading />
+                <ProblemHeaderCardLoading overlapHeader={overlapHeader} />
                 {showNav ? <ProblemNav pageKey={pageKey} showInstructorTabs={false} /> : null}
                 {children}
                 {showStatement ? <ProblemWidgetCard title="Statement" /> : null}
@@ -88,6 +94,8 @@ export function ProblemDetail(props: ProblemDetailProps) {
     const isGame = isGameProblem(problem.abstract_problem.driver_id)
     const showActions = !readOnly && status !== undefined && !isGame
     const showInstructorTabs = showInstructorProblemTabs(isInstructorOwner, isAdministrator)
+    // Game banner sits above the header; only the first card should overlap the navbar.
+    const headerOverlap = overlapHeader && !isGame
 
     return (
         <div className="flex flex-col gap-6">
@@ -99,6 +107,7 @@ export function ProblemDetail(props: ProblemDetailProps) {
                 defaultCompilerId={defaultCompilerId}
                 showActions={showActions}
                 supervisionContext={supervisionContext}
+                overlapHeader={headerOverlap}
             />
 
             {showNav ? <ProblemNav pageKey={pageKey} showInstructorTabs={showInstructorTabs} /> : null}

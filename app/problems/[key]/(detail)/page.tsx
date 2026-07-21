@@ -116,9 +116,15 @@ export default function ProblemPage() {
                     isInstructorOwner={shell.isInstructorOwner ?? false}
                     isAdministrator={user?.administrator ?? false}
                     showNav={authenticated}
+                    overlapHeader={authenticated}
                 />
             ) : (
-                <ProblemDetail loading pageKey={key} showNav={authenticated} />
+                <ProblemDetail
+                    loading
+                    pageKey={key}
+                    showNav={authenticated}
+                    overlapHeader={authenticated}
+                />
             )}
         </div>
     )

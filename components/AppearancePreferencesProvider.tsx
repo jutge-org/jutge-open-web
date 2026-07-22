@@ -14,6 +14,7 @@ import type { ReadingFontScaleKey } from '@/lib/readingFontScale'
 import type { ReducedMotionPreference } from '@/lib/reducedMotion'
 import type { SoundEffectsPreference } from '@/lib/soundEffects'
 import type { ContextualHeaderGradientsPreference } from '@/lib/contextualHeaderGradients'
+import type { StatementEtBookPreference } from '@/lib/statementEtBook'
 
 type FontScales = Record<ReadingFontScaleKey, number>
 
@@ -31,6 +32,8 @@ type AppearancePreferencesContextValue = {
     setSoundEffects: (preference: SoundEffectsPreference) => void
     contextualHeaderGradients: ContextualHeaderGradientsPreference
     setContextualHeaderGradients: (preference: ContextualHeaderGradientsPreference) => void
+    statementEtBook: StatementEtBookPreference
+    setStatementEtBook: (preference: StatementEtBookPreference) => void
     resetAppearanceDefaults: () => void
 }
 
@@ -46,6 +49,7 @@ export function AppearancePreferencesProvider({ children }: { children: ReactNod
     const setReducedMotion = useOpenWebSettingsStore((state) => state.setReducedMotion)
     const setSoundEffects = useOpenWebSettingsStore((state) => state.setSoundEffects)
     const setContextualHeaderGradients = useOpenWebSettingsStore((state) => state.setContextualHeaderGradients)
+    const setStatementEtBook = useOpenWebSettingsStore((state) => state.setStatementEtBook)
     const resetAppearanceDefaultsInStore = useOpenWebSettingsStore((state) => state.resetAppearanceDefaults)
     const setLayoutWidth = useOpenWebSettingsStore((state) => state.setLayoutWidth)
     const setStoredTheme = useOpenWebSettingsStore((state) => state.setTheme)
@@ -79,6 +83,8 @@ export function AppearancePreferencesProvider({ children }: { children: ReactNod
                 setSoundEffects,
                 contextualHeaderGradients: appearance.contextualHeaderGradients,
                 setContextualHeaderGradients,
+                statementEtBook: appearance.statementEtBook,
+                setStatementEtBook,
                 resetAppearanceDefaults,
             }}
         >

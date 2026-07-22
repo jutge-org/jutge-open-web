@@ -37,6 +37,11 @@ import {
     parseContextualHeaderGradients,
     type ContextualHeaderGradientsPreference,
 } from '@/lib/contextualHeaderGradients'
+import {
+    DEFAULT_STATEMENT_ET_BOOK,
+    parseStatementEtBook,
+    type StatementEtBookPreference,
+} from '@/lib/statementEtBook'
 
 export const OPENWEB_SETTINGS_API_KEY = 'openweb'
 export const LOCAL_SETTINGS_STORAGE_KEY = 'settings'
@@ -53,6 +58,7 @@ export type OpenWebAppearanceSettings = {
     reducedMotion: ReducedMotionPreference
     soundEffects: SoundEffectsPreference
     contextualHeaderGradients: ContextualHeaderGradientsPreference
+    statementEtBook: StatementEtBookPreference
 }
 
 export type OpenWebUiSettings = {
@@ -88,6 +94,7 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
             reducedMotion: DEFAULT_REDUCED_MOTION,
             soundEffects: DEFAULT_SOUND_EFFECTS,
             contextualHeaderGradients: DEFAULT_CONTEXTUAL_HEADER_GRADIENTS,
+            statementEtBook: DEFAULT_STATEMENT_ET_BOOK,
         },
         ui: {
             courseListAccordions: {},
@@ -202,6 +209,8 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
             contextualHeaderGradients:
                 parseContextualHeaderGradients(String(appearance?.contextualHeaderGradients ?? '')) ??
                 defaults.appearance.contextualHeaderGradients,
+            statementEtBook:
+                parseStatementEtBook(String(appearance?.statementEtBook ?? '')) ?? defaults.appearance.statementEtBook,
         },
         ui: {
             courseListAccordions: parseCourseListAccordions(ui?.courseListAccordions),
@@ -255,6 +264,7 @@ function readLegacyAppearanceSettings(): OpenWebAppearanceSettings {
         reducedMotion: parseReducedMotion(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)) ?? defaults.reducedMotion,
         soundEffects: parseSoundEffects(localStorage.getItem(SOUND_EFFECTS_STORAGE_KEY)) ?? defaults.soundEffects,
         contextualHeaderGradients: defaults.contextualHeaderGradients,
+        statementEtBook: defaults.statementEtBook,
     }
 }
 

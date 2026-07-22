@@ -1,15 +1,22 @@
 'use client'
 
 import { type CSSProperties } from 'react'
-import { AArrowDownIcon, AArrowUpIcon, FileArchiveIcon, FileIcon, FileTextIcon } from 'lucide-react'
+import { AArrowDownIcon, AArrowUpIcon, FileArchiveIcon, FileIcon, FileTextIcon, LigatureIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, STATEMENT_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { downloadProblemPdf, downloadProblemTemplate, downloadProblemZip } from '@/lib/downloadProblemAssets'
+import {
+    isStatementEtBookEnabled,
+    STATEMENT_ET_BOOK_OFF,
+    STATEMENT_ET_BOOK_ON,
+} from '@/lib/statementEtBook'
+import { cn } from '@/lib/utils'
 
 type ProblemStatementProps = {
     pageKey: string
@@ -31,6 +38,8 @@ function getTemplateIconClassName(template: string) {
 
 export function ProblemStatement({ problemId, shortHtmlStatement, templates }: ProblemStatementProps) {
     const [fontScale, setFontScale] = useFontScalePreference(STATEMENT_FONT_SCALE_KEY)
+    const { statementEtBook, setStatementEtBook } = useAppearancePreferences()
+    const etBookEnabled = isStatementEtBookEnabled(statementEtBook)
 
     async function handleDownload(fn: () => Promise<void>) {
         try {
@@ -49,43 +58,73 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                 <CardHeader className="border-b">
                     <CardTitle>Statement</CardTitle>
                     <CardAction>
-                        <div className="inline-flex overflow-hidden rounded-lg border border-input">
+                        <div className="flex items-center gap-2">
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         size="icon-sm"
-                                        aria-label="Decrease statement font size"
-                                        disabled={fontScale <= MIN_FONT_SCALE}
-                                        onClick={() =>
-                                            setFontScale((scale) => Math.max(MIN_FONT_SCALE, scale - FONT_SCALE_STEP))
+                                        aria-label={
+                                            etBookEnabled ? 'Use default statement font' : 'Use ET Book statement font'
                                         }
-                                        className="rounded-none border-0 border-r border-input"
+                                        aria-pressed={!etBookEnabled}
+                                        onClick={() =>
+                                            setStatementEtBook(
+                                                etBookEnabled ? STATEMENT_ET_BOOK_OFF : STATEMENT_ET_BOOK_ON,
+                                            )
+                                        }
+                                        className={cn(!etBookEnabled && 'bg-muted')}
                                     >
-                                        <AArrowDownIcon aria-hidden />
+                                        <LigatureIcon aria-hidden />
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent side="top">Decrease font size</TooltipContent>
+                                <TooltipContent side="top">
+                                    {etBookEnabled ? 'Use sans-serif font' : 'Use serif font'}
+                                </TooltipContent>
                             </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="icon-sm"
-                                        aria-label="Increase statement font size"
-                                        disabled={fontScale >= MAX_FONT_SCALE}
-                                        onClick={() =>
-                                            setFontScale((scale) => Math.min(MAX_FONT_SCALE, scale + FONT_SCALE_STEP))
-                                        }
-                                        className="rounded-none border-0"
-                                    >
-                                        <AArrowUpIcon aria-hidden />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">Increase font size</TooltipContent>
-                            </Tooltip>
+                            <div className="inline-flex overflow-hidden rounded-lg border border-input">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon-sm"
+                                            aria-label="Decrease statement font size"
+                                            disabled={fontScale <= MIN_FONT_SCALE}
+                                            onClick={() =>
+                                                setFontScale((scale) =>
+                                                    Math.max(MIN_FONT_SCALE, scale - FONT_SCALE_STEP),
+                                                )
+                                            }
+                                            className="rounded-none border-0 border-r border-input"
+                                        >
+                                            <AArrowDownIcon aria-hidden />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">Decrease font size</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon-sm"
+                                            aria-label="Increase statement font size"
+                                            disabled={fontScale >= MAX_FONT_SCALE}
+                                            onClick={() =>
+                                                setFontScale((scale) =>
+                                                    Math.min(MAX_FONT_SCALE, scale + FONT_SCALE_STEP),
+                                                )
+                                            }
+                                            className="rounded-none border-0"
+                                        >
+                                            <AArrowUpIcon aria-hidden />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">Increase font size</TooltipContent>
+                                </Tooltip>
+                            </div>
                         </div>
                     </CardAction>
                 </CardHeader>
@@ -126,7 +165,10 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                         ))}
                     </div>
                     <div
-                        className="statement-section text-foreground"
+                        className={cn(
+                            'statement-section text-foreground',
+                            etBookEnabled && 'statement-section--et-book',
+                        )}
                         style={{ '--statement-scale': fontScale } as CSSProperties}
                         dangerouslySetInnerHTML={{ __html: shortHtmlStatement }}
                     />

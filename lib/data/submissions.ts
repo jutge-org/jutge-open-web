@@ -314,7 +314,7 @@ export async function fetchSubmissionDetail(
         return null
     }
 
-    const [tables, codeB64, analysis, scoring, awards, debugInformation] = await Promise.all([
+    const [tables, codeB64, analysis, scoring, awards] = await Promise.all([
         client.tables.get(),
         submission.state === 'done'
             ? client.student.submissions
@@ -334,11 +334,6 @@ export async function fetchSubmissionDetail(
         submission.state === 'done'
             ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
             : Promise.resolve([] as AwardRow[]),
-        submission.state === 'done'
-            ? client.student.submissions
-                  .getDebugInformation({ problem_id: submission.problem_id, submission_id })
-                  .catch(() => null)
-            : Promise.resolve(null as DebugInformation | null),
     ])
 
     const parsed = parseProblemKey(submission.problem_id)
@@ -425,7 +420,7 @@ export async function fetchSubmissionDetail(
         codeMetrics,
         compilationErrors,
         awards,
-        debugInformation,
+        debugInformation: null,
         circuitModules: circuitModules && Object.keys(circuitModules).length > 0 ? circuitModules : null,
         circuitErrorReports: circuitErrorReports.length > 0 ? circuitErrorReports : null,
         circuitErrorTraces: circuitErrorTraces.length > 0 ? circuitErrorTraces : null,

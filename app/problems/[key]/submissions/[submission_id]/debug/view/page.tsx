@@ -68,20 +68,32 @@ function ProblemSubmissionDebugViewPageContent({ isAdministrator }: { isAdminist
                 jutge.student.submissions.getForAbstractProblems(problem_nm),
             ])
 
-            if (!submissionDetail || !hasDebugInformation(submissionDetail.debugInformation)) {
+            if (!submissionDetail || submissionDetail.submission.state !== 'done') {
                 setPageData(null)
                 return
             }
 
-            const fields = getDebugInformationFields(submissionDetail.debugInformation!)
+            const { submission } = submissionDetail
+            const debugInformation = await jutge.student.submissions
+                .getDebugInformation({
+                    problem_id: submission.problem_id,
+                    submission_id,
+                })
+                .catch(() => null)
+
+            if (!hasDebugInformation(debugInformation) || !debugInformation) {
+                setPageData(null)
+                return
+            }
+
+            const fields = getDebugInformationFields(debugInformation)
             if (fields.length === 0) {
                 setPageData(null)
                 return
             }
 
-            const doneSubmissions = problemSubmissions.filter((submission) => submission.state === 'done')
+            const doneSubmissions = problemSubmissions.filter((row) => row.state === 'done')
             const navigation = buildSubmissionNavLinks(doneSubmissions, submission_id, key, '/debug/view')
-            const { submission } = submissionDetail
 
             setPageData({
                 fields,

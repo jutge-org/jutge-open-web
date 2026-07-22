@@ -17,7 +17,6 @@ import { WidgetSpinner } from '@/components/general/WidgetSpinner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { hasDebugInformation } from '@/lib/debugInformation'
 import { parseSubmissionTime, type SubmissionNavLinks } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
 import type { ScoringRow, SubmissionDetailData } from '@/lib/data/submissions'
@@ -222,19 +221,22 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                     <CircuitErrorTraceCard key={index + 1} index={index + 1} svg={svg} />
                 ))}
 
-                {debugHref && hasDebugInformation(data.debugInformation) && data.debugInformation ? (
-                    <DebugInformationCard data={data.debugInformation} debugHref={debugHref} />
+                {data.code && data.codeFilename ? (
+                    <SubmissionSourceCodeCard
+                        code={data.code}
+                        codeExtension={data.codeExtension}
+                        codeFilename={data.codeFilename}
+                        codeHref={codeHref}
+                    />
                 ) : null}
 
-                {data.code && data.codeFilename ? (
-                    <>
-                        <SubmissionSourceCodeCard
-                            code={data.code}
-                            codeExtension={data.codeExtension}
-                            codeFilename={data.codeFilename}
-                            codeHref={codeHref}
-                        />
-                    </>
+                {debugHref && submission.state === 'done' ? (
+                    <DebugInformationCard
+                        key={`${submission.problem_id}-${submission.submission_id}`}
+                        problemId={submission.problem_id}
+                        submissionId={submission.submission_id}
+                        debugHref={debugHref}
+                    />
                 ) : null}
             </div>
         </TooltipProvider>

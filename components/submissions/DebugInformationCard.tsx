@@ -1,25 +1,29 @@
 'use client'
 
-import { AArrowDownIcon, AArrowUpIcon, Maximize2Icon } from 'lucide-react'
+import { AArrowDownIcon, AArrowUpIcon, ChevronDownIcon, ChevronUpIcon, Maximize2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { useTheme } from 'next-themes'
 
+import { WidgetSpinner } from '@/components/general/WidgetSpinner'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { useHljsThemeStyles } from '@/hooks/use-hljs-theme-styles'
 import { useHljsThemePreference } from '@/hooks/use-hljs-theme-preference'
-import { getDebugInformationFields } from '@/lib/debugInformation'
+import { getDebugInformationFields, hasDebugInformation } from '@/lib/debugInformation'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, SOURCE_CODE_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { highlightYaml } from '@/lib/highlightYaml'
+import jutge from '@/lib/jutge'
 import type { DebugInformation } from '@/lib/jutge_api_client'
+import { cn } from '@/lib/utils'
 
 import '@/styles/submission-hljs.css'
 
 type DebugInformationCardProps = {
-    data: DebugInformation
+    problemId: string
+    submissionId: string
     debugHref: string
 }
 
@@ -107,55 +111,125 @@ function TextBlock({ value, fontScale }: { value: string; fontScale: number }) {
     )
 }
 
-export function DebugInformationCard({ data, debugHref }: DebugInformationCardProps) {
-    const [fontScale, setFontScale] = useFontScalePreference(SOURCE_CODE_FONT_SCALE_KEY)
-
+function DebugInformationContent({ data, fontScale }: { data: DebugInformation; fontScale: number }) {
     const fields = useMemo(() => getDebugInformationFields(data), [data])
 
     if (fields.length === 0) {
-        return null
+        return <p className="py-6 text-center text-sm text-muted-foreground">No debug information available.</p>
     }
 
     return (
+        <div className="flex flex-col gap-4">
+            {fields.map((field) => (
+                <div key={field.key} className="overflow-hidden rounded-lg border border-border">
+                    <p className="border-b border-border bg-muted/40 px-4 py-2 text-sm font-medium text-foreground">
+                        {field.label}
+                    </p>
+                    {field.kind === 'yaml' ? (
+                        <HighlightedYamlBlock content={field.content} fontScale={fontScale} />
+                    ) : (
+                        <TextBlock value={field.content} fontScale={fontScale} />
+                    )}
+                </div>
+            ))}
+        </div>
+    )
+}
+
+export function DebugInformationCard({ problemId, submissionId, debugHref }: DebugInformationCardProps) {
+    const [isOpen, setIsOpen] = useState(false)
+    const [data, setData] = useState<DebugInformation | null | undefined>(undefined)
+    const [fontScale, setFontScale] = useFontScalePreference(SOURCE_CODE_FONT_SCALE_KEY)
+
+    useEffect(() => {
+        if (!isOpen || data !== undefined) {
+            return
+        }
+
+        let cancelled = false
+
+        void jutge.student.submissions
+            .getDebugInformation({
+                problem_id: problemId,
+                submission_id: submissionId,
+            })
+            .then((result) => {
+                if (!cancelled) setData(result)
+            })
+            .catch(() => {
+                if (!cancelled) setData(null)
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [data, isOpen, problemId, submissionId])
+
+    const expandLabel = isOpen ? 'Collapse debug information' : 'Expand debug information'
+    const showToolbar = isOpen && hasDebugInformation(data)
+    const pendingContent = isOpen && data === undefined
+
+    return (
         <TooltipProvider>
-            <Card className="ring-0 border border-border shadow-sm">
-                <CardHeader className="border-b border-border">
-                    <CardTitle className="text-lg font-semibold">Debug information</CardTitle>
-                    <CardAction>
-                        <div className="inline-flex items-center gap-2">
-                            <FontScaleButtons fontScale={fontScale} setFontScale={setFontScale} />
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        asChild
-                                        variant="outline"
-                                        size="icon-sm"
-                                        aria-label="Show debug information in full screen (opens in new window)"
-                                    >
-                                        <Link href={debugHref} target="_blank" rel="noopener noreferrer">
-                                            <Maximize2Icon />
-                                        </Link>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">Show in full screen</TooltipContent>
-                            </Tooltip>
-                        </div>
-                    </CardAction>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4 px-6 py-6">
-                    {fields.map((field) => (
-                        <div key={field.key} className="overflow-hidden rounded-lg border border-border">
-                            <p className="border-b border-border bg-muted/40 px-4 py-2 text-sm font-medium text-foreground">
-                                {field.label}
-                            </p>
-                            {field.kind === 'yaml' ? (
-                                <HighlightedYamlBlock content={field.content} fontScale={fontScale} />
+            <Card className={cn('gap-0 pt-2 ring-0 border border-border shadow-sm', isOpen ? 'pb-0' : 'pb-2')}>
+                <CardHeader className={cn('px-4 py-2', isOpen && 'border-b border-border')}>
+                    <div className="flex w-full items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen((open) => !open)}
+                            aria-expanded={isOpen}
+                            className="flex min-w-0 flex-1 items-center gap-2 text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                        >
+                            <CardTitle className="text-lg font-semibold">Debug information</CardTitle>
+                        </button>
+                        {showToolbar ? (
+                            <div className="inline-flex items-center gap-2">
+                                <FontScaleButtons fontScale={fontScale} setFontScale={setFontScale} />
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            asChild
+                                            variant="outline"
+                                            size="icon-sm"
+                                            aria-label="Show debug information in full screen (opens in new window)"
+                                        >
+                                            <Link href={debugHref} target="_blank" rel="noopener noreferrer">
+                                                <Maximize2Icon />
+                                            </Link>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">Show in full screen</TooltipContent>
+                                </Tooltip>
+                            </div>
+                        ) : null}
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen((open) => !open)}
+                            aria-label={expandLabel}
+                            className="flex shrink-0 items-center focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                        >
+                            {isOpen ? (
+                                <ChevronUpIcon className="size-4 text-muted-foreground" aria-hidden />
                             ) : (
-                                <TextBlock value={field.content} fontScale={fontScale} />
+                                <ChevronDownIcon className="size-4 text-muted-foreground" aria-hidden />
                             )}
-                        </div>
-                    ))}
-                </CardContent>
+                        </button>
+                    </div>
+                </CardHeader>
+                {isOpen ? (
+                    <CardContent className="px-6 py-6">
+                        {pendingContent ? <WidgetSpinner label="Loading debug information" /> : null}
+                        {data !== undefined ? (
+                            hasDebugInformation(data) && data ? (
+                                <DebugInformationContent data={data} fontScale={fontScale} />
+                            ) : (
+                                <p className="py-6 text-center text-sm text-muted-foreground">
+                                    No debug information available.
+                                </p>
+                            )
+                        ) : null}
+                    </CardContent>
+                ) : null}
             </Card>
         </TooltipProvider>
     )

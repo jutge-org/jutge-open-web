@@ -1,38 +1,33 @@
 'use client'
 
-import Link from 'next/link'
+import { useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SubNav } from '@/components/general/SubNav'
 import {
     supervisionProblemNavItems,
     supervisionProblemTabFromPathname,
     type SupervisionContext,
 } from '@/lib/supervision'
+import type { SubNavItem } from '@/store/SubNav'
 
 type SupervisionProblemNavProps = {
     pageKey: string
     context: SupervisionContext
 }
 
+/** Registers supervision problem section links in the sticky header sub-nav. */
 export function SupervisionProblemNav({ pageKey, context }: SupervisionProblemNavProps) {
     const pathname = usePathname()
     const activeTab = supervisionProblemTabFromPathname(pathname, pageKey, context)
-    const items = supervisionProblemNavItems(context, pageKey)
 
-    return (
-        <nav aria-label="Problem sections" className="w-full">
-            <Tabs value={activeTab}>
-                <TabsList className="w-full min-w-max">
-                    {items.map(({ tab, label, href }) => (
-                        <TabsTrigger key={tab} value={tab} asChild>
-                            <Link href={href} aria-current={tab === activeTab ? 'page' : undefined}>
-                                {label}
-                            </Link>
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-            </Tabs>
-        </nav>
-    )
+    const items = useMemo((): readonly SubNavItem[] => {
+        return supervisionProblemNavItems(context, pageKey).map(({ tab, label, href }) => ({
+            key: tab,
+            label,
+            href,
+        }))
+    }, [context, pageKey])
+
+    return <SubNav ariaLabel="Problem sections" activeKey={activeTab} items={items} />
 }

@@ -174,7 +174,10 @@ function SupervisionSubmissionDetailPageContent() {
                     showInformation={false}
                     overlapHeader={false}
                 >
-                    <SubmissionDetailView loading submissionId={submission_id} />
+                    <div className="flex flex-col gap-6">
+                        <SupervisionProblemNav pageKey={key} context={context} />
+                        <SubmissionDetailView loading submissionId={submission_id} />
+                    </div>
                 </ProblemDetail>
             )}
         </SupervisionPageShell>

@@ -180,6 +180,7 @@ function SupervisionSubmissionTestcaseAnalysisPageContent() {
                     overlapHeader={false}
                 >
                     <div className="flex flex-col gap-6">
+                        <SupervisionProblemNav pageKey={key} context={context} />
                         <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />
                         <ProblemWidgetCard title="Source code" />
                     </div>

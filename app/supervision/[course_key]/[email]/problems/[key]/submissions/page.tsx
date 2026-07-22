@@ -141,13 +141,16 @@ function SupervisionProblemSubmissionsPageContent() {
                     showInformation={false}
                     overlapHeader={false}
                 >
-                    <SubmissionsList
-                        rows={[]}
-                        variant="problem"
-                        problemNm={problemNm}
-                        loading
-                        emptyMessage="This student has not submitted any solution to this problem yet."
-                    />
+                    <div className="flex flex-col gap-6">
+                        <SupervisionProblemNav pageKey={key} context={context} />
+                        <SubmissionsList
+                            rows={[]}
+                            variant="problem"
+                            problemNm={problemNm}
+                            loading
+                            emptyMessage="This student has not submitted any solution to this problem yet."
+                        />
+                    </div>
                 </ProblemDetail>
             ) : null}
         </SupervisionPageShell>

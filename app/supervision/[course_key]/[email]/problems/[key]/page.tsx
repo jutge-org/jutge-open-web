@@ -68,7 +68,9 @@ function SupervisionProblemPageContent() {
                     <SupervisionProblemNav pageKey={key} context={context} />
                 </ProblemDetail>
             ) : (
-                <ProblemDetail loading pageKey={key} showNav={false} overlapHeader={false} />
+                <ProblemDetail loading pageKey={key} showNav={false} overlapHeader={false}>
+                    <SupervisionProblemNav pageKey={key} context={context} />
+                </ProblemDetail>
             )}
         </SupervisionPageShell>
     )

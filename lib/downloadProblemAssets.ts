@@ -20,12 +20,6 @@ export async function downloadProblemTemplate(problemId: string, template: strin
     offerDownloadFile(download, template)
 }
 
-export async function fetchProblemPdfBlobUrl(problemId: string): Promise<string> {
-    const download = await jutge.problems.getPdfStatement(problemId)
-    const blob = new Blob([new Uint8Array(download.data)], { type: download.type || 'application/pdf' })
-    return URL.createObjectURL(blob)
-}
-
 export async function downloadProblemSolution(problemId: string, proglang: string) {
     const download = await jutge.instructor.problems.getSolutionAsFile({ problem_id: problemId, proglang })
     offerDownloadFile(download)

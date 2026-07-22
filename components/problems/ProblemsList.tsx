@@ -82,12 +82,12 @@ export function ProblemsList({
 
             {
                 field: 'problem_nm',
-                headerName: 'Problem',
+                headerName: 'Id',
                 width: 112,
                 sortable: true,
                 filter: true,
                 hide: !columnVisibility.problem_nm,
-                headerClass: 'ag-problem-column-header',
+                //headerClass: 'ag-problem-column-header',
                 cellStyle: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
                 cellRenderer: (params: { data: ProblemRow }) => (
                     <ProblemTitleSummaryTooltip

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { notFound, useParams } from 'next/navigation'
 
 import { SupervisorGate } from '@/components/ClientGates'
-import { PageTitle } from '@/components/general/PageTitle'
 import { ProblemDetail } from '@/components/problems/ProblemDetail'
 import { SubmissionDetailView } from '@/components/submissions/SubmissionDetailView'
 import { SubmissionPendingRefresh } from '@/components/submissions/SubmissionPendingRefresh'
@@ -128,7 +127,6 @@ function SupervisionSubmissionDetailPageContent() {
 
     return (
         <SupervisionPageShell context={context} courseTitle={meta?.courseTitle} breadcrumbs={breadcrumbs}>
-            <PageTitle section="/supervision" authenticated hidden={false} />
             {shell.detail ? (
                 <ProblemDetail
                     pageKey={key}

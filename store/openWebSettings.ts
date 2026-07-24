@@ -313,9 +313,7 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
                     upcomingExamsCollapsed: collapsed
                         ? { ...settings.ui.upcomingExamsCollapsed, [examKey]: true }
                         : Object.fromEntries(
-                              Object.entries(settings.ui.upcomingExamsCollapsed).filter(
-                                  ([key]) => key !== examKey,
-                              ),
+                              Object.entries(settings.ui.upcomingExamsCollapsed).filter(([key]) => key !== examKey),
                           ),
                 },
             })),

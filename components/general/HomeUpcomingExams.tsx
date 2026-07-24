@@ -35,10 +35,7 @@ function pickUpcomingExams(rows: ExamRow[]): ExamRow[] {
     const horizon = now + UPCOMING_WINDOW_MS
 
     return rows
-        .filter(
-            (row) =>
-                row.statusTone === 'upcoming' && row.exp_time_startMs > now && row.exp_time_startMs <= horizon,
-        )
+        .filter((row) => row.statusTone === 'upcoming' && row.exp_time_startMs > now && row.exp_time_startMs <= horizon)
         .sort((a, b) => a.exp_time_startMs - b.exp_time_startMs)
 }
 

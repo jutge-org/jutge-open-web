@@ -252,10 +252,10 @@ export async function fetchSupervisionSubmissionDetail(
         })),
         scoring: scoring
             ? scoring.map((row) => ({
-                ...row,
-                verdictEmoji: tables.verdicts[row.verdict]?.emoji,
-                verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
-            }))
+                  ...row,
+                  verdictEmoji: tables.verdicts[row.verdict]?.emoji,
+                  verdictFullName: tables.verdicts[row.verdict]?.name ?? row.verdict,
+              }))
             : null,
         codeMetrics,
         compilationErrors: compilationErrorsResult,

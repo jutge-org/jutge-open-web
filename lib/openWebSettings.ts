@@ -37,11 +37,7 @@ import {
     parseContextualHeaderGradients,
     type ContextualHeaderGradientsPreference,
 } from '@/lib/contextualHeaderGradients'
-import {
-    DEFAULT_STATEMENT_ET_BOOK,
-    parseStatementEtBook,
-    type StatementEtBookPreference,
-} from '@/lib/statementEtBook'
+import { DEFAULT_STATEMENT_ET_BOOK, parseStatementEtBook, type StatementEtBookPreference } from '@/lib/statementEtBook'
 
 export const OPENWEB_SETTINGS_API_KEY = 'openweb'
 export const LOCAL_SETTINGS_STORAGE_KEY = 'settings'

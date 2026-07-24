@@ -103,11 +103,7 @@ export function ExamsList({ rows }: ExamsListProps) {
                     ) : null}
 
                     {past.length > 0 ? (
-                        <Collapsible
-                            open={pastOpen}
-                            onOpenChange={setPastOpenOverride}
-                            className="flex flex-col gap-3"
-                        >
+                        <Collapsible open={pastOpen} onOpenChange={setPastOpenOverride} className="flex flex-col gap-3">
                             <CollapsibleTrigger className="group flex items-center gap-2 rounded-md text-sm font-semibold tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                                 <ChevronDownIcon
                                     className="size-4 shrink-0 transition-transform group-data-[state=closed]:-rotate-90"

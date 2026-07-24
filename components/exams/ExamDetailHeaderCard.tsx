@@ -90,9 +90,7 @@ export function ExamDetailHeaderCard({ exam }: ExamDetailHeaderCardProps) {
                         />
                     )}
                     {isFinished && exam.time_end ? (
-                        <span className="text-sm text-muted-foreground">
-                            Ended {dayjs(exam.time_end).fromNow()}
-                        </span>
+                        <span className="text-sm text-muted-foreground">Ended {dayjs(exam.time_end).fromNow()}</span>
                     ) : null}
                     {exam.contest ? <Badge variant="outline">Contest</Badge> : null}
                     {!exam.visible_submissions ? <Badge variant="outline">No visible submissions</Badge> : null}

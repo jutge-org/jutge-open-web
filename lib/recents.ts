@@ -65,8 +65,10 @@ function isRecentCourseItem(value: unknown): value is RecentCourseItem {
         typeof (value as RecentCourseItem).courseKey === 'string' &&
         typeof (value as RecentCourseItem).title === 'string' &&
         typeof (value as RecentCourseItem).accessedAt === 'number' &&
-        ((value as RecentCourseItem).iconUrl === undefined || typeof (value as RecentCourseItem).iconUrl === 'string') &&
-        ((value as RecentCourseItem).ownerName === undefined || typeof (value as RecentCourseItem).ownerName === 'string') &&
+        ((value as RecentCourseItem).iconUrl === undefined ||
+            typeof (value as RecentCourseItem).iconUrl === 'string') &&
+        ((value as RecentCourseItem).ownerName === undefined ||
+            typeof (value as RecentCourseItem).ownerName === 'string') &&
         ((value as RecentCourseItem).description === undefined ||
             typeof (value as RecentCourseItem).description === 'string')
     )

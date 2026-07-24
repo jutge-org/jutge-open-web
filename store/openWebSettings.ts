@@ -50,6 +50,7 @@ type OpenWebSettingsStore = {
     getCourseStatisticsPeriod: (courseKey: string, fallback: CourseStatisticsPeriod) => CourseStatisticsPeriod
     setSupervisionLastCourse: (courseKey: string) => void
     setSupervisionLastStudent: (courseKey: string, email: string) => void
+    setUpcomingExamCollapsed: (examKey: string, collapsed: boolean) => void
     getSupervisionLastCourse: () => string
     getSupervisionLastStudent: (courseKey: string) => string
     setRecents: (updater: RecentsData | ((prev: RecentsData) => RecentsData)) => void
@@ -294,6 +295,26 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
                         : Object.fromEntries(
                               Object.entries(settings.ui.supervisionLastStudentByCourse).filter(
                                   ([key]) => key !== courseKey,
+                              ),
+                          ),
+                },
+            })),
+            dirty: true,
+        }))
+    },
+
+    setUpcomingExamCollapsed: (examKey, collapsed) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                ui: {
+                    ...settings.ui,
+                    // Keep only collapsed exams in the map so it never grows with stale keys.
+                    upcomingExamsCollapsed: collapsed
+                        ? { ...settings.ui.upcomingExamsCollapsed, [examKey]: true }
+                        : Object.fromEntries(
+                              Object.entries(settings.ui.upcomingExamsCollapsed).filter(
+                                  ([key]) => key !== examKey,
                               ),
                           ),
                 },

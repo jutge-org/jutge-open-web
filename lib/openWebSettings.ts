@@ -66,6 +66,7 @@ export type OpenWebUiSettings = {
     courseStatisticsPeriod: Record<string, { start: string; end: string }>
     supervisionLastCourse: string
     supervisionLastStudentByCourse: Record<string, string>
+    upcomingExamsCollapsed: Record<string, boolean>
 }
 
 export type OpenWebSettings = {
@@ -101,6 +102,7 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
             courseStatisticsPeriod: {},
             supervisionLastCourse: '',
             supervisionLastStudentByCourse: {},
+            upcomingExamsCollapsed: {},
         },
         recents: emptyRecents(),
     }
@@ -169,6 +171,21 @@ function parseCourseStatisticsPeriodMap(value: unknown): Record<string, { start:
     return result
 }
 
+function parseUpcomingExamsCollapsed(value: unknown): Record<string, boolean> {
+    if (typeof value !== 'object' || value === null) {
+        return {}
+    }
+
+    const result: Record<string, boolean> = {}
+    for (const [examKey, collapsed] of Object.entries(value)) {
+        if (typeof collapsed === 'boolean' && examKey) {
+            result[examKey] = collapsed
+        }
+    }
+
+    return result
+}
+
 function parseSupervisionLastStudentByCourse(value: unknown): Record<string, string> {
     if (typeof value !== 'object' || value === null) {
         return {}
@@ -220,6 +237,7 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
                     ? ui.supervisionLastCourse
                     : defaults.ui.supervisionLastCourse,
             supervisionLastStudentByCourse: parseSupervisionLastStudentByCourse(ui?.supervisionLastStudentByCourse),
+            upcomingExamsCollapsed: parseUpcomingExamsCollapsed(ui?.upcomingExamsCollapsed),
         },
         recents: parseRecentsData(JSON.stringify(parsed.recents ?? defaults.recents)),
     }

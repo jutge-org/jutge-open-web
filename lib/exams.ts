@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { buildCourseKey, courseIconUrl } from '@/lib/courses'
+import { courseIconUrl } from '@/lib/courses'
 import type { LastSubmissionInfo, SubmissionRow } from '@/lib/submissions'
 import { includesForSearch } from '@/lib/utils'
 import type { AbstractStatus, BriefExam, Exam, Language, PublicProfile } from '@/lib/jutge_api_client'
@@ -166,7 +166,9 @@ function buildExamRowBase(exam: StudentExam): Omit<ExamRow, 'calendarUrl'> {
         contest: exam.contest,
         courseTitle: exam.course.title?.trim() || exam.course.course_nm,
         courseIconUrl: courseIconUrl(exam.course.icon),
-        courseHref: `/courses/${buildCourseKey(exam.owner, exam.course.course_nm)}`,
+        // For exams, course_nm is already the full course key (owner:course_nm), so use it as-is —
+        // running it through buildCourseKey would prepend the owner again and double it.
+        courseHref: `/courses/${exam.course.course_nm}`,
         ownerName: ownerDisplayName(exam.owner),
         status: exam.status,
         statusLabel: status.label,
@@ -180,6 +182,14 @@ export function buildExamRow(exam: StudentExam): ExamRow {
         ...buildExamRowBase(exam),
         calendarUrl: examToCalendarLink(exam),
     }
+}
+
+/**
+ * Course key of the course an exam is bound to. Exams live in their own course, so this key is how
+ * we recognise a "course" that is really an exam (e.g. to keep it out of recent courses).
+ */
+export function examCourseKey(exam: Pick<ExamRow, 'courseHref'>): string {
+    return exam.courseHref.replace(/^\/courses\//, '')
 }
 
 function buildFallbackExamProblemRow(problem_nm: string): ExamProblemRow {

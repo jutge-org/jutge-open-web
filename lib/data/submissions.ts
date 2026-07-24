@@ -64,9 +64,7 @@ async function submissionsToRows(client: JutgeApiClient, submissions: Submission
         }
     }
 
-    return submissions.map((submission) =>
-        buildSubmissionRow(submission, tables, problemTitles, problemIconUrls),
-    )
+    return submissions.map((submission) => buildSubmissionRow(submission, tables, problemTitles, problemIconUrls))
 }
 
 export async function fetchSubmissionsData(client: JutgeApiClient): Promise<SubmissionRow[]> {

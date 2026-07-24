@@ -54,7 +54,7 @@ function ListDuplicateForm({ list }: { list: InstructorList }) {
             validator: z
                 .string()
                 .min(5)
-                .regex(/^[a-zA-Z0-9_-]*$/, 'Only alphanumeric characters are allowed'),
+                .regex(/^[a-zA-Z0-9_]*$/, 'Only letters, digits and underscores (_) are allowed'),
             placeHolder: 'NewListName',
         },
         title: {

@@ -192,6 +192,68 @@ export function examCourseKey(exam: Pick<ExamRow, 'courseHref'>): string {
     return exam.courseHref.replace(/^\/courses\//, '')
 }
 
+/** Human-readable exam duration, e.g. "2h", "1h 30m", "45m". */
+export function formatExamDuration(runningTimeMinutes: number): string {
+    const minutes = Math.max(0, Math.round(runningTimeMinutes))
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+
+    if (hours === 0) {
+        return `${mins}m`
+    }
+    if (mins === 0) {
+        return `${hours}h`
+    }
+    return `${hours}h ${mins}m`
+}
+
+/** Remaining time until a moment, e.g. "2d 4h", "4h 12m", "12m", "<1m". Null once elapsed. */
+export function formatCountdown(ms: number): string | null {
+    if (ms <= 0) {
+        return null
+    }
+
+    const totalMinutes = Math.floor(ms / 60_000)
+    const days = Math.floor(totalMinutes / (60 * 24))
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60)
+    const minutes = totalMinutes % 60
+
+    if (days > 0) {
+        return `${days}d ${hours}h`
+    }
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`
+    }
+    if (minutes > 0) {
+        return `${minutes}m`
+    }
+    return '<1m'
+}
+
+export type ExamRecencyGroups = {
+    upcoming: ExamRow[]
+    past: ExamRow[]
+}
+
+/**
+ * Split exams into upcoming (anything not finished, incl. in-progress) and past (finished).
+ * Does not reorder — callers keep whatever order they passed in.
+ */
+export function partitionExamsByRecency(rows: ExamRow[]): ExamRecencyGroups {
+    const upcoming: ExamRow[] = []
+    const past: ExamRow[] = []
+
+    for (const row of rows) {
+        if (row.statusTone === 'finished') {
+            past.push(row)
+        } else {
+            upcoming.push(row)
+        }
+    }
+
+    return { upcoming, past }
+}
+
 function buildFallbackExamProblemRow(problem_nm: string): ExamProblemRow {
     return {
         kind: 'problem',

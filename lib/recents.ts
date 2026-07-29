@@ -65,8 +65,10 @@ function isRecentCourseItem(value: unknown): value is RecentCourseItem {
         typeof (value as RecentCourseItem).courseKey === 'string' &&
         typeof (value as RecentCourseItem).title === 'string' &&
         typeof (value as RecentCourseItem).accessedAt === 'number' &&
-        ((value as RecentCourseItem).iconUrl === undefined || typeof (value as RecentCourseItem).iconUrl === 'string') &&
-        ((value as RecentCourseItem).ownerName === undefined || typeof (value as RecentCourseItem).ownerName === 'string') &&
+        ((value as RecentCourseItem).iconUrl === undefined ||
+            typeof (value as RecentCourseItem).iconUrl === 'string') &&
+        ((value as RecentCourseItem).ownerName === undefined ||
+            typeof (value as RecentCourseItem).ownerName === 'string') &&
         ((value as RecentCourseItem).description === undefined ||
             typeof (value as RecentCourseItem).description === 'string')
     )
@@ -182,6 +184,20 @@ export function addRecentList(data: RecentsData, item: RecentListItem): RecentsD
 
 export function clearRecentCourses(data: RecentsData): RecentsData {
     return { ...data, courses: [] }
+}
+
+/**
+ * Drop recent courses that are actually exams. Exams live in their own course, and those exam
+ * courses should never surface under "Recent courses". Returns the same reference when nothing
+ * changes so callers can skip persisting.
+ */
+export function removeExamCourses(data: RecentsData, examCourseKeys: ReadonlySet<string>): RecentsData {
+    if (examCourseKeys.size === 0) {
+        return data
+    }
+
+    const courses = data.courses.filter((course) => !examCourseKeys.has(course.courseKey))
+    return courses.length === data.courses.length ? data : { ...data, courses }
 }
 
 export function clearRecentProblems(data: RecentsData): RecentsData {
@@ -497,10 +513,19 @@ export function patchRecentsFromDocument(pathname: string, data: RecentsData): R
     return null
 }
 
-export function recordRecentFromPathname(pathname: string, data: RecentsData): RecentsData {
+export function recordRecentFromPathname(
+    pathname: string,
+    data: RecentsData,
+    excludeCourseKeys?: ReadonlySet<string>,
+): RecentsData {
     const courseMatch = pathname.match(COURSE_PATH_RE)
     if (courseMatch) {
         const courseKey = decodeURIComponent(courseMatch[1])
+        // Exam courses are never recorded as recent courses.
+        if (excludeCourseKeys?.has(courseKey)) {
+            return data
+        }
+
         return addRecentCourse(data, {
             courseKey,
             title: titleFromDocument(courseKey),
@@ -548,8 +573,13 @@ export function recordRecentFromPathname(pathname: string, data: RecentsData): R
     return data
 }
 
-export function syncRecentsFromPage(pathname: string, data: RecentsData, options?: { record?: boolean }): RecentsData {
-    const afterRecord = options?.record === false ? data : recordRecentFromPathname(pathname, data)
+export function syncRecentsFromPage(
+    pathname: string,
+    data: RecentsData,
+    options?: { record?: boolean; excludeCourseKeys?: ReadonlySet<string> },
+): RecentsData {
+    const afterRecord =
+        options?.record === false ? data : recordRecentFromPathname(pathname, data, options?.excludeCourseKeys)
     return patchRecentsFromDocument(pathname, afterRecord) ?? afterRecord
 }
 

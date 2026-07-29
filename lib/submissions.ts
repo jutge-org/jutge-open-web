@@ -238,8 +238,7 @@ export function buildSubmissionRow(
         problemTitles.get(submission.problem_id) ?? problemTitles.get(problem_nm) ?? submission.problem_id
     const problemHref =
         parsed.kind === 'problem_id' ? `/problems/${parsed.problem_nm}` : `/problems/${submission.problem_id}`
-    const iconUrl =
-        problemIconUrls.get(submission.problem_id) ?? problemIconUrls.get(problem_nm) ?? null
+    const iconUrl = problemIconUrls.get(submission.problem_id) ?? problemIconUrls.get(problem_nm) ?? null
 
     const verdict = submissionVerdict(submission)
     const verdictMeta = tables.verdicts[verdict]

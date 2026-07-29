@@ -129,7 +129,11 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                     onValueChange={(value) => value && setTheme(value as ThemePreference)}
                     className="grid w-full grid-cols-3"
                 >
-                    <SegmentedOption value="system" label="System" icon={<MonitorIcon className="size-4" aria-hidden />} />
+                    <SegmentedOption
+                        value="system"
+                        label="System"
+                        icon={<MonitorIcon className="size-4" aria-hidden />}
+                    />
                     <SegmentedOption value="light" label="Light" icon={<SunIcon className="size-4" aria-hidden />} />
                     <SegmentedOption value="dark" label="Dark" icon={<MoonIcon className="size-4" aria-hidden />} />
                 </ToggleGroup>
@@ -255,7 +259,11 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
             <SettingSection title="Code syntax" description="Choose themes for highlighted and editable code.">
                 <div className="space-y-4">
                     <HljsThemeSelect id="appearance-hljs-theme" value={hljsTheme} onValueChange={setHljsTheme} />
-                    <MonacoThemeSelect id="appearance-monaco-theme" value={monacoTheme} onValueChange={setMonacoTheme} />
+                    <MonacoThemeSelect
+                        id="appearance-monaco-theme"
+                        value={monacoTheme}
+                        onValueChange={setMonacoTheme}
+                    />
                 </div>
             </SettingSection>
             <SettingSection

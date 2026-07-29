@@ -1,20 +1,28 @@
 'use client'
 
 import { useAuth } from '@/components/AuthProvider'
-import { fetchCommandPaletteCourses, fetchCommandPaletteProblems } from '@/lib/data/commandPalette'
+import {
+    fetchCommandPaletteCourses,
+    fetchCommandPaletteExams,
+    fetchCommandPaletteProblems,
+} from '@/lib/data/commandPalette'
+import { examCourseKey } from '@/lib/exams'
 import {
     addRecentList,
     enrichRecentCourses,
     enrichRecentProblems,
     emptyRecents,
     observeRecentPageMetadata,
+    removeExamCourses,
     syncRecentsFromPage,
     type RecentListItem,
     type RecentsData,
 } from '@/lib/recents'
 import { useOpenWebRecents, useOpenWebSettingsReady, useOpenWebSettingsStore } from '@/store/openWebSettings'
 import { usePathname } from 'next/navigation'
-import { createContext, useCallback, useContext, useEffect, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+
+const EMPTY_COURSE_KEYS: ReadonlySet<string> = new Set()
 
 type RecentsContextValue = {
     recents: RecentsData
@@ -44,6 +52,44 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
     const clearRecentSubmissions = useOpenWebSettingsStore((state) => state.clearRecentSubmissions)
     const clearAllRecents = useOpenWebSettingsStore((state) => state.clearAllRecents)
 
+    // Course keys of the user's exams. Exam courses must never appear under "Recent courses".
+    const [examCourseKeys, setExamCourseKeys] = useState<ReadonlySet<string>>(EMPTY_COURSE_KEYS)
+    // Read inside the page-sync effect without re-registering the observer when the keys load.
+    const examCourseKeysRef = useRef<ReadonlySet<string>>(EMPTY_COURSE_KEYS)
+    examCourseKeysRef.current = examCourseKeys
+
+    useEffect(() => {
+        if (!authenticated || !ready) {
+            return
+        }
+
+        let cancelled = false
+        void fetchCommandPaletteExams()
+            .then((exams) => {
+                if (cancelled) {
+                    return
+                }
+
+                setExamCourseKeys(new Set(exams.map((exam) => examCourseKey(exam))))
+            })
+            .catch(() => {
+                // Exams are best-effort here; leave recent courses untouched on failure.
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [authenticated, ready])
+
+    // Prune exam courses that were recorded before the exam keys were known, and persist the change.
+    useEffect(() => {
+        if (!authenticated || !ready || examCourseKeys.size === 0) {
+            return
+        }
+
+        setRecents((current) => removeExamCourses(current, examCourseKeys))
+    }, [authenticated, ready, examCourseKeys, setRecents])
+
     useEffect(() => {
         if (!authenticated || !ready) {
             return
@@ -51,7 +97,10 @@ export function RecentsProvider({ children }: RecentsProviderProps) {
 
         function syncFromPage(record: boolean) {
             setRecents((current) => {
-                const next = syncRecentsFromPage(pathname, current, { record })
+                const next = syncRecentsFromPage(pathname, current, {
+                    record,
+                    excludeCourseKeys: examCourseKeysRef.current,
+                })
                 return next === current ? current : next
             })
         }

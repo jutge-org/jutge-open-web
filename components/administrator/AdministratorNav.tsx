@@ -17,7 +17,5 @@ export function AdministratorNav() {
     const pathname = usePathname() ?? ''
     const activeTab = administratorTabFromPathname(pathname)
 
-    return (
-        <SubNav ariaLabel="Administrator sections" activeKey={activeTab} items={administratorSubNavItems} />
-    )
+    return <SubNav ariaLabel="Administrator sections" activeKey={activeTab} items={administratorSubNavItems} />
 }

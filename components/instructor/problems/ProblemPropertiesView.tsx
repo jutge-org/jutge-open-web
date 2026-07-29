@@ -133,12 +133,7 @@ export function ProblemPropertiesView() {
             type: 'free',
             label: 'View problem',
             content: (
-                <Button
-                    asChild
-                    variant="outline"
-                    className="mt-0 h-16 w-16"
-                    title="Open the problem page in a new tab"
-                >
+                <Button asChild variant="outline" className="mt-0 h-16 w-16" title="Open the problem page in a new tab">
                     <Link href={`/problems/${problem_nm}`} target="_blank" rel="noopener noreferrer">
                         <EyeIcon className="size-12" strokeWidth={0.8} />
                     </Link>

@@ -120,12 +120,7 @@ export default function ProblemPage() {
                     overlapHeader={authenticated}
                 />
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showNav={authenticated}
-                    overlapHeader={authenticated}
-                />
+                <ProblemDetail loading pageKey={key} showNav={authenticated} overlapHeader={authenticated} />
             )}
         </div>
     )

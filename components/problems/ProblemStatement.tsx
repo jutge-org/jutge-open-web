@@ -11,11 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, STATEMENT_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { downloadProblemPdf, downloadProblemTemplate, downloadProblemZip } from '@/lib/downloadProblemAssets'
-import {
-    isStatementEtBookEnabled,
-    STATEMENT_ET_BOOK_OFF,
-    STATEMENT_ET_BOOK_ON,
-} from '@/lib/statementEtBook'
+import { isStatementEtBookEnabled, STATEMENT_ET_BOOK_OFF, STATEMENT_ET_BOOK_ON } from '@/lib/statementEtBook'
 import { cn } from '@/lib/utils'
 
 type ProblemStatementProps = {

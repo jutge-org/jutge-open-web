@@ -6,6 +6,7 @@ import { HomeRecentCourses } from '@/components/general/HomeRecentCourses'
 import { HomeRecentProblems } from '@/components/general/HomeRecentProblems'
 import { HomeRecentSubmissions } from '@/components/general/HomeRecentSubmissions'
 import { HomeSuggestedProblems } from '@/components/general/HomeSuggestedProblems'
+import { HomeUpcomingExams } from '@/components/general/HomeUpcomingExams'
 import { HomeYearsGithubCorner } from '@/components/general/HomeYearsGithubCorner'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
 import { Button } from '@/components/ui/button'
@@ -42,6 +43,8 @@ export function HomePageUser({ user }: HomePageUserProps) {
             </div>
 
             <div className="flex flex-col gap-6 pb-12">
+                {/* Up to 3 exams coming up within 3 weeks, if any. Renders nothing otherwise. */}
+                <HomeUpcomingExams />
                 {/* Two rows of equal-height widget cards: where you were working on top,
                     what you did and where to go next below. */}
                 <div className="grid auto-rows-fr gap-4 sm:grid-cols-2">

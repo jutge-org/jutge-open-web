@@ -5,8 +5,7 @@ import { notFound, useParams } from 'next/navigation'
 
 import { AuthedGate, PageSpinner } from '@/components/ClientGates'
 import { CourseListItemsTable } from '@/components/courses/CourseListItemsTable'
-import { ExamDetailInfoCard } from '@/components/exams/ExamDetailInfoCard'
-import { ExamDetailTitleCard } from '@/components/exams/ExamDetailTitleCard'
+import { ExamDetailHeaderCard } from '@/components/exams/ExamDetailHeaderCard'
 import { ExamSubmissionsTable } from '@/components/exams/ExamSubmissionsTable'
 import { ExamsReminderAlert } from '@/components/exams/ExamsReminderAlert'
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
@@ -50,8 +49,7 @@ function ExamDetailPageContent() {
             />
             <ExamsReminderAlert />
             <TooltipProvider>
-                <ExamDetailTitleCard exam={exam} />
-                <ExamDetailInfoCard exam={exam} />
+                <ExamDetailHeaderCard exam={exam} />
                 {exam.problems.length > 0 ? (
                     <Card className="gap-0 pt-2 pb-0 ring-0 border border-border shadow-sm">
                         <CardHeader className="border-b border-border px-4 py-2">

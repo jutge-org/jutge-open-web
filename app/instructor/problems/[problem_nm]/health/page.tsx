@@ -18,11 +18,7 @@ export default function InstructorProblemHealthPage() {
                 { title: problem_nm, url: `${baseHref}/properties` },
             ]}
         >
-            <InstructorSubNav
-                items={instructorProblemSubNav(problem_nm)}
-                baseHref={baseHref}
-                activeSegment="health"
-            />
+            <InstructorSubNav items={instructorProblemSubNav(problem_nm)} baseHref={baseHref} activeSegment="health" />
             <ProblemCheckingView />
         </InstructorPageShell>
     )

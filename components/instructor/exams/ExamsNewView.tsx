@@ -35,7 +35,7 @@ export function ExamsNewView() {
             validator: z
                 .string()
                 .min(8)
-                .regex(/^[a-zA-Z0-9_-]*$/, 'Only alphanumeric characters are allowed'),
+                .regex(/^[a-zA-Z0-9_]*$/, 'Only letters, digits and underscores (_) are allowed'),
             placeHolder: 'Id of the exam',
         },
         title: {

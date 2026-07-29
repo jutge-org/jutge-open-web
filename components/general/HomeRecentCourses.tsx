@@ -62,14 +62,8 @@ function RecentCourseRow({ course }: { course: RecentCourseItem }) {
                 style={{ height: `${ROW_HEIGHT_REM}rem` }}
                 className="flex items-center gap-2 border-b border-border/50 px-3 text-xs transition-colors last:border-b-0 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             >
-                <CourseIconImage
-                    iconUrl={course.iconUrl ?? courseIconUrl(null)}
-                    size="2sm"
-                    className="rounded-md"
-                />
-                <span className="min-w-0 flex-1 truncate font-medium text-foreground">
-                    {recentCourseTitle(course)}
-                </span>
+                <CourseIconImage iconUrl={course.iconUrl ?? courseIconUrl(null)} size="2sm" className="rounded-md" />
+                <span className="min-w-0 flex-1 truncate font-medium text-foreground">{recentCourseTitle(course)}</span>
                 <span className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
                     {dayjs(course.accessedAt).fromNow(true)}
                 </span>

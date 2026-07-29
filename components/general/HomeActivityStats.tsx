@@ -71,7 +71,7 @@ export function HomeActivityStats() {
 
     return (
         <div className="grid gap-4 lg:grid-cols-5">
-            <Card className="rounded-2xl border border-border shadow-sm lg:col-span-3">
+            <Card className="rounded-2xl border border-border border-t-2 border-t-rose-500 shadow-sm lg:col-span-3">
                 <CardHeader>
                     <CardTitle className="gap-2 text-base font-semibold">
                         <CalendarIcon className="size-4 shrink-0 text-rose-600 dark:text-rose-400" aria-hidden />
@@ -114,7 +114,7 @@ export function HomeActivityStats() {
 /** Compact stacked variant of the activity summary, sized to sit beside the calendar. */
 function SummaryMetricsCard({ summary }: { summary: DashboardSummary | null }) {
     return (
-        <Card className="h-full rounded-2xl border border-border shadow-sm">
+        <Card className="h-full rounded-2xl border border-border border-t-2 border-t-sky-500 shadow-sm">
             <CardHeader className="p-0">
                 <Link
                     href="/activity"

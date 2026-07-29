@@ -1,4 +1,7 @@
+'use client'
+
 import MainBreadcrumbs from '@/components/general/MainBreadcrumbs'
+import { InstructorNav } from '@/components/instructor/InstructorNav'
 import type { ReactNode } from 'react'
 
 type InstructorPageShellProps = {
@@ -10,6 +13,7 @@ export function InstructorPageShell({ breadcrumbs, children }: InstructorPageShe
     return (
         <div data-instructor-shell className="flex-1 flex flex-col w-full">
             <MainBreadcrumbs breadcrumbs={breadcrumbs} />
+            <InstructorNav />
             <div className="flex-1 flex flex-col gap-4">{children}</div>
         </div>
     )

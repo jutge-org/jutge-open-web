@@ -4,6 +4,7 @@ export type SessionUser = {
     id: string
     name: string
     nickname: string | null
+    username: string | null
     email: string
     instructor: boolean
     administrator: boolean
@@ -20,6 +21,7 @@ export function profileToSessionUser(profile: Profile): SessionUser {
         name: profile.name,
         nickname: profile.nickname,
         email: profile.email,
+        username: profile.username,
         instructor: profile.instructor !== 0,
         administrator: profile.administrator !== 0,
         tutor: profile.tutor !== 0,

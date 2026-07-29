@@ -17,7 +17,7 @@ type HomePageUserProps = {
 }
 
 export function HomePageUser({ user }: HomePageUserProps) {
-    const userName = user?.nickname ?? user?.name ?? 'user'
+    const userName = user?.name ?? user?.nickname ?? user?.username ?? user?.email ?? 'Dashboard'
 
     return (
         <div className="flex flex-col gap-6">
@@ -28,16 +28,15 @@ export function HomePageUser({ user }: HomePageUserProps) {
                 <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                     <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground">
                         <LayoutDashboardIcon className="size-5 shrink-0 text-primary" aria-hidden />
-                        Dashboard
-                    </h1>
-                    <div className="flex items-center gap-2">
-                        <RoleButtons user={user} />
                         <Link
                             href="/profile"
-                            className="rounded-md text-sm font-bold tracking-tight text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            className="rounded-md text-xl font-bold tracking-tight text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             {userName}
-                        </Link>
+                        </Link>                    </h1>
+                    <div className="flex items-center gap-2">
+                        <RoleButtons user={user} />
+
                     </div>
                 </div>
             </div>
@@ -88,7 +87,7 @@ function RoleButtons({ user }: { user: SessionUser | null }) {
 
 function RoleButton({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
     return (
-        <Button asChild variant="outline" size="sm" className="h-7 gap-1.5 px-2.5 text-xs font-semibold">
+        <Button asChild variant="outline" size="sm" className="h-7 w-32 gap-1.5 px-2.5 text-xs font-semibold">
             <Link href={href}>
                 {children}
                 {label}

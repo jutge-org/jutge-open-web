@@ -90,12 +90,7 @@ function ProblemSolutionsPageContent({ isAdministrator }: { isAdministrator: boo
                     )}
                 </ProblemDetail>
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showStatement={false}
-                    showTestcases={false}
-                >
+                <ProblemDetail loading pageKey={key} showStatement={false} showTestcases={false}>
                     <ProblemSolutions loading />
                 </ProblemDetail>
             )}

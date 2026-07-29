@@ -89,12 +89,7 @@ function ProblemTestcasesPageContent({ isAdministrator }: { isAdministrator: boo
                     {testcasesLoading ? <ProblemTestcases loading /> : <ProblemTestcases testcases={testcases ?? []} />}
                 </ProblemDetail>
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showStatement={false}
-                    showTestcases={false}
-                >
+                <ProblemDetail loading pageKey={key} showStatement={false} showTestcases={false}>
                     <ProblemTestcases loading />
                 </ProblemDetail>
             )}

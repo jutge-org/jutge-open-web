@@ -34,10 +34,10 @@ export function HomePageUser({ user }: HomePageUserProps) {
                             className="rounded-md text-xl font-bold tracking-tight text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             {userName}
-                        </Link>                    </h1>
+                        </Link>{' '}
+                    </h1>
                     <div className="flex items-center gap-2">
                         <RoleButtons user={user} />
-
                     </div>
                 </div>
             </div>

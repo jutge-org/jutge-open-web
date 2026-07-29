@@ -211,7 +211,10 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                 ) : null}
             </SettingSection>
             <SettingSection title="Statement font" description="Choose the font used in problem statements.">
-                <Select value={statementEtBook} onValueChange={(value) => setStatementEtBook(value as StatementEtBookPreference)}>
+                <Select
+                    value={statementEtBook}
+                    onValueChange={(value) => setStatementEtBook(value as StatementEtBookPreference)}
+                >
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Statement font" />
                     </SelectTrigger>

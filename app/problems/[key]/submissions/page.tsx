@@ -84,12 +84,7 @@ function ProblemSubmissionsPageContent({ isAdministrator }: { isAdministrator: b
                     )}
                 </ProblemDetail>
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showStatement={false}
-                    showTestcases={false}
-                >
+                <ProblemDetail loading pageKey={key} showStatement={false} showTestcases={false}>
                     <SubmissionsList rows={[]} variant="problem" problemNm={problemNm} loading />
                 </ProblemDetail>
             )}

@@ -61,17 +61,15 @@ export function StatisticsSummaryCards({ summary }: StatisticsSummaryCardsProps)
                             <span className="text-sm font-medium text-muted-foreground">{label}</span>
                             {summary === null ? (
                                 <Spinner className="size-8 text-muted-foreground" />
+                            ) : key === 'level' ? (
+                                <AnimatedScrambleText
+                                    text={summary.level}
+                                    className="text-3xl font-semibold tracking-tight tabular-nums"
+                                />
                             ) : (
-                                key === 'level' ? (
-                                    <AnimatedScrambleText
-                                        text={summary.level}
-                                        className="text-3xl font-semibold tracking-tight tabular-nums"
-                                    />
-                                ) : (
-                                    <span className="text-3xl font-semibold tracking-tight tabular-nums">
-                                        {summary[key].toLocaleString()}
-                                    </span>
-                                )
+                                <span className="text-3xl font-semibold tracking-tight tabular-nums">
+                                    {summary[key].toLocaleString()}
+                                </span>
                             )}
                         </div>
                         <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />

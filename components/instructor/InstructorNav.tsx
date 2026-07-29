@@ -3,11 +3,7 @@
 import { usePathname } from 'next/navigation'
 
 import { SubNav } from '@/components/general/SubNav'
-import {
-    instructorNavItems,
-    instructorShowsMainSubNav,
-    instructorTabFromPathname,
-} from '@/lib/instructor'
+import { instructorNavItems, instructorShowsMainSubNav, instructorTabFromPathname } from '@/lib/instructor'
 import type { SubNavItem } from '@/store/SubNav'
 
 const instructorSubNavItems: readonly SubNavItem[] = instructorNavItems.map(({ tab, label, href }) => ({

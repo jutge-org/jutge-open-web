@@ -68,8 +68,7 @@ export function TradingCardsHelpDialog() {
                     <HelpSection title="What can you do here?">
                         <ul className="list-disc space-y-1.5 pl-5">
                             <li>
-                                <strong className="font-medium text-foreground">Search</strong> cards by family or
-                                name.
+                                <strong className="font-medium text-foreground">Search</strong> cards by family or name.
                             </li>
                             <li>
                                 <strong className="font-medium text-foreground">Filter</strong> by family to focus on
@@ -87,7 +86,11 @@ export function TradingCardsHelpDialog() {
                     </HelpSection>
 
                     <HelpSection title="How are collectible cards generated?">
-                        <p>Cards are generated using AI, in particular with Gemini, as you can see in their watermark. As much as we would like to have cards drawn by human artists, we do not have the resources to do so.</p>
+                        <p>
+                            Cards are generated using AI, in particular with Gemini, as you can see in their watermark.
+                            As much as we would like to have cards drawn by human artists, we do not have the resources
+                            to do so.
+                        </p>
                     </HelpSection>
                 </div>
             </DialogContent>

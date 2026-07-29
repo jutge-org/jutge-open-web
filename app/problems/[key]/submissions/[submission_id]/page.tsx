@@ -120,12 +120,7 @@ function ProblemSubmissionDetailPageContent({ isAdministrator }: { isAdministrat
                     )}
                 </ProblemDetail>
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showStatement={false}
-                    showTestcases={false}
-                >
+                <ProblemDetail loading pageKey={key} showStatement={false} showTestcases={false}>
                     <SubmissionDetailView loading submissionId={submission_id} />
                 </ProblemDetail>
             )}

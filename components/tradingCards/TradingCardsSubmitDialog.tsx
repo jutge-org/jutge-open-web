@@ -51,12 +51,12 @@ export function TradingCardsSubmitDialog() {
                 </DialogHeader>
                 <div className="space-y-4 overflow-y-auto px-6 py-6 text-sm leading-relaxed text-muted-foreground">
                     <p>
-                        If you want to submit a new collectible card, please send it to the administrators of Jutge.org. The
-                        administrators will review the card and add it to the database if it is valid.
+                        If you want to submit a new collectible card, please send it to the administrators of Jutge.org.
+                        The administrators will review the card and add it to the database if it is valid.
                     </p>
                     <p>
                         Cards must be generated with Gemini with 2:3 aspect ratio and feature the Jutge.org text, a
-                        frame and a black background. 
+                        frame and a black background.
                     </p>
                     <div className="flex items-center justify-between gap-2">
                         <p>Here is a sample prompt to get you started:</p>
@@ -76,7 +76,7 @@ export function TradingCardsSubmitDialog() {
                             <TooltipContent side="top">Copy to clipboard</TooltipContent>
                         </Tooltip>
                     </div>
-                        <p className="italic whitespace-pre-wrap text-xs">{SAMPLE_PROMPT}</p>
+                    <p className="italic whitespace-pre-wrap text-xs">{SAMPLE_PROMPT}</p>
                 </div>
             </DialogContent>
         </Dialog>

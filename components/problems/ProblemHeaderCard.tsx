@@ -186,8 +186,7 @@ export function ProblemHeaderCard({
                                 <SignatureIcon className="size-3 shrink-0" aria-hidden />
                                 {problem.abstract_problem.author}
                             </p>
-                            {problem.translator &&
-                            problem.translator !== problem.abstract_problem.author ? (
+                            {problem.translator && problem.translator !== problem.abstract_problem.author ? (
                                 <p className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <LanguagesIcon className="size-3 shrink-0" aria-hidden />
                                     {problem.translator}

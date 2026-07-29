@@ -149,12 +149,7 @@ function ProblemSubmissionTestcaseAnalysisPageContent({ isAdministrator }: { isA
                     </div>
                 </ProblemDetail>
             ) : (
-                <ProblemDetail
-                    loading
-                    pageKey={key}
-                    showStatement={false}
-                    showTestcases={false}
-                >
+                <ProblemDetail loading pageKey={key} showStatement={false} showTestcases={false}>
                     <div className="flex flex-col gap-6">
                         <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />
                         <ProblemWidgetCard title="Source code" />

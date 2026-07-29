@@ -1,12 +1,4 @@
-export type InstructorTab =
-    | 'index'
-    | 'courses'
-    | 'lists'
-    | 'exams'
-    | 'documents'
-    | 'problems'
-    | 'search'
-    | 'jutgeai'
+export type InstructorTab = 'index' | 'courses' | 'lists' | 'exams' | 'documents' | 'problems' | 'search' | 'jutgeai'
 
 export type InstructorNavItem = {
     tab: InstructorTab

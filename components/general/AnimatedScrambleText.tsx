@@ -84,4 +84,3 @@ export function AnimatedScrambleText({ text, className, durationMs = 1200 }: Ani
 
     return <span className={className}>{displayText}</span>
 }
-

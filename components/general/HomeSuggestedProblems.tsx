@@ -1,6 +1,6 @@
 'use client'
 
-import { SparklesIcon } from 'lucide-react'
+import { ChevronDownIcon, SparklesIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -120,7 +120,10 @@ function ModeMenu({
                                 className="-mr-1 h-6 shrink-0 px-1.5 text-xs font-medium text-muted-foreground"
                                 aria-label={`Suggestion mode: ${SUGGESTION_MODE_LABELS[mode]}. Change it`}
                             >
-                                {SUGGESTION_MODE_LABELS[mode]}
+                                <span className="inline-flex items-center gap-1">
+                                    {SUGGESTION_MODE_LABELS[mode]}
+                                    <ChevronDownIcon aria-hidden />
+                                </span>
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>

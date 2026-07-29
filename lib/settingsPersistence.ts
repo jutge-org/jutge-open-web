@@ -19,6 +19,7 @@ let persistenceMode: PersistenceMode = 'none'
 let saveTimeoutId: ReturnType<typeof setTimeout> | undefined
 let pendingSave: OpenWebSettings | null = null
 let saveGeneration = 0
+let hydrateGeneration = 0
 let unsubscribe: (() => void) | undefined
 
 function cancelPendingSave() {
@@ -124,28 +125,46 @@ export function hydrateLocalOpenWebSettings() {
     setSettingsPersistenceMode('local')
 }
 
-export async function hydrateOpenWebSettingsFromApi(): Promise<boolean> {
-    setSettingsPersistenceMode('none')
-
-    const settings = await fetchOpenWebSettings()
-    if (!settings) {
-        useOpenWebSettingsStore.getState().hydrate(createDefaultOpenWebSettings(), { dirty: false })
-        clearLocalOpenWebSettings()
-        clearLegacySettingsStorage()
-        setSettingsPersistenceMode('api')
-        return false
-    }
-
-    useOpenWebSettingsStore.getState().hydrate(settings, { dirty: false })
+function finishApiHydration(settings: OpenWebSettings, dirty: boolean) {
+    useOpenWebSettingsStore.getState().hydrate(settings, { dirty })
     clearLocalOpenWebSettings()
     clearLegacySettingsStorage()
     setSettingsPersistenceMode('api')
+    if (dirty) {
+        scheduleSave(settings)
+    }
+}
+
+export async function hydrateOpenWebSettingsFromApi(): Promise<boolean> {
+    const generation = ++hydrateGeneration
+    setSettingsPersistenceMode('none')
+
+    const settings = await fetchOpenWebSettings()
+    if (generation !== hydrateGeneration) {
+        return false
+    }
+
+    // Keep optimistic local edits (e.g. theme picked while auth/settings were
+    // still loading) instead of clobbering them with a stale API response.
+    const current = useOpenWebSettingsStore.getState()
+    if (current.dirty) {
+        finishApiHydration(current.settings, true)
+        return false
+    }
+
+    if (!settings) {
+        finishApiHydration(createDefaultOpenWebSettings(), false)
+        return false
+    }
+
+    finishApiHydration(settings, false)
     return true
 }
 
 export function resetOpenWebSettingsPersistence() {
     cancelPendingSave()
     saveGeneration += 1
+    hydrateGeneration += 1
     setSettingsPersistenceMode('none')
     clearLocalOpenWebSettings()
     useOpenWebSettingsStore.getState().reset()
@@ -158,6 +177,7 @@ export function flushOpenWebSettingsPersistence() {
 export function teardownOpenWebSettingsPersistence() {
     cancelPendingSave()
     saveGeneration += 1
+    hydrateGeneration += 1
     persistenceMode = 'none'
     unsubscribe?.()
     unsubscribe = undefined

@@ -23,11 +23,14 @@ type SettingsProviderProps = {
 export function SettingsProvider({ children }: SettingsProviderProps) {
     const { user, loading } = useAuth()
     const { setTheme } = useTheme()
+    const setThemeRef = useRef(setTheme)
     const previousUserIdRef = useRef<string | null>(null)
     const initializedRef = useRef(false)
 
     const ready = useOpenWebSettingsStore((state) => state.ready)
     const appearance = useOpenWebSettingsStore((state) => state.settings.appearance)
+
+    setThemeRef.current = setTheme
 
     useEffect(() => {
         if (loading) {
@@ -68,15 +71,18 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         }
     }, [])
 
+    // Keep next-themes in sync with our settings store. Do not depend on
+    // `setTheme` — next-themes recreates it on every theme change, which would
+    // re-run this effect and fight in-flight theme updates.
     useEffect(() => {
         if (!ready) {
             return
         }
 
-        setTheme(appearance.theme)
+        setThemeRef.current(appearance.theme)
         syncLayoutWidthDataset(appearance.layoutWidth)
         syncReducedMotionDataset(appearance.reducedMotion)
-    }, [appearance.layoutWidth, appearance.reducedMotion, appearance.theme, ready, setTheme])
+    }, [appearance.layoutWidth, appearance.reducedMotion, appearance.theme, ready])
 
     return children
 }

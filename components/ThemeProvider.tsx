@@ -20,7 +20,16 @@ function ThemeColorModeSync() {
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     return (
-        <NextThemesProvider attribute="class" defaultTheme="system" enableSystem {...props}>
+        <NextThemesProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            // Keep next-themes storage off the legacy `theme` key that settings
+            // migration clears; the open-web settings store is the source of truth.
+            storageKey="jutge-color-theme"
+            {...props}
+        >
             <ThemeColorModeSync />
             {children}
         </NextThemesProvider>

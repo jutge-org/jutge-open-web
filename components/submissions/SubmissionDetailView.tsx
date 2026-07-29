@@ -9,7 +9,8 @@ import { CompilationErrorsCard } from '@/components/submissions/CompilationError
 import { DebugInformationCard } from '@/components/submissions/DebugInformationCard'
 import { ScoringCard } from '@/components/submissions/ScoringCard'
 import { SubmissionAnalysisCard } from '@/components/submissions/SubmissionAnalysisCard'
-import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
+// Awards temporarily unwired
+// import { SubmissionAwardsCard } from '@/components/submissions/SubmissionAwardsCard'
 import { SubmissionCodeMetricsCard } from '@/components/submissions/SubmissionCodeMetricsCard'
 import { SubmissionNavButton } from '@/components/submissions/SubmissionNavButton'
 import { SubmissionSourceCodeCard } from '@/components/submissions/SubmissionSourceCodeCard'
@@ -190,7 +191,8 @@ export function SubmissionDetailView(props: SubmissionDetailViewProps) {
                     <CompilationErrorsCard data={data.compilationErrors} compilerId={submission.compiler_id} />
                 ) : null}
 
-                {data.awards.length > 0 ? <SubmissionAwardsCard awards={data.awards} /> : null}
+                {/* Awards temporarily unwired */}
+                {/* {data.awards.length > 0 ? <SubmissionAwardsCard awards={data.awards} /> : null} */}
 
                 {data.scoring ? <ScoringCard scoring={data.scoring} /> : null}
 

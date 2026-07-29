@@ -40,7 +40,14 @@ const activityLink: SiteNavLink = {
     match: (pathname) => pathname === '/activity',
 }
 
-const awardsLink: SiteNavLink = {
+const collectibleCardsLink: SiteNavLink = {
+    href: '/collectible-cards',
+    label: 'Collectible cards',
+    match: (pathname) => pathname === '/collectible-cards' || pathname.startsWith('/collectible-cards/'),
+}
+
+/** Kept for rewiring; not included in `authenticatedLinks`. */
+export const awardsLink: SiteNavLink = {
     href: '/awards',
     label: 'Awards',
     match: (pathname) => pathname === '/awards' || pathname.startsWith('/awards/'),
@@ -112,7 +119,8 @@ const authenticatedLinks: readonly SiteNavLink[] = [
     submissionsLink,
     examsLink,
     activityLink,
-    awardsLink,
+    collectibleCardsLink,
+    // awardsLink, // Awards temporarily unwired
     profileLink,
     documentationLink,
     aboutLink,
@@ -132,6 +140,7 @@ export const authenticatedNavLinkDescriptions: Record<string, string> = {
     '/exams': 'View past and upcoming exams',
     '/courses': 'Browse your courses and assignments',
     '/activity': 'Check your activity and progress',
+    '/collectible-cards': 'Browse your collectible cards',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'See and update your Jutge.org profile',
     '/supervision': 'Supervise a student in a course you teach',

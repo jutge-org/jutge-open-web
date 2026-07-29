@@ -11,6 +11,7 @@ import {
     GraduationCap,
     Info,
     FileBracesCornerIcon,
+    LayersIcon,
     SchoolIcon,
     User,
 } from 'lucide-react'
@@ -37,6 +38,8 @@ function NavIcon({ href, className }: { href: string; className?: string }) {
             return <BookOpen className={iconClass} aria-hidden />
         case '/activity':
             return <ActivityIcon className={iconClass} aria-hidden />
+        case '/collectible-cards':
+            return <LayersIcon className={iconClass} aria-hidden />
         case '/awards':
             return <Award className={iconClass} aria-hidden />
         case '/profile':
@@ -62,6 +65,7 @@ const cardAccent: Record<string, string> = {
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
     '/courses': 'border-l-4 border-l-cyan-500 text-cyan-600 dark:text-cyan-400',
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
+    '/collectible-cards': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/supervision': 'border-l-4 border-l-emerald-500 text-emerald-600 dark:text-emerald-400',

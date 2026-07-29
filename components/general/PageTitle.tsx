@@ -12,6 +12,7 @@ import {
     Info,
     FileBracesCornerIcon,
     KeyRoundIcon,
+    LayersIcon,
     SchoolIcon,
     User,
     UserPlusIcon,
@@ -23,6 +24,7 @@ export type PageTitleSection =
     | '/exams'
     | '/courses'
     | '/activity'
+    | '/collectible-cards'
     | '/awards'
     | '/profile'
     | '/supervision'
@@ -39,6 +41,7 @@ const cardAccent: Record<PageTitleSection, string> = {
     '/exams': 'border-l-4 border-l-orange-500 text-orange-600 dark:text-orange-400',
     '/courses': 'border-l-4 border-l-cyan-500 text-cyan-600 dark:text-cyan-400',
     '/activity': 'border-l-4 border-l-sky-500 text-sky-600 dark:text-sky-400',
+    '/collectible-cards': 'border-l-4 border-l-rose-500 text-rose-600 dark:text-rose-400',
     '/awards': 'border-l-4 border-l-yellow-500 text-yellow-600 dark:text-yellow-400',
     '/profile': 'border-l-4 border-l-amber-500 text-amber-600 dark:text-amber-400',
     '/supervision': 'border-l-4 border-l-emerald-500 text-emerald-600 dark:text-emerald-400',
@@ -56,6 +59,7 @@ const sectionLabel: Record<PageTitleSection, string> = {
     '/exams': 'Exams',
     '/courses': 'Courses',
     '/activity': 'Activity',
+    '/collectible-cards': 'Collectible cards',
     '/awards': 'Awards',
     '/profile': 'Profile',
     '/supervision': 'Supervision',
@@ -73,6 +77,7 @@ const guestDescription: Record<PageTitleSection, string> = {
     '/exams': 'View and take exams',
     '/courses': 'Browse public courses. Sign in to enroll in a course and find more.',
     '/activity': 'Your activity and progress',
+    '/collectible-cards': 'Your collectible cards',
     '/awards': 'Achievements earned',
     '/profile': 'Your account details',
     '/supervision': 'Supervise a student in the course you teach',
@@ -90,6 +95,7 @@ const authenticatedDescription: Record<PageTitleSection, string> = {
     '/exams': 'View and take exams',
     '/courses': 'Browse your courses and assignments',
     '/activity': 'Your activity, verdicts, and progress over time',
+    '/collectible-cards': 'Collectible cards you have earned',
     '/awards': 'Badges and achievements you have earned',
     '/profile': 'Your account details',
     '/supervision': 'Supervise a student in a course you teach',
@@ -121,6 +127,8 @@ function SectionIcon({ section }: { section: PageTitleSection }) {
             return <BookOpen className={iconClass} aria-hidden />
         case '/activity':
             return <ActivityIcon className={iconClass} aria-hidden />
+        case '/collectible-cards':
+            return <LayersIcon className={iconClass} aria-hidden />
         case '/awards':
             return <Award className={iconClass} aria-hidden />
         case '/profile':

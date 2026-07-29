@@ -67,6 +67,7 @@ import {
     House,
     SchoolIcon,
     Info,
+    LayersIcon,
     MenuIcon,
     SearchIcon,
     ShieldIcon,
@@ -112,6 +113,8 @@ function MainNavMenuItemIcon({ href }: { href: string }) {
             return <BookOpen aria-hidden />
         case '/activity':
             return <ActivityIcon aria-hidden />
+        case '/collectible-cards':
+            return <LayersIcon aria-hidden />
         case '/awards':
             return <Award aria-hidden />
         case '/profile':

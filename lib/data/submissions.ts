@@ -31,7 +31,8 @@ import type {
 } from '@/lib/jutge_api_client'
 
 import { abstractProblemsToIconUrlMap, abstractProblemsToTitleMap } from './problems'
-import { fetchSubmissionAwards } from './awards'
+// Awards temporarily unwired
+// import { fetchSubmissionAwards } from './awards'
 import { fetchAbstractProblem, resolveProblemId } from './problemDetail'
 
 function submissionProblemNms(submissions: { problem_id: string }[]): string[] {
@@ -329,9 +330,11 @@ export async function fetchSubmissionDetail(
                   .getScoring({ problem_id: submission.problem_id, submission_id })
                   .catch(() => null)
             : Promise.resolve(null as Scoring),
-        submission.state === 'done'
-            ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
-            : Promise.resolve([] as AwardRow[]),
+        // Awards temporarily unwired
+        // submission.state === 'done'
+        //     ? fetchSubmissionAwards(client, submission.problem_id, submission_id)
+        //     : Promise.resolve([] as AwardRow[]),
+        Promise.resolve([] as AwardRow[]),
     ])
 
     const parsed = parseProblemKey(submission.problem_id)

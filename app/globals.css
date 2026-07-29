@@ -128,6 +128,16 @@
 
     body {
         @apply bg-background text-foreground;
+        font-family:
+            'Hanken Grotesk',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            'Segoe UI',
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
     }
     .debug {
         @apply border border-red-500;
@@ -140,10 +150,43 @@
     }
 }
 
+@layer utilities {
+    /* Ensure Tailwind's `font-sans` utility uses our site default. */
+    .font-sans {
+        font-family:
+            'Hanken Grotesk',
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            'Segoe UI',
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
+    }
+}
+
 /* Instructor routes: enlarge default button icons (Button defaults to size-4). */
 [data-instructor-shell] [data-slot='button'] svg:where(:not([class*='size-']):not([class*='h-']), .size-4, .h-4) {
     width: 1.25rem;
     height: 1.25rem;
+}
+
+/* Hanken Grotesk (https://fonts.google.com/specimen/Hanken+Grotesk) — OFL, see public/fonts/hanken-grotesk/LICENSE */
+@font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('/fonts/hanken-grotesk/hanken-grotesk-latin-ext-wght-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('/fonts/hanken-grotesk/hanken-grotesk-latin-ext-wght-italic.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
 }
 
 /* ET Book (https://edwardtufte.github.io/et-book/) — MIT, see public/fonts/et-book/LICENSE */
@@ -177,6 +220,39 @@
     font-display: swap;
 }
 
+/* Source Serif 4 (https://fonts.google.com/specimen/Source+Serif+4) — OFL, see public/fonts/source-serif-4/LICENSE */
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('/fonts/source-serif-4/sourceserif4-400-normal.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('/fonts/source-serif-4/sourceserif4-700-normal.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('/fonts/source-serif-4/sourceserif4-400-italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('/fonts/source-serif-4/sourceserif4-700-italic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
 /* Jutge problem HTML statement styles (from jutge-web) */
 .statement-section {
     font-size: calc(0.875rem * var(--statement-scale, 1));
@@ -186,6 +262,10 @@
 
 .statement-section--et-book {
     font-family: 'et-book', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+.statement-section--source-serif-4 {
+    font-family: 'Source Serif 4', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
 }
 
 .statement-section code,

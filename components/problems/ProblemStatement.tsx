@@ -7,11 +7,24 @@ import { toast } from 'sonner'
 import { useAppearancePreferences } from '@/components/AppearancePreferencesProvider'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useFontScalePreference } from '@/hooks/use-font-scale-preference'
 import { FONT_SCALE_STEP, MAX_FONT_SCALE, MIN_FONT_SCALE, STATEMENT_FONT_SCALE_KEY } from '@/lib/fontScale'
 import { downloadProblemPdf, downloadProblemTemplate, downloadProblemZip } from '@/lib/downloadProblemAssets'
-import { isStatementEtBookEnabled, STATEMENT_ET_BOOK_OFF, STATEMENT_ET_BOOK_ON } from '@/lib/statementEtBook'
+import {
+    STATEMENT_FONT_DEFAULT,
+    STATEMENT_FONT_ET_BOOK,
+    STATEMENT_FONT_SOURCE_SERIF_4,
+    type StatementEtBookPreference,
+} from '@/lib/statementEtBook'
 import { cn } from '@/lib/utils'
 
 type ProblemStatementProps = {
@@ -35,7 +48,12 @@ function getTemplateIconClassName(template: string) {
 export function ProblemStatement({ problemId, shortHtmlStatement, templates }: ProblemStatementProps) {
     const [fontScale, setFontScale] = useFontScalePreference(STATEMENT_FONT_SCALE_KEY)
     const { statementEtBook, setStatementEtBook } = useAppearancePreferences()
-    const etBookEnabled = isStatementEtBookEnabled(statementEtBook)
+    const statementFontAriaLabel =
+        statementEtBook === STATEMENT_FONT_DEFAULT
+            ? 'Statement font: Default'
+            : statementEtBook === STATEMENT_FONT_SOURCE_SERIF_4
+              ? 'Statement font: Source Serif 4'
+              : 'Statement font: ET Book'
 
     async function handleDownload(fn: () => Promise<void>) {
         try {
@@ -55,30 +73,45 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                     <CardTitle>Statement</CardTitle>
                     <CardAction>
                         <div className="flex items-center gap-2">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="icon-sm"
-                                        aria-label={
-                                            etBookEnabled ? 'Use default statement font' : 'Use ET Book statement font'
-                                        }
-                                        aria-pressed={!etBookEnabled}
-                                        onClick={() =>
-                                            setStatementEtBook(
-                                                etBookEnabled ? STATEMENT_ET_BOOK_OFF : STATEMENT_ET_BOOK_ON,
-                                            )
-                                        }
-                                        className={cn(!etBookEnabled && 'bg-muted')}
-                                    >
-                                        <LigatureIcon aria-hidden />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">
-                                    {etBookEnabled ? 'Use sans-serif font' : 'Use serif font'}
-                                </TooltipContent>
-                            </Tooltip>
+                                    <DropdownMenu>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="icon-sm"
+                                                        aria-label={statementFontAriaLabel}
+                                                        className={cn(
+                                                            statementEtBook === STATEMENT_FONT_DEFAULT && 'bg-muted',
+                                                        )}
+                                                    >
+                                                        <LigatureIcon aria-hidden />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top">{statementFontAriaLabel}</TooltipContent>
+                                        </Tooltip>
+                                        <DropdownMenuContent align="end" className="w-56">
+                                            <DropdownMenuLabel>Statement font</DropdownMenuLabel>
+                                            <DropdownMenuRadioGroup
+                                                value={statementEtBook}
+                                                onValueChange={(value) =>
+                                                    setStatementEtBook(value as StatementEtBookPreference)
+                                                }
+                                            >
+                                                <DropdownMenuRadioItem value={STATEMENT_FONT_DEFAULT}>
+                                                    Default
+                                                </DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value={STATEMENT_FONT_SOURCE_SERIF_4}>
+                                                    Source Serif 4
+                                                </DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value={STATEMENT_FONT_ET_BOOK}>
+                                                    ET Book
+                                                </DropdownMenuRadioItem>
+                                            </DropdownMenuRadioGroup>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                             <div className="inline-flex overflow-hidden rounded-lg border border-input">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
@@ -163,7 +196,9 @@ export function ProblemStatement({ problemId, shortHtmlStatement, templates }: P
                     <div
                         className={cn(
                             'statement-section text-foreground',
-                            etBookEnabled && 'statement-section--et-book',
+                            statementEtBook === STATEMENT_FONT_ET_BOOK && 'statement-section--et-book',
+                            statementEtBook === STATEMENT_FONT_SOURCE_SERIF_4 &&
+                                'statement-section--source-serif-4',
                         )}
                         style={{ '--statement-scale': fontScale } as CSSProperties}
                         dangerouslySetInnerHTML={{ __html: shortHtmlStatement }}

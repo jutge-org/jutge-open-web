@@ -5,6 +5,7 @@ import { MonacoThemeSelect } from '@/components/appearance/MonacoThemeSelect'
 import { useAppearancePreferences, useAppearanceThemePreference } from '@/components/AppearancePreferencesProvider'
 import { useLayoutWidth } from '@/components/layout/LayoutWidthProvider'
 import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { LAYOUT_WIDTH_CONSTRAINED, LAYOUT_WIDTH_FULL, LAYOUT_WIDTH_WIDE, type LayoutWidth } from '@/lib/layoutWidth'
 import { READING_FONT_SCALE_PRESETS, readingFontScalePresetFromScales } from '@/lib/readingFontScale'
@@ -15,6 +16,12 @@ import {
     CONTEXTUAL_HEADER_GRADIENTS_ON,
     type ContextualHeaderGradientsPreference,
 } from '@/lib/contextualHeaderGradients'
+import {
+    STATEMENT_FONT_DEFAULT,
+    STATEMENT_FONT_ET_BOOK,
+    STATEMENT_FONT_SOURCE_SERIF_4,
+    type StatementEtBookPreference,
+} from '@/lib/statementEtBook'
 import type { ThemePreference } from '@/lib/openWebSettings'
 import { cn } from '@/lib/utils'
 import {
@@ -108,6 +115,8 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
         setSoundEffects,
         contextualHeaderGradients,
         setContextualHeaderGradients,
+        statementEtBook,
+        setStatementEtBook,
         resetAppearanceDefaults,
     } = useAppearancePreferences()
 
@@ -200,6 +209,18 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                         Custom sizes are set per page. Choose a preset to apply the same size everywhere.
                     </p>
                 ) : null}
+            </SettingSection>
+            <SettingSection title="Statement font" description="Choose the font used in problem statements.">
+                <Select value={statementEtBook} onValueChange={(value) => setStatementEtBook(value as StatementEtBookPreference)}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Statement font" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={STATEMENT_FONT_DEFAULT}>Default</SelectItem>
+                        <SelectItem value={STATEMENT_FONT_SOURCE_SERIF_4}>Source Serif 4</SelectItem>
+                        <SelectItem value={STATEMENT_FONT_ET_BOOK}>ET Book</SelectItem>
+                    </SelectContent>
+                </Select>
             </SettingSection>
             <SettingSection title="Sound effects" description="Play sounds for celebratory moments and feedback.">
                 <ToggleGroup

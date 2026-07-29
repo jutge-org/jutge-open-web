@@ -4,6 +4,8 @@ import { ActivityIcon, ArrowRightIcon, CalendarIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 
+import { AnimatedStatValue } from '@/components/general/AnimatedStatValue'
+import { AnimatedScrambleText } from '@/components/general/AnimatedScrambleText'
 import { HomeDaySubmissions } from '@/components/general/HomeDaySubmissions'
 import { SUMMARY_METRICS } from '@/components/statistics/StatisticsSummaryCards'
 import { SubmissionCalendar, SUBMISSION_CALENDAR_HEIGHT_PX } from '@/components/statistics/SubmissionCalendar'
@@ -137,10 +139,16 @@ function SummaryMetricsCard({ summary }: { summary: DashboardSummary | null }) {
                         <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">{label}</span>
                         {summary === null ? (
                             <Spinner className="size-4 shrink-0 text-muted-foreground" />
+                        ) : key === 'level' ? (
+                            <AnimatedScrambleText
+                                text={summary.level}
+                                className="shrink-0 text-lg font-semibold tracking-tight tabular-nums"
+                            />
                         ) : (
-                            <span className="shrink-0 text-lg font-semibold tracking-tight tabular-nums">
-                                {key === 'level' ? summary.level : summary[key].toLocaleString()}
-                            </span>
+                            <AnimatedStatValue
+                                value={summary[key]}
+                                className="shrink-0 text-lg font-semibold tracking-tight tabular-nums"
+                            />
                         )}
                     </div>
                 ))}

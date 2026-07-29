@@ -5,6 +5,7 @@ import { Gavel, Send, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import type { DashboardSummary } from '@/lib/statistics/data'
 import { cn } from '@/lib/utils'
+import { AnimatedScrambleText } from '@/components/general/AnimatedScrambleText'
 
 /** Label, icon and accent per dashboard metric, shared by every place that renders them. */
 export const SUMMARY_METRICS = [
@@ -61,9 +62,16 @@ export function StatisticsSummaryCards({ summary }: StatisticsSummaryCardsProps)
                             {summary === null ? (
                                 <Spinner className="size-8 text-muted-foreground" />
                             ) : (
-                                <span className="text-3xl font-semibold tracking-tight tabular-nums">
-                                    {key === 'level' ? summary.level : summary[key].toLocaleString()}
-                                </span>
+                                key === 'level' ? (
+                                    <AnimatedScrambleText
+                                        text={summary.level}
+                                        className="text-3xl font-semibold tracking-tight tabular-nums"
+                                    />
+                                ) : (
+                                    <span className="text-3xl font-semibold tracking-tight tabular-nums">
+                                        {summary[key].toLocaleString()}
+                                    </span>
+                                )
                             )}
                         </div>
                         <Icon className={cn('size-8 shrink-0 opacity-80', iconAccent)} aria-hidden />

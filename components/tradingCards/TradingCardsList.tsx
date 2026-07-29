@@ -13,7 +13,7 @@ type TradingCardsListProps = {
     cards: TradingCardRow[]
 }
 
-function TradingCardThumbnail({ src }: { src: string }) {
+export function TradingCardThumbnail({ src }: { src: string }) {
     const [isLandscape, setIsLandscape] = useState(false)
 
     return (
@@ -38,7 +38,7 @@ function TradingCardThumbnail({ src }: { src: string }) {
     )
 }
 
-function TradingCardDialog({
+export function TradingCardDialog({
     card,
     open,
     onOpenChange,
@@ -108,13 +108,13 @@ export function TradingCardsList({ cards }: TradingCardsListProps) {
 
     return (
         <>
-            <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
                 {cards.map((card) => (
                     <li key={card.card_id}>
                         <button
                             type="button"
                             onClick={() => openCard(card)}
-                            className="group w-full cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            className="group w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                             aria-label={`View Card ${card.card_id}`}
                         >
                             <TradingCardThumbnail src={card.imageUrl} />

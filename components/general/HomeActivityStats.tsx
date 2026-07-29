@@ -73,10 +73,10 @@ export function HomeActivityStats() {
 
     return (
         <div className="grid gap-4 lg:grid-cols-5">
-            <Card className="rounded-2xl border border-border border-t-2 border-t-rose-500 shadow-sm lg:col-span-3">
+            <Card className="rounded-2xl border border-border border-t-2 border-t-yellow-400 shadow-sm lg:col-span-3">
                 <CardHeader>
                     <CardTitle className="gap-2 text-base font-semibold">
-                        <CalendarIcon className="size-4 shrink-0 text-rose-600 dark:text-rose-400" aria-hidden />
+                        <CalendarIcon className="size-4 shrink-0 text-yellow-600 dark:text-yellow-400" aria-hidden />
                         Submission calendar
                     </CardTitle>
                 </CardHeader>

@@ -2,6 +2,7 @@ import { CrownIcon, EyeIcon, GraduationCapIcon, LayoutDashboardIcon } from 'luci
 import Link from 'next/link'
 
 import { HomeActivityStats } from '@/components/general/HomeActivityStats'
+import { HomeRecentCollectibleCards } from '@/components/general/HomeRecentCollectibleCards'
 import { HomeRecentCourses } from '@/components/general/HomeRecentCourses'
 import { HomeRecentProblems } from '@/components/general/HomeRecentProblems'
 import { HomeRecentSubmissions } from '@/components/general/HomeRecentSubmissions'
@@ -53,6 +54,7 @@ export function HomePageUser({ user }: HomePageUserProps) {
                     <HomeSuggestedProblems />
                 </div>
                 <HomeActivityStats />
+                <HomeRecentCollectibleCards />
             </div>
         </div>
     )

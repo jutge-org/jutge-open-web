@@ -103,7 +103,6 @@ function ProblemSubmissionDetailPageContent({ isAdministrator }: { isAdministrat
                     isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     {submissionLoading ? (
                         <SubmissionDetailView loading submissionId={submission_id} />
@@ -126,7 +125,6 @@ function ProblemSubmissionDetailPageContent({ isAdministrator }: { isAdministrat
                     pageKey={key}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <SubmissionDetailView loading submissionId={submission_id} />
                 </ProblemDetail>

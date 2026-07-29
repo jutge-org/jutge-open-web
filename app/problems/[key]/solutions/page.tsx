@@ -77,7 +77,6 @@ function ProblemSolutionsPageContent({ isAdministrator }: { isAdministrator: boo
                     isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     {solutionsLoading ? (
                         <ProblemSolutions loading />
@@ -96,7 +95,6 @@ function ProblemSolutionsPageContent({ isAdministrator }: { isAdministrator: boo
                     pageKey={key}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <ProblemSolutions loading />
                 </ProblemDetail>

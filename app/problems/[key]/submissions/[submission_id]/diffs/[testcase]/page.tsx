@@ -129,7 +129,6 @@ function ProblemSubmissionTestcaseAnalysisPageContent({ isAdministrator }: { isA
                     isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <div className="flex flex-col gap-6">
                         {analysisLoading ? (
@@ -155,7 +154,6 @@ function ProblemSubmissionTestcaseAnalysisPageContent({ isAdministrator }: { isA
                     pageKey={key}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <div className="flex flex-col gap-6">
                         <ProblemWidgetCard title={`Analysis of test case ${testcase}`} />

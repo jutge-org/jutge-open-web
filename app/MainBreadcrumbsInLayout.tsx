@@ -359,7 +359,7 @@ export function MainBreadcrumbsInLayout() {
             ref={scrollRef}
             className="min-w-0 flex-1 overflow-x-auto font-bold tracking-tight [scrollbar-width:thin]"
         >
-            <BreadcrumbList className="flex-nowrap gap-2 text-lg text-foreground sm:gap-2">
+            <BreadcrumbList className="flex-nowrap gap-2 text-base text-foreground sm:gap-2">
                 <BreadcrumbItem className="shrink-0">
                     <div className="flex items-center gap-1">
                         <DropdownMenu>

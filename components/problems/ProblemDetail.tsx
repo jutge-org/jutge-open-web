@@ -1,7 +1,6 @@
 import { GameProblemCompetitionsCard } from '@/components/problems/GameProblemCompetitionsCard'
 import { ProblemHeaderCard } from '@/components/problems/ProblemHeaderCard'
 import { ProblemHealthCard } from '@/components/problems/ProblemHealthCard'
-import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemNav } from '@/components/problems/ProblemNav'
 import { ProblemStatement } from '@/components/problems/ProblemStatement'
 import { ProblemWidgetCard } from '@/components/problems/ProblemWidgetCard'
@@ -20,7 +19,6 @@ type ProblemDetailBaseProps = {
     pageKey: string
     showStatement?: boolean
     showTestcases?: boolean
-    showInformation?: boolean
     showNav?: boolean
     /** Pull the header card into the sticky navbar (PageTitle-style). Disable when a PageTitle sits above. */
     overlapHeader?: boolean
@@ -62,7 +60,6 @@ export function ProblemDetail(props: ProblemDetailProps) {
         pageKey,
         showStatement = true,
         showTestcases = true,
-        showInformation = true,
         showNav = true,
         overlapHeader = true,
         children,
@@ -76,7 +73,6 @@ export function ProblemDetail(props: ProblemDetailProps) {
                 {children}
                 {showStatement ? <ProblemWidgetCard title="Statement" /> : null}
                 {showTestcases ? <ProblemWidgetCard title="Public test cases" /> : null}
-                {showInformation ? <ProblemWidgetCard title="Information" /> : null}
             </div>
         )
     }
@@ -128,8 +124,6 @@ export function ProblemDetail(props: ProblemDetailProps) {
             {showTestcases && data.publicTestcases.length > 0 ? (
                 <PublicTestcases testcases={data.publicTestcases} />
             ) : null}
-
-            {showInformation ? <ProblemInformation data={data} /> : null}
         </div>
     )
 }

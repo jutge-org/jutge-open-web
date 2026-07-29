@@ -85,7 +85,6 @@ function ProblemTestcasesPageContent({ isAdministrator }: { isAdministrator: boo
                     isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     {testcasesLoading ? <ProblemTestcases loading /> : <ProblemTestcases testcases={testcases ?? []} />}
                 </ProblemDetail>
@@ -95,7 +94,6 @@ function ProblemTestcasesPageContent({ isAdministrator }: { isAdministrator: boo
                     pageKey={key}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <ProblemTestcases loading />
                 </ProblemDetail>

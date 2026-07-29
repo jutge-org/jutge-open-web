@@ -1,10 +1,10 @@
 import { ArchiveIcon, BookOpenCheckIcon, Globe, ShieldCheck, SignatureIcon, UsersIcon } from 'lucide-react'
 
+import { CourseDescriptionDialog } from '@/components/courses/CourseDescriptionDialog'
 import { CourseDetailActions } from '@/components/courses/CourseDetailActions'
 import { CourseGuestLists } from '@/components/courses/CourseGuestLists'
 import { CourseIconImage } from '@/components/courses/CourseIconImage'
 import { CourseLists } from '@/components/courses/CourseLists'
-import { MarkdownText } from '@/components/general/MarkdownText'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -102,10 +102,6 @@ export function CourseDetailLoading() {
                     </div>
                     <Skeleton className="size-8 shrink-0 rounded-md" />
                 </div>
-                <div className="space-y-2 pt-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-4/5" />
-                </div>
             </div>
         </div>
     )
@@ -136,7 +132,7 @@ export function CourseDetail({
                     <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-4">
                             <h1
-                                className="my-0 min-w-0 text-lg font-semibold tracking-tight text-foreground"
+                                className="my-0 min-w-0 text-2xl font-semibold tracking-tight text-foreground"
                                 data-recent-course-icon-url={row.iconUrl}
                             >
                                 {row.title}
@@ -155,7 +151,7 @@ export function CourseDetail({
                         <div className="mt-1.5 flex items-center justify-between gap-2">
                             <p className="flex min-w-0 items-center gap-1 text-sm text-muted-foreground">
                                 <SignatureIcon className="size-3 shrink-0" aria-hidden />
-                                {row.ownerName}
+                                <span className="min-w-0 truncate">{row.ownerName}</span>
                             </p>
                             <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
                                 {row.isOfficial ? (
@@ -190,13 +186,17 @@ export function CourseDetail({
                                 ) : null}
                             </div>
                         </div>
+                        {row.description ? (
+                            <div className="-ml-1.5">
+                                <CourseDescriptionDialog
+                                    title={row.title}
+                                    ownerName={row.ownerName}
+                                    description={row.description}
+                                />
+                            </div>
+                        ) : null}
                     </div>
                 </div>
-                {row.description ? (
-                    <div className="pt-2">
-                        <MarkdownText>{row.description}</MarkdownText>
-                    </div>
-                ) : null}
                 {status === 'available' ? <CourseGuestLists lists={course.lists} problemCount={problemCount} /> : null}
             </div>
 

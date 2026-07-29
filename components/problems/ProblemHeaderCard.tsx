@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { LanguagesIcon, SignatureIcon } from 'lucide-react'
 
 import { ProblemIconImage } from '@/components/problems/ProblemIconImage'
+import { ProblemInformation } from '@/components/problems/ProblemInformation'
 import { ProblemStatusIcon } from '@/components/problems/ProblemStatusIcon'
 import { ProblemSubmitButton } from '@/components/problems/ProblemSubmitButton'
 import { ProblemTypeIcon } from '@/components/problems/ProblemTypeIcon'
@@ -45,13 +46,13 @@ export function ProblemHeaderCard({
                 <div className="flex w-full items-center justify-between gap-4">
                     <div className="flex min-w-0 flex-1 items-center gap-5">
                         {iconUrl ? <ProblemIconImage iconUrl={iconUrl} size="lg" className="shrink-0" /> : null}
-                        <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <div className="flex min-w-0 flex-1 flex-col gap-0">
                             <h1
-                                className="mt-0 mb-0 flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground"
+                                className="mt-0 mb-1 flex min-w-0 items-center gap-2 text-2xl font-semibold tracking-tight text-foreground"
                                 data-recent-problem-icon-url={iconUrl ?? undefined}
                             >
                                 {showActions && status ? <ProblemStatusIcon status={status} /> : null}
-                                {problem.title}
+                                <span className="min-w-0">{problem.title}</span>
                             </h1>
                             <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                                 {problem.abstract_problem.driver_id ? (
@@ -98,12 +99,16 @@ export function ProblemHeaderCard({
                                 <SignatureIcon className="size-3 shrink-0" aria-hidden />
                                 {problem.abstract_problem.author}
                             </p>
-                            {problem.translator && (
+                            {problem.translator &&
+                            problem.translator !== problem.abstract_problem.author ? (
                                 <p className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <LanguagesIcon className="size-3 shrink-0" aria-hidden />
                                     {problem.translator}
                                 </p>
-                            )}
+                            ) : null}
+                            <div className="-ml-1.5">
+                                <ProblemInformation data={data} />
+                            </div>
                         </div>
                     </div>
                     {showActions ? (

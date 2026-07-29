@@ -76,7 +76,6 @@ function ProblemSubmissionsPageContent({ isAdministrator }: { isAdministrator: b
                     isAdministrator={isAdministrator}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     {submissionsLoading ? (
                         <SubmissionsList rows={[]} variant="problem" problemNm={problemNm} loading />
@@ -90,7 +89,6 @@ function ProblemSubmissionsPageContent({ isAdministrator }: { isAdministrator: b
                     pageKey={key}
                     showStatement={false}
                     showTestcases={false}
-                    showInformation={false}
                 >
                     <SubmissionsList rows={[]} variant="problem" problemNm={problemNm} loading />
                 </ProblemDetail>

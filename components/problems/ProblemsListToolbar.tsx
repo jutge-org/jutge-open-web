@@ -1,8 +1,9 @@
 'use client'
 
-import { BinocularsIcon, Columns3Icon } from 'lucide-react'
+import { BinocularsIcon, Columns3Icon, PlusIcon } from 'lucide-react'
 import Link from 'next/link'
 
+import { useAuth } from '@/components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import {
@@ -43,6 +44,7 @@ export function ProblemsListToolbar({
     totalCount,
     showHelp = false,
 }: ProblemsListToolbarProps) {
+    const { user } = useAuth()
     const columns = showStatusColumn ? (['status', ...TOGGLEABLE_COLUMNS] as ProblemsColumnField[]) : TOGGLEABLE_COLUMNS
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
     const trimmedSearchQuery = searchQuery.trim()
@@ -111,6 +113,18 @@ export function ProblemsListToolbar({
                     </TooltipTrigger>
                     <TooltipContent side="top">Simple search</TooltipContent>
                 </Tooltip>
+                {user?.instructor ? (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button asChild variant="outline" size="icon">
+                                <Link href="/instructor/problems/new" aria-label="New problem">
+                                    <PlusIcon aria-hidden />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">New problem</TooltipContent>
+                    </Tooltip>
+                ) : null}
                 {showHelp ? <ProblemsHelpDialog /> : null}
             </div>
         </TooltipProvider>

@@ -1,7 +1,9 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, FunnelIcon } from 'lucide-react'
+import { ArrowDownWideNarrowIcon, FunnelIcon, PlusIcon } from 'lucide-react'
+import Link from 'next/link'
 
+import { useAuth } from '@/components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -45,6 +47,7 @@ export function CoursesListToolbar({
     totalCount,
     showHelp = false,
 }: CoursesListToolbarProps) {
+    const { user } = useAuth()
     const showCountBadge = visibleCount !== undefined && totalCount !== undefined
     const showInstructorFilter = instructorFilter !== undefined && onInstructorFilterChange !== undefined
 
@@ -128,6 +131,18 @@ export function CoursesListToolbar({
                     className="w-64 shrink-0"
                     aria-label="Search courses"
                 />
+                {user?.instructor ? (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button asChild variant="outline" size="icon">
+                                <Link href="/instructor/courses/new" aria-label="New course">
+                                    <PlusIcon aria-hidden />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">New course</TooltipContent>
+                    </Tooltip>
+                ) : null}
                 {showHelp ? <CoursesHelpDialog /> : null}
             </div>
         </TooltipProvider>

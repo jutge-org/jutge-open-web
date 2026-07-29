@@ -10,7 +10,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-    title: 'Jutge.org',
+    title: {
+        default: 'Jutge.org',
+        template: '%s — Jutge.org',
+    },
     description: 'The Open client for Jutge.org',
     icons: {
         icon: '/favicon.ico',

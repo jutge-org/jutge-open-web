@@ -1,5 +1,6 @@
 'use client'
 
+import { documentTitleFromBreadcrumbs } from '@/lib/documentTitle'
 import { useMainBreadcrumbs, type MainBreadcrumbSegment } from '@/store/MainBreadcrumbs'
 import { useEffect } from 'react'
 
@@ -12,6 +13,7 @@ export default function MainBreadcrumbs(props: MainBreadcrumbsProps) {
 
     useEffect(() => {
         setBreadcrumbs(props.breadcrumbs)
+        document.title = documentTitleFromBreadcrumbs(props.breadcrumbs)
     }, [props.breadcrumbs, setBreadcrumbs])
 
     return null

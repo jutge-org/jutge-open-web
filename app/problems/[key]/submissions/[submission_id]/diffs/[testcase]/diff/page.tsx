@@ -43,6 +43,7 @@ function ProblemSubmissionTestcaseDiffViewPageContent() {
             expected={analysis.expected}
             outputImageSrc={analysis.outputImageSrc}
             expectedImageSrc={analysis.expectedImageSrc}
+            documentTitle={`${submission_id} — ${testcase} diff`}
         />
     )
 }

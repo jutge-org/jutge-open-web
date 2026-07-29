@@ -1,6 +1,7 @@
 'use client'
 
 import { CircuitModuleViewer } from '@/components/submissions/CircuitModuleViewer'
+import { DocumentTitle } from '@/components/general/DocumentTitle'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 type CircuitModuleEditorProps = {
@@ -13,6 +14,7 @@ export function CircuitModuleEditor({ submissionId, moduleName, svg }: CircuitMo
     return (
         <TooltipProvider>
             <div className="flex h-full min-h-0 flex-col">
+                <DocumentTitle title={`${submissionId} — ${moduleName}`} />
                 <header className="flex shrink-0 items-center border-b border-border px-4 py-2">
                     <h1 className="min-w-0 truncate text-sm font-semibold text-foreground">
                         {submissionId} — {moduleName}

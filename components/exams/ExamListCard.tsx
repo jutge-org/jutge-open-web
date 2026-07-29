@@ -25,7 +25,7 @@ export function ExamListCard({ row, tone = 'upcoming' }: ExamListCardProps) {
 // Compact single-row card: past exams are reference material, so they stay short.
 function PastExamListCard({ row }: { row: ExamRow }) {
     return (
-        <Card className="rounded-lg border border-border border-l-4 border-l-border shadow-sm ring-0">
+        <Card className="rounded-lg border border-border shadow-sm ring-0">
             <CardContent className="flex items-center gap-3 px-4 py-2.5">
                 <Link href={row.courseHref} className="shrink-0">
                     <CourseIconImage iconUrl={row.courseIconUrl} size="2sm" className="opacity-70" />
@@ -64,7 +64,7 @@ function UpcomingExamListCard({ row }: { row: ExamRow }) {
     const dateLabel = dayjs(row.exp_time_start).format('ddd, D MMM YYYY · HH:mm')
 
     return (
-        <Card className="border border-border border-l-4 border-l-purple-500 shadow-sm ring-0">
+        <Card className="border border-border shadow-sm ring-0">
             <CardContent className="flex flex-col gap-4 p-5">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 flex-1 items-center gap-3">

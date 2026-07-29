@@ -57,6 +57,7 @@ function SupervisionSubmissionTestcaseDiffPageContent() {
             expected={analysis.expected}
             outputImageSrc={analysis.outputImageSrc}
             expectedImageSrc={analysis.expectedImageSrc}
+            documentTitle={`${context.studentName?.trim() || context.email} — ${submission_id} — ${testcase} diff`}
         />
     )
 }

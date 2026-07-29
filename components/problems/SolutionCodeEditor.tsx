@@ -19,6 +19,7 @@ import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useRef, useState, type ComponentProps } from 'react'
 import { toast } from 'sonner'
 
+import { DocumentTitle } from '@/components/general/DocumentTitle'
 import { MonacoThemeMenu } from '@/components/MonacoThemeMenu'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
@@ -192,6 +193,7 @@ export function SolutionCodeEditor({ code, codeExtension, codeFilename, title, p
     return (
         <TooltipProvider>
             <div className="flex h-full min-h-0 flex-col">
+                <DocumentTitle title={`${title} — ${formatProglangName(proglang)}`} />
                 <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-4 py-2">
                     <h1 className="flex min-w-0 items-center gap-2 truncate text-sm font-semibold text-foreground">
                         <span className="truncate">{title}</span>

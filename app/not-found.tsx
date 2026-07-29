@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { FileQuestionIcon, HomeIcon } from 'lucide-react'
 import Link from 'next/link'
 
-export const metadata = { title: 'Page not found — Jutge.org' }
+export const metadata = { title: 'Page not found' }
 
 export default function NotFound() {
     return (

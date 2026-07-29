@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export function ExamListCardSkeleton() {
     return (
-        <Card className="border border-border border-l-4 border-l-border shadow-sm ring-0">
+        <Card className="border border-border shadow-sm ring-0">
             <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:gap-6">
                 <div className="flex min-w-0 flex-1 flex-col gap-4">
                     <div className="flex items-start justify-between gap-3">

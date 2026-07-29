@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { formatExamDuration, type ExamDetail } from '@/lib/exams'
-import { cn } from '@/lib/utils'
 
 dayjs.extend(relativeTime)
 
@@ -24,12 +23,7 @@ export function ExamDetailHeaderCard({ exam }: ExamDetailHeaderCardProps) {
     const isInProgress = exam.statusTone === 'in-progress'
 
     return (
-        <Card
-            className={cn(
-                'border border-border border-l-4 shadow-sm ring-0',
-                isFinished ? 'border-l-border' : 'border-l-purple-500',
-            )}
-        >
+        <Card className="border border-border shadow-sm ring-0">
             <CardContent className="flex flex-col gap-5 p-5">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 flex-1 items-center gap-3">

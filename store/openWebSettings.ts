@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 
+import type { DashboardCardSize, DashboardModuleId } from '@/lib/dashboardModules'
 import {
     parseCourseStatisticsPeriod,
     serializeCourseStatisticsPeriod,
@@ -45,6 +46,8 @@ type OpenWebSettingsStore = {
     setContextualHeaderGradients: (preference: ContextualHeaderGradientsPreference) => void
     setStatementEtBook: (preference: StatementEtBookPreference) => void
     resetAppearanceDefaults: () => void
+    setDashboardModules: (modules: DashboardModuleId[]) => void
+    setDashboardCardSize: (cardSize: DashboardCardSize) => void
     setCourseListAccordionOpenItems: (courseKey: string, openItems: string[]) => void
     setCourseStatisticsPeriod: (courseKey: string, period: CourseStatisticsPeriod) => void
     getCourseStatisticsPeriod: (courseKey: string, fallback: CourseStatisticsPeriod) => CourseStatisticsPeriod
@@ -226,6 +229,26 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
         }))
     },
 
+    setDashboardModules: (modules) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                dashboard: { ...settings.dashboard, modules },
+            })),
+            dirty: true,
+        }))
+    },
+
+    setDashboardCardSize: (cardSize) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                dashboard: { ...settings.dashboard, cardSize },
+            })),
+            dirty: true,
+        }))
+    },
+
     setCourseListAccordionOpenItems: (courseKey, openItems) => {
         set((state) => ({
             settings: patchSettings(state.settings, (settings) => ({
@@ -369,6 +392,14 @@ export function useOpenWebAppearance() {
 
 export function useOpenWebRecents() {
     return useOpenWebSettingsStore((state) => state.settings.recents)
+}
+
+export function useOpenWebDashboardModules() {
+    return useOpenWebSettingsStore((state) => state.settings.dashboard.modules)
+}
+
+export function useOpenWebDashboardCardSize() {
+    return useOpenWebSettingsStore((state) => state.settings.dashboard.cardSize)
 }
 
 export function useOpenWebLayoutWidth() {

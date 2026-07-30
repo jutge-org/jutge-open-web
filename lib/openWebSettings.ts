@@ -4,6 +4,14 @@ import {
     parseHljsThemeSelection,
     type HljsThemeSelection,
 } from '@/lib/hljsThemes'
+import {
+    DEFAULT_DASHBOARD_CARD_SIZE,
+    DEFAULT_DASHBOARD_MODULES,
+    parseDashboardCardSize,
+    parseDashboardModules,
+    type DashboardCardSize,
+    type DashboardModuleId,
+} from '@/lib/dashboardModules'
 import { parseCourseStatisticsPeriod, serializeCourseStatisticsPeriod } from '@/lib/instructor/courseStatisticsPeriod'
 import { DEFAULT_LAYOUT_WIDTH, LAYOUT_WIDTH_STORAGE_KEY, parseLayoutWidth, type LayoutWidth } from '@/lib/layoutWidth'
 import {
@@ -65,10 +73,17 @@ export type OpenWebUiSettings = {
     upcomingExamsCollapsed: Record<string, boolean>
 }
 
+export type OpenWebDashboardSettings = {
+    /** Dashboard modules in display order; removed modules are simply absent. */
+    modules: DashboardModuleId[]
+    cardSize: DashboardCardSize
+}
+
 export type OpenWebSettings = {
     version: typeof OPENWEB_SETTINGS_VERSION
     appearance: OpenWebAppearanceSettings
     ui: OpenWebUiSettings
+    dashboard: OpenWebDashboardSettings
     recents: RecentsData
 }
 
@@ -99,6 +114,10 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
             supervisionLastCourse: '',
             supervisionLastStudentByCourse: {},
             upcomingExamsCollapsed: {},
+        },
+        dashboard: {
+            modules: [...DEFAULT_DASHBOARD_MODULES],
+            cardSize: DEFAULT_DASHBOARD_CARD_SIZE,
         },
         recents: emptyRecents(),
     }
@@ -235,6 +254,10 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
             supervisionLastStudentByCourse: parseSupervisionLastStudentByCourse(ui?.supervisionLastStudentByCourse),
             upcomingExamsCollapsed: parseUpcomingExamsCollapsed(ui?.upcomingExamsCollapsed),
         },
+        dashboard: {
+            modules: parseDashboardModules(parsed.dashboard?.modules),
+            cardSize: parseDashboardCardSize(parsed.dashboard?.cardSize),
+        },
         recents: parseRecentsData(JSON.stringify(parsed.recents ?? defaults.recents)),
     }
 }
@@ -365,6 +388,7 @@ export function migrateLegacyLocalStorageSettings(): OpenWebSettings {
         version: OPENWEB_SETTINGS_VERSION,
         appearance: readLegacyAppearanceSettings(),
         ui: readLegacyUiSettings(),
+        dashboard: { modules: [...DEFAULT_DASHBOARD_MODULES], cardSize: DEFAULT_DASHBOARD_CARD_SIZE },
         recents: readLegacyRecentsSettings(),
     }
 }

@@ -15,6 +15,7 @@ import { fetchSubmissionsData } from '@/lib/data/submissions'
 import jutge from '@/lib/jutge'
 import type { SubmissionRow } from '@/lib/submissions'
 import { cn } from '@/lib/utils'
+import { useOpenWebDashboardCardSize } from '@/store/openWebSettings'
 
 dayjs.extend(relativeTime)
 
@@ -66,6 +67,7 @@ export function HomeRecentSubmissions() {
     const [rows, setRows] = useState<SubmissionRow[] | null>(null)
     const { profile } = useAuth()
     const preferredLanguageId = profile?.language_id ?? null
+    const cardSize = useOpenWebDashboardCardSize()
 
     useEffect(() => {
         let active = true
@@ -86,6 +88,7 @@ export function HomeRecentSubmissions() {
     return (
         <HomeWidgetCard
             title="Recent submissions"
+            size={cardSize}
             href="/submissions"
             accentClassName="border-t-blue-500"
             icon={<SendIcon className="size-4 shrink-0 text-blue-600 dark:text-blue-400" aria-hidden />}

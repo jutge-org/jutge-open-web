@@ -107,7 +107,9 @@ export function HomeSuggestedProblems() {
                         ? `Nothing to retry in ${pool.sourceLabel}.`
                         : mode === 'continue'
                           ? `You tried every problem in ${pool.sourceLabel}.`
-                          : `No problems in ${pool.sourceLabel}.`}
+                          : pool.problemNms.length === 0
+                            ? `No problems in ${pool.sourceLabel}.`
+                            : `You solved every problem in ${pool.sourceLabel}.`}
                 </HomeWidgetMessage>
             ) : (
                 <TooltipProvider>
@@ -157,15 +159,12 @@ function ModeMenu({
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="top">
-                        {SUGGESTION_MODE_DESCRIPTIONS[mode] ?? 'Change how problems are suggested'}
-                    </TooltipContent>
+                    <TooltipContent side="top">{SUGGESTION_MODE_DESCRIPTIONS[mode]}</TooltipContent>
                 </Tooltip>
                 {/* The default content width tracks the tiny trigger button; give the descriptions room. */}
                 <DropdownMenuContent align="end" className="w-72">
                     {SUGGESTION_MODES.map((option) => {
                         const OptionIcon = SUGGESTION_MODE_ICONS[option]
-                        const description = SUGGESTION_MODE_DESCRIPTIONS[option]
                         return (
                             <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
                                 <OptionIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
@@ -173,9 +172,9 @@ function ModeMenu({
                                     <span className={option === mode ? 'font-semibold' : undefined}>
                                         {SUGGESTION_MODE_LABELS[option]}
                                     </span>
-                                    {description ? (
-                                        <span className="text-xs text-muted-foreground">{description}</span>
-                                    ) : null}
+                                    <span className="text-xs text-muted-foreground">
+                                        {SUGGESTION_MODE_DESCRIPTIONS[option]}
+                                    </span>
                                 </span>
                             </DropdownMenuItem>
                         )

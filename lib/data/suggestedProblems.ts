@@ -15,11 +15,10 @@ export const SUGGESTION_MODE_LABELS: Record<SuggestionMode, string> = {
 
 export const SUGGESTIONS_COUNT = 3
 
-/** Random mode is self-explanatory, so it carries no description. */
-export const SUGGESTION_MODE_DESCRIPTIONS: Record<SuggestionMode, string | null> = {
-    continue: `First ${SUGGESTIONS_COUNT} problems that you have not tried to solve yet`,
+export const SUGGESTION_MODE_DESCRIPTIONS: Record<SuggestionMode, string> = {
+    continue: `First ${SUGGESTIONS_COUNT} problems you have not tried to solve yet`,
     retry: `First ${SUGGESTIONS_COUNT} problems you tried but did not get right`,
-    random: null,
+    random: 'Random problems you have not tried or did not get right',
 }
 
 export type SuggestedProblem = {
@@ -114,10 +113,10 @@ function sample<T>(items: readonly T[], count: number): T[] {
 }
 
 /**
- * Pick suggestions for a mode:
+ * Pick suggestions for a mode. Solved problems are never suggested:
  * - continue: the first problems without any submission yet, in course order.
  * - retry: the first problems with submissions but no accepted verdict, in course order.
- * - random: any problems of the pool.
+ * - random: any unsolved problems of the pool, in random order.
  */
 export function selectSuggestions(pool: SuggestionPool, mode: SuggestionMode): SuggestedProblem[] {
     const toProblem = (problemNm: string): SuggestedProblem => {
@@ -125,16 +124,15 @@ export function selectSuggestions(pool: SuggestionPool, mode: SuggestionMode): S
         return { problemNm, title: meta?.title ?? problemNm, iconUrl: meta?.iconUrl ?? null }
     }
 
+    const unsolved = pool.problemNms.filter((nm) => !isSolved(pool.statuses[nm]))
+
     if (mode === 'random') {
-        return sample(pool.problemNms, SUGGESTIONS_COUNT).map(toProblem)
+        return sample(unsolved, SUGGESTIONS_COUNT).map(toProblem)
     }
 
-    const candidates = pool.problemNms.filter((nm) => {
-        const status = pool.statuses[nm]
-        if (isSolved(status)) {
-            return false
-        }
-        return mode === 'continue' ? !wasAttempted(status) : wasAttempted(status)
+    const candidates = unsolved.filter((nm) => {
+        const attempted = wasAttempted(pool.statuses[nm])
+        return mode === 'continue' ? !attempted : attempted
     })
 
     return candidates.slice(0, SUGGESTIONS_COUNT).map(toProblem)

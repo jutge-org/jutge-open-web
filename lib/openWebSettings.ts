@@ -12,6 +12,7 @@ import {
     type DashboardCardSize,
     type DashboardModuleId,
 } from '@/lib/dashboardModules'
+import type { SuggestionMode } from '@/lib/data/suggestedProblems'
 import { parseCourseStatisticsPeriod, serializeCourseStatisticsPeriod } from '@/lib/instructor/courseStatisticsPeriod'
 import { DEFAULT_LAYOUT_WIDTH, LAYOUT_WIDTH_STORAGE_KEY, parseLayoutWidth, type LayoutWidth } from '@/lib/layoutWidth'
 import {
@@ -77,6 +78,8 @@ export type OpenWebDashboardSettings = {
     /** Dashboard modules in display order; removed modules are simply absent. */
     modules: DashboardModuleId[]
     cardSize: DashboardCardSize
+    /** Last mode chosen in the suggested-problems widget. */
+    suggestionMode: SuggestionMode
 }
 
 export type OpenWebSettings = {
@@ -118,9 +121,14 @@ export function createDefaultOpenWebSettings(): OpenWebSettings {
         dashboard: {
             modules: [...DEFAULT_DASHBOARD_MODULES],
             cardSize: DEFAULT_DASHBOARD_CARD_SIZE,
+            suggestionMode: 'continue',
         },
         recents: emptyRecents(),
     }
+}
+
+function parseSuggestionMode(value: unknown): SuggestionMode {
+    return value === 'retry' || value === 'random' ? value : 'continue'
 }
 
 function parseThemePreference(value: unknown): ThemePreference {
@@ -257,6 +265,7 @@ export function parseOpenWebSettings(raw: unknown): OpenWebSettings {
         dashboard: {
             modules: parseDashboardModules(parsed.dashboard?.modules),
             cardSize: parseDashboardCardSize(parsed.dashboard?.cardSize),
+            suggestionMode: parseSuggestionMode(parsed.dashboard?.suggestionMode),
         },
         recents: parseRecentsData(JSON.stringify(parsed.recents ?? defaults.recents)),
     }
@@ -388,7 +397,11 @@ export function migrateLegacyLocalStorageSettings(): OpenWebSettings {
         version: OPENWEB_SETTINGS_VERSION,
         appearance: readLegacyAppearanceSettings(),
         ui: readLegacyUiSettings(),
-        dashboard: { modules: [...DEFAULT_DASHBOARD_MODULES], cardSize: DEFAULT_DASHBOARD_CARD_SIZE },
+        dashboard: {
+            modules: [...DEFAULT_DASHBOARD_MODULES],
+            cardSize: DEFAULT_DASHBOARD_CARD_SIZE,
+            suggestionMode: 'continue',
+        },
         recents: readLegacyRecentsSettings(),
     }
 }

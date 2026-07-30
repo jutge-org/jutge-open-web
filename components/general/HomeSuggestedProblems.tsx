@@ -30,6 +30,7 @@ import {
     type SuggestionMode,
     type SuggestionPool,
 } from '@/lib/data/suggestedProblems'
+import { useOpenWebDashboardSuggestionMode, useOpenWebSettingsStore } from '@/store/openWebSettings'
 
 const ROW_HEIGHT_REM = 2.66
 
@@ -43,7 +44,9 @@ export function HomeSuggestedProblems() {
     const { recents } = useRecents()
     const { profile } = useAuth()
     const preferredLanguageId = profile?.language_id ?? null
-    const [mode, setMode] = useState<SuggestionMode>('continue')
+    // The chosen mode is remembered in the synced user settings.
+    const mode = useOpenWebDashboardSuggestionMode()
+    const setMode = useOpenWebSettingsStore((state) => state.setDashboardSuggestionMode)
     const [pool, setPool] = useState<SuggestionPool | null>(null)
     const [loaded, setLoaded] = useState(false)
     const [suggestions, setSuggestions] = useState<SuggestedProblem[]>([])

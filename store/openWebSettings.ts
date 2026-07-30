@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { create } from 'zustand'
 
 import type { DashboardCardSize, DashboardModuleId } from '@/lib/dashboardModules'
+import type { SuggestionMode } from '@/lib/data/suggestedProblems'
 import {
     parseCourseStatisticsPeriod,
     serializeCourseStatisticsPeriod,
@@ -48,6 +49,7 @@ type OpenWebSettingsStore = {
     resetAppearanceDefaults: () => void
     setDashboardModules: (modules: DashboardModuleId[]) => void
     setDashboardCardSize: (cardSize: DashboardCardSize) => void
+    setDashboardSuggestionMode: (suggestionMode: SuggestionMode) => void
     setCourseListAccordionOpenItems: (courseKey: string, openItems: string[]) => void
     setCourseStatisticsPeriod: (courseKey: string, period: CourseStatisticsPeriod) => void
     getCourseStatisticsPeriod: (courseKey: string, fallback: CourseStatisticsPeriod) => CourseStatisticsPeriod
@@ -249,6 +251,16 @@ export const useOpenWebSettingsStore = create<OpenWebSettingsStore>((set, get) =
         }))
     },
 
+    setDashboardSuggestionMode: (suggestionMode) => {
+        set((state) => ({
+            settings: patchSettings(state.settings, (settings) => ({
+                ...settings,
+                dashboard: { ...settings.dashboard, suggestionMode },
+            })),
+            dirty: true,
+        }))
+    },
+
     setCourseListAccordionOpenItems: (courseKey, openItems) => {
         set((state) => ({
             settings: patchSettings(state.settings, (settings) => ({
@@ -400,6 +412,10 @@ export function useOpenWebDashboardModules() {
 
 export function useOpenWebDashboardCardSize() {
     return useOpenWebSettingsStore((state) => state.settings.dashboard.cardSize)
+}
+
+export function useOpenWebDashboardSuggestionMode() {
+    return useOpenWebSettingsStore((state) => state.settings.dashboard.suggestionMode)
 }
 
 export function useOpenWebLayoutWidth() {

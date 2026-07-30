@@ -1,12 +1,12 @@
 'use client'
 
 import {
-    ArrowRightIcon,
+    FootprintsIcon,
     ChevronDownIcon,
     RefreshCwIcon,
     ShuffleIcon,
     SparklesIcon,
-    ThumbsDownIcon,
+    RouteIcon,
     type LucideIcon,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -35,8 +35,8 @@ import { useOpenWebDashboardSuggestionMode, useOpenWebSettingsStore } from '@/st
 const ROW_HEIGHT_REM = 2.66
 
 const SUGGESTION_MODE_ICONS: Record<SuggestionMode, LucideIcon> = {
-    continue: ArrowRightIcon,
-    retry: ThumbsDownIcon,
+    continue: FootprintsIcon,
+    retry: RouteIcon,
     random: ShuffleIcon,
 }
 
@@ -88,7 +88,8 @@ export function HomeSuggestedProblems() {
     return (
         <HomeWidgetCard
             title="Suggested problems"
-            subtitle={pool ? `from ${pool.sourceLabel}` : undefined}
+            // It seems usefull but takes place and changes the layout
+            // subtitle={pool ? `from ${pool.sourceLabel}` : undefined}
             accentClassName="border-t-emerald-500"
             icon={<SparklesIcon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />}
             action={
@@ -170,7 +171,7 @@ function ModeMenu({
                         const OptionIcon = SUGGESTION_MODE_ICONS[option]
                         return (
                             <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
-                                <OptionIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                <OptionIcon className="size-4 shrink-0 text-muted-foreground mr-2" aria-hidden />
                                 <span className="flex flex-col">
                                     <span className={option === mode ? 'font-semibold' : undefined}>
                                         {SUGGESTION_MODE_LABELS[option]}

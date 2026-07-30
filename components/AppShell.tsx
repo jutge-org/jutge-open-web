@@ -17,8 +17,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { dispatchOpenAppearanceSettings } from '@/lib/appearanceSettings'
 import { isContextualHeaderGradientsEnabled } from '@/lib/contextualHeaderGradients'
 import { cn } from '@/lib/utils'
+import { useDashboardCustomizationStore } from '@/store/dashboardCustomization'
 import { Settings2Icon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 
 function headerBarClassName(pathname: string, gradientsEnabled: boolean): string {
     const base = 'sticky top-0 z-50 border-b border-border'
@@ -46,6 +48,14 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     const pathname = usePathname() ?? ''
     const { contextualHeaderGradients } = useAppearancePreferences()
     const gradientsEnabled = isContextualHeaderGradientsEnabled(contextualHeaderGradients)
+    const stopDashboardEditing = useDashboardCustomizationStore((state) => state.stopEditing)
+
+    // Dashboard customize mode only makes sense on the home page; leaving it discards the draft.
+    useEffect(() => {
+        if (pathname !== '/') {
+            stopDashboardEditing()
+        }
+    }, [pathname, stopDashboardEditing])
 
     return (
         <RecentsProvider>
@@ -70,7 +80,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                                                 <Settings2Icon className="size-4.5" aria-hidden />
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>Appearance settings</TooltipContent>
+                                        <TooltipContent>Settings</TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
                                 <AuthToolbar />

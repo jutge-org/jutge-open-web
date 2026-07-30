@@ -1,6 +1,14 @@
 'use client'
 
-import { ChevronDownIcon, SparklesIcon } from 'lucide-react'
+import {
+    ArrowRightIcon,
+    ChevronDownIcon,
+    RefreshCwIcon,
+    ShuffleIcon,
+    SparklesIcon,
+    ThumbsDownIcon,
+    type LucideIcon,
+} from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -22,19 +30,27 @@ import {
     type SuggestionMode,
     type SuggestionPool,
 } from '@/lib/data/suggestedProblems'
+import { useOpenWebDashboardSuggestionMode, useOpenWebSettingsStore } from '@/store/openWebSettings'
 
 const ROW_HEIGHT_REM = 2.66
+
+const SUGGESTION_MODE_ICONS: Record<SuggestionMode, LucideIcon> = {
+    continue: ArrowRightIcon,
+    retry: ThumbsDownIcon,
+    random: ShuffleIcon,
+}
 
 export function HomeSuggestedProblems() {
     const { recents } = useRecents()
     const { profile } = useAuth()
     const preferredLanguageId = profile?.language_id ?? null
-    const [mode, setMode] = useState<SuggestionMode>('continue')
+    // The chosen mode is remembered in the synced user settings.
+    const mode = useOpenWebDashboardSuggestionMode()
+    const setMode = useOpenWebSettingsStore((state) => state.setDashboardSuggestionMode)
     const [pool, setPool] = useState<SuggestionPool | null>(null)
     const [loaded, setLoaded] = useState(false)
     const [suggestions, setSuggestions] = useState<SuggestedProblem[]>([])
 
-    const lastListNm = recents.lists[0]?.listNm ?? null
     const lastCourseKey = recents.courses[0]?.courseKey ?? null
 
     // Reload when the collection the suggestions are drawn from changes.
@@ -55,20 +71,34 @@ export function HomeSuggestedProblems() {
         return () => {
             active = false
         }
-        // Only the identity of the source collection matters, not every recents change.
+        // Only the identity of the source course matters, not every recents change.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lastListNm, lastCourseKey])
+    }, [lastCourseKey])
 
     useEffect(() => {
         setSuggestions(pool ? selectSuggestions(pool, mode) : [])
     }, [pool, mode])
 
+    function reshuffle() {
+        if (pool) {
+            setSuggestions(selectSuggestions(pool, 'random'))
+        }
+    }
+
     return (
         <HomeWidgetCard
             title="Suggested problems"
+            subtitle={pool ? `from ${pool.sourceLabel}` : undefined}
             accentClassName="border-t-emerald-500"
             icon={<SparklesIcon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />}
-            action={<ModeMenu mode={mode} onSelect={setMode} disabled={!loaded} />}
+            action={
+                <div className="flex shrink-0 items-center gap-0.5">
+                    {mode === 'random' ? (
+                        <ReshuffleButton onReshuffle={reshuffle} disabled={!loaded || pool === null} />
+                    ) : null}
+                    <ModeMenu mode={mode} onSelect={setMode} disabled={!loaded} />
+                </div>
+            }
         >
             {!loaded ? (
                 <HomeWidgetLoading label="Loading suggested problems" />
@@ -79,8 +109,10 @@ export function HomeSuggestedProblems() {
                     {mode === 'retry'
                         ? `Nothing to retry in ${pool.sourceLabel}.`
                         : mode === 'continue'
-                          ? `You solved everything in ${pool.sourceLabel}.`
-                          : `No problems in ${pool.sourceLabel}.`}
+                          ? `You tried every problem in ${pool.sourceLabel}.`
+                          : pool.problemNms.length === 0
+                            ? `No problems in ${pool.sourceLabel}.`
+                            : `You solved every problem in ${pool.sourceLabel}.`}
                 </HomeWidgetMessage>
             ) : (
                 <TooltipProvider>
@@ -106,6 +138,8 @@ function ModeMenu({
     onSelect: (mode: SuggestionMode) => void
     disabled: boolean
 }) {
+    const ModeIcon = SUGGESTION_MODE_ICONS[mode]
+
     return (
         <TooltipProvider>
             <DropdownMenu>
@@ -121,6 +155,7 @@ function ModeMenu({
                                 aria-label={`Suggestion mode: ${SUGGESTION_MODE_LABELS[mode]}. Change it`}
                             >
                                 <span className="inline-flex items-center gap-1">
+                                    <ModeIcon className="size-3.5" aria-hidden />
                                     {SUGGESTION_MODE_LABELS[mode]}
                                     <ChevronDownIcon aria-hidden />
                                 </span>
@@ -129,21 +164,50 @@ function ModeMenu({
                     </TooltipTrigger>
                     <TooltipContent side="top">{SUGGESTION_MODE_DESCRIPTIONS[mode]}</TooltipContent>
                 </Tooltip>
-                <DropdownMenuContent align="end">
-                    {SUGGESTION_MODES.map((option) => (
-                        <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
-                            <span className="flex flex-col">
-                                <span className={option === mode ? 'font-semibold' : undefined}>
-                                    {SUGGESTION_MODE_LABELS[option]}
+                {/* The default content width tracks the tiny trigger button; give the descriptions room. */}
+                <DropdownMenuContent align="end" className="w-72">
+                    {SUGGESTION_MODES.map((option) => {
+                        const OptionIcon = SUGGESTION_MODE_ICONS[option]
+                        return (
+                            <DropdownMenuItem key={option} onSelect={() => onSelect(option)}>
+                                <OptionIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                                <span className="flex flex-col">
+                                    <span className={option === mode ? 'font-semibold' : undefined}>
+                                        {SUGGESTION_MODE_LABELS[option]}
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {SUGGESTION_MODE_DESCRIPTIONS[option]}
+                                    </span>
                                 </span>
-                                <span className="text-xs text-muted-foreground">
-                                    {SUGGESTION_MODE_DESCRIPTIONS[option]}
-                                </span>
-                            </span>
-                        </DropdownMenuItem>
-                    ))}
+                            </DropdownMenuItem>
+                        )
+                    })}
                 </DropdownMenuContent>
             </DropdownMenu>
+        </TooltipProvider>
+    )
+}
+
+/** Redraws the random picks, for when the shown ones do not appeal. */
+function ReshuffleButton({ onReshuffle, disabled }: { onReshuffle: () => void; disabled: boolean }) {
+    return (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        disabled={disabled}
+                        onClick={onReshuffle}
+                        aria-label="Show other random problems"
+                        className="size-6 shrink-0 text-muted-foreground"
+                    >
+                        <RefreshCwIcon className="size-3.5" aria-hidden />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">Show other random problems</TooltipContent>
+            </Tooltip>
         </TooltipProvider>
     )
 }

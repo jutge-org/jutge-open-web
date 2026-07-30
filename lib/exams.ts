@@ -185,11 +185,13 @@ export function buildExamRow(exam: StudentExam): ExamRow {
 }
 
 /**
- * Course key of the course an exam is bound to. Exams live in their own course, so this key is how
- * we recognise a "course" that is really an exam (e.g. to keep it out of recent courses).
+ * Key of the exam's own course, which Jutge names after the exam key. This is how we recognise a
+ * "course" that is really an exam (e.g. to keep it out of recent courses). It is NOT the course
+ * the exam row links to (`courseHref`) — that is the regular, often non-official, course the exam
+ * belongs to, which must keep showing up as a normal recent course.
  */
-export function examCourseKey(exam: Pick<ExamRow, 'courseHref'>): string {
-    return exam.courseHref.replace(/^\/courses\//, '')
+export function examCourseKey(exam: Pick<ExamRow, 'exam_key'>): string {
+    return exam.exam_key
 }
 
 /** Human-readable exam duration, e.g. "2h", "1h 30m", "45m". */

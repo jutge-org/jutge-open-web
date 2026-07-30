@@ -13,10 +13,12 @@ export const SUGGESTION_MODE_LABELS: Record<SuggestionMode, string> = {
     random: 'Random',
 }
 
+export const SUGGESTIONS_COUNT = 3
+
 export const SUGGESTION_MODE_DESCRIPTIONS: Record<SuggestionMode, string> = {
-    continue: 'Next problems you have not solved',
-    retry: 'Problems you tried but did not get right',
-    random: 'Random problems',
+    continue: `First ${SUGGESTIONS_COUNT} problems you have not tried to solve yet`,
+    retry: `First ${SUGGESTIONS_COUNT} problems you tried but did not get right`,
+    random: 'Random problems you have not tried or did not get right',
 }
 
 export type SuggestedProblem = {
@@ -34,29 +36,14 @@ export type SuggestionPool = {
     titles: Map<string, { title: string; iconUrl: string | null }>
 }
 
-export const SUGGESTIONS_COUNT = 3
-
 function listItemProblemNms(items: { problem_nm: string | null }[]): string[] {
     return items.flatMap((item) => (item.problem_nm ? [item.problem_nm] : []))
 }
 
-/** Problems of the last accessed list, falling back to every list of the last accessed course. */
+/** Problems of every list of the last visited course, in the course's own order. */
 async function fetchPoolProblemNms(
     recents: RecentsData,
 ): Promise<{ sourceLabel: string; problemNms: string[] } | null> {
-    const lastList = recents.lists[0]
-    if (lastList) {
-        try {
-            const list = await jutge.student.lists.get(lastList.listNm)
-            return {
-                sourceLabel: list.title ?? lastList.title,
-                problemNms: listItemProblemNms(list.items),
-            }
-        } catch {
-            // The list may be gone; fall through to the course.
-        }
-    }
-
     const lastCourse = recents.courses[0]
     if (!lastCourse) {
         return null
@@ -126,10 +113,10 @@ function sample<T>(items: readonly T[], count: number): T[] {
 }
 
 /**
- * Pick suggestions for a mode:
- * - continue: the first unsolved problems, in list order, to carry on where you left off.
- * - retry: problems with submissions but no accepted verdict.
- * - random: any problems of the pool.
+ * Pick suggestions for a mode. Solved problems are never suggested:
+ * - continue: the first problems without any submission yet, in course order.
+ * - retry: the first problems with submissions but no accepted verdict, in course order.
+ * - random: any unsolved problems of the pool, in random order.
  */
 export function selectSuggestions(pool: SuggestionPool, mode: SuggestionMode): SuggestedProblem[] {
     const toProblem = (problemNm: string): SuggestedProblem => {
@@ -137,16 +124,15 @@ export function selectSuggestions(pool: SuggestionPool, mode: SuggestionMode): S
         return { problemNm, title: meta?.title ?? problemNm, iconUrl: meta?.iconUrl ?? null }
     }
 
+    const unsolved = pool.problemNms.filter((nm) => !isSolved(pool.statuses[nm]))
+
     if (mode === 'random') {
-        return sample(pool.problemNms, SUGGESTIONS_COUNT).map(toProblem)
+        return sample(unsolved, SUGGESTIONS_COUNT).map(toProblem)
     }
 
-    const candidates = pool.problemNms.filter((nm) => {
-        const status = pool.statuses[nm]
-        if (isSolved(status)) {
-            return false
-        }
-        return mode === 'continue' ? true : wasAttempted(status)
+    const candidates = unsolved.filter((nm) => {
+        const attempted = wasAttempted(pool.statuses[nm])
+        return mode === 'continue' ? !attempted : attempted
     })
 
     return candidates.slice(0, SUGGESTIONS_COUNT).map(toProblem)

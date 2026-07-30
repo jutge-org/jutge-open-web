@@ -98,26 +98,16 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss, initia
                             aria-describedby={errorMessage ? 'jutge-auth-error' : undefined}
                         />
                     </div>
-                    <div className="grid gap-1.5">
-                        <Label htmlFor="jutge-auth-password" className="flex items-center gap-2">
-                            Password
-                            <div className="flex-1"></div>
-                            <Link
-                                href="/password-reset"
-                                className="flex text-muted-foreground text-xs gap-2 items-center hover:underline"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleResetPassword()
-                                }}
-                            >
-                                Forgotten password?
-                            </Link>
-                        </Label>
+                    {/* The link renders in the label row but sits after the input in DOM order,
+                        so Tab goes email → password → forgotten password. */}
+                    <div className="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-1.5">
+                        <Label htmlFor="jutge-auth-password">Password</Label>
                         <Input
                             id="jutge-auth-password"
                             name="password"
                             type="password"
                             autoComplete="current-password"
+                            className="col-span-2"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyDown={(e) => {
@@ -126,6 +116,16 @@ export function SignInDialog({ open, onOpenChange, onSignedIn, onDismiss, initia
                             aria-invalid={errorMessage ? true : undefined}
                             aria-describedby={errorMessage ? 'jutge-auth-error' : undefined}
                         />
+                        <Link
+                            href="/password-reset"
+                            className="col-start-2 row-start-1 flex items-center gap-2 text-xs text-muted-foreground hover:underline"
+                            onClick={(e) => {
+                                e.preventDefault()
+                                handleResetPassword()
+                            }}
+                        >
+                            Forgotten password?
+                        </Link>
                     </div>
                     {errorMessage ? (
                         <p id="jutge-auth-error" role="alert" className="text-sm text-destructive">

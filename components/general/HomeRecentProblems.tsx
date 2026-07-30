@@ -12,6 +12,7 @@ import { ProblemTitleSummaryTooltip } from '@/components/problems/ProblemTitleSu
 import { useRecents } from '@/components/RecentsProvider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { recentProblemHref, type RecentProblemItem } from '@/lib/recents'
+import { useOpenWebDashboardCardSize } from '@/store/openWebSettings'
 
 dayjs.extend(relativeTime)
 
@@ -28,10 +29,12 @@ export function HomeRecentProblems() {
     const { recents } = useRecents()
     const { profile } = useAuth()
     const preferredLanguageId = profile?.language_id ?? null
+    const cardSize = useOpenWebDashboardCardSize()
 
     return (
         <HomeWidgetCard
-            title="Recent problems"
+            title="Recently visited problems"
+            size={cardSize}
             href="/problems"
             accentClassName="border-t-violet-500"
             icon={<FileCodeIcon className="size-4 shrink-0 text-violet-600 dark:text-violet-400" aria-hidden />}

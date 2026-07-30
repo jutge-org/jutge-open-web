@@ -12,6 +12,7 @@ import { useRecents } from '@/components/RecentsProvider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { courseIconUrl } from '@/lib/courses'
 import { recentCourseHref, type RecentCourseItem } from '@/lib/recents'
+import { useOpenWebDashboardCardSize } from '@/store/openWebSettings'
 
 dayjs.extend(relativeTime)
 
@@ -27,10 +28,12 @@ function recentCourseTitle(course: RecentCourseItem): string {
 // Recent courses come straight from the client-side recents store (sorted by accessedAt).
 export function HomeRecentCourses() {
     const { recents } = useRecents()
+    const cardSize = useOpenWebDashboardCardSize()
 
     return (
         <HomeWidgetCard
-            title="Recent courses"
+            title="Recently visited courses"
+            size={cardSize}
             href="/courses"
             accentClassName="border-t-amber-500"
             icon={<BookOpenIcon className="size-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden />}

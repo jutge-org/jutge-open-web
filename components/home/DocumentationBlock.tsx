@@ -12,7 +12,7 @@ export function DocumentationBlock() {
         <section
             id="home-documentation"
             aria-labelledby="home-documentation-heading"
-            className="scroll-mt-14 py-16 md:py-24"
+            className="scroll-mt-14"
         >
             <div className="mx-auto max-w-2xl px-6 text-center">
                 <motion.div
@@ -28,7 +28,8 @@ export function DocumentationBlock() {
                         Curious how it all works?
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">
-                        Browse the docs for verdicts, compilers, FAQs, ... or read the story behind Jutge.org.
+                        Browse the docs for verdicts, compilers, FAQs,&nbsp;...<br/> 
+                        or read the story behind Jutge.org.
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-8">
                         <SmoothButton asChild color="accent" variant="candy" className='w-42'>

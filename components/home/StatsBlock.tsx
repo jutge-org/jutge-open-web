@@ -84,7 +84,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section id="home-stats" aria-labelledby="home-stats-heading" className="scroll-mt-14 py-16 md:py-20">
+        <section id="home-stats" aria-labelledby="home-stats-heading" className="scroll-mt-14">
             <div className="mx-auto max-w-7xl px-6">
                 <motion.div
                     className="mb-16 text-center"

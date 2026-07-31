@@ -102,25 +102,27 @@ export function HomePageGuest() {
         : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
 
     return (
-        <div className="flex flex-col gap-0">
+        <div>
             <HomeYearsRibbon />
             <HomeSectionNav sections={sections} />
-            <HeroBlock />
-            <SignInBlock />
-            <FeatureBlock />
-            <CoursesBlock />
-            <ProblemsBlock />
-            {platformStats ? <StatsBlock stats={platformStats} /> : null}
-            <AccountsBlock />
-            <RelatedSitesBlock />
-            <TelegramBlock />
-            <CardsBlock />
-            <MerchandisingBlock />
-            <DocumentationBlock />
-            <GithubBlock />
-            <TestimonialBlock />
-            <LogoCloudBlock />
-            <BackToTopButton />
+            <div className="mt-6 flex flex-col gap-16 md:gap-24">
+                <HeroBlock />
+                <SignInBlock />
+                <FeatureBlock />
+                <CoursesBlock />
+                <ProblemsBlock />
+                {platformStats ? <StatsBlock stats={platformStats} /> : null}
+                <AccountsBlock />
+                <RelatedSitesBlock />
+                <TelegramBlock />
+                <CardsBlock />
+                <DocumentationBlock />
+                <GithubBlock />
+                <TestimonialBlock />
+                <MerchandisingBlock />
+                <LogoCloudBlock />
+                <BackToTopButton />
+            </div>
         </div>
     )
 }

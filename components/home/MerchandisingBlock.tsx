@@ -69,7 +69,7 @@ export function MerchandisingBlock() {
         <section
             id="home-merchandising"
             aria-labelledby="home-merchandising-heading"
-            className="scroll-mt-14 py-16 md:py-24"
+            className="scroll-mt-14"
         >
             <div className="mx-auto max-w-6xl px-6">
                 <motion.div

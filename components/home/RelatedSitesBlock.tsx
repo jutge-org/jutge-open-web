@@ -42,57 +42,55 @@ export function RelatedSitesBlock() {
 
     return (
         <section id="home-related-sites" aria-labelledby="home-related-sites-heading" className="scroll-mt-14">
-            <div className="py-16 md:py-24">
-                <div className="mx-auto max-w-6xl px-6">
-                    <div className="mx-auto mb-16 max-w-2xl text-center">
-                        <h2
-                            className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
-                            id="home-related-sites-heading"
-                        >
-                            Related sites and tools
-                        </h2>
-                        <p className="mt-4 text-foreground/70 text-lg">
-                            More tools and resources from the Jutge.org ecosystem.
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {relatedSites.map((site, index) => {
-                            const isExternal = site.href.startsWith('http')
-                            return (
-                                <motion.a
-                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
-                                    href={site.href}
-                                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
-                                    key={site.title}
-                                    rel={isExternal ? 'noopener noreferrer' : undefined}
-                                    target={isExternal ? '_blank' : undefined}
-                                    transition={
-                                        shouldReduceMotion ? { duration: 0 } : { ...SPRING, delay: index * 0.05 }
-                                    }
-                                    viewport={{ once: true, margin: '-100px' }}
-                                    whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-                                >
-                                    <Image
-                                        src={site.imageSrc}
-                                        alt=""
-                                        width={64}
-                                        height={64}
-                                        className="mb-3 size-14 rounded-md object-contain"
-                                    />
-                                    <h3 className="mb-1 font-semibold text-brand">
-                                        {site.title}
-                                        {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
-                                    </h3>
-                                    <p className="text-foreground/70 text-sm leading-relaxed">{site.description}</p>
+            <div className="mx-auto max-w-6xl px-6">
+                <div className="mx-auto mb-16 max-w-2xl text-center">
+                    <h2
+                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        id="home-related-sites-heading"
+                    >
+                        Related sites and tools
+                    </h2>
+                    <p className="mt-4 text-foreground/70 text-lg">
+                        More tools and resources from the Jutge.org ecosystem.
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {relatedSites.map((site, index) => {
+                        const isExternal = site.href.startsWith('http')
+                        return (
+                            <motion.a
+                                className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
+                                href={site.href}
+                                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                                key={site.title}
+                                rel={isExternal ? 'noopener noreferrer' : undefined}
+                                target={isExternal ? '_blank' : undefined}
+                                transition={
+                                    shouldReduceMotion ? { duration: 0 } : { ...SPRING, delay: index * 0.05 }
+                                }
+                                viewport={{ once: true, margin: '-100px' }}
+                                whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                            >
+                                <Image
+                                    src={site.imageSrc}
+                                    alt=""
+                                    width={64}
+                                    height={64}
+                                    className="mb-3 size-14 rounded-md object-contain"
+                                />
+                                <h3 className="mb-1 font-semibold text-brand">
+                                    {site.title}
+                                    {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
+                                </h3>
+                                <p className="text-foreground/70 text-sm leading-relaxed">{site.description}</p>
 
-                                    <div
-                                        aria-hidden
-                                        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                                    />
-                                </motion.a>
-                            )
-                        })}
-                    </div>
+                                <div
+                                    aria-hidden
+                                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                />
+                            </motion.a>
+                        )
+                    })}
                 </div>
             </div>
         </section>

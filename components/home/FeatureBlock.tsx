@@ -53,54 +53,22 @@ export function FeatureBlock() {
 
     return (
         <section id="home-features" aria-labelledby="home-features-heading" className="scroll-mt-14">
-            <div className="py-16 md:py-24">
-                <div className="mx-auto max-w-6xl px-6">
-                    <div className="mx-auto mb-16 max-w-2xl text-center">
-                        <h2
-                            className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
-                            id="home-features-heading"
-                        >
-                            TODO: Learn and teach programming
-                        </h2>
-                        <p className="mt-4 text-foreground/70 text-lg">
-                            Courses, problems, exams, contests, and more — built for students and instructors.
-                        </p>
-                    </div>
-                    <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {features.map((feature, index) => {
-                            const Icon = feature.icon
-                            return (
-                                <motion.li
-                                    className={cn(
-                                        'rounded-xl border bg-background transition-shadow',
-                                        isHoverDevice && !shouldReduceMotion && 'hover:shadow-md',
-                                    )}
-                                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                                    key={feature.title}
-                                    transition={
-                                        shouldReduceMotion ? { duration: 0 } : { ...SPRING, delay: index * 0.05 }
-                                    }
-                                    viewport={{ once: true, margin: '-100px' }}
-                                    whileHover={isHoverDevice && !shouldReduceMotion ? { y: -4 } : undefined}
-                                    whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                                >
-                                    <Link
-                                        href={feature.href}
-                                        className="flex h-full flex-col p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                    >
-                                        <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-2.5 text-primary">
-                                            <Icon className="size-6" aria-hidden />
-                                        </div>
-                                        <h3 className="mb-2 font-semibold text-foreground">{feature.title}</h3>
-                                        <p className="text-foreground/70 text-sm leading-relaxed">
-                                            {feature.description}
-                                        </p>
-                                    </Link>
-                                </motion.li>
-                            )
-                        })}
-                    </ul>
+            <div className="mx-auto max-w-6xl px-6">
+                <div className="mx-auto mb-16 max-w-2xl text-center">
+                    <h2
+                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        id="home-features-heading"
+                    >
+                        Learn programming by solving problems
+                    </h2>
+                    <p className="mt-4 text-foreground/70 text-lg">
+                    Jutge.org is a free, open educational platform that helps anyone learn to program through hands-on practice, instant feedback, and well-organized problems.
+                    </p>
+                    <p className="mt-4 text-foreground/70 text-lg">
+                    Built for students and instructors.
+                    </p>
                 </div>
+                MISSING
             </div>
         </section>
     )

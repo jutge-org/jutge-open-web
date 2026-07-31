@@ -10,7 +10,7 @@ export function GithubBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section id="home-github" aria-labelledby="home-github-heading" className="scroll-mt-14 py-16 md:py-24">
+        <section id="home-github" aria-labelledby="home-github-heading" className="scroll-mt-14">
             <div className="mx-auto max-w-2xl px-6 text-center">
                 <motion.div
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}

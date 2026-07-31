@@ -76,7 +76,7 @@ export function LogoCloudBlock() {
         <section
             id="home-sponsors"
             aria-labelledby="home-sponsors-heading"
-            className="scroll-mt-14 overflow-hidden py-16 md:py-20"
+            className="scroll-mt-14 overflow-hidden"
         >
             <div className="mx-auto max-w-7xl px-6">
                 <motion.div

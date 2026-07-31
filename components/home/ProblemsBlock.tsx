@@ -188,42 +188,40 @@ export function ProblemsBlock() {
 
     return (
         <section id="home-problems" aria-labelledby="home-problems-heading" className="scroll-mt-14">
-            <div className="py-16 md:py-24">
-                <div className="mx-auto max-w-5xl px-6">
-                    <motion.div
-                        className="mx-auto mb-12 max-w-2xl text-center"
-                        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-                        transition={
-                            shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }
-                        }
-                        viewport={{ once: true, margin: '-80px' }}
-                        whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            <div className="mx-auto max-w-5xl px-6">
+                <motion.div
+                    className="mx-auto mb-12 max-w-2xl text-center"
+                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+                    transition={
+                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }
+                    }
+                    viewport={{ once: true, margin: '-80px' }}
+                    whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                >
+                    <h2
+                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        id="home-problems-heading"
                     >
-                        <h2
-                            className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
-                            id="home-problems-heading"
-                        >
-                            Solve curated problems
-                        </h2>
-                        <p className="mt-4 text-foreground/70 text-lg">
-                            Warm up with a fresh sample of classic challenges — then dive into the full catalogue when
-                            you are ready for more.
-                        </p>
-                    </motion.div>
+                        Solve curated problems
+                    </h2>
+                    <p className="mt-4 text-foreground/70 text-lg">
+                        Warm up with a fresh sample of classic challenges — then dive into the full catalogue when
+                        you are ready for more.
+                    </p>
+                </motion.div>
 
-                    <motion.div
-                        className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2"
-                        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                        transition={
-                            shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }
-                        }
-                        viewport={{ once: true, margin: '-80px' }}
-                        whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                    >
-                        <PromoCard />
-                        <ProblemsListCard problems={problems} />
-                    </motion.div>
-                </div>
+                <motion.div
+                    className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2"
+                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+                    transition={
+                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }
+                    }
+                    viewport={{ once: true, margin: '-80px' }}
+                    whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                >
+                    <PromoCard />
+                    <ProblemsListCard problems={problems} />
+                </motion.div>
             </div>
         </section>
     )

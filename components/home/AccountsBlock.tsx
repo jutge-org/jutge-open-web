@@ -73,75 +73,73 @@ export function AccountsBlock() {
 
     return (
         <section id="home-accounts" aria-labelledby="home-accounts-heading" className="scroll-mt-14">
-            <div className="py-16 md:py-24">
-                <div className="mx-auto max-w-5xl px-6">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <h2
-                            className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
-                            id="home-accounts-heading"
+            <div className="mx-auto max-w-5xl px-6">
+                <div className="mx-auto max-w-2xl text-center">
+                    <h2
+                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        id="home-accounts-heading"
+                    >
+                        Student and Instructor accounts
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-xl text-balance text-foreground/70 text-lg">
+                        Whether you are learning or teaching, Jutge.org is free. Choose the account that fits you.
+                    </p>
+                </div>
+
+                <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
+                    {plans.map((plan, index) => (
+                        <motion.div
+                            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                            className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 transition-all hover:scale-105 hover:shadow-md"
+                            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
+                            key={plan.title}
+                            transition={
+                                shouldReduceMotion
+                                    ? { duration: 0 }
+                                    : {
+                                          duration: 0.3,
+                                          ease: EASE_OUT,
+                                          delay: index * CARD_ANIMATION_DELAY,
+                                      }
+                            }
                         >
-                            Student and Instructor accounts
-                        </h2>
-                        <p className="mx-auto mt-4 max-w-xl text-balance text-foreground/70 text-lg">
-                            Whether you are learning or teaching, Jutge.org is free. Choose the account that fits you.
-                        </p>
-                    </div>
+                            <div className="relative flex h-full flex-col">
+                                <h3 className="mb-4 font-bold text-2xl text-foreground">{plan.title} account</h3>
 
-                    <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
-                        {plans.map((plan, index) => (
-                            <motion.div
-                                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                                className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 transition-all hover:scale-105 hover:shadow-md"
-                                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
-                                key={plan.title}
-                                transition={
-                                    shouldReduceMotion
-                                        ? { duration: 0 }
-                                        : {
-                                              duration: 0.3,
-                                              ease: EASE_OUT,
-                                              delay: index * CARD_ANIMATION_DELAY,
-                                          }
-                                }
-                            >
-                                <div className="relative flex h-full flex-col">
-                                    <h3 className="mb-4 font-bold text-2xl text-foreground">{plan.title} account</h3>
+                                <SmoothButton asChild className="mb-6 w-full hover:bg-muted" variant="outline">
+                                    <Link href={plan.ctaHref}>{plan.ctaLabel}</Link>
+                                </SmoothButton>
 
-                                    <SmoothButton asChild className="mb-6 w-full hover:bg-muted" variant="outline">
-                                        <Link href={plan.ctaHref}>{plan.ctaLabel}</Link>
-                                    </SmoothButton>
+                                <p className="mb-6 text-foreground/70 text-sm leading-relaxed">
+                                    {plan.description}
+                                </p>
 
-                                    <p className="mb-6 text-foreground/70 text-sm leading-relaxed">
-                                        {plan.description}
-                                    </p>
-
-                                    <div className="space-y-4">
-                                        <h4 className="font-medium text-foreground/70 text-xs uppercase tracking-wider">
-                                            What&apos;s included:
-                                        </h4>
-                                        <ul className="space-y-3">
-                                            {plan.features.map((item) => (
-                                                <FeatureItem item={item} key={item} />
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {plan.note ? (
-                                        <div className="mt-auto pt-8">
-                                            <p className="rounded-lg border border-border/80 bg-background/60 px-3 py-2 text-foreground/80 text-xs leading-relaxed">
-                                                {plan.note}
-                                            </p>
-                                        </div>
-                                    ) : null}
+                                <div className="space-y-4">
+                                    <h4 className="font-medium text-foreground/70 text-xs uppercase tracking-wider">
+                                        What&apos;s included:
+                                    </h4>
+                                    <ul className="space-y-3">
+                                        {plan.features.map((item) => (
+                                            <FeatureItem item={item} key={item} />
+                                        ))}
+                                    </ul>
                                 </div>
 
-                                <div
-                                    aria-hidden
-                                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                                />
-                            </motion.div>
-                        ))}
-                    </div>
+                                {plan.note ? (
+                                    <div className="mt-auto pt-8">
+                                        <p className="rounded-lg border border-border/80 bg-background/60 px-3 py-2 text-foreground/80 text-xs leading-relaxed">
+                                            {plan.note}
+                                        </p>
+                                    </div>
+                                ) : null}
+                            </div>
+
+                            <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                            />
+                        </motion.div>
+                    ))}
                 </div>
             </div>
         </section>

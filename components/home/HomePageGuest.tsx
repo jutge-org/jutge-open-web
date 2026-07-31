@@ -97,9 +97,7 @@ export function HomePageGuest() {
         }
     }, [])
 
-    const sections = platformStats
-        ? GUEST_SECTIONS
-        : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
+    const sections = platformStats ? GUEST_SECTIONS : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
 
     return (
         <div>

@@ -66,11 +66,7 @@ export function MerchandisingBlock() {
     }
 
     return (
-        <section
-            id="home-merchandising"
-            aria-labelledby="home-merchandising-heading"
-            className="scroll-mt-14"
-        >
+        <section id="home-merchandising" aria-labelledby="home-merchandising-heading" className="scroll-mt-14">
             <div className="mx-auto max-w-6xl px-6">
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"

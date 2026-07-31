@@ -28,9 +28,7 @@ function pickRandomProblems(problems: ProblemRow[]): ProblemRow[] {
 
 function PromoCard() {
     return (
-        <div
-            className={`relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 ${CARD_HEIGHT}`}
-        >
+        <div className={`relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 ${CARD_HEIGHT}`}>
             <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -62,7 +60,8 @@ function PromoCard() {
                     <span className="font-semibold">fundamentals</span>,&nbsp;
                     <span className="font-semibold">algorithms</span>,&nbsp;
                     <span className="font-semibold">data structures</span>,&nbsp;
-                    <span className="font-semibold">contest classics</span>,&nbsp; and more — at your own pace or following a course.
+                    <span className="font-semibold">contest classics</span>,&nbsp; and more — at your own pace or
+                    following a course.
                 </p>
                 <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
                     Enrolling to your instructor's course will give you access ven more problems!
@@ -100,9 +99,9 @@ function ProblemListItem({ problem }: { problem: ProblemRow }) {
                 <div className="min-w-0 flex-1">
                     <div className="truncate font-medium text-foreground text-sm">{problem.title}</div>
                     {SHOW_PROBLEM_NM && (
-                    <div className="mt-0.5 flex min-w-0 items-center gap-1 text-muted-foreground text-xs">
-                        <span className="shrink-0">{problem.problem_nm}</span>
-                    </div>
+                        <div className="mt-0.5 flex min-w-0 items-center gap-1 text-muted-foreground text-xs">
+                            <span className="shrink-0">{problem.problem_nm}</span>
+                        </div>
                     )}
                     <div className="mt-0.5 flex min-w-0 items-center gap-1 text-muted-foreground text-xs">
                         {problem.author ? (
@@ -192,9 +191,7 @@ export function ProblemsBlock() {
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
@@ -205,17 +202,15 @@ export function ProblemsBlock() {
                         Solve curated problems
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">
-                        Warm up with a fresh sample of classic challenges — then dive into the full catalogue when
-                        you are ready for more.
+                        Warm up with a fresh sample of classic challenges — then dive into the full catalogue when you
+                        are ready for more.
                     </p>
                 </motion.div>
 
                 <motion.div
                     className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >

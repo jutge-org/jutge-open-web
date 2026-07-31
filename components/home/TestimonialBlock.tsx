@@ -67,9 +67,7 @@ export function TestimonialBlock() {
                     animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1 }}
                     className="grid gap-6 lg:grid-cols-2 3xl:grid-cols-3 3xl:gap-12"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE_OUT, delay: 0.2 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE_OUT, delay: 0.2 }}
                 >
                     {testimonials.map((testimonial, index) => (
                         <motion.div

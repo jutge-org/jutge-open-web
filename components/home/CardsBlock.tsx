@@ -76,11 +76,7 @@ export function CardsBlock() {
     }, [])
 
     return (
-        <section
-            id="home-collectible-cards"
-            aria-labelledby="home-collectible-cards-heading"
-            className="scroll-mt-14"
-        >
+        <section id="home-collectible-cards" aria-labelledby="home-collectible-cards-heading" className="scroll-mt-14">
             <div className="mx-auto max-w-5xl px-6">
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"
@@ -96,7 +92,7 @@ export function CardsBlock() {
                         Earn collectible cards
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">
-                        Solve problems and complete challenges to earn collectible cards. <br/>
+                        Solve problems and complete challenges to earn collectible cards. <br />
                         Brag about your achievements with your friends!
                     </p>
                 </motion.div>

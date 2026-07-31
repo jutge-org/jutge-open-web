@@ -40,9 +40,7 @@ function filterFeaturedCourses(courses: GuestCourseRow[]): GuestCourseRow[] {
 
 function PromoCard() {
     return (
-        <div
-            className={`relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 ${CARD_HEIGHT}`}
-        >
+        <div className={`relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 ${CARD_HEIGHT}`}>
             <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -66,16 +64,15 @@ function PromoCard() {
                     <h3 className="font-bold text-2xl text-foreground tracking-tight">Public courses</h3>
                 </div>
                 <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
-                    Curated problem lists and learning paths, open to everyone. 
+                    Curated problem lists and learning paths, open to everyone.
                 </p>
                 <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
-                    Pick topics as&nbsp; 
+                    Pick topics as&nbsp;
                     <span className="font-semibold">Introduction to Programming</span>,&nbsp;
                     <span className="font-semibold">Functional Programming</span>,&nbsp;
                     <span className="font-semibold">Algorithmics</span>,&nbsp;
-                    <span className="font-semibold">Circuit Design</span>,&nbsp; 
-                    <span className="font-semibold">Official contests</span>,&nbsp; 
-                    etc.
+                    <span className="font-semibold">Circuit Design</span>,&nbsp;
+                    <span className="font-semibold">Official contests</span>,&nbsp; etc.
                 </p>
                 <div className="mt-auto pt-6">
                     <SmoothButton asChild className="w-full sm:w-auto" color="accent" variant="candy">
@@ -184,9 +181,7 @@ export function CoursesBlock() {
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
@@ -197,16 +192,15 @@ export function CoursesBlock() {
                         Learn with guided courses
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">
-                        Follow curated paths from your own instructors worldwide — or jump to public courses for all levels and topics.
+                        Follow curated paths from your own instructors worldwide — or jump to public courses for all
+                        levels and topics.
                     </p>
                 </motion.div>
 
                 <motion.div
                     className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >

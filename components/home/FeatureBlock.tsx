@@ -88,8 +88,7 @@ function FeatureCard({ title, tagline, icon: Icon, features, variant }: FeatureC
                     className="pointer-events-none absolute inset-0 opacity-[0.35]"
                     style={{
                         backgroundSize: '22px 22px',
-                        maskImage:
-                            'radial-gradient(ellipse 80% 70% at 30% 40%, black 20%, transparent 75%)',
+                        maskImage: 'radial-gradient(ellipse 80% 70% at 30% 40%, black 20%, transparent 75%)',
                     }}
                 />
             ) : null}
@@ -126,10 +125,7 @@ function FeatureCard({ title, tagline, icon: Icon, features, variant }: FeatureC
                 <ul className="mt-6 flex flex-col gap-3">
                     {features.map((feature) => (
                         <li key={feature} className="flex gap-3 text-foreground text-sm leading-relaxed">
-                            <span
-                                aria-hidden
-                                className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
-                            />
+                            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
                             <span>{feature}</span>
                         </li>
                     ))}
@@ -159,10 +155,7 @@ function WhyJutgeCard() {
                 <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {whyItems.map((item) => (
                         <li key={item.header} className="flex gap-3 text-foreground text-sm leading-relaxed">
-                            <span
-                                aria-hidden
-                                className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
-                            />
+                            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
                             <span>
                                 <strong className="font-semibold">{item.header}</strong>
                                 <br />
@@ -185,9 +178,7 @@ export function FeatureBlock() {
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
@@ -207,9 +198,7 @@ export function FeatureBlock() {
                 <motion.div
                     className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                    transition={
-                        shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.4, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >

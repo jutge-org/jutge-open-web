@@ -18,10 +18,7 @@ export function GithubBlock() {
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
-                    <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
-                        id="home-github-heading"
-                    >
+                    <h2 className="text-balance font-bold text-3xl tracking-tight md:text-4xl" id="home-github-heading">
                         Contribute to Jutge.org
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">

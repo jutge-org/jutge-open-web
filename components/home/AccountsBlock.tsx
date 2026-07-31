@@ -110,9 +110,7 @@ export function AccountsBlock() {
                                     <Link href={plan.ctaHref}>{plan.ctaLabel}</Link>
                                 </SmoothButton>
 
-                                <p className="mb-6 text-foreground/70 text-sm leading-relaxed">
-                                    {plan.description}
-                                </p>
+                                <p className="mb-6 text-foreground/70 text-sm leading-relaxed">{plan.description}</p>
 
                                 <div className="space-y-4">
                                     <h4 className="font-medium text-foreground/70 text-xs uppercase tracking-wider">

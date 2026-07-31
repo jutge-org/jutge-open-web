@@ -119,11 +119,10 @@ export function HeroBlock() {
                 preset="blur-slide"
             >
                 <div>
-                    <div className='flex justify-center'>
-                    <Image src="/jutge/modern.png" alt="Jutge.org" width={192} height={192} />
+                    <div className="flex justify-center">
+                        <Image src="/jutge/modern.png" alt="Jutge.org" width={192} height={192} />
                     </div>
-                        
-                    
+
                     <AnimatedText
                         as="h1"
                         className="mb-6 inline-block bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text pb-1 font-thin text-4xl leading-[1.2] tracking-wide text-balance text-transparent text-8xl"

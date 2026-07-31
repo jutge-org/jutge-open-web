@@ -14,11 +14,7 @@ import { requestPasswordResetAction } from '@/lib/data/passwordResetActions'
 import { registerAction } from '@/lib/data/registrationActions'
 import { fetchCountries } from '@/lib/data/tables'
 import type { Country } from '@/lib/jutge_api_client'
-import {
-    getRecaptchaSiteKey,
-    RECAPTCHA_PASSWORD_RESET_ACTION,
-    RECAPTCHA_REGISTRATION_ACTION,
-} from '@/lib/recaptcha'
+import { getRecaptchaSiteKey, RECAPTCHA_PASSWORD_RESET_ACTION, RECAPTCHA_REGISTRATION_ACTION } from '@/lib/recaptcha'
 import { cn } from '@/lib/utils'
 import { BookMarkedIcon, LockOpenIcon, LogInIcon } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
@@ -301,8 +297,7 @@ const signUpFieldClass = 'flex flex-col gap-1 md:flex-row md:items-baseline md:g
 const signUpLabelClass = 'text-left text-sm text-foreground md:mr-2 md:w-28 md:shrink-0'
 const signUpLabelSpacerClass = 'hidden md:mr-2 md:block md:w-28 md:shrink-0'
 
-const PASSWORD_HINT =
-    'At least 12 characters with upper, lower, digit, and special character.'
+const PASSWORD_HINT = 'At least 12 characters with upper, lower, digit, and special character.'
 
 function isStrongPassword(password: string): boolean {
     if (password.length < 12) return false
@@ -454,16 +449,14 @@ function SignUpPanelFields({
                 return
             }
 
-            toast.success(`An email has been sent to ${result.email}. You are now signed in as ${loginResult.userName}.`)
+            toast.success(
+                `An email has been sent to ${result.email}. You are now signed in as ${loginResult.userName}.`,
+            )
         })
     }
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            noValidate
-            className="mx-auto flex w-full max-w-96 flex-col gap-4 px-2 md:px-0"
-        >
+        <form onSubmit={handleSubmit} noValidate className="mx-auto flex w-full max-w-96 flex-col gap-4 px-2 md:px-0">
             <div className={signUpFieldClass}>
                 <div className={cn(signUpLabelClass, 'inline-flex items-center gap-0.5')}>
                     <CompleteNameHelpDialog />
@@ -692,11 +685,7 @@ function SignUpPanelWithRecaptcha({ countries }: { countries: Country[] }) {
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     return (
-        <SignUpPanelFields
-            countries={countries}
-            recaptchaConfigured
-            executeRecaptcha={executeRecaptcha ?? undefined}
-        />
+        <SignUpPanelFields countries={countries} recaptchaConfigured executeRecaptcha={executeRecaptcha ?? undefined} />
     )
 }
 

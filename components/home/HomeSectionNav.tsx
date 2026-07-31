@@ -80,12 +80,7 @@ export function HomeSectionNav({ sections }: HomeSectionNavProps) {
             const panel = panelRef.current
             if (!panel) return false
             const rect = panel.getBoundingClientRect()
-            return (
-                clientX >= rect.left &&
-                clientX <= rect.right &&
-                clientY >= rect.top &&
-                clientY <= rect.bottom
-            )
+            return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
         }
 
         function onPointerMove(event: PointerEvent) {
@@ -175,11 +170,7 @@ export function HomeSectionNav({ sections }: HomeSectionNavProps) {
                     initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: enterX }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: exitX }}
-                    transition={
-                        shouldReduceMotion
-                            ? { duration: 0 }
-                            : { type: 'spring', duration: 0.35, bounce: 0.12 }
-                    }
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.12 }}
                 >
                     <aside
                         ref={panelRef}

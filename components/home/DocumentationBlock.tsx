@@ -9,11 +9,7 @@ export function DocumentationBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section
-            id="home-documentation"
-            aria-labelledby="home-documentation-heading"
-            className="scroll-mt-14"
-        >
+        <section id="home-documentation" aria-labelledby="home-documentation-heading" className="scroll-mt-14">
             <div className="mx-auto max-w-2xl px-6 text-center">
                 <motion.div
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
@@ -28,17 +24,18 @@ export function DocumentationBlock() {
                         Curious how it all works?
                     </h2>
                     <p className="mt-4 text-foreground/70 text-lg">
-                        Browse the docs for verdicts, compilers, FAQs,&nbsp;...<br/> 
+                        Browse the docs for verdicts, compilers, FAQs,&nbsp;...
+                        <br />
                         or read the story behind Jutge.org.
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-8">
-                        <SmoothButton asChild color="accent" variant="candy" className='w-42'>
+                        <SmoothButton asChild color="accent" variant="candy" className="w-42">
                             <Link href="/documentation">
                                 <BookTextIcon className="size-4 shrink-0" aria-hidden />
                                 Documentation
                             </Link>
                         </SmoothButton>
-                        <SmoothButton asChild color="accent" variant="candy" className='w-42'>
+                        <SmoothButton asChild color="accent" variant="candy" className="w-42">
                             <Link href="/about">
                                 <InfoIcon className="size-4 shrink-0" aria-hidden />
                                 About

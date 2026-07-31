@@ -76,7 +76,11 @@ export function CardsBlock() {
     }, [])
 
     return (
-        <section aria-labelledby="home-collectible-cards-heading" className="py-16 md:py-24">
+        <section
+            id="home-collectible-cards"
+            aria-labelledby="home-collectible-cards-heading"
+            className="scroll-mt-14 py-16 md:py-24"
+        >
             <div className="mx-auto max-w-5xl px-6">
                 <motion.div
                     className="mx-auto mb-12 max-w-2xl text-center"

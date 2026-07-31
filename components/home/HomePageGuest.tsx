@@ -3,7 +3,9 @@
 import { AccountsBlock } from '@/components/home/AccountsBlock'
 import { CardsBlock } from '@/components/home/CardsBlock'
 import { FeatureBlock } from '@/components/home/FeatureBlock'
+import { MerchandisingBlock } from '@/components/home/MerchandisingBlock'
 import { HeroBlock } from '@/components/home/HeroBlock'
+import { HomeSectionNav, type HomeSectionNavItem } from '@/components/home/HomeSectionNav'
 import { LogoCloudBlock } from '@/components/home/LogoCloudBlock'
 import { RelatedSitesBlock } from '@/components/home/RelatedSitesBlock'
 import { SignInBlock } from '@/components/home/SignInBlock'
@@ -18,6 +20,20 @@ import { fetchCompilers } from '@/lib/data/tables'
 import type { HomepageStats } from '@/lib/jutge_api_client'
 import { ArrowUpIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+
+const GUEST_SECTIONS: HomeSectionNavItem[] = [
+    { id: 'home-hero', label: 'Jutge.org' },
+    { id: 'home-account', label: 'Sign in' },
+    { id: 'home-features', label: 'Learn and teach' },
+    { id: 'home-stats', label: 'Platform at a glance' },
+    { id: 'home-accounts', label: 'Accounts' },
+    { id: 'home-related-sites', label: 'Related sites' },
+    { id: 'home-telegram', label: 'Stay informed' },
+    { id: 'home-collectible-cards', label: 'Collectible cards' },
+    { id: 'home-merchandising', label: 'Merchandising' },
+    { id: 'home-testimonials', label: 'What people say' },
+    { id: 'home-sponsors', label: 'Sponsors' },
+]
 
 type PlatformStats = HomepageStats & {
     languages: number
@@ -72,8 +88,13 @@ export function HomePageGuest() {
         }
     }, [])
 
+    const sections = platformStats
+        ? GUEST_SECTIONS
+        : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
+
     return (
         <div className="flex flex-col">
+            <HomeSectionNav sections={sections} />
             <HeroBlock />
             <SignInBlock />
             <FeatureBlock />
@@ -82,6 +103,7 @@ export function HomePageGuest() {
             <RelatedSitesBlock />
             <TelegramBlock />
             <CardsBlock />
+            <MerchandisingBlock />
             <TestimonialBlock />
             <LogoCloudBlock />
             <BackToTopButton />

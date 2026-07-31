@@ -52,7 +52,7 @@ export function FeatureBlock() {
     }, [])
 
     return (
-        <section aria-labelledby="home-features-heading">
+        <section id="home-features" aria-labelledby="home-features-heading" className="scroll-mt-14">
             <div className="py-16 md:py-24">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="mx-auto mb-16 max-w-2xl text-center">

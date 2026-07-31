@@ -113,7 +113,7 @@ function InteractiveGrid() {
 
 export function HeroBlock() {
     return (
-        <section className="relative overflow-hidden py-8" aria-label="Jutge.org">
+        <section id="home-hero" className="relative scroll-mt-14 overflow-hidden py-8" aria-label="Jutge.org">
             <AnimatedGroup
                 className="pointer-events-none relative z-10 flex flex-col items-center gap-6 text-center"
                 preset="blur-slide"

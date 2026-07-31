@@ -10,7 +10,7 @@ export function TelegramBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section aria-labelledby="home-telegram-heading" className="py-16 md:py-24">
+        <section id="home-telegram" aria-labelledby="home-telegram-heading" className="scroll-mt-14 py-16 md:py-24">
             <div className="mx-auto max-w-2xl px-6 text-center">
                 <motion.div
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}

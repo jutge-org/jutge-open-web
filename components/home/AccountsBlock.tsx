@@ -72,7 +72,7 @@ export function AccountsBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section aria-labelledby="home-accounts-heading">
+        <section id="home-accounts" aria-labelledby="home-accounts-heading" className="scroll-mt-14">
             <div className="py-16 md:py-24">
                 <div className="mx-auto max-w-5xl px-6">
                     <div className="mx-auto max-w-2xl text-center">
@@ -91,7 +91,7 @@ export function AccountsBlock() {
                         {plans.map((plan, index) => (
                             <motion.div
                                 animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                                className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8"
+                                className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 transition-all hover:scale-105 hover:shadow-md"
                                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
                                 key={plan.title}
                                 transition={
@@ -104,7 +104,7 @@ export function AccountsBlock() {
                                           }
                                 }
                             >
-                                <div className="relative z-10 flex h-full flex-col">
+                                <div className="relative flex h-full flex-col">
                                     <h3 className="mb-4 font-bold text-2xl text-foreground">{plan.title} account</h3>
 
                                     <SmoothButton asChild className="mb-6 w-full hover:bg-muted" variant="outline">
@@ -134,6 +134,11 @@ export function AccountsBlock() {
                                         </div>
                                     ) : null}
                                 </div>
+
+                                <div
+                                    aria-hidden
+                                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                />
                             </motion.div>
                         ))}
                     </div>

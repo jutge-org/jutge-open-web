@@ -303,7 +303,7 @@ export function SignInBlock() {
     const [activeTab, setActiveTab] = useState<TabId>('signin')
 
     return (
-        <section aria-label="Account" className="py-4 md:py-8">
+        <section id="home-account" aria-label="Account" className="scroll-mt-14 py-4 md:py-8">
             <div className="w-full px-6">
                 <motion.div
                     className="flex flex-col gap-6 rounded-xl border bg-primary/5 px-2 pt-2 pb-8 ring-1 ring-primary/10"

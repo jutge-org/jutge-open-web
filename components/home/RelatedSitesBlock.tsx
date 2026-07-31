@@ -41,7 +41,7 @@ export function RelatedSitesBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section aria-labelledby="home-related-sites-heading">
+        <section id="home-related-sites" aria-labelledby="home-related-sites-heading" className="scroll-mt-14">
             <div className="py-16 md:py-24">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -60,7 +60,7 @@ export function RelatedSitesBlock() {
                             const isExternal = site.href.startsWith('http')
                             return (
                                 <motion.a
-                                    className="flex h-full flex-col items-center rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-shadow hover:shadow-md"
+                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
                                     href={site.href}
                                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
                                     key={site.title}
@@ -84,6 +84,11 @@ export function RelatedSitesBlock() {
                                         {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
                                     </h3>
                                     <p className="text-foreground/70 text-sm leading-relaxed">{site.description}</p>
+
+                                    <div
+                                        aria-hidden
+                                        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                    />
                                 </motion.a>
                             )
                         })}

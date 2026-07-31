@@ -73,7 +73,11 @@ export function LogoCloudBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section aria-labelledby="home-sponsors-heading" className="overflow-hidden py-16 md:py-20">
+        <section
+            id="home-sponsors"
+            aria-labelledby="home-sponsors-heading"
+            className="scroll-mt-14 overflow-hidden py-16 md:py-20"
+        >
             <div className="mx-auto max-w-7xl px-6">
                 <motion.div
                     animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}

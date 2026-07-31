@@ -43,7 +43,7 @@ export function TestimonialBlock() {
     const shouldReduceMotion = useReducedMotion()
 
     return (
-        <section aria-labelledby="home-testimonials-heading">
+        <section id="home-testimonials" aria-labelledby="home-testimonials-heading" className="scroll-mt-14">
             <div className="py-16 md:py-24">
                 <div className="mx-auto w-full max-w-5xl px-6">
                     <motion.div
@@ -75,7 +75,7 @@ export function TestimonialBlock() {
                         {testimonials.map((testimonial, index) => (
                             <motion.div
                                 animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                                className="group rounded-xl border bg-primary/5 p-6 ring-1 ring-primary/10 transition-shadow hover:shadow-md"
+                                className="group relative overflow-hidden rounded-xl border bg-primary/5 p-6 ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
                                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
                                 key={testimonial.name}
                                 transition={
@@ -85,14 +85,6 @@ export function TestimonialBlock() {
                                               duration: 0.5,
                                               ease: EASE_OUT,
                                               delay: index * 0.15,
-                                          }
-                                }
-                                whileHover={
-                                    shouldReduceMotion
-                                        ? {}
-                                        : {
-                                              y: -4,
-                                              transition: { duration: 0.2, ease: EASE_OUT },
                                           }
                                 }
                             >
@@ -179,6 +171,11 @@ export function TestimonialBlock() {
                                     <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
                                     <span className="text-muted-foreground text-sm">{testimonial.role}</span>
                                 </motion.div>
+
+                                <div
+                                    aria-hidden
+                                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                />
                             </motion.div>
                         ))}
                     </motion.div>

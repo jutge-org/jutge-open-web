@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'motion/react'
 
 const ANIMATION_DURATION = 4
 const STAGGER_DELAY = 0.1
-const HOVER_SCALE = 1.08
+const HOVER_SCALE = 1.03
 const SPRING_STIFFNESS = 300
 const SCROLL_DISTANCE_FACTOR = 33.333
 

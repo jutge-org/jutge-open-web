@@ -72,7 +72,7 @@ export function TestimonialBlock() {
                     {testimonials.map((testimonial, index) => (
                         <motion.div
                             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                            className="group relative overflow-hidden rounded-xl border bg-primary/5 p-6 ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
+                            className="group relative overflow-hidden rounded-xl border bg-primary/5 p-6 ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md"
                             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
                             key={testimonial.name}
                             transition={

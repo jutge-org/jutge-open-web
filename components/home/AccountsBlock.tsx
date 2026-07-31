@@ -90,7 +90,7 @@ export function AccountsBlock() {
                     {plans.map((plan, index) => (
                         <motion.div
                             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                            className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 transition-all hover:scale-105 hover:shadow-md"
+                            className="group relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 transition-all hover:scale-[1.02] hover:shadow-md"
                             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 40 }}
                             key={plan.title}
                             transition={

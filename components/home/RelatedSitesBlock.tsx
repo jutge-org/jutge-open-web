@@ -64,7 +64,7 @@ export function RelatedSitesBlock() {
                             const isExternal = site.href.startsWith('http')
                             return (
                                 <motion.a
-                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-105 hover:shadow-md"
+                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md"
                                     href={site.href}
                                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
                                     key={site.title}

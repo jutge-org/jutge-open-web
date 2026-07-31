@@ -3,6 +3,7 @@
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import { AccountsBlock } from '@/components/home/AccountsBlock'
 import { CardsBlock } from '@/components/home/CardsBlock'
+import { CoursesBlock } from '@/components/home/CoursesBlock'
 import { DocumentationBlock } from '@/components/home/DocumentationBlock'
 import { FeatureBlock } from '@/components/home/FeatureBlock'
 import { GithubBlock } from '@/components/home/GithubBlock'
@@ -10,6 +11,7 @@ import { MerchandisingBlock } from '@/components/home/MerchandisingBlock'
 import { HeroBlock } from '@/components/home/HeroBlock'
 import { HomeSectionNav, type HomeSectionNavItem } from '@/components/home/HomeSectionNav'
 import { LogoCloudBlock } from '@/components/home/LogoCloudBlock'
+import { ProblemsBlock } from '@/components/home/ProblemsBlock'
 import { RelatedSitesBlock } from '@/components/home/RelatedSitesBlock'
 import { SignInBlock } from '@/components/home/SignInBlock'
 import { StatsBlock } from '@/components/home/StatsBlock'
@@ -28,6 +30,8 @@ const GUEST_SECTIONS: HomeSectionNavItem[] = [
     { id: 'home-hero', label: 'Jutge.org' },
     { id: 'home-account', label: 'Sign in' },
     { id: 'home-features', label: 'Learn and teach' },
+    { id: 'home-courses', label: 'Courses' },
+    { id: 'home-problems', label: 'Problems' },
     { id: 'home-stats', label: 'Platform at a glance' },
     { id: 'home-accounts', label: 'Accounts' },
     { id: 'home-related-sites', label: 'Related sites' },
@@ -98,12 +102,14 @@ export function HomePageGuest() {
         : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-0">
             <HomeYearsRibbon />
             <HomeSectionNav sections={sections} />
             <HeroBlock />
             <SignInBlock />
             <FeatureBlock />
+            <CoursesBlock />
+            <ProblemsBlock />
             {platformStats ? <StatsBlock stats={platformStats} /> : null}
             <AccountsBlock />
             <RelatedSitesBlock />

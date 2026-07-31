@@ -39,7 +39,7 @@ const underlineInputClass = cn(
     'px-2',
 )
 
-const labelClass = 'w-20 shrink-0 text-right text-sm text-foreground mr-2'
+const labelClass = 'w-20 shrink-0 text-left text-sm text-foreground mr-2'
 
 function SignInPanel() {
     const { login } = useAuth()

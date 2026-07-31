@@ -1,5 +1,6 @@
 'use client'
 
+import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import { AccountsBlock } from '@/components/home/AccountsBlock'
 import { CardsBlock } from '@/components/home/CardsBlock'
 import { FeatureBlock } from '@/components/home/FeatureBlock'
@@ -94,6 +95,7 @@ export function HomePageGuest() {
 
     return (
         <div className="flex flex-col">
+            <HomeYearsRibbon />
             <HomeSectionNav sections={sections} />
             <HeroBlock />
             <SignInBlock />

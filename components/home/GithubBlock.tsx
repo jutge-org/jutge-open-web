@@ -18,10 +18,10 @@ export function GithubBlock() {
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
-                    <h2 className="text-balance font-bold text-3xl tracking-tight md:text-4xl" id="home-github-heading">
+                    <h2 className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground" id="home-github-heading">
                         Contribute to Jutge.org
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Many pieces of Jutge.org are open source. Explore the code, open issues, and contribute — every
                         pull request helps students and teachers worldwide.
                     </p>

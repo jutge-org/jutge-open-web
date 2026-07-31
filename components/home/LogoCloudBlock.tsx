@@ -82,12 +82,12 @@ export function LogoCloudBlock() {
                     transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-sponsors-heading"
                     >
                         Sponsors
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Jutge.org is supported by universities and organizations that care about programming education.
                     </p>
                 </motion.div>

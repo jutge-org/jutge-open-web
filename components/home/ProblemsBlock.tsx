@@ -48,14 +48,14 @@ function PromoCard() {
 
             <div className="relative flex h-full flex-col">
                 <div className="mb-4 flex items-center gap-3">
-                    <FileBracesCornerIcon className="size-8 shrink-0 text-brand" aria-hidden />
+                    <FileBracesCornerIcon className="size-8 shrink-0 text-[var(--color-brand)]" aria-hidden />
                     <h3 className="font-bold text-2xl text-foreground tracking-tight">Public problems</h3>
                 </div>
-                <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
+                <p className="mt-3 max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">
                     Thousands of programming challenges with clear statements, sample cases, and instant automatic
                     judging.
                 </p>
-                <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
+                <p className="mt-3 max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">
                     Practice&nbsp;
                     <span className="font-semibold">fundamentals</span>,&nbsp;
                     <span className="font-semibold">algorithms</span>,&nbsp;
@@ -63,7 +63,7 @@ function PromoCard() {
                     <span className="font-semibold">contest classics</span>,&nbsp; and more — at your own pace or
                     following a course.
                 </p>
-                <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
+                <p className="mt-3 max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">
                     Enrolling to your instructor's course will give you access ven more problems!
                 </p>
                 <div className="mt-auto pt-6">
@@ -196,12 +196,12 @@ export function ProblemsBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-problems-heading"
                     >
                         Solve curated problems
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Warm up with a fresh sample of classic challenges — then dive into the full catalogue when you
                         are ready for more.
                     </p>

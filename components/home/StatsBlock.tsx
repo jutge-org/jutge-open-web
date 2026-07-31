@@ -93,10 +93,10 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                     viewport={{ once: true }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
-                    <h2 className="mb-4 font-bold text-3xl text-foreground lg:text-4xl" id="home-stats-heading">
+                    <h2 className="mb-4 font-bold text-3xl text-[var(--color-brand-title)] lg:text-4xl dark:text-foreground" id="home-stats-heading">
                         Platform at a glance
                     </h2>
-                    <p className="mx-auto max-w-2xl text-foreground/70 text-lg">
+                    <p className="mx-auto max-w-2xl text-foreground text-lg dark:text-foreground/70">
                         Key numbers from the Jutge.org community.
                     </p>
                 </motion.div>
@@ -131,7 +131,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                                         if (shouldReduceMotion) return { rotate: 0, scale: 1 }
                                         return isInView ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.8 }
                                     })()}
-                                    className="mb-4 text-3xl text-brand"
+                                    className="mb-4 text-3xl text-[var(--color-brand-title)]"
                                     initial={shouldReduceMotion ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.8 }}
                                     transition={
                                         shouldReduceMotion
@@ -171,7 +171,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                                 <h3 className="mb-2 font-semibold text-foreground text-sm uppercase tracking-wide">
                                     {item.label}
                                 </h3>
-                                <p className="text-foreground/70 text-xs">{item.description}</p>
+                                <p className="text-foreground text-xs dark:text-foreground/70">{item.description}</p>
 
                                 <motion.div
                                     className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 group-hover:opacity-100"

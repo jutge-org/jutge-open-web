@@ -19,12 +19,12 @@ export function TelegramBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-telegram-heading"
                     >
                         Stay informed
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Join the Jutge.org Telegram channel for service communications, status updates, and
                         announcements. Ultra low traffic, no spam.
                     </p>

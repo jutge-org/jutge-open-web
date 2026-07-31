@@ -52,12 +52,12 @@ export function TestimonialBlock() {
                     transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE_OUT }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-testimonials-heading"
                     >
                         What people say
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Feedback from teachers and students who use Jutge.org to teach, practice, and grow as
                         programmers.
                     </p>
@@ -119,8 +119,8 @@ export function TestimonialBlock() {
                                             className={cn(
                                                 'size-4 transition-colors duration-200',
                                                 i < testimonial.stars
-                                                    ? 'fill-brand text-brand'
-                                                    : 'fill-none text-brand/35',
+                                                    ? 'fill-brand text-[var(--color-brand)]'
+                                                    : 'fill-none text-[color-mix(in_oklab,var(--color-brand)_35%,transparent)]',
                                             )}
                                         />
                                     </motion.div>
@@ -160,7 +160,7 @@ export function TestimonialBlock() {
                                 }
                             >
                                 <Avatar className="size-6 border border-transparent shadow ring-1 ring-foreground/10">
-                                    <AvatarFallback className="bg-brand/15 text-[10px] font-semibold text-brand">
+                                    <AvatarFallback className="bg-brand/15 text-[10px] font-semibold text-[var(--color-brand)]">
                                         {testimonial.initials}
                                     </AvatarFallback>
                                 </Avatar>

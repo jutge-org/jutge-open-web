@@ -76,12 +76,12 @@ export function MerchandisingBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-merchandising-heading"
                     >
                         Merchandising
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Stickers, mugs, and a tiny judge for your desk — limited runs from the Jutge.org workshop.
                     </p>
                 </motion.div>

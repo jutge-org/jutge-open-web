@@ -86,12 +86,12 @@ export function CardsBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-collectible-cards-heading"
                     >
                         Earn collectible cards
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Solve problems and complete challenges to earn collectible cards. <br />
                         Brag about your achievements with your friends!
                     </p>

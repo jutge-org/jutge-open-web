@@ -118,10 +118,10 @@ function FeatureCard({ title, tagline, icon: Icon, features, variant }: FeatureC
 
             <div className="relative flex h-full flex-col">
                 <div className="mb-4 flex items-center gap-3">
-                    <Icon className="size-8 shrink-0 text-brand" aria-hidden />
+                    <Icon className="size-8 shrink-0 text-[var(--color-brand)]" aria-hidden />
                     <h3 className="font-bold text-2xl text-foreground tracking-tight">{title}</h3>
                 </div>
-                <p className="max-w-sm text-foreground/70 text-sm leading-relaxed">{tagline}</p>
+                <p className="max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">{tagline}</p>
                 <ul className="mt-6 flex flex-col gap-3">
                     {features.map((feature) => (
                         <li key={feature} className="flex gap-3 text-foreground text-sm leading-relaxed">
@@ -149,7 +149,7 @@ function WhyJutgeCard() {
 
             <div className="relative flex h-full flex-col">
                 <div className="mb-6 flex items-center gap-3">
-                    <SparklesIcon className="size-8 shrink-0 text-brand" aria-hidden />
+                    <SparklesIcon className="size-8 shrink-0 text-[var(--color-brand)]" aria-hidden />
                     <h3 className="font-bold text-2xl text-foreground tracking-tight">Why Jutge.org?</h3>
                 </div>
                 <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -159,7 +159,7 @@ function WhyJutgeCard() {
                             <span>
                                 <strong className="font-semibold">{item.header}</strong>
                                 <br />
-                                <span className="text-foreground/70">{item.body}</span>
+                                <span className="text-foreground dark:text-foreground/70">{item.body}</span>
                             </span>
                         </li>
                     ))}
@@ -183,16 +183,16 @@ export function FeatureBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-features-heading"
                     >
                         Learn programming by solving problems
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Jutge.org is a free, open educational platform that helps anyone learn to program through
                         hands-on practice, instant feedback, and well-organized problems.
                     </p>
-                    <p className="mt-4 text-foreground/70 text-lg">Built for students and instructors.</p>
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">Built for students and instructors.</p>
                 </motion.div>
 
                 <motion.div

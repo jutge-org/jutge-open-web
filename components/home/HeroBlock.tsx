@@ -125,13 +125,13 @@ export function HeroBlock() {
 
                     <AnimatedText
                         as="h1"
-                        className="mb-6 inline-block bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text pb-1 font-thin text-4xl leading-[1.2] tracking-wide text-balance text-transparent text-8xl"
+                        className="mb-6 inline-block bg-linear-to-r from-cyan-600 via-sky-600 to-blue-700 bg-clip-text pb-1 font-normal dark:font-thin text-4xl leading-[1.2] tracking-wide text-balance text-transparent text-8xl dark:from-cyan-300 dark:via-sky-400 dark:to-blue-500"
                     >
                         Jutge.org
                     </AnimatedText>
                     <AnimatedText
                         as="p"
-                        className="mx-auto max-w-3xl text-muted-foreground lg:text-2xl font-thin"
+                        className="mx-auto max-w-3xl text-muted-foreground lg:text-2xl dark:font-thin"
                         delay={0.15}
                     >
                         The Virtual Learning Environment for Computer Programming

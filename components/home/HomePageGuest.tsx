@@ -100,7 +100,14 @@ export function HomePageGuest() {
     const sections = platformStats ? GUEST_SECTIONS : GUEST_SECTIONS.filter((section) => section.id !== 'home-stats')
 
     return (
-        <div>
+        <div
+            className={
+                '[--foreground:#000000] [--muted-foreground:#000000] [--card-foreground:#000000] [--popover-foreground:#000000] [--secondary-foreground:#000000] [--accent-foreground:#000000] ' +
+                '[--color-brand:oklch(0.48_0.16_232)] [--color-brand-secondary:oklch(0.40_0.18_250)] [--color-brand-title:oklch(0.40_0.15_232)] ' +
+                'dark:[--foreground:inherit] dark:[--muted-foreground:inherit] dark:[--card-foreground:inherit] dark:[--popover-foreground:inherit] dark:[--secondary-foreground:inherit] dark:[--accent-foreground:inherit] ' +
+                'dark:[--color-brand:inherit] dark:[--color-brand-secondary:inherit] dark:[--color-brand-title:inherit]'
+            }
+        >
             <HomeYearsRibbon />
             <HomeSectionNav sections={sections} />
             <div className="mt-6 flex flex-col gap-16 md:gap-24">

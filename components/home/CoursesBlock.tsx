@@ -60,13 +60,13 @@ function PromoCard() {
 
             <div className="relative flex h-full flex-col">
                 <div className="mb-4 flex items-center gap-3">
-                    <BookOpenIcon className="size-8 shrink-0 text-brand" aria-hidden />
+                    <BookOpenIcon className="size-8 shrink-0 text-[var(--color-brand)]" aria-hidden />
                     <h3 className="font-bold text-2xl text-foreground tracking-tight">Public courses</h3>
                 </div>
-                <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
+                <p className="mt-3 max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">
                     Curated problem lists and learning paths, open to everyone.
                 </p>
-                <p className="mt-3 max-w-sm text-foreground/70 text-sm leading-relaxed">
+                <p className="mt-3 max-w-sm text-foreground text-sm dark:text-foreground/70 leading-relaxed">
                     Pick topics as&nbsp;
                     <span className="font-semibold">Introduction to Programming</span>,&nbsp;
                     <span className="font-semibold">Functional Programming</span>,&nbsp;
@@ -186,12 +186,12 @@ export function CoursesBlock() {
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-courses-heading"
                     >
                         Learn with guided courses
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         Follow curated paths from your own instructors worldwide — or jump to public courses for all
                         levels and topics.
                     </p>

@@ -45,12 +45,12 @@ export function RelatedSitesBlock() {
             <div className="mx-auto max-w-6xl px-6">
                 <div className="mx-auto mb-16 max-w-2xl text-center">
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-related-sites-heading"
                     >
                         Related sites and tools
                     </h2>
-                    <p className="mt-4 text-foreground/70 text-lg">
+                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
                         More tools and resources from the Jutge.org ecosystem.
                     </p>
                 </div>
@@ -83,11 +83,11 @@ export function RelatedSitesBlock() {
                                         height={64}
                                         className="mb-3 size-14 rounded-md object-contain"
                                     />
-                                    <h3 className="mb-1 font-semibold text-brand">
+                                    <h3 className="mb-1 font-semibold text-[var(--color-brand-title)]">
                                         {site.title}
                                         {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
                                     </h3>
-                                    <p className="text-foreground/70 text-sm leading-relaxed">{site.description}</p>
+                                    <p className="text-foreground text-sm dark:text-foreground/70 leading-relaxed">{site.description}</p>
                                 </motion.a>
                             )
                         })}

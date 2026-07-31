@@ -76,12 +76,12 @@ export function AccountsBlock() {
             <div className="mx-auto max-w-5xl px-6">
                 <div className="mx-auto max-w-2xl text-center">
                     <h2
-                        className="text-balance font-bold text-3xl tracking-tight md:text-4xl"
+                        className="text-balance font-bold text-3xl tracking-tight text-[var(--color-brand-title)] md:text-4xl dark:text-foreground"
                         id="home-accounts-heading"
                     >
                         Student and Instructor accounts
                     </h2>
-                    <p className="mx-auto mt-4 max-w-xl text-balance text-foreground/70 text-lg">
+                    <p className="mx-auto mt-4 max-w-xl text-balance text-foreground text-lg dark:text-foreground/70">
                         Whether you are learning or teaching, Jutge.org is free. Choose the account that fits you.
                     </p>
                 </div>
@@ -106,14 +106,14 @@ export function AccountsBlock() {
                             <div className="relative flex h-full flex-col">
                                 <h3 className="mb-4 font-bold text-2xl text-foreground">{plan.title} account</h3>
 
-                                <SmoothButton asChild className="mb-6 w-full hover:bg-muted" variant="outline">
+                                <SmoothButton asChild className="mb-6 w-full" color="accent" variant="candy">
                                     <Link href={plan.ctaHref}>{plan.ctaLabel}</Link>
                                 </SmoothButton>
 
-                                <p className="mb-6 text-foreground/70 text-sm leading-relaxed">{plan.description}</p>
+                                <p className="mb-6 text-foreground text-sm dark:text-foreground/70 leading-relaxed">{plan.description}</p>
 
                                 <div className="space-y-4">
-                                    <h4 className="font-medium text-foreground/70 text-xs uppercase tracking-wider">
+                                    <h4 className="font-medium text-foreground text-xs dark:text-foreground/70 uppercase tracking-wider">
                                         What&apos;s included:
                                     </h4>
                                     <ul className="space-y-3">
@@ -125,7 +125,7 @@ export function AccountsBlock() {
 
                                 {plan.note ? (
                                     <div className="mt-auto pt-8">
-                                        <p className="rounded-lg border border-border/80 bg-background/60 px-3 py-2 text-foreground/80 text-xs leading-relaxed">
+                                        <p className="rounded-lg border border-border/80 bg-background/60 px-3 py-2 text-foreground text-xs dark:text-foreground/80 leading-relaxed">
                                             {plan.note}
                                         </p>
                                     </div>

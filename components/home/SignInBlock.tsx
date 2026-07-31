@@ -753,15 +753,24 @@ export function SignInBlock() {
         <section id="home-account" aria-label="Account" className="scroll-mt-14">
             <div className="w-full px-6">
                 <motion.div
-                    className="flex flex-col gap-6 rounded-xl border bg-primary/5 px-2 pt-2 pb-8 ring-1 ring-primary/10"
+                    className="relative flex flex-col gap-6 overflow-hidden rounded-xl border bg-primary/5 px-2 pt-2 pb-8"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
                     transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.35, bounce: 0.1 }}
                     viewport={{ once: true, margin: '-80px' }}
                     whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 >
+                    <div
+                        aria-hidden
+                        className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full bg-brand/15 blur-2xl"
+                    />
+                    <div
+                        aria-hidden
+                        className="pointer-events-none absolute -bottom-10 -left-6 size-36 rounded-full bg-primary/10 blur-2xl"
+                    />
+
                     <AnimatedTabs
                         activeTab={activeTab}
-                        className="w-full"
+                        className="relative w-full"
                         layoutId={ACCOUNT_TABS_LAYOUT_ID}
                         onChange={(tabId) => setActiveTab(tabId as TabId)}
                         tabs={TABS}
@@ -772,7 +781,7 @@ export function SignInBlock() {
                         aria-labelledby={`${ACCOUNT_TABS_LAYOUT_ID}-tab-${activeTab}`}
                         id={`${ACCOUNT_TABS_LAYOUT_ID}-panel-${activeTab}`}
                         role="tabpanel"
-                        className="pt-2"
+                        className="relative pt-2"
                     >
                         {activeTab === 'signin' ? <SignInPanel /> : null}
                         {activeTab === 'signup' ? <SignUpPanel /> : null}

@@ -41,7 +41,7 @@ function PromoCard() {
             />
             <div
                 aria-hidden
-                className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full bg-brand/15 blur-2xl"
+                className="pointer-events-none absolute -bottom-8 -right-8 size-40 rounded-full bg-brand/15 blur-2xl"
             />
             <div
                 aria-hidden
@@ -125,7 +125,7 @@ function ProblemsListCard({ problems }: { problems: ProblemRow[] | null }) {
         >
             <div
                 aria-hidden
-                className="pointer-events-none absolute -left-8 -top-8 size-40 rounded-full bg-brand/15 blur-2xl"
+                className="pointer-events-none absolute -bottom-8 -left-8 size-40 rounded-full bg-brand/15 blur-2xl"
             />
             <div className="relative mb-2 flex shrink-0 items-center justify-between gap-2 px-2 pt-1">
                 <h3 className="font-semibold text-foreground text-lg">Sample public problems</h3>

@@ -19,8 +19,8 @@ import { useEffect, useId, useRef, useState, useTransition, type FormEvent } fro
 import { toast } from 'sonner'
 
 const TABS = [
-    { id: 'signin', label: 'Sign in', icon: <LogInIcon className="size-4" aria-hidden /> },
     { id: 'signup', label: 'Sign up', icon: <BookMarkedIcon className="size-4" aria-hidden /> },
+    { id: 'signin', label: 'Sign in', icon: <LogInIcon className="size-4" aria-hidden /> },
     {
         id: 'reset',
         label: 'Reset password',

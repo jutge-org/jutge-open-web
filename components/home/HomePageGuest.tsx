@@ -3,7 +3,9 @@
 import { HomeYearsRibbon } from '@/components/general/HomeYearsRibbon'
 import { AccountsBlock } from '@/components/home/AccountsBlock'
 import { CardsBlock } from '@/components/home/CardsBlock'
+import { DocumentationBlock } from '@/components/home/DocumentationBlock'
 import { FeatureBlock } from '@/components/home/FeatureBlock'
+import { GithubBlock } from '@/components/home/GithubBlock'
 import { MerchandisingBlock } from '@/components/home/MerchandisingBlock'
 import { HeroBlock } from '@/components/home/HeroBlock'
 import { HomeSectionNav, type HomeSectionNavItem } from '@/components/home/HomeSectionNav'
@@ -30,6 +32,8 @@ const GUEST_SECTIONS: HomeSectionNavItem[] = [
     { id: 'home-accounts', label: 'Accounts' },
     { id: 'home-related-sites', label: 'Related sites' },
     { id: 'home-telegram', label: 'Stay informed' },
+    { id: 'home-documentation', label: 'Documentation' },
+    { id: 'home-github', label: 'Open source' },
     { id: 'home-collectible-cards', label: 'Collectible cards' },
     { id: 'home-merchandising', label: 'Merchandising' },
     { id: 'home-testimonials', label: 'What people say' },
@@ -106,6 +110,8 @@ export function HomePageGuest() {
             <TelegramBlock />
             <CardsBlock />
             <MerchandisingBlock />
+            <DocumentationBlock />
+            <GithubBlock />
             <TestimonialBlock />
             <LogoCloudBlock />
             <BackToTopButton />

@@ -3,20 +3,18 @@
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 import { useAuth } from '@/components/AuthProvider'
-import { PageSpinner } from '@/components/ClientGates'
 import { RecaptchaNotice } from '@/components/registration/RecaptchaNotice'
-import { RegistrationForm } from '@/components/registration/RegistrationForm'
 import AnimatedTabs from '@/components/smoothui/animated-tabs'
-import { Button } from '@/components/ui/button'
+import SmoothButton from '@/components/smoothui/smooth-button'
 import { requestPasswordResetAction } from '@/lib/data/passwordResetActions'
-import { fetchCountries } from '@/lib/data/tables'
-import type { Country } from '@/lib/jutge_api_client'
 import { getRecaptchaSiteKey, RECAPTCHA_PASSWORD_RESET_ACTION } from '@/lib/recaptcha'
 import { cn } from '@/lib/utils'
 import { BookMarkedIcon, LockOpenIcon, LogInIcon } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useEffect, useId, useRef, useState, useTransition, type FormEvent } from 'react'
+import Link from 'next/link'
+import { useId, useRef, useState, useTransition, type FormEvent } from 'react'
 import { toast } from 'sonner'
+import validator from 'validator'
 
 const TABS = [
     { id: 'signup', label: 'Sign up', icon: <BookMarkedIcon className="size-4" aria-hidden /> },
@@ -55,25 +53,20 @@ function SignInPanel() {
     const [pending, startTransition] = useTransition()
     const emailRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
-    const canSubmit = email.trim().length > 0 && password.length > 0 && !pending
+    const canSubmit = validator.isEmail(email.trim()) && password.length >= 8 && !pending
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setErrorMessage(null)
 
         const trimmed = email.trim()
-        if (!trimmed) {
-            setErrorMessage('Please enter your email.')
+        if (!validator.isEmail(trimmed)) {
+            setErrorMessage('Please enter a valid email address.')
             emailRef.current?.focus()
             return
         }
-        if (emailRef.current && !emailRef.current.checkValidity()) {
-            setErrorMessage('Please enter a valid email address.')
-            emailRef.current.focus()
-            return
-        }
-        if (!password) {
-            setErrorMessage('Please enter your password.')
+        if (password.length < 8) {
+            setErrorMessage('Password must be at least 8 characters.')
             passwordRef.current?.focus()
             return
         }
@@ -138,10 +131,16 @@ function SignInPanel() {
             </div>
             <div className="flex items-baseline gap-3">
                 <div className={labelClass} aria-hidden />
-                <Button type="submit" variant="outline" disabled={!canSubmit} className="min-w-0 flex-1">
+                <SmoothButton
+                    type="submit"
+                    color="accent"
+                    variant="candy"
+                    disabled={!canSubmit}
+                    className="min-w-0 flex-1 h-8 mt-4"
+                >
                     <LogInIcon className="size-4" aria-hidden />
                     {pending ? 'Signing in…' : 'Sign in'}
-                </Button>
+                </SmoothButton>
             </div>
 
             {errorMessage ? (
@@ -168,21 +167,16 @@ function ResetPasswordPanelFields({
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [pending, startTransition] = useTransition()
     const emailRef = useRef<HTMLInputElement>(null)
-    const canSubmit = email.trim().length > 0 && !pending
+    const canSubmit = validator.isEmail(email.trim()) && !pending
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setErrorMessage(null)
 
         const trimmed = email.trim()
-        if (!trimmed) {
-            setErrorMessage('Please enter your email.')
-            emailRef.current?.focus()
-            return
-        }
-        if (emailRef.current && !emailRef.current.checkValidity()) {
+        if (!validator.isEmail(trimmed)) {
             setErrorMessage('Please enter a valid email address.')
-            emailRef.current.focus()
+            emailRef.current?.focus()
             return
         }
         if (!recaptchaConfigured) {
@@ -243,10 +237,16 @@ function ResetPasswordPanelFields({
             </div>
             <div className="flex items-baseline gap-3">
                 <div className={labelClass} aria-hidden />
-                <Button type="submit" variant="outline" disabled={!canSubmit} className="min-w-0 flex-1">
+                <SmoothButton
+                    type="submit"
+                    color="accent"
+                    variant="candy"
+                    disabled={!canSubmit}
+                    className="min-w-0 flex-1 h-8 mt-4"
+                >
                     <LockOpenIcon className="size-4" aria-hidden />
                     {pending ? 'Sending…' : 'Reset password'}
-                </Button>
+                </SmoothButton>
             </div>
 
             {errorMessage ? (
@@ -285,38 +285,26 @@ function ResetPasswordPanel() {
     )
 }
 
-function SignUpPanel({ countries }: { countries: Country[] | null }) {
-    if (!countries) {
-        return <PageSpinner />
-    }
-
-    if (countries.length === 0) {
-        return (
-            <p className="text-muted-foreground text-sm">Could not load registration form. Please try again later.</p>
-        )
-    }
-
-    return 'TODO'
+function SignUpPanel() {
+    return (
+        <div className="flex justify-center px-4">
+            <SmoothButton asChild color="accent" variant="candy" className='w-32'>
+                <Link href="/registration">
+                    <BookMarkedIcon className="size-4 shrink-0" aria-hidden />
+                    Sign up
+                </Link>
+            </SmoothButton>
+        </div>
+    )
 }
 
 export function SignInBlock() {
     const shouldReduceMotion = useReducedMotion()
     const [activeTab, setActiveTab] = useState<TabId>('signin')
-    const [countries, setCountries] = useState<Country[] | null>(null)
-
-    useEffect(() => {
-        let cancelled = false
-        void fetchCountries().then((result) => {
-            if (!cancelled) setCountries(result)
-        })
-        return () => {
-            cancelled = true
-        }
-    }, [])
 
     return (
         <section aria-label="Account" className="py-4 md:py-8">
-            <div className="mx-auto w-full max-w-3xl px-6">
+            <div className="w-full px-6">
                 <motion.div
                     className="flex flex-col gap-6 rounded-xl border bg-primary/5 px-2 pt-2 pb-8 ring-1 ring-primary/10"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
@@ -337,10 +325,11 @@ export function SignInBlock() {
                         aria-labelledby={`${ACCOUNT_TABS_LAYOUT_ID}-tab-${activeTab}`}
                         id={`${ACCOUNT_TABS_LAYOUT_ID}-panel-${activeTab}`}
                         role="tabpanel"
+                        className="pt-2"
                     >
                         {activeTab === 'signin' ? <SignInPanel /> : null}
-                        {activeTab === 'signup' ? <SignUpPanel countries={countries} /> : null}
-                        {activeTab === 'reset' ? <ResetPasswordPanel /> : null}{' '}
+                        {activeTab === 'signup' ? <SignUpPanel /> : null}
+                        {activeTab === 'reset' ? <ResetPasswordPanel /> : null}
                     </div>
                 </motion.div>
             </div>

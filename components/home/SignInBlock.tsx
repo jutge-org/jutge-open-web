@@ -36,6 +36,7 @@ const underlineInputClass = cn(
     'outline-none transition-[border-color] duration-200',
     'focus-visible:border-foreground',
     'aria-invalid:border-destructive',
+    'px-2',
 )
 
 const labelClass = 'w-20 shrink-0 text-right text-sm text-foreground mr-2'

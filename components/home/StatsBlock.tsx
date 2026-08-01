@@ -131,7 +131,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                                         if (shouldReduceMotion) return { rotate: 0, scale: 1 }
                                         return isInView ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.8 }
                                     })()}
-                                    className="mb-4 text-3xl text-[var(--color-brand-title)]"
+                                    className="mb-4 text-3xl"
                                     initial={shouldReduceMotion ? { rotate: 0, scale: 1 } : { rotate: -10, scale: 0.8 }}
                                     transition={
                                         shouldReduceMotion
@@ -144,7 +144,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                                               }
                                     }
                                 >
-                                    <Icon className="size-8" aria-hidden />
+                                    <Icon className="size-8 text-[var(--color-brand)]" aria-hidden />
                                 </motion.div>
 
                                 <motion.div

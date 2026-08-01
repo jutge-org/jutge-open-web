@@ -79,11 +79,11 @@ export function RelatedSitesBlock() {
                                     <Image
                                         src={site.imageSrc}
                                         alt=""
-                                        width={64}
-                                        height={64}
-                                        className="mb-3 size-14 rounded-md object-contain"
+                                        width={128}
+                                        height={128}
+                                        className="mb-3 size-32 rounded-md object-contain"
                                     />
-                                    <h3 className="mb-1 font-semibold text-[var(--color-brand-title)]">
+                                    <h3 className="mb-1 font-semibold text-[var(--color-brand-title)] text-2xl">
                                         {site.title}
                                         {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
                                     </h3>

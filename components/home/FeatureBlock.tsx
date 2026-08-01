@@ -1,6 +1,6 @@
 'use client'
 
-import { GraduationCapIcon, SparklesIcon, UserIcon } from 'lucide-react'
+import { GraduationCapIcon, UserIcon } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -12,64 +12,30 @@ type FeatureCardData = {
     variant: 'muted' | 'card'
 }
 
-type WhyItem = {
-    header: string
-    body: string
-}
-
 const cards: FeatureCardData[] = [
     {
-        title: 'Features for students',
-        tagline: 'Learn by solving real graded programming problems',
+        title: 'For students',
+        tagline: 'Learn programming through hands-on practice with instant, meaningful feedback.',
         icon: UserIcon,
         variant: 'muted',
         features: [
-            'Instant automated feedback on every submission',
-            'Thousands of organized problems by topic and difficulty',
+            'Thousands of curated problems organized by topic and difficulty',
+            'Instant automated feedback on every submission — test, correct, and resubmit',
             'Support for many programming languages',
-            'Track your progress and improve through practice',
-            'Assignments, contests, and exams in one place',
+            'Track your progress through assignments, contests, and exams',
         ],
     },
     {
-        title: 'Features for instructors',
-        tagline: 'Everything you need to run programming courses',
+        title: 'For instructors',
+        tagline: 'Run programming courses with automatic grading that scales and stays consistent.',
         icon: GraduationCapIcon,
         variant: 'card',
         features: [
-            'Create and manage courses with your students and teaching assistants',
-            'Build assignments, contests, and exams',
-            'Reuse or create programming problems',
-            'Automatic grading with scalable assessment',
+            'Create and manage courses with students and teaching assistants',
+            'Build assignments, contests, and exams — reuse or create problems',
+            'Reliable automatic assessment at scale, saving countless hours',
             'Monitor student progress through submissions and results',
         ],
-    },
-]
-
-const whyItems: WhyItem[] = [
-    {
-        header: 'Purpose-built for Computer Science Education',
-        body: 'Designed specifically for learning and teaching programming.',
-    },
-    {
-        header: 'Millions of Automatic Evaluations',
-        body: 'A mature platform proven through years of continuous academic use.',
-    },
-    {
-        header: 'Immediate, Meaningful Feedback',
-        body: 'Students learn faster by testing, correcting, and resubmitting their solutions.',
-    },
-    {
-        header: 'Reliable Assessment at Scale',
-        body: 'Automatic grading ensures consistency while saving instructors countless hours.',
-    },
-    {
-        header: 'Rich Programming Problem Library',
-        body: 'Thousands of curated exercises spanning many topics and difficulty levels.',
-    },
-    {
-        header: 'Research-backed Platform',
-        body: 'Developed and improved through years of educational research and publications, with innovations validated in real university courses.',
     },
 ]
 
@@ -135,40 +101,6 @@ function FeatureCard({ title, tagline, icon: Icon, features, variant }: FeatureC
     )
 }
 
-function WhyJutgeCard() {
-    return (
-        <div className="relative flex flex-col overflow-hidden rounded-2xl border bg-muted/50 p-8 md:col-span-2">
-            <div
-                aria-hidden
-                className="pointer-events-none absolute top-1/2 -right-8 size-40 -translate-y-1/2 rounded-full bg-brand/15 blur-2xl"
-            />
-            <div
-                aria-hidden
-                className="pointer-events-none absolute top-1/2 -left-6 size-36 -translate-y-1/2 rounded-full bg-primary/10 blur-2xl"
-            />
-
-            <div className="relative flex h-full flex-col">
-                <div className="mb-6 flex items-center gap-3">
-                    <SparklesIcon className="size-8 shrink-0 text-[var(--color-brand)]" aria-hidden />
-                    <h3 className="font-bold text-2xl text-foreground tracking-tight">Why Jutge.org?</h3>
-                </div>
-                <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {whyItems.map((item) => (
-                        <li key={item.header} className="flex gap-3 text-foreground text-sm leading-relaxed">
-                            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                            <span>
-                                <strong className="font-semibold">{item.header}</strong>
-                                <br />
-                                <span className="text-foreground dark:text-foreground/70">{item.body}</span>
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    )
-}
-
 export function FeatureBlock() {
     const shouldReduceMotion = useReducedMotion()
 
@@ -189,10 +121,10 @@ export function FeatureBlock() {
                         Learn programming by solving problems
                     </h2>
                     <p className="mt-4 text-foreground text-lg dark:text-foreground/70">
-                        Jutge.org is a free, open educational platform that helps anyone learn to program through
-                        hands-on practice, instant feedback, and well-organized problems.
+                        Jutge.org is a free, open educational platform purpose-built for computer science education —
+                        proven through millions of automatic evaluations and years of research-backed use in real
+                        university courses.
                     </p>
-                    <p className="mt-4 text-foreground text-lg dark:text-foreground/70">Built for students and instructors.</p>
                 </motion.div>
 
                 <motion.div
@@ -205,7 +137,6 @@ export function FeatureBlock() {
                     {cards.map((card) => (
                         <FeatureCard key={card.title} {...card} />
                     ))}
-                    <WhyJutgeCard />
                 </motion.div>
             </div>
         </section>

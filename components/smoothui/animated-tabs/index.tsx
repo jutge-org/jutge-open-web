@@ -129,7 +129,7 @@ export default function AnimatedTabs({
 
     const getTabStyles = (isActive: boolean) =>
         cn(
-            'relative z-10 flex items-center justify-center gap-2 px-4 pt-2 pb-4 font-medium text-sm transition-colors',
+            'relative z-10 flex flex-col items-center justify-center gap-1 px-2 pt-2 pb-4 text-center font-medium text-sm transition-colors md:flex-row md:gap-2 md:px-4 md:text-left',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             variant === 'underline' && [
                 'flex-1 rounded-t-md',

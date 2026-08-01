@@ -33,7 +33,7 @@ const TABS = [
     },
 ]
 
-type TabId = 'signin' | 'signup' | 'reset'
+export type AccountTabId = 'signin' | 'signup' | 'reset'
 
 const ACCOUNT_TABS_LAYOUT_ID = 'home-account-tabs'
 
@@ -48,7 +48,7 @@ const underlineInputClass = cn(
 
 const labelClass = 'w-20 shrink-0 text-left text-sm text-foreground mr-2'
 
-function SignInPanel() {
+function SignInPanel({ focusEmailKey }: { focusEmailKey: number }) {
     const { login } = useAuth()
     const formId = useId()
     const emailId = `${formId}-email`
@@ -62,6 +62,15 @@ function SignInPanel() {
     const emailRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
     const canSubmit = validator.isEmail(email.trim()) && password.length >= 8 && !pending
+
+    useEffect(() => {
+        emailRef.current?.focus({ preventScroll: focusEmailKey > 0 })
+    }, [])
+
+    useEffect(() => {
+        if (focusEmailKey === 0) return
+        emailRef.current?.focus({ preventScroll: true })
+    }, [focusEmailKey])
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -312,10 +321,12 @@ function SignUpPanelFields({
     countries,
     recaptchaConfigured,
     executeRecaptcha,
+    focusEmailKey,
 }: {
     countries: Country[]
     recaptchaConfigured: boolean
     executeRecaptcha?: (action?: string) => Promise<string>
+    focusEmailKey: number
 }) {
     const { login } = useAuth()
     const formId = useId()
@@ -347,6 +358,11 @@ function SignUpPanelFields({
     const countryRef = useRef<HTMLSelectElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
     const confirmPasswordRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (focusEmailKey === 0) return
+        nameRef.current?.focus({ preventScroll: true })
+    }, [focusEmailKey])
 
     const canSubmit =
         name.trim().length > 0 &&
@@ -681,15 +697,20 @@ function SignUpPanelFields({
     )
 }
 
-function SignUpPanelWithRecaptcha({ countries }: { countries: Country[] }) {
+function SignUpPanelWithRecaptcha({ countries, focusEmailKey }: { countries: Country[]; focusEmailKey: number }) {
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     return (
-        <SignUpPanelFields countries={countries} recaptchaConfigured executeRecaptcha={executeRecaptcha ?? undefined} />
+        <SignUpPanelFields
+            countries={countries}
+            recaptchaConfigured
+            executeRecaptcha={executeRecaptcha ?? undefined}
+            focusEmailKey={focusEmailKey}
+        />
     )
 }
 
-function SignUpForm() {
+function SignUpForm({ focusEmailKey }: { focusEmailKey: number }) {
     const siteKey = getRecaptchaSiteKey()
     const [countries, setCountries] = useState<Country[] | null>(null)
 
@@ -720,23 +741,28 @@ function SignUpForm() {
     }
 
     if (!siteKey) {
-        return <SignUpPanelFields countries={countries} recaptchaConfigured={false} />
+        return <SignUpPanelFields countries={countries} recaptchaConfigured={false} focusEmailKey={focusEmailKey} />
     }
 
     return (
         <GoogleReCaptchaProvider reCaptchaKey={siteKey}>
-            <SignUpPanelWithRecaptcha countries={countries} />
+            <SignUpPanelWithRecaptcha countries={countries} focusEmailKey={focusEmailKey} />
         </GoogleReCaptchaProvider>
     )
 }
 
-function SignUpPanel() {
-    return <SignUpForm />
+function SignUpPanel({ focusEmailKey }: { focusEmailKey: number }) {
+    return <SignUpForm focusEmailKey={focusEmailKey} />
 }
 
-export function SignInBlock() {
+type SignInBlockProps = {
+    activeTab: AccountTabId
+    onActiveTabChange: (tab: AccountTabId) => void
+    focusEmailKey?: number
+}
+
+export function SignInBlock({ activeTab, onActiveTabChange, focusEmailKey = 0 }: SignInBlockProps) {
     const shouldReduceMotion = useReducedMotion()
-    const [activeTab, setActiveTab] = useState<TabId>('signin')
 
     return (
         <section id="home-account" aria-label="Account" className="scroll-mt-14">
@@ -761,7 +787,7 @@ export function SignInBlock() {
                         activeTab={activeTab}
                         className="relative w-full"
                         layoutId={ACCOUNT_TABS_LAYOUT_ID}
-                        onChange={(tabId) => setActiveTab(tabId as TabId)}
+                        onChange={(tabId) => onActiveTabChange(tabId as AccountTabId)}
                         tabs={TABS}
                         variant="underline"
                     />
@@ -772,8 +798,8 @@ export function SignInBlock() {
                         role="tabpanel"
                         className="relative pt-2"
                     >
-                        {activeTab === 'signin' ? <SignInPanel /> : null}
-                        {activeTab === 'signup' ? <SignUpPanel /> : null}
+                        {activeTab === 'signin' ? <SignInPanel focusEmailKey={focusEmailKey} /> : null}
+                        {activeTab === 'signup' ? <SignUpPanel focusEmailKey={focusEmailKey} /> : null}
                         {activeTab === 'reset' ? <ResetPasswordPanel /> : null}
                     </div>
                 </motion.div>

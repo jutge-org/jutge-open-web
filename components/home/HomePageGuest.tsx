@@ -13,18 +13,21 @@ import { HomeSectionNav, type HomeSectionNavItem } from '@/components/home/HomeS
 import { LogoCloudBlock } from '@/components/home/LogoCloudBlock'
 import { ProblemsBlock } from '@/components/home/ProblemsBlock'
 import { RelatedSitesBlock } from '@/components/home/RelatedSitesBlock'
-import { SignInBlock } from '@/components/home/SignInBlock'
+import { SignInBlock, type AccountTabId } from '@/components/home/SignInBlock'
 import { StatsBlock } from '@/components/home/StatsBlock'
 import { TelegramBlock } from '@/components/home/TelegramBlock'
 import { TestimonialBlock } from '@/components/home/TestimonialBlock'
 import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { countActiveProglangs, getActiveCompilers } from '@/lib/documentation'
 import { fetchHomepageStats } from '@/lib/data/misc'
 import { fetchCompilers } from '@/lib/data/tables'
 import type { HomepageStats } from '@/lib/jutge_api_client'
-import { ArrowUpIcon } from 'lucide-react'
+import { ArrowUpIcon, BookMarkedIcon, LogInIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+
+const HEADER_OFFSET_PX = 56
 
 const GUEST_SECTIONS: HomeSectionNavItem[] = [
     { id: 'home-hero', label: 'Jutge.org' },
@@ -49,24 +52,68 @@ type PlatformStats = HomepageStats & {
     compilers: number
 }
 
-function BackToTopButton() {
+type BottomActionsProps = {
+    onOpenAccountTab: (tab: AccountTabId) => void
+}
+
+function scrollToAccountSection() {
+    const el = document.getElementById('home-account')
+    if (!el) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+    }
+    const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX
+    window.scrollTo({ top, behavior: 'smooth' })
+}
+
+function BottomActions({ onOpenAccountTab }: BottomActionsProps) {
     return (
         <div className="flex justify-end px-6 pb-8">
             <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            aria-label="Back to top"
-                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        >
-                            <ArrowUpIcon aria-hidden />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">Back to top</TooltipContent>
-                </Tooltip>
+                <ButtonGroup>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                aria-label="Sign up"
+                                onClick={() => onOpenAccountTab('signup')}
+                            >
+                                <BookMarkedIcon aria-hidden />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">Sign up</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                aria-label="Sign in"
+                                onClick={() => onOpenAccountTab('signin')}
+                            >
+                                <LogInIcon aria-hidden />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">Sign in</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                aria-label="Back to top"
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            >
+                                <ArrowUpIcon aria-hidden />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">Back to top</TooltipContent>
+                    </Tooltip>
+                </ButtonGroup>
             </TooltipProvider>
         </div>
     )
@@ -74,6 +121,14 @@ function BackToTopButton() {
 
 export function HomePageGuest() {
     const [platformStats, setPlatformStats] = useState<PlatformStats | null>(null)
+    const [accountTab, setAccountTab] = useState<AccountTabId>('signin')
+    const [focusEmailKey, setFocusEmailKey] = useState(0)
+
+    function openAccountTab(tab: AccountTabId) {
+        setAccountTab(tab)
+        setFocusEmailKey((key) => key + 1)
+        scrollToAccountSection()
+    }
 
     useEffect(() => {
         let cancelled = false
@@ -112,7 +167,11 @@ export function HomePageGuest() {
             <HomeSectionNav sections={sections} />
             <div className="mt-6 flex flex-col gap-16 md:gap-24">
                 <HeroBlock />
-                <SignInBlock />
+                <SignInBlock
+                    activeTab={accountTab}
+                    onActiveTabChange={setAccountTab}
+                    focusEmailKey={focusEmailKey}
+                />
                 <FeatureBlock />
                 <CoursesBlock />
                 <ProblemsBlock />
@@ -126,7 +185,7 @@ export function HomePageGuest() {
                 <TestimonialBlock />
                 <MerchandisingBlock />
                 <LogoCloudBlock />
-                <BackToTopButton />
+                <BottomActions onOpenAccountTab={openAccountTab} />
             </div>
         </div>
     )

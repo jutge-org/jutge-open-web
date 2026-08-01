@@ -65,14 +65,17 @@ export function TestimonialBlock() {
 
                 <motion.div
                     animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1 }}
-                    className="grid gap-6 lg:grid-cols-2 3xl:grid-cols-3 3xl:gap-12"
+                    className="grid gap-4 md:gap-6 lg:grid-cols-2 3xl:grid-cols-3 3xl:gap-12"
                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
                     transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE_OUT, delay: 0.2 }}
                 >
                     {testimonials.map((testimonial, index) => (
                         <motion.div
                             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                            className="group relative overflow-hidden rounded-xl border bg-primary/5 p-6 ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md"
+                            className={cn(
+                                'group relative overflow-hidden rounded-xl border bg-primary/5 p-4 ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md md:p-6',
+                                index >= 3 && 'hidden lg:block',
+                            )}
                             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
                             key={testimonial.name}
                             transition={
@@ -87,7 +90,7 @@ export function TestimonialBlock() {
                         >
                             <motion.div
                                 animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-                                className="flex gap-1"
+                                className="flex gap-0.5 md:gap-1"
                                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
                                 transition={
                                     shouldReduceMotion
@@ -117,7 +120,7 @@ export function TestimonialBlock() {
                                         <StarIcon
                                             aria-hidden
                                             className={cn(
-                                                'size-4 transition-colors duration-200',
+                                                'size-3.5 transition-colors duration-200 md:size-4',
                                                 i < testimonial.stars
                                                     ? 'fill-brand text-[var(--color-brand)]'
                                                     : 'fill-none text-[color-mix(in_oklab,var(--color-brand)_35%,transparent)]',
@@ -130,7 +133,7 @@ export function TestimonialBlock() {
 
                             <motion.blockquote
                                 animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                                className="my-4 text-foreground"
+                                className="my-3 text-foreground text-sm md:my-4 md:text-base"
                                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
                                 transition={
                                     shouldReduceMotion
@@ -147,7 +150,7 @@ export function TestimonialBlock() {
 
                             <motion.div
                                 animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-1.5 md:gap-2"
                                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -10 }}
                                 transition={
                                     shouldReduceMotion
@@ -159,14 +162,16 @@ export function TestimonialBlock() {
                                           }
                                 }
                             >
-                                <Avatar className="size-6 border border-transparent shadow ring-1 ring-foreground/10">
-                                    <AvatarFallback className="bg-brand/15 text-[10px] font-semibold text-[var(--color-brand)]">
+                                <Avatar className="size-5 border border-transparent shadow ring-1 ring-foreground/10 md:size-6">
+                                    <AvatarFallback className="bg-brand/15 text-[9px] font-semibold text-[var(--color-brand)] md:text-[10px]">
                                         {testimonial.initials}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="font-medium text-foreground text-sm">{testimonial.name}</div>
+                                <div className="font-medium text-foreground text-xs md:text-sm">
+                                    {testimonial.name}
+                                </div>
                                 <span aria-hidden="true" className="size-1 rounded-full bg-foreground/25" />
-                                <span className="text-muted-foreground text-sm">{testimonial.role}</span>
+                                <span className="text-muted-foreground text-xs md:text-sm">{testimonial.role}</span>
                             </motion.div>
 
                             <div

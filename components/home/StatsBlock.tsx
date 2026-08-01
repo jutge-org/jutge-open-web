@@ -101,7 +101,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" ref={ref}>
+                <div className="grid grid-cols-2 gap-6 lg:grid-cols-4" ref={ref}>
                     {statItems.map((item, index) => {
                         const Icon = item.icon
                         const value = stats[item.key]
@@ -171,7 +171,7 @@ export function StatsBlock({ stats }: StatsBlockProps) {
                                 <h3 className="mb-2 font-semibold text-foreground text-sm uppercase tracking-wide">
                                     {item.label}
                                 </h3>
-                                <p className="text-foreground text-xs dark:text-foreground/70">{item.description}</p>
+                                <p className="hidden text-foreground text-xs sm:block dark:text-foreground/70">{item.description}</p>
 
                                 <motion.div
                                     className="absolute inset-0 bg-gradient-to-br from-brand/10 via-transparent to-transparent opacity-0 group-hover:opacity-100"

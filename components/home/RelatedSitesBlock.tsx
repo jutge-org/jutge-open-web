@@ -59,12 +59,12 @@ export function RelatedSitesBlock() {
                         aria-hidden
                         className="pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand/20 blur-3xl sm:size-80"
                     />
-                    <div className="relative grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="relative grid grid-cols-2 gap-3 sm:gap-4">
                         {relatedSites.map((site, index) => {
                             const isExternal = site.href.startsWith('http')
                             return (
                                 <motion.a
-                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-6 text-center ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md"
+                                    className="group relative flex h-full flex-col items-center overflow-hidden rounded-xl border bg-primary/5 p-3 text-center ring-1 ring-primary/10 transition-all hover:scale-[1.02] hover:shadow-md sm:p-6"
                                     href={site.href}
                                     initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
                                     key={site.title}
@@ -81,13 +81,13 @@ export function RelatedSitesBlock() {
                                         alt=""
                                         width={128}
                                         height={128}
-                                        className="mb-3 size-32 rounded-md object-contain"
+                                        className="mb-2 size-16 rounded-md object-contain sm:mb-3 sm:size-32"
                                     />
-                                    <h3 className="mb-1 font-semibold text-[var(--color-brand-title)] text-2xl">
+                                    <h3 className="mb-1 font-semibold text-[var(--color-brand-title)] text-base sm:text-2xl">
                                         {site.title}
                                         {isExternal ? <span className="sr-only"> (opens in new window)</span> : null}
                                     </h3>
-                                    <p className="text-foreground text-sm dark:text-foreground/70 leading-relaxed">{site.description}</p>
+                                    <p className="text-foreground text-xs leading-relaxed sm:text-sm dark:text-foreground/70">{site.description}</p>
                                 </motion.a>
                             )
                         })}
